@@ -1,20 +1,25 @@
 <script setup>
+import { computed, ref, watch } from 'vue';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
-import { ref, watch } from 'vue';
+
+// Manually import icons needed for dynamic buttons and menu templates
+import {
+  Heading, Heading1, Heading2, Heading3, Heading4,
+  List, ListOrdered,
+  AlignLeft, AlignCenter, AlignRight, AlignJustify
+} from 'lucide-vue-next';
 
 // Import extensions
-import TextAlign from '@tiptap/extension-text-align';
 import Highlight from '@tiptap/extension-highlight';
+import TextAlign from '@tiptap/extension-text-align';
+import CharacterCount from '@tiptap/extension-character-count';
+import { Table } from '@tiptap/extension-table';
+import TableRow from '@tiptap/extension-table-row';
+import TableHeader from '@tiptap/extension-table-header';
+import TableCell from '@tiptap/extension-table-cell';
 import { TextStyle } from '@tiptap/extension-text-style';
 import { Color } from '@tiptap/extension-color';
-
-// Import PrimeVue components
-import Button from 'primevue/button';
-import TieredMenu from 'primevue/tieredmenu';
-
-// Import Lucide icons
-// (Auto-imported by unplugin-icons)
 
 const props = defineProps({
   modelValue: {
@@ -28,47 +33,103 @@ const emit = defineEmits(['update:modelValue']);
 const editor = useEditor({
   content: props.modelValue,
   extensions: [
-    StarterKit.configure({ link: { openOnClick: false } }),
+    StarterKit.configure({
+      link: { openOnClick: false },
+      blockquote: {
+        HTMLAttributes: {
+          class: 'border-l-4 border-gray-700 pl-4 not-italic text-gray-600',
+        },
+      },
+      code: {
+        HTMLAttributes: {
+          class: 'border border-gray-300 bg-gray-100 text-gray-700 font-mono font-normal text-sm rounded-md px-1 py-0.5',
+        },
+      },
+      codeBlock: {
+        HTMLAttributes: {
+          class: 'border border-gray-300 bg-gray-100 text-gray-700 font-mono text-sm rounded-xl p-4 my-4 overflow-x-auto',
+        },
+      },
+    }),
     TextAlign.configure({ types: ['heading', 'paragraph'] }),
-    Highlight,
+    Highlight.configure({ multicolor: true }),
     TextStyle,
+    Table.configure({ resizable: true }),
+    TableRow,
+    TableHeader,
+    TableCell,
     Color,
+    CharacterCount,
   ],
   onUpdate: () => {
     emit('update:modelValue', editor.value.getHTML());
   },
   editorProps: {
     attributes: {
-      class: 'prose max-w-none focus:outline-none p-4 rounded-b-md min-h-[300px]',
+      class: 'prose max-w-none focus:outline-none p-4 min-h-[300px]',
     },
   },
 });
 
 watch(() => props.modelValue, (newValue) => {
   const isSame = editor.value.getHTML() === newValue;
-  if (isSame) {
-    return;
-  }
+  if (isSame) return;
   editor.value.commands.setContent(newValue, false);
 });
 
-// --- Dropdown Menu Logic ---
-const headingMenu = ref();
-const listMenu = ref();
+// --- Dropdown Panel Logic ---
+const headingPanel = ref();
+const listPanel = ref();
+const highlightPanel = ref();
+const textAlignPanel = ref();
+const rowPanel = ref();
+const columnPanel = ref();
 
-const headingItems = ref([
-  { label: 'Heading 1', icon: 'i-lucide-heading-1', command: () => editor.value.chain().focus().toggleHeading({ level: 1 }).run() },
-  { label: 'Heading 2', icon: 'i-lucide-heading-2', command: () => editor.value.chain().focus().toggleHeading({ level: 2 }).run() },
-  { label: 'Heading 3', icon: 'i-lucide-heading-3', command: () => editor.value.chain().focus().toggleHeading({ level: 3 }).run() },
+const highlightColors = ref([
+  { name: 'Kuning', color: '#fef9c3', border: '#fef9c3' },
+  { name: 'Hijau', color: '#dcfce7', border: '#cafadb' },
+  { name: 'Merah', color: '#ffe4e6', border: '#facfd2' },
+  { name: 'Biru', color: '#e0f2fe', border: '#c5e6fc' },
+  { name: 'Ungu', color: '#f3e8ff', border: '#e6d2fc' },
 ]);
 
-const listItems = ref([
-  { label: 'Bullet List', icon: 'i-lucide-list', command: () => editor.value.chain().focus().toggleBulletList().run() },
-  { label: 'Numbered List', icon: 'i-lucide-list-ordered', command: () => editor.value.chain().focus().toggleOrderedList().run() },
-]);
+const applyHighlight = (color) => {
+  if (color) {
+    editor.value.chain().focus().setHighlight({ color }).run();
+  } else {
+    editor.value.chain().focus().unsetHighlight().run();
+  }
+  highlightPanel.value.hide();
+};
 
-const toggleHeadingMenu = (event) => headingMenu.value.toggle(event);
-const toggleListMenu = (event) => listMenu.value.toggle(event);
+const toggleHeadingPanel = (event) => { headingPanel.value.toggle(event); };
+const toggleListPanel = (event) => { listPanel.value.toggle(event); };
+const toggleHighlightPanel = (event) => { highlightPanel.value.toggle(event); };
+const toggleTextAlignPanel = (event) => { textAlignPanel.value.toggle(event); };
+const toggleRowPanel = (event) => { rowPanel.value.toggle(event); };
+const toggleColumnPanel = (event) => { columnPanel.value.toggle(event); };
+
+// --- Dynamic Icon Logic ---
+const activeHeadingIcon = computed(() => {
+  if (editor.value?.isActive('heading', { level: 1 })) return Heading1;
+  if (editor.value?.isActive('heading', { level: 2 })) return Heading2;
+  if (editor.value?.isActive('heading', { level: 3 })) return Heading3;
+  if (editor.value?.isActive('heading', { level: 4 })) return Heading4;
+  return Heading;
+});
+
+const activeListIcon = computed(() => {
+  if (editor.value?.isActive('bulletList')) return List;
+  if (editor.value?.isActive('orderedList')) return ListOrdered;
+  return List;
+});
+
+const activeAlignIcon = computed(() => {
+  if (editor.value?.isActive({ textAlign: 'center' })) return AlignCenter;
+  if (editor.value?.isActive({ textAlign: 'right' })) return AlignRight;
+  if (editor.value?.isActive({ textAlign: 'justify' })) return AlignJustify;
+  return AlignLeft;
+});
 
 const setLink = () => {
   const previousUrl = editor.value.getAttributes('link').href;
@@ -80,60 +141,187 @@ const setLink = () => {
   }
   editor.value.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
 };
+
+function adjustBrightness(hexColor, factor) {
+  const color = hexColor.startsWith('#') ? hexColor.slice(1) : hexColor;
+
+  const r = parseInt(color.substring(0, 2), 16);
+  const g = parseInt(color.substring(2, 4), 16);
+  const b = parseInt(color.substring(4, 6), 16);
+
+  const newR = Math.min(255, Math.floor(r * factor));
+  const newG = Math.min(255, Math.floor(g * factor));
+  const newB = Math.min(255, Math.floor(b * factor));
+
+  const toHex = (c) => ('00' + c.toString(16)).slice(-2);
+
+  return `#${toHex(newR)}${toHex(newG)}${toHex(newB)}`;
+}
 </script>
 
 <template>
-  <div v-if="editor" class="border border-gray-300 rounded-md">
+  <div v-if="editor" class="border border-gray-300 rounded-md bg-white">
     <!-- Toolbar -->
-    <div class="p-2 bg-gray-100 border-b border-gray-300 rounded-t-md flex flex-wrap items-center">
-      <!-- Undo/Redo -->
-      <Button @click="editor.chain().focus().undo().run()" :disabled="!editor.can().undo()" :severity="editor.can().undo() ? 'primary' : 'contrast'" text rounded-xl aria-label="Undo" class="h-8 w-8 !p-2"> <i-lucide-undo-2 /> </Button>
-      <Button @click="editor.chain().focus().redo().run()" :disabled="!editor.can().redo()" :severity="editor.can().redo() ? 'primary' : 'contrast'" text rounded-xl aria-label="Redo" class="h-8 w-8 !p-2"> <i-lucide-redo-2 /> </Button>
+    <div class="p-2 border-b border-gray-300 rounded-t-md flex flex-wrap items-center gap-[2px]">
+      <!-- Undo/Redo & Clear Formatting -->
+      <Button @click="editor.chain().focus().undo().run()" :disabled="!editor.can().undo()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.can().undo() ? 'text-gray-700 hover:bg-gray-200' : 'text-gray-400 cursor-not-allowed']" title="Undo"> <i-lucide-undo-2 /> </Button>
+      <Button @click="editor.chain().focus().redo().run()" :disabled="!editor.can().redo()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.can().redo() ? 'text-gray-700 hover:bg-gray-200' : 'text-gray-400 cursor-not-allowed']" title="Redo"> <i-lucide-redo-2 /> </Button>
+      <Button @click="editor.chain().focus().unsetAllMarks().clearNodes().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Clear Formatting"> <i-lucide-eraser /> </Button>
 
-      <div class="border-l h-6 mx-2"></div>
+      <div class="hidden lg:flex border-l h-6 mx-2"></div>
+
+      <!-- Headings Panel -->
+      <Button @click="toggleHeadingPanel" unstyled :class="['h-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('heading') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']">
+        <component :is="activeHeadingIcon" :size="16" />
+      </Button>
+      <Popover ref="headingPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
+        <div class="flex items-center gap-[2px]">
+          <Button @click="editor.chain().focus().toggleHeading({ level: 1 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 1 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Left"> <i-lucide-heading-1 /> </Button>
+          <Button @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 2 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Center"> <i-lucide-heading-2 /> </Button>
+          <Button @click="editor.chain().focus().toggleHeading({ level: 3 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 3 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Right"> <i-lucide-heading-3 /> </Button>
+          <Button @click="editor.chain().focus().toggleHeading({ level: 4 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 4 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Justify"> <i-lucide-heading-4 /> </Button>
+        </div>
+      </Popover>
+
+      <!-- Lists Panel -->
+      <Button @click="toggleListPanel" unstyled :class="['h-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('bulletList') || editor.isActive('orderedList') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']">
+        <component :is="activeListIcon" :size="16" />
+      </Button>
+      <Popover ref="listPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
+        <div class="flex items-center gap-[2px]">
+          <Button @click="editor.chain().focus().toggleBulletList().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('bulletList') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Left"> <i-lucide-list /> </Button>
+          <Button @click="editor.chain().focus().toggleOrderedList().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('orderedList') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Center"> <i-lucide-list-ordered /> </Button>
+        </div>
+      </Popover>
+
+      <!-- Blockquote & Code Block -->
+      <Button @click="editor.chain().focus().toggleBlockquote().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('blockquote') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Blockquote"> <i-lucide-text-quote /> </Button>
+      <Button @click="editor.chain().focus().toggleCodeBlock().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('codeBlock') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Code Block"> <i-lucide-square-code /> </Button>
+
+      <div class="hidden lg:flex border-l h-6 mx-2"></div>
 
       <!-- Basic Formatting -->
-      <Button @click="editor.chain().focus().toggleBold().run()" :severity="editor.isActive('bold') ? 'primary' : 'contrast'" text rounded-xl aria-label="Bold" class="h-8 w-8 !p-2"> <i-lucide-bold /> </Button>
-      <Button @click="editor.chain().focus().toggleItalic().run()" :severity="editor.isActive('italic') ? 'primary' : 'contrast'" text rounded-xl aria-label="Italic" class="h-8 w-8 !p-2"> <i-lucide-italic /> </Button>
-      <Button @click="editor.chain().focus().toggleUnderline().run()" :severity="editor.isActive('underline') ? 'primary' : 'contrast'" text rounded-xl aria-label="Underline" class="h-8 w-8 !p-2"> <i-lucide-underline /> </Button>
-      <Button @click="editor.chain().focus().toggleStrike().run()" :severity="editor.isActive('strike') ? 'primary' : 'contrast'" text rounded-xl aria-label="Strike" class="h-8 w-8 !p-2"> <i-lucide-strikethrough /> </Button>
+      <Button @click="editor.chain().focus().toggleBold().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('bold') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Bold"> <i-lucide-bold class="icon-bold" /> </Button>
+      <Button @click="editor.chain().focus().toggleItalic().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('italic') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Italic"> <i-lucide-italic /> </Button>
+      <Button @click="editor.chain().focus().toggleUnderline().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('underline') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Underline"> <i-lucide-underline /> </Button>
+      <Button @click="editor.chain().focus().toggleStrike().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('strike') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Strike"> <i-lucide-strikethrough /> </Button>
 
-      <div class="border-l h-6 mx-2"></div>
+      <div class="hidden lg:flex border-l h-6 mx-2"></div>
 
-      <!-- Headings Dropdown -->
-      <Button @click="toggleHeadingMenu" :severity="editor.isActive('heading') ? 'primary' : 'contrast'" text rounded-xl aria-haspopup="true" aria-controls="heading_menu" aria-label="Headings" class="h-8 w-8 !p-2"> <i-lucide-heading /> </Button>
-      <TieredMenu ref="headingMenu" id="heading_menu" :model="headingItems" popup />
+      <!-- Text Align Panel -->
+      <Button
+        @click="toggleTextAlignPanel"
+        unstyled
+        class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-300"
+        :class="editor.isActive({ textAlign: 'left' }) || editor.isActive({ textAlign: 'center' }) || editor.isActive({ textAlign: 'right' }) || editor.isActive({ textAlign: 'justify' }) ? 'bg-gray-100 !text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'"
+        title="Text Align"
+      >
+        <component :is="activeAlignIcon" :size="16" />
+      </Button>
+      <Popover ref="textAlignPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
+        <div class="flex items-center gap-[2px]">
+          <Button @click="editor.chain().focus().setTextAlign('left').run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive({ textAlign: 'left' }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Left"> <i-lucide-align-left /> </Button>
+          <Button @click="editor.chain().focus().setTextAlign('center').run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive({ textAlign: 'center' }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Center"> <i-lucide-align-center /> </Button>
+          <Button @click="editor.chain().focus().setTextAlign('right').run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive({ textAlign: 'right' }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Right"> <i-lucide-align-right /> </Button>
+          <Button @click="editor.chain().focus().setTextAlign('justify').run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive({ textAlign: 'justify' }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Justify"> <i-lucide-align-justify /> </Button>
+          <div class="border-l h-5 mx-1"></div>
+          <button
+            @click="editor.chain().focus().unsetTextAlign().run()"
+            type="button"
+            class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-gray-200"
+            aria-label="Unset Text Align"
+          >
+            <i-lucide-ban />
+          </button>
+        </div>
+      </Popover>
 
-      <!-- Lists Dropdown -->
-      <Button @click="toggleListMenu" :severity="editor.isActive('bulletList') || editor.isActive('orderedList') ? 'primary' : 'contrast'" text rounded-xl aria-haspopup="true" aria-controls="list_menu" aria-label="Lists" class="h-8 w-8 !p-2"> <i-lucide-list /> </Button>
-      <TieredMenu ref="listMenu" id="list_menu" :model="listItems" popup />
+      <div class="hidden lg:flex border-l h-6 mx-2"></div>
 
-      <div class="border-l h-6 mx-2"></div>
+      <!-- Code, Highlight, Link -->
+      <Button @click="editor.chain().focus().toggleCode().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('code') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Code"> <i-lucide-code-2 /> </Button>
+      <Button @click="toggleHighlightPanel" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('highlight') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Highlight"> <i-lucide-highlighter /> </Button>
+      <Popover ref="highlightPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
+        <div class="flex items-center gap-[2px]">
+          <button
+            v-for="swatch in highlightColors"
+            :key="swatch.color"
+            @click="applyHighlight(swatch.color)"
+            type="button"
+            class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-gray-200"
+            :class="{ 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700': editor.isActive('highlight', { color: swatch.color }) }"
+            :aria-label="swatch.name"
+          >
+            <span class="w-5 h-5 rounded-full" :style="{ color: swatch.color, backgroundColor: swatch.color, border: '1px solid ' + adjustBrightness(swatch.color, 0.90) }"></span>
+          </button>
+          <div class="border-l h-5 mx-1"></div>
+          <button
+            @click="applyHighlight(null)"
+            type="button"
+            class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-gray-200"
+            aria-label="Remove Highlight"
+          >
+            <i-lucide-ban />
+          </button>
+        </div>
+      </Popover>
+      <Button @click="setLink" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('link') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Link"> <i-lucide-link /> </Button>
 
-      <!-- Alignment -->
-      <Button @click="editor.chain().focus().setTextAlign('left').run()" :severity="editor.isActive({ textAlign: 'left' }) ? 'primary' : 'contrast'" text rounded-xl aria-label="Align Left" class="h-8 w-8 !p-2"> <i-lucide-align-left /> </Button>
-      <Button @click="editor.chain().focus().setTextAlign('center').run()" :severity="editor.isActive({ textAlign: 'center' }) ? 'primary' : 'contrast'" text rounded-xl aria-label="Align Center" class="h-8 w-8 !p-2"> <i-lucide-align-center /> </Button>
-      <Button @click="editor.chain().focus().setTextAlign('right').run()" :severity="editor.isActive({ textAlign: 'right' }) ? 'primary' : 'contrast'" text rounded-xl aria-label="Align Right" class="h-8 w-8 !p-2"> <i-lucide-align-right /> </Button>
-      <Button @click="editor.chain().focus().setTextAlign('justify').run()" :severity="editor.isActive({ textAlign: 'justify' }) ? 'primary' : 'contrast'" text rounded-xl aria-label="Align Justify" class="h-8 w-8 !p-2"> <i-lucide-align-justify /> </Button>
+      <div class="hidden lg:flex border-l h-6 mx-2"></div>
 
-      <div class="border-l h-6 mx-2"></div>
+      <!-- Table -->
+      <Button @click="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('table') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'"  title="Insert Table"> <i-lucide-grid /> </Button>
+      <template v-if="editor.isActive('table')">
+        <Button @click="toggleRowPanel" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Row"> <i-lucide-table-rows-split /> </Button>
+        <Popover ref="rowPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
+          <div class="flex items-center gap-[2px]">
+            <Button @click="editor.chain().focus().addRowBefore().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Add Row Before"> <i-lucide-arrow-up-from-line /> </Button>
+            <Button @click="editor.chain().focus().addRowAfter().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Add Row After"> <i-lucide-arrow-down-from-line /> </Button>
+            <Button @click="editor.chain().focus().deleteRow().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-red-500 hover:bg-red-100" title="Delete Row"> <i-lucide-trash-2 /> </Button>
+          </div>
+        </Popover>
+        <Button @click="toggleColumnPanel" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Row"> <i-lucide-table-columns-split /> </Button>
+        <Popover ref="columnPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
+          <div class="flex items-center gap-[2px]">
+            <Button @click="editor.chain().focus().addColumnBefore().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Add Column Before"> <i-lucide-arrow-left-from-line /> </Button>
+            <Button @click="editor.chain().focus().addColumnAfter().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Add Column After"> <i-lucide-arrow-right-from-line /> </Button>
+            <Button @click="editor.chain().focus().deleteColumn().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-red-500 hover:bg-red-100" title="Delete Column"> <i-lucide-trash-2 /> </Button>
+          </div>
+        </Popover>
+        <Button @click="editor.chain().focus().deleteTable().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center text-red-500 hover:bg-red-100" title="Delete Table"> <i-lucide-trash-2 /> </Button>
+      </template>
 
-      <!-- Advanced Formatting -->
-      <Button @click="setLink" :severity="editor.isActive('link') ? 'primary' : 'contrast'" text rounded-xl aria-label="Link" class="h-8 w-8 !p-2"> <i-lucide-link /> </Button>
-      <Button @click="editor.chain().focus().toggleHighlight().run()" :severity="editor.isActive('highlight') ? 'primary' : 'contrast'" text rounded-xl aria-label="Highlight" class="h-8 w-8 !p-2"> <i-lucide-highlighter /> </Button>
-      <div class="inline-flex items-center p-1 rounded-md hover:bg-gray-200">
+      <div class="hidden lg:flex border-l h-6 mx-2"></div>
+
+      <!-- Font Color -->
+      <div class="inline-flex items-center p-1 rounded-xl hover:bg-gray-200">
         <input type="color" @input="editor.chain().focus().setColor($event.target.value).run()" :value="editor.getAttributes('textStyle').color || '#000000'" class="w-6 h-6 border-none bg-transparent cursor-pointer" aria-label="Text Color">
       </div>
 
-      <div class="border-l h-6 mx-2"></div>
-
-      <!-- Block Elements -->
-      <Button @click="editor.chain().focus().toggleBlockquote().run()" :severity="editor.isActive('blockquote') ? 'primary' : 'contrast'" text rounded-xl aria-label="Blockquote" class="h-8 w-8 !p-2"> <i-lucide-quote /> </Button>
-      <Button @click="editor.chain().focus().toggleCodeBlock().run()" :severity="editor.isActive('codeBlock') ? 'primary' : 'contrast'" text rounded-xl aria-label="Code Block" class="h-8 w-8 !p-2"> <i-lucide-code /> </Button>
-      <Button @click="editor.chain().focus().setHorizontalRule().run()" severity="contrast" text rounded-xl aria-label="Horizontal Rule" class="h-8 w-8 !p-2"> <i-lucide-minus /> </Button>
+      <!-- Horizontal Line -->
+      <Button @click="editor.chain().focus().setHorizontalRule().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200"> <i-lucide-minus /> </Button>
     </div>
 
     <!-- Editor Content -->
     <EditorContent :editor="editor" />
+
+    <!-- Character Count -->
+    <div class="p-2 border-t border-gray-300 text-xs text-gray-500 flex justify-end gap-4">
+      <span>
+        {{ editor.storage.characterCount.characters() }} karakter
+      </span>
+      <span>
+        {{ editor.storage.characterCount.words() }} kata
+      </span>
+    </div>
   </div>
 </template>
+
+<style>
+.icon-bold path {
+  stroke-width: 3 !important;
+}
+/* .p-tieredmenu-item.p-focus > .p-tieredmenu-item-content {
+  background: transparent !important;
+} */
+</style>
