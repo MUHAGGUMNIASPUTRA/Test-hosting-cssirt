@@ -1,0 +1,6 @@
+/bootstrap/
+/public/
+/storage/
+/vendor/
+node_modules
+package-lock.json

@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Incident extends Model
+{
+  use HasFactory;
+
+  /**
+   * The attributes that are mass assignable.
+   *
+   * @var array
+   */
+  protected $fillable = [
+    'case_id',
+    'reporter_name',
+    'reporter_email',
+    'reporter_phone',
+    'incident_type_id',
+    'description',
+    'attachment',
+    'incident_at',
+    'status',
+    'priority',
+    'assigned_to',
+    'reported_at',
+    'resolved_at',
+  ];
+
+  /**
+   * The attributes that should be cast.
+   *
+   * @var array
+   */
+  protected $casts = [
+    'incident_at' => 'datetime',
+    'reported_at' => 'datetime',
+    'resolved_at' => 'datetime',
+  ];
+
+  /**
+   * Get the type of the incident.
+   */
+  public function incidentType(): BelongsTo
+  {
+    return $this->belongsTo(IncidentType::class);
+  }
+
+  /**
+   * Get the user assigned to the incident.
+   */
+  public function assignedUser(): BelongsTo
+  {
+    return $this->belongsTo(User::class, 'assigned_to');
+  }
+}

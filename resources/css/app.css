@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import './styles/_variables.scss';
+@import './styles/_keyframe-animations.scss';
+
+
+/* Prose Styling */
+/* .ProseMirror {
+  min-height: 300px;
+}
+.ProseMirror:focus {
+  outline: none;
+} */
+
+/* Prose styling inside the editor */
+.prose p,
+.ProseMirror p {
+  margin-top: .0em;
+  margin-bottom: .0em;
+}
+.prose hr,
+.ProseMirror hr {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
