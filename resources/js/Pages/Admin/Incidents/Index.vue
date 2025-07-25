@@ -1,34 +1,49 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
+import { useConfirm } from "primevue/useconfirm";
+import { useToast } from "primevue/usetoast";
 
 defineProps({
   incidents: Object,
 });
 
+const confirm = useConfirm();
+const toast = useToast();
+
+const deleteIncident = (incident) => {
+  confirm.require({
+    message: `Apakah Anda yakin ingin menghapus insiden "${incident.case_id}"?`,
+    header: 'Konfirmasi Penghapusan',
+    icon: 'pi pi-info-circle',
+    acceptClass: 'p-button-danger',
+    acceptLabel: 'Ya, Hapus',
+    rejectLabel: 'Batal',
+    accept: () => {
+      router.delete(route('admin.incidents.destroy', incident.id), {
+        onSuccess: () => {
+          toast.add({ severity: 'success', summary: 'Berhasil', detail: 'Insiden berhasil dihapus', life: 3000 });
+        }
+      });
+    }
+  });
+};
+
 const getStatusSeverity = (status) => {
-  const map = {
-    'Baru': 'info',
-    'Diverifikasi': 'info',
-    'Dalam Penyelidikan': 'warning',
-    'Selesai': 'success',
-    'Ditutup': 'secondary',
-  };
+  const map = { 'Baru': 'info', 'Diverifikasi': 'info', 'Dalam Penyelidikan': 'warning', 'Selesai': 'success', 'Ditutup': 'secondary' };
   return map[status] || 'info';
 };
 
 const getPrioritySeverity = (priority) => {
-  const map = {
-    'Rendah': 'success',
-    'Sedang': 'info',
-    'Tinggi': 'warning',
-    'Kritis': 'danger',
-  };
+  const map = { 'Rendah': 'success', 'Sedang': 'info', 'Tinggi': 'warning', 'Kritis': 'danger' };
   return map[priority] || 'info';
 };
 </script>
 
 <template>
   <AdminLayout title="Daftar Laporan Insiden">
+    <ConfirmDialog></ConfirmDialog>
+    <Toast />
+
     <div class="bg-white p-6 rounded-lg shadow">
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-700">Daftar Laporan Insiden</h1>
@@ -60,12 +75,16 @@ const getPrioritySeverity = (priority) => {
             {{ new Date(slotProps.data.reported_at).toLocaleString('id-ID') }}
           </template>
         </Column>
-        <Column header="Aksi" style="width: 10%">
+        <Column header="Aksi" style="width: 15%">
           <template #body="slotProps">
             <div class="flex gap-2">
               <Link :href="route('admin.incidents.show', slotProps.data.id)">
                 <Button icon="pi pi-eye" severity="secondary" text rounded tooltip="Lihat Detail" />
               </Link>
+              <Link :href="route('admin.incidents.edit', slotProps.data.id)">
+                <Button icon="pi pi-pencil" severity="info" text rounded tooltip="Edit" />
+              </Link>
+              <Button @click="deleteIncident(slotProps.data)" icon="pi pi-trash" severity="danger" text rounded tooltip="Hapus" />
             </div>
           </template>
         </Column>

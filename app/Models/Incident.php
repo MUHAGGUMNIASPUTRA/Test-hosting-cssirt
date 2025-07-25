@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Incident extends Model
 {
@@ -56,5 +57,15 @@ class Incident extends Model
   public function assignedUser(): BelongsTo
   {
     return $this->belongsTo(User::class, 'assigned_to');
+  }
+
+  /**
+   * Get the logs for the incident.
+   * * @return \Illuminate\Database\Eloquent\Relations\HasMany
+   */
+  public function incidentLogs(): HasMany
+  {
+    // An incident has many logs. Order by the latest first.
+    return $this->hasMany(IncidentLog::class)->latest();
   }
 }

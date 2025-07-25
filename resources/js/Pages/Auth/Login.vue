@@ -77,7 +77,7 @@ const submit = () => {
 
         <div class="flex items-center justify-between">
           <div class="flex items-center">
-            <Checkbox id="remember" v-model="form.remember" :binary="true" />
+            <Checkbox id="remember" v-model="form.remember" :binary="true" :checked="form.remember" />
             <label for="remember" class="ml-2 block text-sm text-gray-900">
               Ingat saya
             </label>

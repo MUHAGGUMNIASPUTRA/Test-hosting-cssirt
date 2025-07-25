@@ -67,7 +67,7 @@ const sidebarItems = ref([
   {
     label: 'Pengguna',
     icon: 'pi pi-users',
-    route: '#',
+    route: 'admin.users.index',
     visible: () => page.props.auth.user.role === 'admin'
   },
 ])
