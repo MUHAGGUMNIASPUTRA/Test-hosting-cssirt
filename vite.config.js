@@ -5,6 +5,9 @@ import vue from '@vitejs/plugin-vue';
 import Components from 'unplugin-vue-components/vite';
 import { PrimeVueResolver } from '@primevue/auto-import-resolver';
 
+import Icons from 'unplugin-icons/vite';
+import IconsResolver from 'unplugin-icons/resolver';
+
 export default defineConfig({
   plugins: [
     laravel({
@@ -25,11 +28,17 @@ export default defineConfig({
 
       // This part is for PrimeVue auto-import (already exists)
       resolvers: [
-        PrimeVueResolver()
+        PrimeVueResolver(),
+        IconsResolver({
+          prefix: 'i',
+        }),
       ],
 
       // This makes it work with Inertia's <Link> component
       directives: false,
-    })
+    }),
+    Icons({
+      autoInstall: true,
+    }),
   ],
 });

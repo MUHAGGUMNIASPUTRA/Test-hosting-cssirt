@@ -1,24 +1,20 @@
 <script setup>
 import { useEditor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
-import { watch } from 'vue';
+import { ref, watch } from 'vue';
 
-// Import new extensions
+// Import extensions
 import TextAlign from '@tiptap/extension-text-align';
 import Highlight from '@tiptap/extension-highlight';
 import { TextStyle } from '@tiptap/extension-text-style';
 import { Color } from '@tiptap/extension-color';
 
-// Import the icons you need from Lucide
-import {
-  Bold, Italic, Strikethrough, Underline,
-  Heading1, Heading2, Heading3,
-  List, ListOrdered,
-  Quote, Code, Minus,
-  Undo, Redo,
-  AlignLeft, AlignCenter, AlignRight, AlignJustify,
-  Link as LinkIcon, Highlighter, Palette
-} from 'lucide-vue-next';
+// Import PrimeVue components
+import Button from 'primevue/button';
+import TieredMenu from 'primevue/tieredmenu';
+
+// Import Lucide icons
+// (Auto-imported by unplugin-icons)
 
 const props = defineProps({
   modelValue: {
@@ -32,14 +28,8 @@ const emit = defineEmits(['update:modelValue']);
 const editor = useEditor({
   content: props.modelValue,
   extensions: [
-    StarterKit.configure({
-      link: {
-        openOnClick: false,
-      },
-    }),
-    TextAlign.configure({
-      types: ['heading', 'paragraph'],
-    }),
+    StarterKit.configure({ link: { openOnClick: false } }),
+    TextAlign.configure({ types: ['heading', 'paragraph'] }),
     Highlight,
     TextStyle,
     Color,
@@ -49,7 +39,7 @@ const editor = useEditor({
   },
   editorProps: {
     attributes: {
-      class: 'prose max-w-none focus:outline-none p-4 border border-gray-300 rounded-b-md min-h-[300px]',
+      class: 'prose max-w-none focus:outline-none p-4 rounded-b-md min-h-[300px]',
     },
   },
 });
@@ -62,80 +52,88 @@ watch(() => props.modelValue, (newValue) => {
   editor.value.commands.setContent(newValue, false);
 });
 
+// --- Dropdown Menu Logic ---
+const headingMenu = ref();
+const listMenu = ref();
+
+const headingItems = ref([
+  { label: 'Heading 1', icon: 'i-lucide-heading-1', command: () => editor.value.chain().focus().toggleHeading({ level: 1 }).run() },
+  { label: 'Heading 2', icon: 'i-lucide-heading-2', command: () => editor.value.chain().focus().toggleHeading({ level: 2 }).run() },
+  { label: 'Heading 3', icon: 'i-lucide-heading-3', command: () => editor.value.chain().focus().toggleHeading({ level: 3 }).run() },
+]);
+
+const listItems = ref([
+  { label: 'Bullet List', icon: 'i-lucide-list', command: () => editor.value.chain().focus().toggleBulletList().run() },
+  { label: 'Numbered List', icon: 'i-lucide-list-ordered', command: () => editor.value.chain().focus().toggleOrderedList().run() },
+]);
+
+const toggleHeadingMenu = (event) => headingMenu.value.toggle(event);
+const toggleListMenu = (event) => listMenu.value.toggle(event);
+
 const setLink = () => {
   const previousUrl = editor.value.getAttributes('link').href;
   const url = window.prompt('URL', previousUrl);
-
-  if (url === null) {
-    return;
-  }
-
+  if (url === null) return;
   if (url === '') {
     editor.value.chain().focus().extendMarkRange('link').unsetLink().run();
     return;
   }
-
   editor.value.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
 };
-
 </script>
 
 <template>
   <div v-if="editor" class="border border-gray-300 rounded-md">
     <!-- Toolbar -->
-    <div class="p-2 bg-gray-100 border-b border-gray-300 rounded-t-md flex flex-wrap items-center gap-1">
+    <div class="p-2 bg-gray-100 border-b border-gray-300 rounded-t-md flex flex-wrap items-center">
       <!-- Undo/Redo -->
-      <Button @click="editor.chain().focus().undo().run()" text rounded aria-label="Undo"> <Undo :size="18" /> </Button>
-      <Button @click="editor.chain().focus().redo().run()" text rounded aria-label="Redo"> <Redo :size="18" /> </Button>
+      <Button @click="editor.chain().focus().undo().run()" :disabled="!editor.can().undo()" :severity="editor.can().undo() ? 'primary' : 'contrast'" text rounded-xl aria-label="Undo" class="h-8 w-8 !p-2"> <i-lucide-undo-2 /> </Button>
+      <Button @click="editor.chain().focus().redo().run()" :disabled="!editor.can().redo()" :severity="editor.can().redo() ? 'primary' : 'contrast'" text rounded-xl aria-label="Redo" class="h-8 w-8 !p-2"> <i-lucide-redo-2 /> </Button>
 
       <div class="border-l h-6 mx-2"></div>
 
       <!-- Basic Formatting -->
-      <Button @click="editor.chain().focus().toggleBold().run()" :severity="editor.isActive('bold') ? 'secondary' : 'contrast'" text rounded aria-label="Bold"> <Bold :size="18" /> </Button>
-      <Button @click="editor.chain().focus().toggleItalic().run()" :severity="editor.isActive('italic') ? 'secondary' : 'contrast'" text rounded aria-label="Italic"> <Italic :size="18" /> </Button>
-      <Button @click="editor.chain().focus().toggleUnderline().run()" :severity="editor.isActive('underline') ? 'secondary' : 'contrast'" text rounded aria-label="Underline"> <Underline :size="18" /> </Button>
-      <Button @click="editor.chain().focus().toggleStrike().run()" :severity="editor.isActive('strike') ? 'secondary' : 'contrast'" text rounded aria-label="Strike"> <Strikethrough :size="18" /> </Button>
+      <Button @click="editor.chain().focus().toggleBold().run()" :severity="editor.isActive('bold') ? 'primary' : 'contrast'" text rounded-xl aria-label="Bold" class="h-8 w-8 !p-2"> <i-lucide-bold /> </Button>
+      <Button @click="editor.chain().focus().toggleItalic().run()" :severity="editor.isActive('italic') ? 'primary' : 'contrast'" text rounded-xl aria-label="Italic" class="h-8 w-8 !p-2"> <i-lucide-italic /> </Button>
+      <Button @click="editor.chain().focus().toggleUnderline().run()" :severity="editor.isActive('underline') ? 'primary' : 'contrast'" text rounded-xl aria-label="Underline" class="h-8 w-8 !p-2"> <i-lucide-underline /> </Button>
+      <Button @click="editor.chain().focus().toggleStrike().run()" :severity="editor.isActive('strike') ? 'primary' : 'contrast'" text rounded-xl aria-label="Strike" class="h-8 w-8 !p-2"> <i-lucide-strikethrough /> </Button>
 
       <div class="border-l h-6 mx-2"></div>
 
-      <!-- Headings -->
-      <Button @click="editor.chain().focus().toggleHeading({ level: 1 }).run()" :severity="editor.isActive('heading', { level: 1 }) ? 'secondary' : 'contrast'" text rounded aria-label="Heading 1"> <Heading1 :size="18" /> </Button>
-      <Button @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" :severity="editor.isActive('heading', { level: 2 }) ? 'secondary' : 'contrast'" text rounded aria-label="Heading 2"> <Heading2 :size="18" /> </Button>
-      <Button @click="editor.chain().focus().toggleHeading({ level: 3 }).run()" :severity="editor.isActive('heading', { level: 3 }) ? 'secondary' : 'contrast'" text rounded aria-label="Heading 3"> <Heading3 :size="18" /> </Button>
+      <!-- Headings Dropdown -->
+      <Button @click="toggleHeadingMenu" :severity="editor.isActive('heading') ? 'primary' : 'contrast'" text rounded-xl aria-haspopup="true" aria-controls="heading_menu" aria-label="Headings" class="h-8 w-8 !p-2"> <i-lucide-heading /> </Button>
+      <TieredMenu ref="headingMenu" id="heading_menu" :model="headingItems" popup />
+
+      <!-- Lists Dropdown -->
+      <Button @click="toggleListMenu" :severity="editor.isActive('bulletList') || editor.isActive('orderedList') ? 'primary' : 'contrast'" text rounded-xl aria-haspopup="true" aria-controls="list_menu" aria-label="Lists" class="h-8 w-8 !p-2"> <i-lucide-list /> </Button>
+      <TieredMenu ref="listMenu" id="list_menu" :model="listItems" popup />
 
       <div class="border-l h-6 mx-2"></div>
 
       <!-- Alignment -->
-      <Button @click="editor.chain().focus().setTextAlign('left').run()" :severity="editor.isActive({ textAlign: 'left' }) ? 'secondary' : 'contrast'" text rounded aria-label="Align Left"> <AlignLeft :size="18" /> </Button>
-      <Button @click="editor.chain().focus().setTextAlign('center').run()" :severity="editor.isActive({ textAlign: 'center' }) ? 'secondary' : 'contrast'" text rounded aria-label="Align Center"> <AlignCenter :size="18" /> </Button>
-      <Button @click="editor.chain().focus().setTextAlign('right').run()" :severity="editor.isActive({ textAlign: 'right' }) ? 'secondary' : 'contrast'" text rounded aria-label="Align Right"> <AlignRight :size="18" /> </Button>
-      <Button @click="editor.chain().focus().setTextAlign('justify').run()" :severity="editor.isActive({ textAlign: 'justify' }) ? 'secondary' : 'contrast'" text rounded aria-label="Align Justify"> <AlignJustify :size="18" /> </Button>
+      <Button @click="editor.chain().focus().setTextAlign('left').run()" :severity="editor.isActive({ textAlign: 'left' }) ? 'primary' : 'contrast'" text rounded-xl aria-label="Align Left" class="h-8 w-8 !p-2"> <i-lucide-align-left /> </Button>
+      <Button @click="editor.chain().focus().setTextAlign('center').run()" :severity="editor.isActive({ textAlign: 'center' }) ? 'primary' : 'contrast'" text rounded-xl aria-label="Align Center" class="h-8 w-8 !p-2"> <i-lucide-align-center /> </Button>
+      <Button @click="editor.chain().focus().setTextAlign('right').run()" :severity="editor.isActive({ textAlign: 'right' }) ? 'primary' : 'contrast'" text rounded-xl aria-label="Align Right" class="h-8 w-8 !p-2"> <i-lucide-align-right /> </Button>
+      <Button @click="editor.chain().focus().setTextAlign('justify').run()" :severity="editor.isActive({ textAlign: 'justify' }) ? 'primary' : 'contrast'" text rounded-xl aria-label="Align Justify" class="h-8 w-8 !p-2"> <i-lucide-align-justify /> </Button>
 
       <div class="border-l h-6 mx-2"></div>
 
       <!-- Advanced Formatting -->
-      <Button @click="setLink" :severity="editor.isActive('link') ? 'secondary' : 'contrast'" text rounded aria-label="Link"> <LinkIcon :size="18" /> </Button>
-      <Button @click="editor.chain().focus().toggleHighlight().run()" :severity="editor.isActive('highlight') ? 'secondary' : 'contrast'" text rounded aria-label="Highlight"> <Highlighter :size="18" /> </Button>
-      <div class="inline-flex items-center">
-        <input type="color" @input="editor.chain().focus().setColor($event.target.value).run()" :value="editor.getAttributes('textStyle').color || '#000000'" class="w-6 h-6 border-none bg-transparent cursor-pointer">
+      <Button @click="setLink" :severity="editor.isActive('link') ? 'primary' : 'contrast'" text rounded-xl aria-label="Link" class="h-8 w-8 !p-2"> <i-lucide-link /> </Button>
+      <Button @click="editor.chain().focus().toggleHighlight().run()" :severity="editor.isActive('highlight') ? 'primary' : 'contrast'" text rounded-xl aria-label="Highlight" class="h-8 w-8 !p-2"> <i-lucide-highlighter /> </Button>
+      <div class="inline-flex items-center p-1 rounded-md hover:bg-gray-200">
+        <input type="color" @input="editor.chain().focus().setColor($event.target.value).run()" :value="editor.getAttributes('textStyle').color || '#000000'" class="w-6 h-6 border-none bg-transparent cursor-pointer" aria-label="Text Color">
       </div>
 
       <div class="border-l h-6 mx-2"></div>
 
-      <!-- Lists -->
-      <Button @click="editor.chain().focus().toggleBulletList().run()" :severity="editor.isActive('bulletList') ? 'secondary' : 'contrast'" text rounded aria-label="Bullet List"> <List :size="18" /> </Button>
-      <Button @click="editor.chain().focus().toggleOrderedList().run()" :severity="editor.isActive('orderedList') ? 'secondary' : 'contrast'" text rounded aria-label="Ordered List"> <ListOrdered :size="18" /> </Button>
-
-      <div class="border-l h-6 mx-2"></div>
-
       <!-- Block Elements -->
-      <Button @click="editor.chain().focus().toggleBlockquote().run()" :severity="editor.isActive('blockquote') ? 'secondary' : 'contrast'" text rounded aria-label="Blockquote"> <Quote :size="18" /> </Button>
-      <Button @click="editor.chain().focus().toggleCodeBlock().run()" :severity="editor.isActive('codeBlock') ? 'secondary' : 'contrast'" text rounded aria-label="Code Block"> <Code :size="18" /> </Button>
-      <Button @click="editor.chain().focus().setHorizontalRule().run()" text rounded aria-label="Horizontal Rule"> <Minus :size="18" /> </Button>
+      <Button @click="editor.chain().focus().toggleBlockquote().run()" :severity="editor.isActive('blockquote') ? 'primary' : 'contrast'" text rounded-xl aria-label="Blockquote" class="h-8 w-8 !p-2"> <i-lucide-quote /> </Button>
+      <Button @click="editor.chain().focus().toggleCodeBlock().run()" :severity="editor.isActive('codeBlock') ? 'primary' : 'contrast'" text rounded-xl aria-label="Code Block" class="h-8 w-8 !p-2"> <i-lucide-code /> </Button>
+      <Button @click="editor.chain().focus().setHorizontalRule().run()" severity="contrast" text rounded-xl aria-label="Horizontal Rule" class="h-8 w-8 !p-2"> <i-lucide-minus /> </Button>
     </div>
 
     <!-- Editor Content -->
     <EditorContent :editor="editor" />
   </div>
 </template>
-
