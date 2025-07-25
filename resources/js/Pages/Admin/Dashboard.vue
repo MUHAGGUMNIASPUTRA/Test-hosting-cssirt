@@ -1,5 +1,4 @@
 <script setup>
-import AdminLayout from '@/Layouts/Admin/AdminLayout.vue'
 
 defineProps({
   // You can pass summary data here later

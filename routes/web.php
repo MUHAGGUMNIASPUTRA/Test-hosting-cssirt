@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\IncidentController as AdminIncidentController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
+use App\Http\Controllers\Admin\TaxonomyController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
@@ -24,7 +26,17 @@ Route::post('/insiden', [IncidentController::class, 'store'])->name('incident.st
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
   Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+  Route::resource('incidents', AdminIncidentController::class)->except(['edit', 'update', 'destroy']);
   Route::resource('posts', AdminPostController::class)->except(['show']);
+
+  // Routes for Taxonomy (Categories & Tags)
+  Route::get('/taxonomy', [TaxonomyController::class, 'index'])->name('taxonomy.index');
+  Route::post('/categories', [TaxonomyController::class, 'storeCategory'])->name('categories.store');
+  Route::put('/categories/{category}', [TaxonomyController::class, 'updateCategory'])->name('categories.update');
+  Route::delete('/categories/{category}', [TaxonomyController::class, 'destroyCategory'])->name('categories.destroy');
+  Route::post('/tags', [TaxonomyController::class, 'storeTag'])->name('tags.store');
+  Route::put('/tags/{tag}', [TaxonomyController::class, 'updateTag'])->name('tags.update');
+  Route::delete('/tags/{tag}', [TaxonomyController::class, 'destroyTag'])->name('tags.destroy');
 });
 
 Route::middleware('auth')->group(function () {

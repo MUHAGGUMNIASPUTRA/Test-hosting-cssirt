@@ -1,15 +1,13 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue'
 import { Link } from '@inertiajs/vue3'
 
-// The 'posts' prop is a paginator object from Laravel
 defineProps({
   posts: Object,
 })
 </script>
 
 <template>
-  <AppLayout title="Berita & Panduan">
+  <AppLayout title="Artikel & Panduan">
     <div class="bg-gray-50 px-4 pb-20 pt-16 sm:px-6 lg:px-8 lg:pb-28 lg:pt-24">
       <div
         class="relative mx-auto max-w-lg divide-y-2 divide-gray-200 lg:max-w-7xl"
@@ -18,7 +16,7 @@ defineProps({
           <h2
             class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl"
           >
-            Berita & Panduan
+            Artikel & Panduan
           </h2>
           <p class="mt-3 text-xl text-gray-500 sm:mt-4">
             Ikuti informasi, panduan, dan berita terkini seputar keamanan siber

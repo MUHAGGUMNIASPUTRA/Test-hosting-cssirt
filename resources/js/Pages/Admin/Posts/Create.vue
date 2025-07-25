@@ -1,15 +1,6 @@
 <script setup>
-import AdminLayout from '@/Layouts/Admin/AdminLayout.vue';
-import RichTextEditor from '@/Components/RichTextEditor.vue';
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import InputText from 'primevue/inputtext';
-import Textarea from 'primevue/textarea';
-import FileUpload from 'primevue/fileupload';
-import MultiSelect from 'primevue/multiselect';
-import SelectButton from 'primevue/selectbutton';
-import Button from 'primevue/button';
-import Message from 'primevue/message';
 
 const props = defineProps({
   categories: Array,

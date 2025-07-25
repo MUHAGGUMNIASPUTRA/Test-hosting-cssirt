@@ -1,6 +1,9 @@
-import { defineConfig } from 'vite'
-import laravel from 'laravel-vite-plugin'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import vue from '@vitejs/plugin-vue';
+
+import Components from 'unplugin-vue-components/vite';
+import { PrimeVueResolver } from '@primevue/auto-import-resolver';
 
 export default defineConfig({
   plugins: [
@@ -16,5 +19,17 @@ export default defineConfig({
         },
       },
     }),
+    Components({
+      // Tell the plugin where to scan for components
+      dirs: ['resources/js/Components', 'resources/js/Layouts'],
+
+      // This part is for PrimeVue auto-import (already exists)
+      resolvers: [
+        PrimeVueResolver()
+      ],
+
+      // This makes it work with Inertia's <Link> component
+      directives: false,
+    })
   ],
-})
+});

@@ -1,7 +1,5 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue'
-import { Head, Link } from '@inertiajs/vue3'
-import PostImage from '@/Components/PostImage.vue'
+import { Link } from '@inertiajs/vue3'
 
 defineProps({
   post: Object,

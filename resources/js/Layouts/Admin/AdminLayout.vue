@@ -1,9 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { Head, Link, usePage } from '@inertiajs/vue3';
-import Button from 'primevue/button';
-import Menu from 'primevue/menu';
-import LoadingPage from '@/Components/LoadingPage.vue'
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 
 // Define props if you need to pass a title from the page
 defineProps({
@@ -37,12 +34,12 @@ const sidebarItems = ref([
       {
         label: 'Daftar Insiden',
         icon: 'pi pi-fw pi-list',
-        route: '#'
+        route: 'admin.incidents.index'
       },
       {
         label: 'Lapor Insiden Baru',
         icon: 'pi pi-fw pi-plus',
-        route: '#'
+        route: 'admin.incidents.create'
       },
     ],
   },
@@ -63,7 +60,7 @@ const sidebarItems = ref([
       {
         label: 'Kategori & Tag',
         icon: 'pi pi-fw pi-tags',
-        route: '#'
+        route: 'admin.taxonomy.index'
       }
     ],
   },

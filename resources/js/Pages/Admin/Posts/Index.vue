@@ -1,14 +1,6 @@
 <script setup>
-import AdminLayout from '@/Layouts/Admin/AdminLayout.vue';
 import { Link, router } from '@inertiajs/vue3';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import Button from 'primevue/button';
-import Tag from 'primevue/tag';
-import { ref } from 'vue';
 import { useConfirm } from "primevue/useconfirm";
-import ConfirmDialog from 'primevue/confirmdialog';
-import Toast from 'primevue/toast';
 import { useToast } from "primevue/usetoast";
 
 defineProps({
@@ -30,7 +22,7 @@ const deletePost = (post) => {
     accept: () => {
       router.delete(route('admin.posts.destroy', post.id), {
         onSuccess: () => {
-          toast.add({ severity: 'success', summary: 'Berhasil', detail: 'Artikel berhasil dihapus', life: 3000 });
+          toast.add({ severity: 'info', summary: 'Berhasil', detail: 'Artikel berhasil dihapus', life: 3000 });
         }
       });
     }

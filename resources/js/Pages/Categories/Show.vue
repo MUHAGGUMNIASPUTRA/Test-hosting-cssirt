@@ -1,8 +1,6 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue'
 import { Link } from '@inertiajs/vue3'
 
-// The 'category' and 'posts' props are passed from CategoryController
 defineProps({
   category: Object,
   posts: Object,
@@ -85,9 +83,8 @@ defineProps({
           </div>
         </div>
         <!-- Pagination -->
-        <!-- FIXED: Check if posts.links exists before accessing its length -->
         <div
-          v-if="posts.links && posts.links.length > 3"
+          v-if="posts.links?.length > 3"
           class="mt-12 flex justify-center"
         >
           <div class="flex rounded-md shadow-sm">

@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue'
 import { Head, Link } from '@inertiajs/vue3'
-import LoadingPage from '@/Components/LoadingPage.vue'
 
 // The 'title' prop will be passed from individual pages
 defineProps({
@@ -55,7 +54,7 @@ const isMenuOpen = ref(false)
                 <Link
                   :href="route('posts.index')"
                   class="rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900"
-                  >Berita</Link
+                  >Artikel</Link
                 >
                 <Link
                   :href="route('contact.index')"
@@ -100,7 +99,7 @@ const isMenuOpen = ref(false)
             <Link
               :href="route('posts.index')"
               class="block rounded-md px-3 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900"
-              >Berita</Link
+              >Artikel</Link
             >
             <Link
               :href="route('contact.index')"

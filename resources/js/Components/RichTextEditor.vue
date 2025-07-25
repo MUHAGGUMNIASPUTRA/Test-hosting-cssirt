@@ -1,7 +1,6 @@
 <script setup>
 import { useEditor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
-import Button from 'primevue/button';
 import { watch } from 'vue';
 
 // Import new extensions

@@ -1,9 +1,6 @@
 <script setup>
 import { router } from '@inertiajs/vue3'
-import AppLayout from '@/Layouts/AppLayout.vue'
-import Button from 'primevue/button'
 
-// Get data passed from Laravel Controller as props
 const props = defineProps({
   services: Array,
   posts: Array,
@@ -109,7 +106,7 @@ const props = defineProps({
           <p
             class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl"
           >
-            Panduan & Berita Terbaru
+            Artikel & Panduan Terbaru
           </p>
           <p class="mx-auto mt-4 max-w-2xl text-xl text-gray-500">
             Ikuti informasi terkini seputar keamanan siber untuk meningkatkan

@@ -1,5 +1,4 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue'
 
 const contactDetails = [
   {
@@ -70,7 +69,6 @@ const contactDetails = [
           <div>
             <h3 class="text-2xl font-bold text-gray-900">Peta Lokasi</h3>
             <div class="mt-8 h-[20rem] overflow-hidden rounded-lg shadow-lg">
-              <!-- src="https://www.google.com/maps/embed?@-7.1499956,111.8774279,15.97z/data=!4m6!3m5!1s0x2e77810f51999bf5:0x33a31012c7b7bbfb!8m2!3d-7.1501326!4d111.8815399!16s%2Fg%2F11fqggd7lh?entry=ttu&g_ep=EgoyMDI1MDcyMS4wIKXMDSoASAFQAw%3D%3D" -->
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3958.411656819588!2d111.878965!3d-7.1501326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7781a5963f7d6b%3A0x7c0d1b3e8e1f4b0!2sDinas%20Komunikasi%20dan%20Informatika%20Kabupaten%20Bojonegoro!5e0!3m2!1sen!2sid!4v1678886400000"
                 width="100%"

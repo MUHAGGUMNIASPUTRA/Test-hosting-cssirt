@@ -1,9 +1,5 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3'
-import InputText from 'primevue/inputtext'
-import Password from 'primevue/password'
-import Checkbox from 'primevue/checkbox'
-import Button from 'primevue/button'
+import { Head, useForm } from '@inertiajs/vue3'
 
 const form = useForm({
   email: '',

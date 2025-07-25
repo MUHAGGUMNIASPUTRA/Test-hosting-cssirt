@@ -1,13 +1,5 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue'
 import { useForm } from '@inertiajs/vue3'
-import InputText from 'primevue/inputtext'
-import Dropdown from 'primevue/dropdown'
-import Calendar from 'primevue/calendar'
-import Textarea from 'primevue/textarea'
-import FileUpload from 'primevue/fileupload'
-import Button from 'primevue/button'
-import Message from 'primevue/message'
 
 const props = defineProps({
   incidentTypes: Array,
@@ -153,7 +145,7 @@ const submit = () => {
                         >Jenis Insiden</label
                       >
                       <div class="mt-1">
-                        <Dropdown
+                        <Select
                           id="incident_type_id"
                           v-model="form.incident_type_id"
                           :options="props.incidentTypes"
@@ -179,7 +171,7 @@ const submit = () => {
                         >Waktu Kejadian</label
                       >
                       <div class="mt-1">
-                        <Calendar
+                        <DatePicker
                           id="incident_at"
                           v-model="form.incident_at"
                           showTime
