@@ -17,10 +17,10 @@ class CategoryController extends Controller
     return Inertia::render('Categories/Show', [
       'category' => $category,
       'posts' => $category->posts()
-        ->with('categories') // <-- INI PERBAIKANNYA: Eager load the categories relationship
+        ->with('categories')
         ->where('status', 'Published')
         ->latest('published_at')
-        ->paginate(9)
+        ->paginate(6)
         ->withQueryString(),
     ]);
   }

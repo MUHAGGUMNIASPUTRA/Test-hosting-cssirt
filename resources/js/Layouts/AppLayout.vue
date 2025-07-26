@@ -42,7 +42,7 @@ const isMenuOpen = ref(false)
                   >Beranda</Link
                 >
                 <Link
-                  :href="route('profil.show')"
+                  :href="route('profile.show')"
                   class="rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900"
                   >Profil</Link
                 >
@@ -87,7 +87,7 @@ const isMenuOpen = ref(false)
               >Beranda</Link
             >
             <Link
-              :href="route('profil.show')"
+              :href="route('profile.show')"
               class="block rounded-md px-3 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900"
               >Profil</Link
             >

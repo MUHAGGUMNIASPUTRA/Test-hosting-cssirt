@@ -30,7 +30,7 @@ const deletePost = (post) => {
 };
 
 const getStatusSeverity = (status) => {
-  return status === 'Published' ? 'success' : 'warning';
+  return status === 'Published' ? 'success' : 'warn';
 };
 </script>
 

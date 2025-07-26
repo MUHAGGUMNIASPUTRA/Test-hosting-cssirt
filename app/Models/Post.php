@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Post extends Model
 {
@@ -27,6 +28,7 @@ class Post extends Model
     'published_at',
     'published_by',
     'rating',
+    'ratings_count',
   ];
 
   /**
@@ -52,5 +54,14 @@ class Post extends Model
   public function tags(): BelongsToMany
   {
     return $this->belongsToMany(Tag::class);
+  }
+
+  /**
+   * Get the ratings for the blog post.
+   * @return \Illuminate\Database\Eloquent\Relations\HasMany
+   */
+  public function ratings(): HasMany
+  {
+    return $this->hasMany(Rating::class);
   }
 }

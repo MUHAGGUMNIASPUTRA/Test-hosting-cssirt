@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ImageUploadController;
 use App\Http\Controllers\Admin\IncidentController as AdminIncidentController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\TaxonomyController;
@@ -12,18 +13,20 @@ use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', LandingController::class)->name('landing');
-Route::get('/profil', ProfileController::class)->name('profil.show');
-Route::get('/layanan', [ServiceController::class, 'index'])->name('services.index');
-Route::get('/berita', [PostController::class, 'index'])->name('posts.index');
-Route::get('/berita/{post:slug}', [PostController::class, 'show'])->name('posts.show');
-Route::get('/berita/kategori/{category:slug}', [CategoryController::class, 'show'])->name('categories.show');
-Route::get('/kontak', [ContactController::class, 'index'])->name('contact.index');
-Route::get('/insiden', [IncidentController::class, 'create'])->name('incident.create');
-Route::post('/insiden', [IncidentController::class, 'store'])->name('incident.store');
+Route::get('/profile', ProfileController::class)->name('profile.show');
+Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
+Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('posts.show');
+Route::get('/posts/categories/{category:slug}', [CategoryController::class, 'show'])->name('categories.show');
+Route::post('/posts/{post}/ratings', [RatingController::class, 'store'])->name('posts.ratings.store');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::get('/incident', [IncidentController::class, 'create'])->name('incident.create');
+Route::post('/incident', [IncidentController::class, 'store'])->name('incident.store');
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
   Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -31,6 +34,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
   Route::put('/incidents/{incident}/management', [AdminIncidentController::class, 'updateManagement'])->name('incidents.management.update');
   Route::post('/incidents/{incident}/logs', [AdminIncidentController::class, 'addLog'])->name('incidents.logs.store');
   Route::resource('posts', AdminPostController::class)->except(['show']);
+  Route::post('/images/upload', [ImageUploadController::class, 'store'])->name('images.upload');
 
   // Routes for Taxonomy (Categories & Tags)
   Route::get('/taxonomy', [TaxonomyController::class, 'index'])->name('taxonomy.index');

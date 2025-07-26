@@ -64,3 +64,8 @@
   width: 4px;
   cursor: col-resize;
 }
+
+.prose img {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}

@@ -20,6 +20,7 @@ import TableHeader from '@tiptap/extension-table-header';
 import TableCell from '@tiptap/extension-table-cell';
 import { TextStyle } from '@tiptap/extension-text-style';
 import { Color } from '@tiptap/extension-color';
+import ResizableImage from '../tiptap-extensions/ResizableImage';
 
 const props = defineProps({
   modelValue: {
@@ -60,6 +61,7 @@ const editor = useEditor({
     TableCell,
     Color,
     CharacterCount,
+    ResizableImage,
   ],
   onUpdate: () => {
     emit('update:modelValue', editor.value.getHTML());
@@ -157,6 +159,33 @@ function adjustBrightness(hexColor, factor) {
 
   return `#${toHex(newR)}${toHex(newG)}${toHex(newB)}`;
 }
+
+// Image upload
+const fileInput = ref(null);
+
+const triggerFileInput = () => {
+  fileInput.value.click();
+};
+
+const handleImageUpload = (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append('image', file);
+
+  axios.post(route('admin.images.upload'), formData)
+    .then(response => {
+      const url = response.data.url;
+      if (url) {
+        editor.value.chain().focus().setImage({ src: url }).run();
+      }
+    })
+    .catch(error => {
+      console.error('Image upload failed:', error);
+      alert('Gagal mengunggah gambar. Pastikan file adalah gambar dan ukurannya di bawah 2MB.');
+    });
+};
 </script>
 
 <template>
@@ -212,7 +241,7 @@ function adjustBrightness(hexColor, factor) {
       <Button
         @click="toggleTextAlignPanel"
         unstyled
-        class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-300"
+        class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200"
         :class="editor.isActive({ textAlign: 'left' }) || editor.isActive({ textAlign: 'center' }) || editor.isActive({ textAlign: 'right' }) || editor.isActive({ textAlign: 'justify' }) ? 'bg-gray-100 !text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'"
         title="Text Align"
       >
@@ -300,10 +329,18 @@ function adjustBrightness(hexColor, factor) {
 
       <!-- Horizontal Line -->
       <Button @click="editor.chain().focus().setHorizontalRule().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Horizontal Line"> <i-lucide-minus /> </Button>
+
+      <!-- Image -->
+      <Button @click="triggerFileInput" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200']">
+        <i-lucide-image />
+      </Button>
     </div>
 
     <!-- Editor Content -->
     <EditorContent :editor="editor" />
+
+    <!-- Input image -->
+    <input type="file" ref="fileInput" @change="handleImageUpload" class="hidden" accept="image/*" />
 
     <!-- Character Count -->
     <div class="p-2 border-t border-gray-300 text-xs text-gray-500 flex justify-end gap-4">
@@ -321,7 +358,4 @@ function adjustBrightness(hexColor, factor) {
 .icon-bold path {
   stroke-width: 3 !important;
 }
-/* .p-tieredmenu-item.p-focus > .p-tieredmenu-item-content {
-  background: transparent !important;
-} */
 </style>

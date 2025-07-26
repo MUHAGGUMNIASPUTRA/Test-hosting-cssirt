@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,7 +19,7 @@ class PostController extends Controller
       'posts' => Post::with('categories') // Eager load categories
         ->where('status', 'Published')
         ->latest('published_at')
-        ->paginate(9)
+        ->paginate(6)
         ->withQueryString(),
     ]);
   }
@@ -29,12 +30,18 @@ class PostController extends Controller
    * @param  \App\Models\Post  $post
    * @return \Inertia\Response
    */
-  public function show(Post $post): Response
+  public function show(Request $request, Post $post): Response
   {
-    // Increment the views_count
     $post->increment('views_count');
 
-    // Get 4 recent posts, excluding the current one
+    // Check if the current user/guest has already rated this post
+    $hasRated = false;
+    if (auth()->check()) {
+      $hasRated = $post->ratings()->where('user_id', auth()->id())->exists();
+    } else {
+      $hasRated = $post->ratings()->where('ip_address', $request->ip())->exists();
+    }
+
     $recentPosts = Post::where('status', 'Published')
       ->where('id', '!=', $post->id)
       ->latest('published_at')
@@ -44,6 +51,7 @@ class PostController extends Controller
     return Inertia::render('Posts/Show', [
       'post' => $post->load(['categories', 'tags']),
       'recentPosts' => $recentPosts,
+      'hasRated' => $hasRated,
     ]);
   }
 }
