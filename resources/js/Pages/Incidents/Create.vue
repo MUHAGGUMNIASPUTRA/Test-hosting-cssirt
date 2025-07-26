@@ -1,13 +1,10 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
-import { useToast } from "primevue/usetoast";
 
 const props = defineProps({
   incidentTypes: Array,
 });
-
-const toast = useToast();
 
 // Animation refs
 const heroRef = ref(null);
@@ -38,33 +35,20 @@ const handleFileSelect = (event) => {
 };
 
 const clearAttachment = () => {
-    if (uploader.value) {
-        uploader.value.clear();
-    }
-    form.attachment = null;
-    attachmentPreview.value = null;
+  if (uploader.value) {
+    uploader.value.clear();
+  }
+  form.attachment = null;
+  attachmentPreview.value = null;
 };
 
 const submit = () => {
   form.post(route('incident.store'), {
     onSuccess: () => {
-        toast.add({
-          severity: 'success',
-          summary: 'Berhasil',
-          detail: 'Laporan Anda telah berhasil dikirim. Terima kasih atas partisipasi Anda dalam menjaga keamanan siber.',
-          life: 5000
-        });
-        form.reset();
-        clearAttachment();
+      form.reset();
+      clearAttachment();
     },
-    onError: () => {
-        toast.add({
-          severity: 'error',
-          summary: 'Gagal',
-          detail: 'Terjadi kesalahan saat mengirim laporan. Silakan coba lagi.',
-          life: 5000
-        });
-    }
+    onError: () => {}
   });
 };
 

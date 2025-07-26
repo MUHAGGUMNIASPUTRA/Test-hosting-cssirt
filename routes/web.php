@@ -28,6 +28,7 @@ Route::post('/posts/{post}/ratings', [RatingController::class, 'store'])->name('
 Route::get('/faq', [FaqController::class, 'index'])->name('faq.index');
 Route::get('/faq/search', [FaqController::class, 'search'])->name('faq.search');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/incident', [IncidentController::class, 'create'])->name('incident.create');
 Route::post('/incident', [IncidentController::class, 'store'])->name('incident.store');
 

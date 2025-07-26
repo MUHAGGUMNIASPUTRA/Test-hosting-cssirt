@@ -1,21 +1,25 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { Head, Link, usePage } from '@inertiajs/vue3'
+import { ref, onMounted, nextTick, computed, watch } from 'vue';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { useToast } from "primevue/usetoast";
 
 // The 'title' prop will be passed from individual pages
 defineProps({
   title: String,
-})
+});
 
 // State for mobile menu and scroll
-const isMenuOpen = ref(false)
-const isScrolled = ref(false)
-const page = usePage()
+const isMenuOpen = ref(false);
+const isScrolled = ref(false);
+const page = usePage();
+
+// Toast notification setup
+const toast = useToast();
 
 // Check if current page is landing/homepage
 const isLandingPage = computed(() => {
   return page.url === '/' || page.url === ''
-})
+});
 
 // Handle scroll for navbar styling
 onMounted(() => {
@@ -29,7 +33,7 @@ onMounted(() => {
   return () => {
     window.removeEventListener('scroll', handleScroll)
   }
-})
+});
 
 // Dynamic navbar classes based on page and scroll state
 const navbarClasses = computed(() => {
@@ -37,7 +41,7 @@ const navbarClasses = computed(() => {
     return 'bg-transparent'
   }
   return 'bg-white/95 backdrop-blur-md shadow-lg border-b border-slate-200/50'
-})
+});
 
 // Dynamic text colors for navbar
 const navTextClasses = computed(() => {
@@ -57,13 +61,59 @@ const navTextClasses = computed(() => {
     mobile: 'text-slate-700 hover:bg-slate-100',
     reportBtn: 'bg-red-600 hover:bg-red-700 text-white border-red-600 hover:border-red-700'
   }
-})
+});
+
+watch(
+  () => page.props.flash,
+  (flash) => {
+    if (flash?.success) {
+      nextTick(() => {
+        toast.add({
+          severity: "success",
+          summary: flash.success?.title || "Berhasil",
+          detail: flash.success?.message || "Operasi berhasil.",
+          life: 4000,
+        });
+      });
+    } else if (flash?.info) {
+      nextTick(() => {
+        toast.add({
+          severity: "info",
+          summary: flash.info?.title || "Informasi",
+          detail: flash.info?.message || "Informasi penting.",
+          life: 4000,
+        });
+      });
+    } else if (flash?.warning) {
+      nextTick(() => {
+        toast.add({
+          severity: "warning",
+          summary: flash.warning?.title || "Peringatan",
+          detail: flash.warning?.message || "Perhatian diperlukan.",
+          life: 4000,
+        });
+      });
+    } else if (flash?.error) {
+      nextTick(() => {
+        toast.add({
+          severity: "error",
+          summary: flash.error?.title || "Kesalahan",
+          detail: flash.error?.message || "Terjadi kesalahan.",
+          life: 4000,
+        });
+      });
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
   <div>
     <Head :title="title" />
+
     <loading-page />
+    <Toast />
 
     <div class="bg-white text-slate-800 antialiased">
       <!-- Modern Navbar -->

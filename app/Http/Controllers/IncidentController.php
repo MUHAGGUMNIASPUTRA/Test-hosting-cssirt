@@ -54,6 +54,9 @@ class IncidentController extends Controller
       'reported_at' => now(),
     ]);
 
-    return redirect()->route('incident.create')->with('success', 'Laporan Anda telah berhasil dikirim. Terima kasih.');
+    return back()->with('success', [
+      'title' => 'Laporan Berhasil',
+      'message' => 'Laporan insiden Anda telah berhasil dikirim. Terima kasih atas partisipasi Anda.',
+    ]);
   }
 }

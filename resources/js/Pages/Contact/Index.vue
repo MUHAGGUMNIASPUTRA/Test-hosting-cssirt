@@ -1,5 +1,6 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import { useForm, usePage } from '@inertiajs/vue3'
 
 // Animation refs
 const heroRef = ref(null)
@@ -51,8 +52,8 @@ const workingHours = [
   { day: 'Hotline Darurat', hours: '24/7' }
 ]
 
-// Form data
-const form = ref({
+// Form data using Inertia useForm
+const form = useForm({
   name: '',
   email: '',
   subject: '',
@@ -62,8 +63,15 @@ const form = ref({
 
 // Form submission
 const submitForm = () => {
-  // Handle form submission
-  console.log('Form submitted:', form.value)
+  form.post(route('contact.store'), {
+    onSuccess: (page) => {
+      // Reset form
+      form.reset()
+    },
+    onError: (errors) => {
+      // Handle error messages
+    }
+  })
 }
 
 // Scroll animations
@@ -81,6 +89,7 @@ onMounted(() => {
     })
   }, observerOptions)
 
+  if (heroRef.value) observer.observe(heroRef.value)
   if (contactRef.value) observer.observe(contactRef.value)
   if (formRef.value) observer.observe(formRef.value)
 })
@@ -89,7 +98,7 @@ onMounted(() => {
 <template>
   <AppLayout title="Hubungi Kami">
     <!-- Hero Section -->
-    <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+    <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 opacity-0 translate-y-10">
       <!-- Background Pattern -->
       <div class="absolute inset-0 opacity-10">
         <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
@@ -98,8 +107,11 @@ onMounted(() => {
       <div class="relative z-10 px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
         <div class="container mx-auto text-center">
           <div class="animate-fade-in-up">
-            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
-              Hubungi <span class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">CSIRT</span>
+            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl leading-tight">
+              <span class="block">Hubungi</span>
+              <span class="block bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent pb-2">
+                CSIRT
+              </span>
             </h1>
             <p class="mx-auto mt-6 max-w-3xl text-lg text-slate-300 sm:text-xl">
               Tim CSIRT Bojonegoro siap membantu Anda 24/7. Laporkan insiden keamanan siber
@@ -266,12 +278,16 @@ onMounted(() => {
                   <select
                     v-model="form.type"
                     class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                    :class="{ 'border-red-300': form.errors.type }"
                   >
                     <option value="general">Informasi Umum</option>
                     <option value="consultation">Konsultasi Keamanan</option>
                     <option value="report">Laporan Non-Darurat</option>
                     <option value="partnership">Kerjasama</option>
                   </select>
+                  <div v-if="form.errors.type" class="mt-1 text-sm text-red-600">
+                    {{ form.errors.type }}
+                  </div>
                 </div>
 
                 <!-- Name -->
@@ -284,8 +300,12 @@ onMounted(() => {
                     type="text"
                     required
                     class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                    :class="{ 'border-red-300': form.errors.name }"
                     placeholder="Masukkan nama lengkap Anda"
                   />
+                  <div v-if="form.errors.name" class="mt-1 text-sm text-red-600">
+                    {{ form.errors.name }}
+                  </div>
                 </div>
 
                 <!-- Email -->
@@ -298,8 +318,12 @@ onMounted(() => {
                     type="email"
                     required
                     class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                    :class="{ 'border-red-300': form.errors.email }"
                     placeholder="nama@email.com"
                   />
+                  <div v-if="form.errors.email" class="mt-1 text-sm text-red-600">
+                    {{ form.errors.email }}
+                  </div>
                 </div>
 
                 <!-- Subject -->
@@ -312,8 +336,12 @@ onMounted(() => {
                     type="text"
                     required
                     class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                    :class="{ 'border-red-300': form.errors.subject }"
                     placeholder="Ringkasan singkat pesan Anda"
                   />
+                  <div v-if="form.errors.subject" class="mt-1 text-sm text-red-600">
+                    {{ form.errors.subject }}
+                  </div>
                 </div>
 
                 <!-- Message -->
@@ -326,19 +354,28 @@ onMounted(() => {
                     rows="6"
                     required
                     class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 resize-none"
+                    :class="{ 'border-red-300': form.errors.message }"
                     placeholder="Tuliskan pesan atau pertanyaan Anda dengan detail..."
                   ></textarea>
+                  <div v-if="form.errors.message" class="mt-1 text-sm text-red-600">
+                    {{ form.errors.message }}
+                  </div>
                 </div>
 
                 <!-- Submit Button -->
                 <button
                   type="submit"
-                  class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-indigo-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+                  :disabled="form.processing"
+                  class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-indigo-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
-                  <svg class="inline-block h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg v-if="form.processing" class="inline-block h-5 w-5 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <svg v-else class="inline-block h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                   </svg>
-                  Kirim Pesan
+                  {{ form.processing ? 'Mengirim...' : 'Kirim Pesan' }}
                 </button>
               </form>
 
@@ -364,7 +401,7 @@ onMounted(() => {
               <h3 class="text-2xl font-bold text-slate-900 mb-6">Lokasi Kantor</h3>
               <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200">
                 <div class="h-80 w-full">
-                  <iframe
+                  <!-- <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3958.411656819588!2d111.878965!3d-7.1501326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7781a5963f7d6b%3A0x7c0d1b3e8e1f4b0!2sDinas%20Komunikasi%20dan%20Informatika%20Kabupaten%20Bojonegoro!5e0!3m2!1sen!2sid!4v1678886400000"
                     width="100%"
                     height="100%"
@@ -372,7 +409,7 @@ onMounted(() => {
                     allowfullscreen=""
                     loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade"
-                  ></iframe>
+                  ></iframe> -->
                 </div>
                 <div class="p-6">
                   <div class="flex items-start">
