@@ -13,14 +13,24 @@ class PostController extends Controller
   /**
    * Display a listing of the posts.
    */
-  public function index(): Response
+  public function index(Request $request): Response
   {
+    $page = $request->get('page', 1);
+    $isFirstPage = $page == 1;
+
+    // For first page: get 7 posts (1 featured + 6 regular)
+    // For other pages: get 6 posts (all regular)
+    $perPage = $isFirstPage ? 7 : 6;
+
+    $posts = Post::with('categories')
+      ->where('status', 'Published')
+      ->latest('published_at')
+      ->paginate($perPage)
+      ->withQueryString();
+
     return Inertia::render('Posts/Index', [
-      'posts' => Post::with('categories') // Eager load categories
-        ->where('status', 'Published')
-        ->latest('published_at')
-        ->paginate(6)
-        ->withQueryString(),
+      'posts' => $posts,
+      'isFirstPage' => $isFirstPage,
     ]);
   }
 

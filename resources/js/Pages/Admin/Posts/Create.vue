@@ -65,8 +65,7 @@ const submit = () => {
           <div class="bg-white p-6 rounded-lg shadow">
              <h3 class="text-lg font-semibold mb-4">Kutipan Singkat (Excerpt)</h3>
              <div>
-                <Textarea v-model="form.excerpt" rows="4" class="w-full" placeholder="Tulis ringkasan singkat dari artikel ini..." :class="{ 'p-invalid': form.errors.excerpt }" required/>
-                <small v-if="form.errors.excerpt" class="p-error">{{ form.errors.excerpt }}</small>
+                <Textarea v-model="form.excerpt" rows="4" class="w-full" placeholder="Tulis ringkasan singkat dari artikel ini..." :class="{ 'p-invalid': form.errors.excerpt }"/>
              </div>
           </div>
         </div>
@@ -88,7 +87,6 @@ const submit = () => {
                   <p>Drag & drop atau klik untuk memilih gambar.</p>
                 </template>
               </FileUpload>
-              <small v-if="form.errors.image" class="p-error">{{ form.errors.image }}</small>
             </div>
           </div>
           <div class="bg-white p-6 rounded-lg shadow">

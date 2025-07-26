@@ -1,137 +1,334 @@
 <script setup>
+import { onMounted, ref } from 'vue'
+
+// Animation refs
+const heroRef = ref(null)
+const visionRef = ref(null)
+const teamRef = ref(null)
+const timelineRef = ref(null)
+
+// Team members data
+const teamMembers = [
+  {
+    name: 'Dr. H. Ahmad Subagyo, S.Kom., M.T.',
+    position: 'Pembina / Kepala Diskominfo',
+    role: 'Bertanggung jawab atas kebijakan strategis dan pengawasan operasional CSIRT',
+    avatar: 'AS'
+  },
+  {
+    name: 'Budi Santoso, S.T.',
+    position: 'Ketua Tim / Kepala Bidang E-Gov',
+    role: 'Memimpin operasional harian dan koordinasi respons insiden',
+    avatar: 'BS'
+  },
+  {
+    name: 'Siti Aminah, A.Md.Kom.',
+    position: 'Analis Keamanan Senior',
+    role: 'Analisis teknis dan investigasi insiden keamanan siber',
+    avatar: 'SA'
+  },
+  {
+    name: 'Roni Prasetyo, S.Kom.',
+    position: 'Spesialis Forensik Digital',
+    role: 'Penanganan forensik digital dan pemulihan sistem',
+    avatar: 'RP'
+  },
+  {
+    name: 'Dewi Kartika, S.T.',
+    position: 'Koordinator Komunikasi',
+    role: 'Komunikasi publik dan koordinasi dengan stakeholder',
+    avatar: 'DK'
+  },
+  {
+    name: 'Muhammad Rizki, A.Md.',
+    position: 'Teknisi Jaringan',
+    role: 'Pemeliharaan infrastruktur dan monitoring sistem',
+    avatar: 'MR'
+  }
+]
+
+// Timeline data
+const timeline = [
+  {
+    year: '2019',
+    title: 'Pembentukan Tim CSIRT',
+    description: 'Inisiasi pembentukan tim respons insiden keamanan siber di lingkungan Pemkab Bojonegoro'
+  },
+  {
+    year: '2020',
+    title: 'Implementasi SOC',
+    description: 'Pengembangan Security Operations Center untuk monitoring keamanan 24/7'
+  },
+  {
+    year: '2021',
+    title: 'Sertifikasi Tim',
+    description: 'Pelatihan dan sertifikasi anggota tim dalam standar internasional keamanan siber'
+  },
+  {
+    year: '2022',
+    title: 'Kolaborasi Regional',
+    description: 'Membangun jaringan kerjasama dengan CSIRT daerah lain dan nasional'
+  },
+  {
+    year: '2023',
+    title: 'Sistem Terintegrasi',
+    description: 'Launching sistem pelaporan dan respons insiden terintegrasi'
+  }
+]
+
+// Scroll animations
+onMounted(() => {
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate-fade-in-up')
+      }
+    })
+  }, observerOptions)
+
+  if (visionRef.value) observer.observe(visionRef.value)
+  if (teamRef.value) observer.observe(teamRef.value)
+  if (timelineRef.value) observer.observe(timelineRef.value)
+})
 </script>
 
 <template>
-  <AppLayout title="Profil">
-    <div class="bg-gray-50 py-24 sm:py-32">
-      <div class="mx-auto max-w-7xl px-6 lg:px-8">
-        <div class="mx-auto max-w-2xl lg:mx-0">
-          <h2
-            class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
-          >
-            Profil CSIRT Bojonegoro
-          </h2>
-          <p class="mt-6 text-lg leading-8 text-gray-600">
-            Computer Security Incident Response Team (CSIRT) Pemerintah
-            Kabupaten Bojonegoro adalah tim yang bertanggung jawab untuk
-            menerima, meninjau, dan menanggapi laporan insiden keamanan siber di
-            lingkungan Pemkab Bojonegoro.
+  <AppLayout title="Profil CSIRT Bojonegoro">
+    <!-- Hero Section -->
+    <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-indigo-900 to-blue-900 py-24 sm:py-32">
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+      </div>
+
+      <div class="relative container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+          <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
+            <span class="block">Profil</span>
+            <span class="block bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
+              CSIRT Bojonegoro
+            </span>
+          </h1>
+          <p class="mx-auto mt-6 max-w-3xl text-xl text-slate-300">
+            Tim Respons Insiden Keamanan Siber yang berkomitmen melindungi aset digital
+            Pemerintah Kabupaten Bojonegoro dengan standar internasional
           </p>
         </div>
+      </div>
+    </section>
 
-        <!-- Visi & Misi -->
-        <div
-          class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2"
-        >
-          <div class="max-w-xl">
-            <h3 class="text-2xl font-bold tracking-tight text-gray-900">
-              Visi
+    <!-- About Section -->
+    <section class="py-20 bg-white">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 class="text-base font-semibold uppercase tracking-wider text-indigo-600 mb-2">
+              Tentang Kami
+            </h2>
+            <h3 class="text-3xl font-extrabold text-slate-900 sm:text-4xl mb-6">
+              Dedikasi untuk Keamanan Digital
             </h3>
-            <p class="mt-4 text-gray-600">
-              "Terwujudnya keamanan siber yang andal dan terpercaya di
-              lingkungan Pemerintah Kabupaten Bojonegoro untuk mendukung
-              penyelenggaraan pemerintahan dan pelayanan publik yang efektif dan
-              efisien."
+            <p class="text-lg text-slate-600 mb-6">
+              Computer Security Incident Response Team (CSIRT) Pemerintah Kabupaten Bojonegoro
+              adalah tim khusus yang dibentuk untuk menghadapi tantangan keamanan siber di era digital.
+            </p>
+            <p class="text-lg text-slate-600">
+              Dengan pengalaman dan keahlian yang terus berkembang, kami berkomitmen memberikan
+              perlindungan terdepan terhadap ancaman siber yang dapat mengganggu layanan publik
+              dan operasional pemerintahan.
             </p>
           </div>
-          <div class="max-w-xl">
-            <h3 class="text-2xl font-bold tracking-tight text-gray-900">
-              Misi
-            </h3>
-            <ul class="mt-4 list-inside list-disc space-y-2 text-gray-600">
-              <li>
-                Membangun sistem deteksi dan pencegahan insiden keamanan siber
-                yang proaktif.
-              </li>
-              <li>
-                Melakukan penanganan insiden siber secara cepat, tepat, dan
-                tuntas.
-              </li>
-              <li>
-                Meningkatkan kesadaran dan kompetensi sumber daya manusia di
-                bidang keamanan siber.
-              </li>
-              <li>
-                Membangun kemitraan dan kolaborasi dengan berbagai pihak dalam
-                penanganan insiden siber.
-              </li>
-            </ul>
-          </div>
-        </div>
 
-        <!-- Struktur Tim (Dummy) -->
-        <div class="mt-24">
-          <h3
-            class="text-center text-2xl font-bold tracking-tight text-gray-900"
-          >
-            Struktur Tim
-          </h3>
-          <div class="mt-8 flow-root">
-            <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-              <div
-                class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8"
-              >
-                <table class="min-w-full divide-y divide-gray-300">
-                  <thead>
-                    <tr>
-                      <th
-                        scope="col"
-                        class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
-                      >
-                        Nama
-                      </th>
-                      <th
-                        scope="col"
-                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                      >
-                        Jabatan
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-gray-200">
-                    <tr>
-                      <td
-                        class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"
-                      >
-                        Dr. H. Ahmad Subagyo, S.Kom., M.T.
-                      </td>
-                      <td
-                        class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
-                      >
-                        Pembina / Kepala Diskominfo
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"
-                      >
-                        Budi Santoso, S.T.
-                      </td>
-                      <td
-                        class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
-                      >
-                        Ketua Tim / Kepala Bidang E-Gov
-                      </td>
-                    </tr>
-                    <tr>
-                      <td
-                        class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"
-                      >
-                        Siti Aminah, A.Md.Kom.
-                      </td>
-                      <td
-                        class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
-                      >
-                        Anggota Tim Teknis
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+          <div class="flex justify-center lg:justify-end">
+            <div class="relative">
+              <div class="w-80 h-80 bg-gradient-to-br from-indigo-100 to-blue-100 rounded-3xl flex items-center justify-center">
+                <svg class="w-32 h-32 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center">
+                <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Vision & Mission Section -->
+    <section ref="visionRef" class="py-20 bg-slate-50 opacity-0 translate-y-10">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-base font-semibold uppercase tracking-wider text-indigo-600 mb-2">
+            Visi & Misi
+          </h2>
+          <h3 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+            Fondasi Komitmen Kami
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <!-- Vision Card -->
+          <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 transform hover:scale-105 transition-all duration-300">
+            <div class="flex items-center mb-6">
+              <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                  <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <h4 class="text-2xl font-bold text-slate-900 ml-4">Visi</h4>
+            </div>
+            <p class="text-lg text-slate-600 leading-relaxed italic">
+              "Terwujudnya keamanan siber yang andal dan terpercaya di lingkungan
+              Pemerintah Kabupaten Bojonegoro untuk mendukung penyelenggaraan
+              pemerintahan dan pelayanan publik yang efektif dan efisien."
+            </p>
+          </div>
+
+          <!-- Mission Card -->
+          <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 transform hover:scale-105 transition-all duration-300">
+            <div class="flex items-center mb-6">
+              <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <h4 class="text-2xl font-bold text-slate-900 ml-4">Misi</h4>
+            </div>
+            <ul class="space-y-4">
+              <li class="flex items-start">
+                <div class="flex-shrink-0">
+                  <div class="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center mt-1">
+                    <svg class="h-3 w-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+                <p class="ml-3 text-slate-700">Membangun sistem deteksi dan pencegahan insiden keamanan siber yang proaktif</p>
+              </li>
+              <li class="flex items-start">
+                <div class="flex-shrink-0">
+                  <div class="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center mt-1">
+                    <svg class="h-3 w-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+                <p class="ml-3 text-slate-700">Melakukan penanganan insiden siber secara cepat, tepat, dan tuntas</p>
+              </li>
+              <li class="flex items-start">
+                <div class="flex-shrink-0">
+                  <div class="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center mt-1">
+                    <svg class="h-3 w-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+                <p class="ml-3 text-slate-700">Meningkatkan kesadaran dan kompetensi SDM di bidang keamanan siber</p>
+              </li>
+              <li class="flex items-start">
+                <div class="flex-shrink-0">
+                  <div class="h-6 w-6 rounded-full bg-emerald-100 flex items-center justify-center mt-1">
+                    <svg class="h-3 w-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+                <p class="ml-3 text-slate-700">Membangun kemitraan dan kolaborasi dalam penanganan insiden siber</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team Section -->
+    <section ref="teamRef" class="py-20 bg-white opacity-0 translate-y-10">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-base font-semibold uppercase tracking-wider text-indigo-600 mb-2">
+            Tim Kami
+          </h2>
+          <h3 class="text-3xl font-extrabold text-slate-900 sm:text-4xl mb-4">
+            Profesional Keamanan Siber
+          </h3>
+          <p class="mx-auto max-w-2xl text-xl text-slate-600">
+            Tim berpengalaman yang siap melindungi aset digital dengan keahlian terdepan
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div
+            v-for="(member, index) in teamMembers"
+            :key="member.name"
+            class="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-slate-200"
+            :style="{ animationDelay: `${index * 100}ms` }"
+          >
+            <div class="flex flex-col items-center text-center">
+              <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                {{ member.avatar }}
+              </div>
+              <h4 class="text-lg font-semibold text-slate-900 mb-2">{{ member.name }}</h4>
+              <p class="text-indigo-600 font-medium mb-3">{{ member.position }}</p>
+              <p class="text-sm text-slate-600 leading-relaxed">{{ member.role }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section ref="timelineRef" class="py-20 bg-slate-50 opacity-0 translate-y-10">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-base font-semibold uppercase tracking-wider text-indigo-600 mb-2">
+            Perjalanan Kami
+          </h2>
+          <h3 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+            Milestone Pencapaian
+          </h3>
+        </div>
+
+        <div class="relative">
+          <!-- Timeline line -->
+          <div class="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-indigo-500 to-blue-600 rounded-full"></div>
+
+          <div class="space-y-12">
+            <div
+              v-for="(item, index) in timeline"
+              :key="item.year"
+              class="relative flex items-center"
+              :class="index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'"
+            >
+              <!-- Content -->
+              <div class="w-5/12">
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 transform hover:scale-105 transition-all duration-300">
+                  <div class="flex items-center mb-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
+                      {{ item.year }}
+                    </div>
+                    <h4 class="text-lg font-semibold text-slate-900 ml-3">{{ item.title }}</h4>
+                  </div>
+                  <p class="text-slate-600">{{ item.description }}</p>
+                </div>
+              </div>
+
+              <!-- Center dot -->
+              <div class="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-white border-4 border-indigo-500 rounded-full shadow-lg"></div>
+
+              <!-- Spacer -->
+              <div class="w-5/12"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </AppLayout>
 </template>

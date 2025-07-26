@@ -309,7 +309,7 @@ const handleImageUpload = (event) => {
             <Button @click="editor.chain().focus().deleteRow().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-red-500 hover:bg-red-100" title="Delete Row"> <i-lucide-trash-2 /> </Button>
           </div>
         </Popover>
-        <Button @click="toggleColumnPanel" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Row"> <i-lucide-table-columns-split /> </Button>
+        <Button @click="toggleColumnPanel" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Column"> <i-lucide-table-columns-split /> </Button>
         <Popover ref="columnPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
           <div class="flex items-center gap-[2px]">
             <Button @click="editor.chain().focus().addColumnBefore().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Add Column Before"> <i-lucide-arrow-left-from-line /> </Button>
@@ -331,9 +331,7 @@ const handleImageUpload = (event) => {
       <Button @click="editor.chain().focus().setHorizontalRule().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Horizontal Line"> <i-lucide-minus /> </Button>
 
       <!-- Image -->
-      <Button @click="triggerFileInput" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200']">
-        <i-lucide-image />
-      </Button>
+      <Button @click="triggerFileInput" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200']" title="Insert Image"> <i-lucide-image-plus /> </Button>
     </div>
 
     <!-- Editor Content -->

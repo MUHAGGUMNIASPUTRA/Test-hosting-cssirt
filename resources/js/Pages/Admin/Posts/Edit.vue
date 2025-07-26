@@ -56,12 +56,12 @@ const submit = () => {
             <h3 class="text-lg font-semibold mb-4">Judul & Konten</h3>
             <div>
               <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Judul Artikel</label>
-              <InputText id="title" v-model="form.title" class="w-full" :class="{ 'p-invalid': form.errors.title }" />
+              <InputText id="title" v-model="form.title" class="w-full" :class="{ 'p-invalid': form.errors.title }" required/>
               <small v-if="form.errors.title" class="p-error">{{ form.errors.title }}</small>
             </div>
             <div class="mt-4">
               <label class="block text-sm font-medium text-gray-700 mb-1">Isi Artikel</label>
-              <RichTextEditor v-model="form.body" />
+              <RichTextEditor v-model="form.body" required/>
               <small v-if="form.errors.body" class="p-error">{{ form.errors.body }}</small>
             </div>
           </div>
@@ -69,7 +69,6 @@ const submit = () => {
              <h3 class="text-lg font-semibold mb-4">Kutipan Singkat (Excerpt)</h3>
              <div>
                 <Textarea v-model="form.excerpt" rows="4" class="w-full" :class="{ 'p-invalid': form.errors.excerpt }" />
-                <small v-if="form.errors.excerpt" class="p-error">{{ form.errors.excerpt }}</small>
              </div>
           </div>
         </div>
@@ -89,14 +88,13 @@ const submit = () => {
                   <p>Pilih gambar baru untuk mengganti.</p>
                 </template>
               </FileUpload>
-              <small v-if="form.errors.image" class="p-error">{{ form.errors.image }}</small>
             </div>
           </div>
           <div class="bg-white p-6 rounded-lg shadow">
             <h3 class="text-lg font-semibold mb-4">Kategori & Tag</h3>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-              <MultiSelect v-model="form.categories" :options="props.categories" optionLabel="name" optionValue="id" placeholder="Pilih Kategori" class="w-full" :class="{ 'p-invalid': form.errors.categories }" />
+              <MultiSelect v-model="form.categories" :options="props.categories" optionLabel="name" optionValue="id" placeholder="Pilih Kategori" class="w-full" :class="{ 'p-invalid': form.errors.categories }" required/>
               <small v-if="form.errors.categories" class="p-error">{{ form.errors.categories }}</small>
             </div>
             <div class="mt-4">

@@ -50,7 +50,7 @@ class PostController extends Controller
     $validated = $request->validate([
       'title' => 'required|string|max:255',
       'body' => 'required|string',
-      'excerpt' => 'required|string|max:500',
+      'excerpt' => 'nullable|string|max:500',
       'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
       'status' => 'required|in:Draft,Published',
       'categories' => 'required|array|min:1',
@@ -68,7 +68,7 @@ class PostController extends Controller
       'title' => $validated['title'],
       'slug' => Str::slug($validated['title']),
       'body' => $validated['body'],
-      'excerpt' => $validated['excerpt'],
+      'excerpt' => $validated['excerpt'] ? $validated['excerpt'] : Str::limit(strip_tags($validated['body']), 150),
       'image' => $path,
       'status' => $validated['status'],
       'published_by' => Auth::user()->name,
