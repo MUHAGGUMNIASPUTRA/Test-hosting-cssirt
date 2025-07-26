@@ -86,11 +86,11 @@ const rowPanel = ref();
 const columnPanel = ref();
 
 const highlightColors = ref([
-  { name: 'Kuning', color: '#fef9c3', border: '#fef9c3' },
-  { name: 'Hijau', color: '#dcfce7', border: '#cafadb' },
-  { name: 'Merah', color: '#ffe4e6', border: '#facfd2' },
-  { name: 'Biru', color: '#e0f2fe', border: '#c5e6fc' },
-  { name: 'Ungu', color: '#f3e8ff', border: '#e6d2fc' },
+  { name: 'Yellow', color: '#fef9c3', border: '#fef9c3' },
+  { name: 'Green', color: '#dcfce7', border: '#cafadb' },
+  { name: 'Red', color: '#ffe4e6', border: '#facfd2' },
+  { name: 'Blue', color: '#e0f2fe', border: '#c5e6fc' },
+  { name: 'Purple', color: '#f3e8ff', border: '#e6d2fc' },
 ]);
 
 const applyHighlight = (color) => {
@@ -171,26 +171,26 @@ function adjustBrightness(hexColor, factor) {
       <div class="hidden lg:flex border-l h-6 mx-2"></div>
 
       <!-- Headings Panel -->
-      <Button @click="toggleHeadingPanel" unstyled :class="['h-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('heading') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']">
+      <Button @click="toggleHeadingPanel" unstyled :class="['h-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('heading') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Headings">
         <component :is="activeHeadingIcon" :size="16" />
       </Button>
       <Popover ref="headingPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
         <div class="flex items-center gap-[2px]">
-          <Button @click="editor.chain().focus().toggleHeading({ level: 1 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 1 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Left"> <i-lucide-heading-1 /> </Button>
-          <Button @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 2 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Center"> <i-lucide-heading-2 /> </Button>
-          <Button @click="editor.chain().focus().toggleHeading({ level: 3 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 3 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Right"> <i-lucide-heading-3 /> </Button>
-          <Button @click="editor.chain().focus().toggleHeading({ level: 4 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 4 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Justify"> <i-lucide-heading-4 /> </Button>
+          <Button @click="editor.chain().focus().toggleHeading({ level: 1 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 1 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Heading 1"> <i-lucide-heading-1 /> </Button>
+          <Button @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 2 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Heading 2"> <i-lucide-heading-2 /> </Button>
+          <Button @click="editor.chain().focus().toggleHeading({ level: 3 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 3 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Heading 3"> <i-lucide-heading-3 /> </Button>
+          <Button @click="editor.chain().focus().toggleHeading({ level: 4 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 4 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Heading 4"> <i-lucide-heading-4 /> </Button>
         </div>
       </Popover>
 
       <!-- Lists Panel -->
-      <Button @click="toggleListPanel" unstyled :class="['h-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('bulletList') || editor.isActive('orderedList') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']">
+      <Button @click="toggleListPanel" unstyled :class="['h-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('bulletList') || editor.isActive('orderedList') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Lists">
         <component :is="activeListIcon" :size="16" />
       </Button>
       <Popover ref="listPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
         <div class="flex items-center gap-[2px]">
-          <Button @click="editor.chain().focus().toggleBulletList().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('bulletList') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Left"> <i-lucide-list /> </Button>
-          <Button @click="editor.chain().focus().toggleOrderedList().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('orderedList') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Center"> <i-lucide-list-ordered /> </Button>
+          <Button @click="editor.chain().focus().toggleBulletList().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('bulletList') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Bullet List"> <i-lucide-list /> </Button>
+          <Button @click="editor.chain().focus().toggleOrderedList().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('orderedList') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Ordered List"> <i-lucide-list-ordered /> </Button>
         </div>
       </Popover>
 
@@ -229,7 +229,7 @@ function adjustBrightness(hexColor, factor) {
             @click="editor.chain().focus().unsetTextAlign().run()"
             type="button"
             class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-gray-200"
-            aria-label="Unset Text Align"
+            title="Unset Text Align"
           >
             <i-lucide-ban />
           </button>
@@ -250,7 +250,7 @@ function adjustBrightness(hexColor, factor) {
             type="button"
             class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-gray-200"
             :class="{ 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700': editor.isActive('highlight', { color: swatch.color }) }"
-            :aria-label="swatch.name"
+            :title="swatch.name"
           >
             <span class="w-5 h-5 rounded-full" :style="{ color: swatch.color, backgroundColor: swatch.color, border: '1px solid ' + adjustBrightness(swatch.color, 0.90) }"></span>
           </button>
@@ -259,7 +259,7 @@ function adjustBrightness(hexColor, factor) {
             @click="applyHighlight(null)"
             type="button"
             class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-gray-200"
-            aria-label="Remove Highlight"
+            title="Remove Highlight"
           >
             <i-lucide-ban />
           </button>
@@ -295,11 +295,11 @@ function adjustBrightness(hexColor, factor) {
 
       <!-- Font Color -->
       <div class="inline-flex items-center p-1 rounded-xl hover:bg-gray-200">
-        <input type="color" @input="editor.chain().focus().setColor($event.target.value).run()" :value="editor.getAttributes('textStyle').color || '#000000'" class="w-6 h-6 border-none bg-transparent cursor-pointer" aria-label="Text Color">
+        <input type="color" @input="editor.chain().focus().setColor($event.target.value).run()" :value="editor.getAttributes('textStyle').color || '#000000'" class="w-6 h-6 border-none bg-transparent cursor-pointer" title="Text Color">
       </div>
 
       <!-- Horizontal Line -->
-      <Button @click="editor.chain().focus().setHorizontalRule().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200"> <i-lucide-minus /> </Button>
+      <Button @click="editor.chain().focus().setHorizontalRule().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Horizontal Line"> <i-lucide-minus /> </Button>
     </div>
 
     <!-- Editor Content -->

@@ -93,7 +93,7 @@ const toggleUserMenu = (event) => {
           aria-controls="overlay_menu"
           icon="pi pi-user"
           severity="secondary"
-          text
+          variant="outlined"
         />
         <Menu ref="menu" id="overlay_menu" :model="userMenuItems" :popup="true" />
       </div>

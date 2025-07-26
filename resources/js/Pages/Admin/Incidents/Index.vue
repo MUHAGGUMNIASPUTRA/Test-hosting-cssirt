@@ -29,12 +29,12 @@ const deleteIncident = (incident) => {
 };
 
 const getStatusSeverity = (status) => {
-  const map = { 'Baru': 'info', 'Diverifikasi': 'info', 'Dalam Penyelidikan': 'warning', 'Selesai': 'success', 'Ditutup': 'secondary' };
+  const map = { 'Baru': 'info', 'Diverifikasi': 'info', 'Dalam Penyelidikan': 'warn', 'Selesai': 'success', 'Ditutup': 'secondary' };
   return map[status] || 'info';
 };
 
 const getPrioritySeverity = (priority) => {
-  const map = { 'Rendah': 'success', 'Sedang': 'info', 'Tinggi': 'warning', 'Kritis': 'danger' };
+  const map = { 'Rendah': 'success', 'Sedang': 'info', 'Tinggi': 'warn', 'Kritis': 'danger' };
   return map[priority] || 'info';
 };
 </script>
