@@ -46,14 +46,16 @@ const navTextClasses = computed(() => {
       logo: 'text-white',
       subtitle: 'text-slate-300',
       link: 'text-slate-300 hover:text-white hover:bg-white/10',
-      mobile: 'text-white hover:bg-white/10'
+      mobile: 'text-white hover:bg-white/10',
+      reportBtn: 'bg-red-600 hover:bg-red-700 text-white border-red-600 hover:border-red-700'
     }
   }
   return {
     logo: 'text-slate-900',
     subtitle: 'text-slate-600',
     link: 'text-slate-700 hover:text-indigo-600 hover:bg-indigo-50',
-    mobile: 'text-slate-700 hover:bg-slate-100'
+    mobile: 'text-slate-700 hover:bg-slate-100',
+    reportBtn: 'bg-red-600 hover:bg-red-700 text-white border-red-600 hover:border-red-700'
   }
 })
 </script>
@@ -76,13 +78,13 @@ const navTextClasses = computed(() => {
               <Link :href="route('landing')" class="flex items-center space-x-3 group">
                 <div class="relative">
                   <!-- Government Crest -->
-                  <div v-if="isLandingPage && !isScrolled" class="h-9 w-9 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center mr-2">
+                  <div v-if="isLandingPage && !isScrolled" class="h-9 w-9 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center mr-1">
                     <svg class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                     </svg>
                   </div>
                   <!-- Regular logo for other states -->
-                  <div v-else class="h-9 w-9 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                  <div v-else class="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
                     <span class="text-white font-bold text-xs">CSIRT</span>
                   </div>
                 </div>
@@ -104,8 +106,9 @@ const navTextClasses = computed(() => {
             </div>
 
             <!-- Desktop Navigation -->
-            <div class="hidden md:block">
-              <div class="flex items-center space-x-1">
+            <div class="hidden lg:flex items-center space-x-1">
+              <!-- Regular Navigation Links -->
+              <div class="flex items-center space-x-1 pr-4">
                 <Link
                   :href="route('landing')"
                   class="relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 group"
@@ -139,6 +142,14 @@ const navTextClasses = computed(() => {
                   <div class="absolute inset-0 rounded-lg bg-gradient-to-r from-indigo-500 to-blue-600 opacity-0 group-hover:opacity-10 transition-opacity duration-200"></div>
                 </Link>
                 <Link
+                  :href="route('faq.index')"
+                  class="relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 group"
+                  :class="navTextClasses.link"
+                >
+                  <span class="relative z-10">FAQ</span>
+                  <div class="absolute inset-0 rounded-lg bg-gradient-to-r from-indigo-500 to-blue-600 opacity-0 group-hover:opacity-10 transition-opacity duration-200"></div>
+                </Link>
+                <Link
                   :href="route('contact.index')"
                   class="relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 group"
                   :class="navTextClasses.link"
@@ -147,10 +158,24 @@ const navTextClasses = computed(() => {
                   <div class="absolute inset-0 rounded-lg bg-gradient-to-r from-indigo-500 to-blue-600 opacity-0 group-hover:opacity-10 transition-opacity duration-200"></div>
                 </Link>
               </div>
+
+              <!-- Report Incident Button -->
+              <div class="pl-8 ml-8 border-l border-slate-300">
+                <Link
+                  :href="route('incident.create')"
+                  class="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg border-2 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  :class="navTextClasses.reportBtn"
+                >
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0Z" />
+                  </svg>
+                  Lapor Insiden
+                </Link>
+              </div>
             </div>
 
             <!-- Mobile menu button -->
-            <div class="flex md:hidden">
+            <div class="flex lg:hidden">
               <button
                 @click="isMenuOpen = !isMenuOpen"
                 type="button"
@@ -190,7 +215,7 @@ const navTextClasses = computed(() => {
         <!-- Mobile Navigation Menu -->
         <div
           v-show="isMenuOpen"
-          class="md:hidden bg-white/95 backdrop-blur-md border-t border-slate-200/50"
+          class="lg:hidden bg-white/95 backdrop-blur-md border-t border-slate-200/50"
           id="mobile-menu"
         >
           <div class="px-4 py-6 space-y-1">
@@ -223,12 +248,33 @@ const navTextClasses = computed(() => {
               Artikel
             </Link>
             <Link
+              :href="route('faq.index')"
+              class="block px-4 py-3 text-base font-medium text-slate-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
+              @click="isMenuOpen = false"
+            >
+              FAQ
+            </Link>
+            <Link
               :href="route('contact.index')"
               class="block px-4 py-3 text-base font-medium text-slate-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
               @click="isMenuOpen = false"
             >
               Kontak
             </Link>
+
+            <!-- Mobile Report Incident Button -->
+            <div class="pt-4 mt-4 border-t border-slate-200">
+              <Link
+                :href="route('incident.create')"
+                class="flex items-center justify-center w-full px-4 py-3 text-base font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all duration-200 transform hover:scale-105"
+                @click="isMenuOpen = false"
+              >
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0Z" />
+                </svg>
+                Lapor Insiden
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
@@ -304,6 +350,17 @@ const navTextClasses = computed(() => {
                       <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd" />
                     </svg>
                     Artikel
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    :href="route('faq.index')"
+                    class="hover:text-white transition-colors duration-200 flex items-center group"
+                  >
+                    <svg class="h-4 w-4 mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    </svg>
+                    FAQ
                   </Link>
                 </li>
                 <li>

@@ -1,4 +1,5 @@
 <?php
+// File: app/Models/Announcement.php
 
 namespace App\Models;
 

@@ -7,6 +7,7 @@ const props = defineProps({
 
 // Animation refs
 const heroRef = ref(null)
+const capabilitiesRef = ref(null)
 const servicesRef = ref(null)
 const processRef = ref(null)
 
@@ -81,6 +82,8 @@ onMounted(() => {
     })
   }, observerOptions)
 
+  if (heroRef.value) observer.observe(heroRef.value)
+  if (capabilitiesRef.value) observer.observe(capabilitiesRef.value)
   if (servicesRef.value) observer.observe(servicesRef.value)
   if (processRef.value) observer.observe(processRef.value)
 })
@@ -98,29 +101,31 @@ const serviceGridClasses = computed(() => {
 <template>
   <AppLayout title="Layanan CSIRT Bojonegoro">
     <!-- Hero Section -->
-    <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-indigo-900 to-blue-900 py-24 sm:py-32">
+    <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-indigo-900 to-blue-900 py-24 sm:py-32 opacity-0 translate-y-10">
       <div class="absolute inset-0 opacity-10">
         <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
       </div>
 
       <div class="relative container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
-          <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
-            <span class="block">Layanan</span>
-            <span class="block bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
-              CSIRT Bojonegoro
-            </span>
-          </h1>
-          <p class="mx-auto mt-6 max-w-3xl text-xl text-slate-300">
-            Solusi komprehensif keamanan siber untuk melindungi aset digital
-            pemerintahan dengan standar internasional
-          </p>
+          <div class="animate-fade-in-up">
+            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl leading-tight">
+              <span class="block">Layanan</span>
+              <span class="block bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent pb-2">
+                CSIRT Bojonegoro
+              </span>
+            </h1>
+            <p class="mx-auto mt-6 max-w-3xl text-xl text-slate-300">
+              Solusi komprehensif keamanan siber untuk melindungi aset digital
+              pemerintahan dengan standar internasional
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Capabilities Section -->
-    <section class="py-20 bg-white">
+    <section ref="capabilitiesRef" class="py-20 bg-white opacity-0 translate-y-10">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div

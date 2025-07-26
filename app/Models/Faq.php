@@ -1,4 +1,5 @@
 <?php
+// File: app/Models/Faq.php
 
 namespace App\Models;
 
@@ -29,4 +30,31 @@ class Faq extends Model
   protected $casts = [
     'is_published' => 'boolean',
   ];
+
+  /**
+   * Scope for published FAQs
+   */
+  public function scopePublished($query)
+  {
+    return $query->where('is_published', true);
+  }
+
+  /**
+   * Scope for specific category
+   */
+  public function scopeByCategory($query, $category)
+  {
+    return $query->where('category', $category);
+  }
+
+  /**
+   * Search scope
+   */
+  public function scopeSearch($query, $searchTerm)
+  {
+    return $query->where(function ($q) use ($searchTerm) {
+      $q->where('question', 'like', "%{$searchTerm}%")
+        ->orWhere('answer', 'like', "%{$searchTerm}%");
+    });
+  }
 }

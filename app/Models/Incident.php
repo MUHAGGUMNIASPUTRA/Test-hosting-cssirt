@@ -1,4 +1,5 @@
 <?php
+// File: app/Models/Incident.php
 
 namespace App\Models;
 

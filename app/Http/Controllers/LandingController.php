@@ -1,4 +1,5 @@
 <?php
+// File: app/Http/Controllers/LandingController.php
 
 namespace App\Http\Controllers;
 

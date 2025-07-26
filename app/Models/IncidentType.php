@@ -1,4 +1,5 @@
 <?php
+// File: app/Models/IncidentType.php
 
 namespace App\Models;
 

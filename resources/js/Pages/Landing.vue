@@ -54,9 +54,9 @@ onMounted(() => {
       <div class="relative z-10 flex items-center justify-center min-h-screen">
         <div class="container mx-auto px-4 py-20 text-center sm:px-6 lg:px-8">
           <div class="animate-fade-in-up">
-            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
               <span class="block">Menjaga Integritas dan</span>
-              <span class="block bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
+              <span class="block bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent pb-2">
                 Keamanan Digital
               </span>
             </h1>
