@@ -101,7 +101,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <AppLayout title="Profil CSIRT Bojonegoro">
+  <AppLayout title="Profil">
     <!-- Hero Section -->
     <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-indigo-900 to-blue-900 py-24 sm:py-32 opacity-0 translate-y-10">
       <div class="absolute inset-0 opacity-10">
