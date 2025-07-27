@@ -85,34 +85,32 @@ onMounted(() => {
       <div class="relative z-10 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div class="container mx-auto max-w-4xl text-center">
           <div class="animate-fade-in-up">
-            <!-- Security Shield Icon -->
+            <!-- Alert Icon -->
             <div class="w-20 h-20 bg-red-100/20 rounded-full flex items-center justify-center mx-auto mb-8 backdrop-blur-sm">
-              <svg class="w-10 h-10 text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-              </svg>
+                <i-lucide-triangle-alert class="w-10 h-10 text-red-400 mb-1" />
             </div>
 
-            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl mb-6 leading-tight">
+            <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl mb-6 leading-tight">
               Lapor <span class="bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">Insiden Siber</span>
             </h1>
 
-            <p class="text-xl text-slate-300 leading-relaxed mb-8 max-w-3xl mx-auto">
+            <p class="text-2xl text-slate-300 leading-relaxed mb-8 max-w-3xl mx-auto">
               Bantu kami melindungi ekosistem digital Indonesia dengan melaporkan insiden keamanan siber yang Anda alami atau ketahui
             </p>
 
             <!-- Quick Stats -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
               <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div class="text-3xl font-bold text-white mb-2">24/7</div>
-                <div class="text-slate-300 text-sm">Layanan Siaga</div>
+                <div class="text-4xl font-bold text-white mb-2">24/7</div>
+                <div class="text-slate-300">Layanan Siaga</div>
               </div>
               <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div class="text-3xl font-bold text-white mb-2">< 24 Jam</div>
-                <div class="text-slate-300 text-sm">Respons Awal</div>
+                <div class="text-4xl font-bold text-white mb-2">< 24 Jam</div>
+                <div class="text-slate-300">Respons Awal</div>
               </div>
               <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div class="text-3xl font-bold text-white mb-2">Rahasia</div>
-                <div class="text-slate-300 text-sm">Data Terlindungi</div>
+                <div class="text-4xl font-bold text-white mb-2">Rahasia</div>
+                <div class="text-slate-300">Data Terlindungi</div>
               </div>
             </div>
           </div>
@@ -146,37 +144,29 @@ onMounted(() => {
                 <!-- Important Information -->
                 <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-200">
                   <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <i class="pi pi-info-circle !text-lg text-blue-600"></i>
                   </div>
-                  <h3 class="text-xl font-bold text-slate-900 mb-4">Informasi Penting</h3>
+                  <h3 class="text-2xl font-bold text-slate-900 mb-4">Informasi Penting</h3>
                   <div class="space-y-4 text-slate-700">
                     <div class="flex items-start">
-                      <svg class="w-5 h-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                      </svg>
+                      <i class="pi pi-lock text-blue-600 mt-1 mr-3"></i>
                       <div>
                         <p class="font-semibold mb-1">Kerahasiaan Terjamin</p>
-                        <p class="text-sm">Identitas pelapor dan data insiden akan dijaga kerahasiaannya</p>
+                        <p>Identitas pelapor dan data insiden akan dijaga kerahasiaannya</p>
                       </div>
                     </div>
                     <div class="flex items-start">
-                      <svg class="w-5 h-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+                      <i class="pi pi-clock text-blue-600 mt-1 mr-3"></i>
                       <div>
                         <p class="font-semibold mb-1">Respons Cepat</p>
-                        <p class="text-sm">Tim kami akan merespons laporan dalam waktu maksimal 24 jam</p>
+                        <p>Tim kami akan merespons laporan dalam waktu maksimal 24 jam</p>
                       </div>
                     </div>
                     <div class="flex items-start">
-                      <svg class="w-5 h-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                      </svg>
+                      <i class="pi pi-shield text-blue-600 mt-1 mr-3"></i>
                       <div>
                         <p class="font-semibold mb-1">Penanganan Profesional</p>
-                        <p class="text-sm">Ditangani oleh tim ahli keamanan siber bersertifikat</p>
+                        <p>Ditangani oleh tim ahli keamanan siber bersertifikat</p>
                       </div>
                     </div>
                   </div>
@@ -185,11 +175,9 @@ onMounted(() => {
                 <!-- Preparation Checklist -->
                 <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
                   <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                    </svg>
+                    <i class="pi pi-clipboard !text-lg text-amber-600"></i>
                   </div>
-                  <h3 class="text-xl font-bold text-slate-900 mb-4">Sebelum Melapor</h3>
+                  <h3 class="text-2xl font-bold text-slate-900 mb-4">Sebelum Melapor</h3>
                   <div class="space-y-3">
                     <div class="flex items-start">
                       <div class="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
@@ -197,7 +185,7 @@ onMounted(() => {
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <p class="text-slate-700 text-sm">Siapkan kronologi kejadian secara rinci dan berurutan</p>
+                      <p class="text-slate-700">Siapkan kronologi kejadian secara rinci dan berurutan</p>
                     </div>
                     <div class="flex items-start">
                       <div class="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
@@ -205,7 +193,7 @@ onMounted(() => {
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <p class="text-slate-700 text-sm">Kumpulkan bukti seperti screenshot, log, atau email phishing</p>
+                      <p class="text-slate-700">Kumpulkan bukti seperti screenshot, log, atau email phishing</p>
                     </div>
                     <div class="flex items-start">
                       <div class="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
@@ -213,7 +201,7 @@ onMounted(() => {
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <p class="text-slate-700 text-sm">Pastikan informasi kontak Anda aktif dan dapat dihubungi</p>
+                      <p class="text-slate-700">Pastikan informasi kontak Anda aktif dan dapat dihubungi</p>
                     </div>
                     <div class="flex items-start">
                       <div class="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
@@ -221,7 +209,7 @@ onMounted(() => {
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <p class="text-slate-700 text-sm">Catat dampak dan kerugian yang ditimbulkan (jika ada)</p>
+                      <p class="text-slate-700">Catat dampak dan kerugian yang ditimbulkan (jika ada)</p>
                     </div>
                   </div>
                 </div>
@@ -229,16 +217,14 @@ onMounted(() => {
                 <!-- Emergency Contact -->
                 <div class="bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl p-8 border border-red-200">
                   <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
+                    <i class="pi pi-phone !text-lg text-red-600"></i>
                   </div>
-                  <h3 class="text-xl font-bold text-slate-900 mb-4">Kontak Darurat</h3>
-                  <p class="text-slate-700 text-sm mb-4">Untuk insiden kritis yang memerlukan penanganan segera:</p>
+                  <h3 class="text-2xl font-bold text-slate-900 mb-4">Kontak Darurat</h3>
+                  <p class="text-slate-700 mb-4">Untuk insiden kritis yang memerlukan penanganan segera:</p>
                   <div class="space-y-2">
-                    <p class="font-semibold text-slate-900">📞 Hotline: 14000</p>
-                    <p class="font-semibold text-slate-900">📧 Email: csirt@kominfo.go.id</p>
-                    <p class="text-xs text-slate-600 mt-3">*Layanan 24/7 untuk insiden kategori tinggi</p>
+                    <p class="font-semibold text-slate-900"><i class="pi pi-phone !text-sm mr-2"></i> Hotline: 14000</p>
+                    <p class="font-semibold text-slate-900"><i class="pi pi-envelope !text-sm mr-2"></i> Email: csirt@kominfo.go.id</p>
+                    <p class="text-sm text-slate-600 mt-3">*Layanan 24/7 untuk insiden kategori tinggi</p>
                   </div>
                 </div>
               </div>
@@ -250,7 +236,7 @@ onMounted(() => {
 
                 <!-- Form Header -->
                 <div class="bg-gradient-to-r from-indigo-600 to-blue-600 px-8 py-6">
-                  <h2 class="text-2xl font-bold text-white mb-2">Formulir Pelaporan Insiden</h2>
+                  <h2 class="text-3xl font-bold text-white mb-2">Formulir Pelaporan Insiden</h2>
                   <p class="text-blue-100">Mohon isi semua informasi dengan lengkap dan akurat</p>
                 </div>
 
@@ -262,17 +248,15 @@ onMounted(() => {
                     <div>
                       <div class="flex items-center mb-6">
                         <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
-                          <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                          </svg>
+                          <i class="pi pi-user !text-sm text-indigo-600"></i>
                         </div>
-                        <h3 class="text-lg font-semibold text-slate-900">Informasi Pelapor</h3>
+                        <h3 class="text-xl font-semibold text-slate-900">Informasi Pelapor</h3>
                       </div>
 
                       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Reporter Name -->
                         <div>
-                          <label for="reporter_name" class="block text-sm font-semibold text-slate-700 mb-2">
+                          <label for="reporter_name" class="block font-semibold text-slate-700 mb-2">
                             Nama Lengkap *
                           </label>
                           <InputText
@@ -283,7 +267,7 @@ onMounted(() => {
                             placeholder="Masukkan nama lengkap Anda"
                             required
                           />
-                          <div v-if="form.errors.reporter_name" class="mt-2 text-sm text-red-600 flex items-center">
+                          <div v-if="form.errors.reporter_name" class="mt-2 text-red-600 flex items-center">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -293,7 +277,7 @@ onMounted(() => {
 
                         <!-- Reporter Email -->
                         <div>
-                          <label for="reporter_email" class="block text-sm font-semibold text-slate-700 mb-2">
+                          <label for="reporter_email" class="block font-semibold text-slate-700 mb-2">
                             Alamat Email *
                           </label>
                           <InputText
@@ -305,7 +289,7 @@ onMounted(() => {
                             placeholder="nama@email.com"
                             required
                           />
-                          <div v-if="form.errors.reporter_email" class="mt-2 text-sm text-red-600 flex items-center">
+                          <div v-if="form.errors.reporter_email" class="mt-2 text-red-600 flex items-center">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -316,7 +300,7 @@ onMounted(() => {
 
                       <!-- Reporter Phone -->
                       <div class="mt-6">
-                        <label for="reporter_phone" class="block text-sm font-semibold text-slate-700 mb-2">
+                        <label for="reporter_phone" class="block font-semibold text-slate-700 mb-2">
                           Nomor Telepon <span class="text-slate-500 font-normal">(Opsional)</span>
                         </label>
                         <InputText
@@ -326,7 +310,7 @@ onMounted(() => {
                           :class="{ 'border-red-300 focus:border-red-500 focus:ring-red-500': form.errors.reporter_phone }"
                           placeholder="08123456789"
                         />
-                        <div v-if="form.errors.reporter_phone" class="mt-2 text-sm text-red-600 flex items-center">
+                        <div v-if="form.errors.reporter_phone" class="mt-2 text-red-600 flex items-center">
                           <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
@@ -342,17 +326,18 @@ onMounted(() => {
                     <div>
                       <div class="flex items-center mb-6">
                         <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mr-3">
-                          <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <!-- <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                          </svg>
+                          </svg> -->
+                          <i class="pi pi-exclamation-triangle !text-sm text-red-600"></i>
                         </div>
-                        <h3 class="text-lg font-semibold text-slate-900">Detail Insiden</h3>
+                        <h3 class="text-xl font-semibold text-slate-900">Detail Insiden</h3>
                       </div>
 
                       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Incident Type -->
                         <div>
-                          <label for="incident_type_id" class="block text-sm font-semibold text-slate-700 mb-2">
+                          <label for="incident_type_id" class="block font-semibold text-slate-700 mb-2">
                             Kategori Insiden *
                           </label>
                           <Select
@@ -366,7 +351,7 @@ onMounted(() => {
                             :class="{ 'p-invalid': form.errors.incident_type_id }"
                             required
                           />
-                          <div v-if="form.errors.incident_type_id" class="mt-2 text-sm text-red-600 flex items-center">
+                          <div v-if="form.errors.incident_type_id" class="mt-2 text-red-600 flex items-center">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -376,7 +361,7 @@ onMounted(() => {
 
                         <!-- Incident Time -->
                         <div>
-                          <label for="incident_at" class="block text-sm font-semibold text-slate-700 mb-2">
+                          <label for="incident_at" class="block font-semibold text-slate-700 mb-2">
                             Waktu Kejadian *
                           </label>
                           <DatePicker
@@ -389,7 +374,7 @@ onMounted(() => {
                             placeholder="Pilih tanggal dan waktu"
                             required
                           />
-                          <div v-if="form.errors.incident_at" class="mt-2 text-sm text-red-600 flex items-center">
+                          <div v-if="form.errors.incident_at" class="mt-2 text-red-600 flex items-center">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -400,7 +385,7 @@ onMounted(() => {
 
                       <!-- Description -->
                       <div class="mt-6">
-                        <label for="description" class="block text-sm font-semibold text-slate-700 mb-2">
+                        <label for="description" class="block font-semibold text-slate-700 mb-2">
                           Deskripsi Detail Insiden *
                         </label>
                         <Textarea
@@ -412,7 +397,7 @@ onMounted(() => {
                           placeholder="Ceritakan secara detail kronologi insiden yang terjadi, termasuk:&#10;- Kapan insiden pertama kali terdeteksi&#10;- Apa yang terjadi sebelum insiden&#10;- Dampak yang dirasakan&#10;- Langkah yang sudah diambil&#10;- Informasi lain yang relevan"
                           required
                         />
-                        <div v-if="form.errors.description" class="mt-2 text-sm text-red-600 flex items-center">
+                        <div v-if="form.errors.description" class="mt-2 text-red-600 flex items-center">
                           <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
@@ -422,7 +407,7 @@ onMounted(() => {
 
                       <!-- Attachment -->
                       <div class="mt-6">
-                        <label for="attachment" class="block text-sm font-semibold text-slate-700 mb-2">
+                        <label for="attachment" class="block font-semibold text-slate-700 mb-2">
                           Lampiran Bukti <span class="text-slate-500 font-normal">(Opsional, maksimal 5MB)</span>
                         </label>
                         <div class="border-2 border-dashed border-slate-300 rounded-xl hover:border-indigo-400 transition-colors duration-200">
@@ -448,7 +433,7 @@ onMounted(() => {
                                     </div>
                                     <div>
                                       <p class="font-semibold text-slate-900">{{ files[0].name }}</p>
-                                      <p class="text-sm text-slate-500">{{ (files[0].size / 1024 / 1024).toFixed(2) }} MB</p>
+                                      <p class="text-slate-500">{{ (files[0].size / 1024 / 1024).toFixed(2) }} MB</p>
                                     </div>
                                   </div>
                                   <button
@@ -469,12 +454,12 @@ onMounted(() => {
                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                 </svg>
                                 <p class="text-slate-600 font-medium mb-2">Seret file ke sini atau klik untuk memilih</p>
-                                <p class="text-sm text-slate-500">Format: JPG, PNG, PDF, ZIP, DOC (Maks. 5MB)</p>
+                                <p class="text-slate-500">Format: JPG, PNG, PDF, ZIP, DOC (Maks. 5MB)</p>
                               </div>
                             </template>
                           </FileUpload>
                         </div>
-                        <div v-if="form.errors.attachment" class="mt-2 text-sm text-red-600 flex items-center">
+                        <div v-if="form.errors.attachment" class="mt-2 text-red-600 flex items-center">
                           <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
@@ -489,7 +474,7 @@ onMounted(() => {
                         <svg class="w-5 h-5 text-slate-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
-                        <div class="text-sm text-slate-600">
+                        <div class="text-slate-600">
                           <p class="font-semibold text-slate-700 mb-2">Perlindungan Data & Privasi</p>
                           <p class="mb-2">Dengan mengirimkan laporan ini, Anda menyetujui bahwa:</p>
                           <ul class="list-disc list-inside space-y-1 pl-2">
@@ -508,7 +493,6 @@ onMounted(() => {
                         type="submit"
                         :loading="form.processing"
                         :disabled="form.processing"
-                        class="px-8 py-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5"
                       >
                         <svg v-if="!form.processing" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

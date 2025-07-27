@@ -107,13 +107,13 @@ onMounted(() => {
       <div class="relative z-10 px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
         <div class="container mx-auto text-center">
           <div class="animate-fade-in-up">
-            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl leading-tight">
-              <span class="block">Hubungi</span>
-              <span class="block bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent pb-2">
-                CSIRT
+            <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl leading-tight">
+              <span class="">Hubungi</span>
+              <span class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent pb-2">
+                Kami
               </span>
             </h1>
-            <p class="mx-auto mt-6 max-w-3xl text-lg text-slate-300 sm:text-xl">
+            <p class="mx-auto mt-6 max-w-3xl text-xl text-slate-300 sm:text-2xl">
               Tim CSIRT Bojonegoro siap membantu Anda 24/7. Laporkan insiden keamanan siber
               atau konsultasikan kebutuhan keamanan digital Anda.
             </p>
@@ -129,7 +129,7 @@ onMounted(() => {
           <svg class="h-5 w-5 text-white mr-3 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
           </svg>
-          <p class="text-white font-medium">
+          <p class="text-xl text-white font-medium">
             <span class="font-bold">DARURAT:</span> Untuk laporan insiden keamanan siber segera hubungi
             <a href="tel:0353881234" class="underline hover:no-underline ml-1">0353-881234</a>
           </p>
@@ -141,13 +141,13 @@ onMounted(() => {
     <section ref="contactRef" class="py-20 bg-white opacity-0 translate-y-10">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
-          <h2 class="text-base font-semibold uppercase tracking-wider text-indigo-600 mb-2">
+          <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
             Informasi Kontak
           </h2>
-          <h3 class="text-3xl font-extrabold text-slate-900 sm:text-4xl mb-4">
+          <h3 class="text-4xl font-extrabold text-slate-900 sm:text-5xl mb-4">
             Beragam Cara Menghubungi Kami
           </h3>
-          <p class="mx-auto max-w-2xl text-xl text-slate-600">
+          <p class="mx-auto max-w-2xl text-2xl text-slate-600">
             Pilih cara yang paling sesuai untuk kebutuhan Anda
           </p>
         </div>
@@ -169,7 +169,7 @@ onMounted(() => {
               >
                 <i
                   :class="[
-                    `pi ${contact.icon} text-2xl`,
+                    `pi ${contact.icon} !text-2xl`,
                     contact.type === 'emergency' ? 'text-white' : contact.color
                   ]"
                 ></i>
@@ -182,7 +182,7 @@ onMounted(() => {
 
             <!-- Content -->
             <h4
-              class="text-xl font-semibold mb-3 group-hover:text-indigo-600 transition-colors duration-300"
+              class="text-2xl font-semibold mb-3 group-hover:text-indigo-600 transition-colors duration-300"
               :class="contact.type === 'emergency' ? 'text-red-700' : 'text-slate-900'"
             >
               {{ contact.name }}
@@ -195,7 +195,7 @@ onMounted(() => {
               {{ contact.value }}
             </p>
 
-            <p v-if="contact.subtitle" class="text-sm text-red-500 mt-2 font-medium">
+            <p v-if="contact.subtitle" class="text-red-500 mt-2 font-medium">
               {{ contact.subtitle }}
             </p>
 
@@ -234,7 +234,7 @@ onMounted(() => {
 
         <!-- Working Hours -->
         <div class="bg-slate-50 rounded-2xl p-8 mb-16">
-          <h4 class="text-2xl font-bold text-slate-900 mb-6 text-center">Jam Operasional</h4>
+          <h4 class="text-3xl font-bold text-slate-900 mb-6 text-center">Jam Operasional</h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div
               v-for="(schedule, index) in workingHours"
@@ -249,7 +249,6 @@ onMounted(() => {
                 {{ schedule.day }}
               </p>
               <p
-                class="text-sm"
                 :class="schedule.day === 'Hotline Darurat' ? 'text-red-600 font-medium' : 'text-slate-600'"
               >
                 {{ schedule.hours }}
@@ -267,17 +266,17 @@ onMounted(() => {
           <!-- Contact Form -->
           <div>
             <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
-              <h3 class="text-2xl font-bold text-slate-900 mb-6">Kirim Pesan</h3>
+              <h3 class="text-3xl font-bold text-slate-900 mb-6">Kirim Pesan</h3>
 
               <form @submit.prevent="submitForm" class="space-y-6">
                 <!-- Message Type -->
                 <div>
-                  <label class="block text-sm font-medium text-slate-700 mb-2">
+                  <label class="block font-medium text-slate-700 mb-2">
                     Jenis Pesan
                   </label>
                   <select
                     v-model="form.type"
-                    class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                    class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
                     :class="{ 'border-red-300': form.errors.type }"
                   >
                     <option value="general">Informasi Umum</option>
@@ -285,79 +284,79 @@ onMounted(() => {
                     <option value="report">Laporan Non-Darurat</option>
                     <option value="partnership">Kerjasama</option>
                   </select>
-                  <div v-if="form.errors.type" class="mt-1 text-sm text-red-600">
+                  <div v-if="form.errors.type" class="mt-1 text-red-600">
                     {{ form.errors.type }}
                   </div>
                 </div>
 
                 <!-- Name -->
                 <div>
-                  <label class="block text-sm font-medium text-slate-700 mb-2">
+                  <label class="block font-medium text-slate-700 mb-2">
                     Nama Lengkap *
                   </label>
                   <input
                     v-model="form.name"
                     type="text"
                     required
-                    class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                    class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
                     :class="{ 'border-red-300': form.errors.name }"
                     placeholder="Masukkan nama lengkap Anda"
                   />
-                  <div v-if="form.errors.name" class="mt-1 text-sm text-red-600">
+                  <div v-if="form.errors.name" class="mt-1 text-red-600">
                     {{ form.errors.name }}
                   </div>
                 </div>
 
                 <!-- Email -->
                 <div>
-                  <label class="block text-sm font-medium text-slate-700 mb-2">
+                  <label class="block font-medium text-slate-700 mb-2">
                     Email *
                   </label>
                   <input
                     v-model="form.email"
                     type="email"
                     required
-                    class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                    class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
                     :class="{ 'border-red-300': form.errors.email }"
                     placeholder="nama@email.com"
                   />
-                  <div v-if="form.errors.email" class="mt-1 text-sm text-red-600">
+                  <div v-if="form.errors.email" class="mt-1 text-red-600">
                     {{ form.errors.email }}
                   </div>
                 </div>
 
                 <!-- Subject -->
                 <div>
-                  <label class="block text-sm font-medium text-slate-700 mb-2">
+                  <label class="block font-medium text-slate-700 mb-2">
                     Subjek *
                   </label>
                   <input
                     v-model="form.subject"
                     type="text"
                     required
-                    class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                    class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
                     :class="{ 'border-red-300': form.errors.subject }"
                     placeholder="Ringkasan singkat pesan Anda"
                   />
-                  <div v-if="form.errors.subject" class="mt-1 text-sm text-red-600">
+                  <div v-if="form.errors.subject" class="mt-1 text-red-600">
                     {{ form.errors.subject }}
                   </div>
                 </div>
 
                 <!-- Message -->
                 <div>
-                  <label class="block text-sm font-medium text-slate-700 mb-2">
+                  <label class="block font-medium text-slate-700 mb-2">
                     Pesan *
                   </label>
                   <textarea
                     v-model="form.message"
                     rows="6"
                     required
-                    class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 resize-none"
+                    class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 resize-none"
                     :class="{ 'border-red-300': form.errors.message }"
                     placeholder="Tuliskan pesan atau pertanyaan Anda dengan detail..."
                   ></textarea>
-                  <div v-if="form.errors.message" class="mt-1 text-sm text-red-600">
+                  <div v-if="form.errors.message" class="mt-1 text-red-600">
                     {{ form.errors.message }}
                   </div>
                 </div>
@@ -382,10 +381,8 @@ onMounted(() => {
               <!-- Note -->
               <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <div class="flex items-start">
-                  <svg class="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                  </svg>
-                  <div class="text-sm text-blue-700">
+                  <i class="pi pi-info-circle text-blue-600 mt-1 mr-3"></i>
+                  <div class="text-blue-700">
                     <p class="font-medium mb-1">Catatan Penting:</p>
                     <p>Untuk laporan insiden keamanan yang mendesak, segera hubungi hotline darurat kami di <strong>0353-881234</strong> (24/7).</p>
                   </div>
@@ -398,7 +395,7 @@ onMounted(() => {
           <div class="space-y-8">
             <!-- Map -->
             <div class="relative">
-              <h3 class="text-2xl font-bold text-slate-900 mb-6">Lokasi Kantor</h3>
+              <h3 class="text-3xl font-bold text-slate-900 mb-6">Lokasi Kantor</h3>
               <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200">
                 <div class="h-80 w-full">
                   <!-- <iframe
@@ -413,9 +410,7 @@ onMounted(() => {
                 </div>
                 <div class="p-6">
                   <div class="flex items-start">
-                    <svg class="h-5 w-5 text-indigo-600 mt-1 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
-                    </svg>
+                    <i-lucide-map-pinned fill="yellow" class="h-5 w-5 text-indigo-600 mt-1 mr-3 flex-shrink-0"/>
                     <div>
                       <p class="font-semibold text-slate-900">Dinas Komunikasi dan Informatika</p>
                       <p class="text-slate-600">Kabupaten Bojonegoro</p>
@@ -430,7 +425,7 @@ onMounted(() => {
             <!-- Additional Info -->
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
               <h4 class="font-bold text-slate-900 mb-4">Informasi Tambahan</h4>
-              <div class="space-y-3 text-sm text-slate-600">
+              <div class="space-y-3 text-slate-600">
                 <div class="flex items-center">
                   <svg class="h-4 w-4 text-green-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />

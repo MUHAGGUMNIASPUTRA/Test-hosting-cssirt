@@ -134,16 +134,14 @@ onMounted(() => {
           <div class="animate-fade-in-up">
             <!-- FAQ Icon -->
             <div class="w-20 h-20 bg-blue-100/20 rounded-full flex items-center justify-center mx-auto mb-8 backdrop-blur-sm">
-              <svg class="w-10 h-10 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <i class="pi pi-question-circle !text-5xl text-blue-400"></i>
             </div>
 
-            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl mb-6 leading-tight">
+            <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl mb-6 leading-tight">
               Frequently Asked <span class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">Questions</span>
             </h1>
 
-            <p class="text-xl text-slate-300 leading-relaxed mb-8 max-w-3xl mx-auto">
+            <p class="text-2xl text-slate-300 leading-relaxed mb-8 max-w-3xl mx-auto">
               Temukan jawaban untuk pertanyaan yang paling sering diajukan seputar keamanan siber dan layanan CSIRT
             </p>
           </div>
@@ -158,7 +156,7 @@ onMounted(() => {
 
           <!-- Search Section -->
           <div class="text-center mb-16">
-            <h2 class="text-3xl font-bold text-slate-900 mb-4">Cari Jawaban Anda</h2>
+            <h2 class="text-4xl font-bold text-slate-900 mb-4">Cari Jawaban Anda</h2>
             <p class="text-slate-600 mb-8 max-w-2xl mx-auto">
               Gunakan pencarian untuk menemukan informasi yang Anda butuhkan dengan cepat
             </p>
@@ -174,7 +172,7 @@ onMounted(() => {
                   v-model="searchQuery"
                   @input="searchFaqs"
                   type="text"
-                  class="block w-full pl-12 pr-12 py-4 text-lg border border-slate-300 rounded-2xl leading-5 bg-white placeholder-slate-500 focus:outline-none focus:placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  class="block w-full pl-12 pr-12 py-4 text-xl border border-slate-300 rounded-2xl leading-5 bg-white placeholder-slate-500 focus:outline-none focus:placeholder-slate-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="Ketik pertanyaan Anda di sini..."
                 />
                 <div v-if="searchQuery" class="absolute inset-y-0 right-0 pr-4 flex items-center">
@@ -192,7 +190,7 @@ onMounted(() => {
               <!-- Search Results -->
               <div v-if="searchQuery && searchResults.length > 0" class="mt-6 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
                 <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
-                  <h3 class="text-lg font-semibold text-slate-900">Hasil Pencarian</h3>
+                  <h3 class="text-xl font-semibold text-slate-900">Hasil Pencarian</h3>
                 </div>
                 <div class="divide-y divide-slate-200">
                   <div
@@ -203,8 +201,8 @@ onMounted(() => {
                   >
                     <div class="flex items-start justify-between">
                       <div class="flex-1">
-                        <h4 class="text-lg font-semibold text-slate-900 mb-2">{{ result.question }}</h4>
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                        <h4 class="text-xl font-semibold text-slate-900 mb-2">{{ result.question }}</h4>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
                           {{ result.category }}
                         </span>
                       </div>
@@ -233,7 +231,7 @@ onMounted(() => {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 <p>Tidak ditemukan hasil untuk "<strong>{{ searchQuery }}</strong>"</p>
-                <p class="text-sm mt-1">Coba gunakan kata kunci yang berbeda atau jelajahi kategori di bawah</p>
+                <p class="mt-1">Coba gunakan kata kunci yang berbeda atau jelajahi kategori di bawah</p>
               </div>
             </div>
           </div>
@@ -246,7 +244,7 @@ onMounted(() => {
               <div class="sticky top-8">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                   <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
-                    <h3 class="text-lg font-semibold text-slate-900">Kategori</h3>
+                    <h3 class="text-xl font-semibold text-slate-900">Kategori</h3>
                   </div>
                   <nav class="py-2">
                     <button
@@ -272,19 +270,15 @@ onMounted(() => {
                 <!-- Contact Support -->
                 <div class="mt-8 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl p-6 border border-indigo-200">
                   <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mb-4">
-                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25c5.385 0 9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.635 2.25 12 6.615 2.25 12 2.25z" />
-                    </svg>
+                    <i-lucide-crosshair class="w-6 h-6 text-indigo-600" />
                   </div>
-                  <h3 class="text-lg font-semibold text-slate-900 mb-2">Butuh Bantuan Lebih?</h3>
-                  <p class="text-slate-600 text-sm mb-4">Tidak menemukan jawaban yang Anda cari? Tim support kami siap membantu</p>
+                  <h3 class="text-xl font-semibold text-slate-900 mb-2">Butuh Bantuan Lebih?</h3>
+                  <p class="text-slate-600 mb-4">Tidak menemukan jawaban yang Anda cari? Tim support kami siap membantu</p>
                   <Link
                     :href="route('incident.create')"
-                    class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 text-sm font-medium"
+                    class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 font-medium"
                   >
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
+                    <i-lucide-message-circle-more class="mr-2" />
                     Hubungi Support
                   </Link>
                 </div>
@@ -305,7 +299,7 @@ onMounted(() => {
                     class="w-full text-left px-6 py-6 focus:outline-none hover:bg-slate-50 transition-colors duration-200"
                   >
                     <div class="flex items-start justify-between">
-                      <h3 class="text-lg font-semibold text-slate-900 pr-4">{{ faq.question }}</h3>
+                      <h3 class="text-xl font-semibold text-slate-900 pr-4">{{ faq.question }}</h3>
                       <svg
                         class="w-5 h-5 text-slate-400 transition-transform duration-200 flex-shrink-0"
                         :class="{ 'rotate-180': openItems.has(faq.id) }"
@@ -324,7 +318,7 @@ onMounted(() => {
                     <div class="prose prose-slate max-w-none mb-4" v-html="faq.answer"></div>
                     <!-- Category information moved here -->
                     <div class="pt-4 border-t border-slate-100">
-                      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
+                      <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-700">
                         <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                         </svg>
@@ -342,7 +336,7 @@ onMounted(() => {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <h3 class="text-xl font-semibold text-slate-900 mb-2">FAQ Belum Tersedia</h3>
+                <h3 class="text-2xl font-semibold text-slate-900 mb-2">FAQ Belum Tersedia</h3>
                 <p class="text-slate-600">FAQ akan segera hadir untuk membantu Anda.</p>
               </div>
             </div>

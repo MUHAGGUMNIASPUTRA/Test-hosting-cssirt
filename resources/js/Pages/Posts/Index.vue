@@ -102,10 +102,10 @@ onMounted(() => {
       <div class="relative z-10 px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
         <div class="container mx-auto text-center">
           <div class="animate-fade-in-up">
-            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
+            <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl">
               Artikel & <span class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">Panduan</span>
             </h1>
-            <p class="mx-auto mt-6 max-w-3xl text-lg text-slate-300 sm:text-xl">
+            <p class="mx-auto mt-6 max-w-3xl text-xl text-slate-300 sm:text-2xl">
               Ikuti informasi, panduan, dan berita terkini seputar keamanan siber
               untuk meningkatkan kewaspadaan kita bersama
             </p>
@@ -121,7 +121,7 @@ onMounted(() => {
         <!-- Featured Post (Only on First Page) -->
         <div v-if="isFirstPage && posts.data.length > 0" class="mb-16">
           <div class="text-center mb-12">
-            <h2 class="text-base font-semibold uppercase tracking-wider text-indigo-600 mb-2">
+            <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
               Artikel Terbaru
             </h2>
           </div>
@@ -141,31 +141,29 @@ onMounted(() => {
                 <!-- Categories -->
                 <div class="mb-4">
                   <div v-if="posts.data[0].categories?.length > 0" class="flex flex-wrap gap-2">
-                    <span v-for="category in posts.data[0].categories" :key="category.id" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 hover:bg-indigo-200 transition-colors duration-200">
+                    <span v-for="category in posts.data[0].categories" :key="category.id" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 hover:bg-indigo-200 transition-colors duration-200">
                       <Link :href="route('categories.show', category.slug)">{{ category.name }}</Link>
                     </span>
                   </div>
-                  <span v-else class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800">Artikel</span>
+                  <span v-else class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800">Artikel</span>
                 </div>
 
                 <!-- Title -->
-                <h3 class="text-2xl lg:text-3xl font-bold text-slate-900 mb-4 group-hover:text-indigo-600 transition-colors duration-300">
+                <h3 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-4 group-hover:text-indigo-600 transition-colors duration-300">
                   <Link :href="route('posts.show', { post: posts.data[0].slug })">
                     {{ posts.data[0].title }}
                   </Link>
                 </h3>
 
                 <!-- Excerpt -->
-                <p class="text-lg text-slate-600 mb-6 leading-relaxed">
+                <p class="text-xl text-slate-600 mb-6 leading-relaxed">
                   {{ generateExcerpt(posts.data[0]) }}
                 </p>
 
                 <!-- Meta Info -->
-                <div class="flex items-center text-sm text-slate-500 mb-6">
+                <div class="flex items-center text-slate-500 mb-6">
                   <div class="flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
+                    <i-lucide-user-pen class="mr-2" />
                     <span class="font-medium">{{ posts.data[0].published_by }}</span>
                   </div>
                   <span class="mx-3">•</span>
@@ -192,7 +190,7 @@ onMounted(() => {
         <!-- Regular Posts Grid -->
         <div v-if="gridPosts.length > 0">
           <div class="text-center mb-12">
-            <h2 class="text-base font-semibold uppercase tracking-wider text-indigo-600 mb-2">
+            <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
               {{ isFirstPage ? 'Artikel Lainnya' : 'Semua Artikel' }}
             </h2>
           </div>
@@ -217,31 +215,29 @@ onMounted(() => {
                 <!-- Categories -->
                 <div class="mb-3">
                   <div v-if="post.categories?.length > 0" class="flex flex-wrap gap-2">
-                    <span v-for="category in post.categories" :key="category.id" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 hover:bg-indigo-200 transition-colors duration-200">
+                    <span v-for="category in post.categories" :key="category.id" class="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 hover:bg-indigo-200 transition-colors duration-200">
                       <Link :href="route('categories.show', category.slug)">{{ category.name }}</Link>
                     </span>
                   </div>
-                  <span v-else class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800">Artikel</span>
+                  <span v-else class="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800">Artikel</span>
                 </div>
 
                 <!-- Title -->
-                <h3 class="text-xl font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300 line-clamp-2">
+                <h3 class="text-2xl font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300 line-clamp-2">
                   <Link :href="route('posts.show', { post: post.slug })">
                     {{ post.title }}
                   </Link>
                 </h3>
 
                 <!-- Excerpt -->
-                <p class="text-slate-600 mb-4 line-clamp-3 text-sm leading-relaxed">
+                <p class="text-slate-600 mb-4 line-clamp-3 leading-relaxed">
                   {{ generateExcerpt(post) }}
                 </p>
 
                 <!-- Meta Info -->
-                <div class="flex items-center justify-between text-xs text-slate-500">
+                <div class="flex items-center justify-between text-sm text-slate-500">
                   <div class="flex items-center">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
+                    <i-lucide-user-pen class="mr-2" />
                     <span>{{ post.published_by }}</span>
                   </div>
                   <time :datetime="post.published_at">
@@ -253,7 +249,7 @@ onMounted(() => {
                 <div class="mt-4 pt-4 border-t border-slate-200">
                   <Link
                     :href="route('posts.show', { post: post.slug })"
-                    class="inline-flex items-center text-indigo-600 hover:text-indigo-700 font-medium text-sm group/link"
+                    class="inline-flex items-center text-indigo-600 hover:text-indigo-700 font-medium group/link"
                   >
                     Baca Artikel
                     <svg class="ml-1 h-3 w-3 group-hover/link:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -268,17 +264,17 @@ onMounted(() => {
 
         <!-- Modern Pagination -->
         <div v-if="posts.links.length > 3" class="mt-16 flex justify-center">
-          <nav class="flex items-center space-x-2" aria-label="Pagination">
+          <nav class="flex items-center space-x-1" aria-label="Pagination">
             <!-- First Page -->
             <Link
               v-if="posts.current_page > 1"
               :href="posts.first_page_url"
-              class="inline-flex items-center px-3 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 hover:border-slate-400 transition-all duration-200"
+              class="inline-flex items-center px-3 py-2 font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 hover:border-slate-400 transition-all duration-200"
               :title="isMobile ? 'Halaman Pertama' : undefined"
             >
-              <svg class="w-4 h-4" :class="isMobile ? '' : 'mr-1'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-              </svg>
+              <span class="py-0.5">
+                <i-lucide-chevrons-left />
+              </span>
               <span v-if="!isMobile">Pertama</span>
             </Link>
 
@@ -287,30 +283,25 @@ onMounted(() => {
               <template v-for="(link, key) in paginationLinks" :key="key">
                 <span
                   v-if="link.url === null"
-                  class="inline-flex items-center px-3 py-2 text-sm font-medium text-slate-400 bg-slate-100 border border-slate-200 rounded-lg cursor-not-allowed"
+                  class="inline-flex items-center px-3 py-2 font-medium text-slate-400 bg-slate-100 border border-slate-200 rounded-lg cursor-not-allowed"
                 >
-                  <svg v-if="link.label.includes('Previous')" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                  </svg>
-                  <svg v-else-if="link.label.includes('Next')" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                  </svg>
+                  <span v-if="link.label.includes('Previous')" class="py-0.5"><i-lucide-chevron-left /></span>
+                  <span v-else-if="link.label.includes('Next')" class="py-0.5"><i-lucide-chevron-right /></span>
                   <span v-else>{{ link.label }}</span>
                 </span>
                 <Link
                   v-else
                   :href="link.url"
-                  class="inline-flex items-center px-3 py-2 text-sm font-medium border rounded-lg transition-all duration-200"
-                  :class="link.active
+                  class="inline-flex items-center py-2 font-medium border rounded-lg transition-all duration-200"
+                  :class="[
+                    link.active
                     ? 'text-white bg-indigo-600 border-indigo-600 shadow-lg'
-                    : 'text-slate-600 bg-white border-slate-300 hover:bg-slate-50 hover:border-slate-400'"
+                    : 'text-slate-600 bg-white border-slate-300 hover:bg-slate-50 hover:border-slate-400',
+                    link.label.includes('Previous') || link.label.includes('Next') ? 'px-3' : 'px-4',
+                  ]"
                 >
-                  <svg v-if="link.label.includes('Previous')" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                  </svg>
-                  <svg v-else-if="link.label.includes('Next')" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                  </svg>
+                  <span v-if="link.label.includes('Previous')" class="py-0.5"><i-lucide-chevron-left /></span>
+                  <span v-else-if="link.label.includes('Next')" class="py-0.5"><i-lucide-chevron-right /></span>
                   <span v-else>{{ link.label }}</span>
                 </Link>
               </template>
@@ -320,13 +311,13 @@ onMounted(() => {
             <Link
               v-if="posts.current_page < posts.last_page"
               :href="posts.last_page_url"
-              class="inline-flex items-center px-3 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 hover:border-slate-400 transition-all duration-200"
+              class="inline-flex items-center px-3 py-2 font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 hover:border-slate-400 transition-all duration-200"
               :title="isMobile ? 'Halaman Terakhir' : undefined"
             >
               <span v-if="!isMobile">Terakhir</span>
-              <svg class="w-4 h-4" :class="isMobile ? '' : 'ml-1'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-              </svg>
+              <span class="py-0.5">
+                <i-lucide-chevrons-right />
+              </span>
             </Link>
           </nav>
         </div>
@@ -338,7 +329,7 @@ onMounted(() => {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
-          <h3 class="text-xl font-semibold text-slate-900 mb-2">Belum Ada Artikel</h3>
+          <h3 class="text-2xl font-semibold text-slate-900 mb-2">Belum Ada Artikel</h3>
           <p class="text-slate-600">Artikel dan panduan akan segera tersedia di sini.</p>
         </div>
       </div>

@@ -1,5 +1,5 @@
 <script setup>
-import { router } from '@inertiajs/vue3'
+import { Link, router } from '@inertiajs/vue3'
 import { onMounted, ref, computed } from 'vue'
 
 const props = defineProps({
@@ -54,13 +54,13 @@ onMounted(() => {
       <div class="relative z-10 flex items-center justify-center min-h-screen">
         <div class="container mx-auto px-4 py-20 text-center sm:px-6 lg:px-8">
           <div class="animate-fade-in-up">
-            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl leading-tight">
+            <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl leading-tight">
               <span class="block">Menjaga Integritas dan</span>
               <span class="block bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent pb-2">
                 Keamanan Digital
               </span>
             </h1>
-            <p class="mx-auto mt-6 max-w-3xl text-lg text-slate-300 sm:text-xl md:text-2xl">
+            <p class="mx-auto mt-6 max-w-3xl text-lg text-slate-300 sm:text-2xl md:text-3xl">
               CSIRT Bojonegoro hadir sebagai tim respons insiden keamanan siber untuk melindungi
               aset digital Pemerintah Kabupaten Bojonegoro
             </p>
@@ -69,7 +69,7 @@ onMounted(() => {
                 @click="router.visit('/incident')"
                 class="group relative inline-flex items-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 hover:from-red-700 hover:to-red-800"
               >
-                <svg class="mr-3 h-5 w-5 group-hover:animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="mr-3 h-5 w-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
                 </svg>
                 Lapor Insiden Siber
@@ -93,10 +93,10 @@ onMounted(() => {
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 class="text-base font-semibold uppercase tracking-wider text-indigo-600 mb-2">
+            <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
               Tentang CSIRT Bojonegoro
             </h2>
-            <h3 class="text-3xl font-extrabold text-slate-900 sm:text-4xl mb-6">
+            <h3 class="text-4xl font-extrabold text-slate-900 sm:text-5xl mb-6">
               Melindungi Aset Digital Pemerintahan
             </h3>
             <p class="text-lg text-slate-600 mb-8">
@@ -162,13 +162,13 @@ onMounted(() => {
     <section id="layanan" ref="servicesRef" class="py-20 bg-slate-50 opacity-0 translate-y-10">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
-          <h2 class="text-base font-semibold uppercase tracking-wider text-indigo-600 mb-2">
+          <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
             Layanan Kami
           </h2>
-          <h3 class="text-3xl font-extrabold text-slate-900 sm:text-4xl mb-4">
+          <h3 class="text-4xl font-extrabold text-slate-900 sm:text-5xl mb-4">
             Fokus Utama CSIRT Bojonegoro
           </h3>
-          <p class="mx-auto max-w-2xl text-xl text-slate-600">
+          <p class="mx-auto max-w-2xl text-2xl text-slate-600">
             Kami menyediakan layanan komprehensif untuk menjaga ekosistem digital yang aman dan terpercaya
           </p>
         </div>
@@ -183,13 +183,13 @@ onMounted(() => {
             <!-- Service Icon -->
             <div class="relative mb-6">
               <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                <i :class="`pi ${service.icon} text-2xl text-white`"></i>
+                <i :class="`pi ${service.icon} !text-2xl text-white`"></i>
               </div>
               <div class="absolute -inset-2 bg-gradient-to-br from-indigo-500/20 to-blue-600/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
             </div>
 
             <!-- Service Content -->
-            <h4 class="text-xl font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300">
+            <h4 class="text-2xl font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300">
               {{ service.name }}
             </h4>
             <p class="text-slate-600 leading-relaxed">
@@ -207,13 +207,13 @@ onMounted(() => {
     <section id="berita" class="py-20 bg-white">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
-          <h2 class="text-base font-semibold uppercase tracking-wider text-indigo-600 mb-2">
+          <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
             Pusat Informasi
           </h2>
-          <h3 class="text-3xl font-extrabold text-slate-900 sm:text-4xl mb-4">
+          <h3 class="text-4xl font-extrabold text-slate-900 sm:text-5xl mb-4">
             Artikel & Panduan Terbaru
           </h3>
-          <p class="mx-auto max-w-2xl text-xl text-slate-600">
+          <p class="mx-auto max-w-2xl text-2xl text-slate-600">
             Ikuti informasi terkini seputar keamanan siber untuk meningkatkan kewaspadaan
           </p>
         </div>
@@ -237,10 +237,8 @@ onMounted(() => {
 
             <!-- Post Content -->
             <div class="p-6">
-              <div class="flex items-center text-sm text-slate-500 mb-3">
-                <svg class="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
-                </svg>
+              <div class="flex items-center text-slate-500 mb-3">
+                <i-lucide-calendar-check-2 class="h-4 w-4 mr-2" />
                 {{ new Date(post.created_at).toLocaleDateString('id-ID', {
                   day: 'numeric',
                   month: 'long',
@@ -248,7 +246,7 @@ onMounted(() => {
                 }) }}
               </div>
 
-              <h4 class="text-xl font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300 line-clamp-2">
+              <h4 class="text-2xl font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300 line-clamp-2">
                 {{ post.title }}
               </h4>
 
@@ -271,15 +269,15 @@ onMounted(() => {
 
         <!-- View All Button -->
         <div class="text-center mt-12">
-          <a
+          <Link
             :href="route('posts.index')"
-            class="inline-flex items-center px-6 py-3 border border-indigo-300 text-base font-medium rounded-lg text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-400 transition-all duration-200"
+            class="inline-flex items-center px-6 py-3 border border-indigo-300 text-lg font-medium rounded-lg text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-400 transition-all duration-200"
           >
             Lihat Semua Artikel
             <svg class="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
-          </a>
+          </Link>
         </div>
       </div>
     </section>
@@ -288,53 +286,53 @@ onMounted(() => {
     <section id="kontak" class="py-20 bg-slate-900">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
-          <h2 class="text-base font-semibold uppercase tracking-wider text-indigo-400 mb-2">
+          <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-400 mb-2">
             Hubungi Kami
           </h2>
-          <h3 class="text-3xl font-extrabold text-white sm:text-4xl mb-4">
+          <h3 class="text-4xl font-extrabold text-white sm:text-5xl mb-4">
             Siap Membantu 24/7
           </h3>
-          <p class="mx-auto max-w-2xl text-xl text-slate-300">
+          <p class="mx-auto max-w-2xl text-2xl text-slate-300">
             Tim CSIRT Bojonegoro siap merespons setiap laporan insiden keamanan siber
           </p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <!-- Emergency Contact -->
-          <div class="bg-gradient-to-br from-red-600 to-red-700 rounded-2xl p-8 text-center text-white">
+          <div class="bg-gradient-to-br from-red-600 to-red-800 rounded-2xl p-8 text-center text-white">
             <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg class="h-8 w-8" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+              <svg class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M1.5 4.5a3 3 0 0 1 3-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 0 1-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 0 0 6.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 0 1 1.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 0 1-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5Z" clip-rule="evenodd" />
               </svg>
             </div>
-            <h4 class="text-xl font-semibold mb-2">Darurat 24/7</h4>
+            <h4 class="text-2xl font-semibold mb-2">Darurat 24/7</h4>
             <p class="text-red-100 mb-3">Laporan insiden keamanan siber</p>
-            <p class="text-2xl font-bold">0353-881234</p>
+            <p class="text-3xl font-bold">0353-881234</p>
           </div>
 
           <!-- General Contact -->
-          <div class="bg-white rounded-2xl p-8 text-center border border-slate-200">
+          <div class="bg-gradient-to-br from-gray-100 to-indigo-100 rounded-2xl p-8 text-center border border-slate-200">
             <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg class="h-8 w-8 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+              <svg class="h-8 w-8 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
+                <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
               </svg>
             </div>
-            <h4 class="text-xl font-semibold text-slate-900 mb-2">Email</h4>
+            <h4 class="text-2xl font-semibold text-slate-900 mb-2">Email</h4>
             <p class="text-slate-600 mb-3">Kontak umum dan konsultasi</p>
             <p class="text-lg font-medium text-indigo-600">csirt@bojonegorokab.go.id</p>
           </div>
 
           <!-- Office Address -->
-          <div class="bg-white rounded-2xl p-8 text-center border border-slate-200">
+          <div class="bg-gradient-to-br from-gray-100 to-indigo-100 rounded-2xl p-8 text-center border border-slate-200">
             <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg class="h-8 w-8 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
               </svg>
             </div>
-            <h4 class="text-xl font-semibold text-slate-900 mb-2">Alamat Kantor</h4>
+            <h4 class="text-2xl font-semibold text-slate-900 mb-2">Alamat Kantor</h4>
             <p class="text-slate-600 mb-3">Kantor Pemerintah Kabupaten</p>
-            <p class="text-sm text-slate-700">Jl. Teuku Umar No.1, Bojonegoro, Jawa Timur 62115</p>
+            <p class="text-slate-700">Jl. P. Mas Tumapel No.1, Bojonegoro, Jawa Timur 62115</p>
           </div>
         </div>
       </div>

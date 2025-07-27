@@ -7,7 +7,7 @@ import { createApp, h } from 'vue'
 import { ZiggyVue } from '../../vendor/tightenco/ziggy'
 
 import PrimeVue from 'primevue/config'
-import Aura from '@primeuix/themes/aura'
+import Noir from "./presets/noir";
 import 'primeicons/primeicons.css'
 
 import ConfirmationService from 'primevue/confirmationservice';
@@ -28,7 +28,7 @@ createInertiaApp({
       .use(ZiggyVue)
       .use(PrimeVue, {
         theme: {
-          preset: Aura,
+          preset: Noir,
           options: {
             prefix: 'p',
             darkModeSelector: '.p-dark',

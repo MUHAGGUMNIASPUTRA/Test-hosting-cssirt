@@ -43,7 +43,7 @@ const processSteps = [
 const capabilities = [
   {
     title: 'Response Time',
-    value: '< 30 min',
+    value: '< 1 jam',
     description: 'Waktu respons rata-rata untuk insiden kritis',
     color: 'from-red-500 to-red-600'
   },
@@ -109,13 +109,13 @@ const serviceGridClasses = computed(() => {
       <div class="relative container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
           <div class="animate-fade-in-up">
-            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl leading-tight">
+            <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl leading-tight">
               <span class="block">Layanan</span>
               <span class="block bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent pb-2">
                 CSIRT Bojonegoro
               </span>
             </h1>
-            <p class="mx-auto mt-6 max-w-3xl text-xl text-slate-300">
+            <p class="mx-auto mt-6 max-w-3xl text-2xl text-slate-300">
               Solusi komprehensif keamanan siber untuk melindungi aset digital
               pemerintahan dengan standar internasional
             </p>
@@ -140,8 +140,8 @@ const serviceGridClasses = computed(() => {
               </div>
               <div :class="`absolute inset-0 w-24 h-24 mx-auto rounded-2xl bg-gradient-to-br ${capability.color} opacity-20 group-hover:opacity-30 transition-opacity duration-300 scale-110`"></div>
             </div>
-            <h3 class="text-lg font-semibold text-slate-900 mb-2">{{ capability.title }}</h3>
-            <p class="text-sm text-slate-600">{{ capability.description }}</p>
+            <h3 class="text-xl font-semibold text-slate-900 mb-2">{{ capability.title }}</h3>
+            <p class="text-slate-600">{{ capability.description }}</p>
           </div>
         </div>
       </div>
@@ -151,13 +151,13 @@ const serviceGridClasses = computed(() => {
     <section ref="servicesRef" class="py-20 bg-slate-50 opacity-0 translate-y-10">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
-          <h2 class="text-base font-semibold uppercase tracking-wider text-indigo-600 mb-2">
+          <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
             Layanan Unggulan
           </h2>
-          <h3 class="text-3xl font-extrabold text-slate-900 sm:text-4xl mb-4">
+          <h3 class="text-4xl font-extrabold text-slate-900 sm:text-5xl mb-4">
             Perlindungan Menyeluruh
           </h3>
-          <p class="mx-auto max-w-2xl text-xl text-slate-600">
+          <p class="mx-auto max-w-2xl text-2xl text-slate-600">
             Berbagai layanan terintegrasi untuk menjaga keamanan dan integritas
             sistem informasi pemerintahan
           </p>
@@ -171,42 +171,25 @@ const serviceGridClasses = computed(() => {
             :style="{ animationDelay: `${index * 100}ms` }"
           >
             <!-- Service Icon -->
-            <div class="relative mb-6">
-              <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                <i :class="`pi ${service.icon} text-2xl text-white`"></i>
+            <div class="flex items-center gap-4 mb-4">
+              <div class="relative">
+                <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                  <i :class="`pi ${service.icon} !text-xl text-white`"></i>
+                </div>
+                <div class="absolute -inset-2 bg-gradient-to-br from-indigo-500/20 to-blue-600/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
               </div>
-              <div class="absolute -inset-2 bg-gradient-to-br from-indigo-500/20 to-blue-600/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+              <h4 class="text-2xl font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors duration-300">
+                {{ service.name }}
+              </h4>
             </div>
 
             <!-- Service Content -->
-            <h4 class="text-xl font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300">
+            <!-- <h4 class="text-2xl font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300">
               {{ service.name }}
-            </h4>
-            <p class="text-slate-600 leading-relaxed mb-4">
+            </h4> -->
+            <p class="text-slate-600 leading-relaxed">
               {{ service.short_description }}
             </p>
-
-            <!-- Service Features -->
-            <div class="space-y-2">
-              <div class="flex items-center text-sm text-slate-500">
-                <svg class="h-4 w-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                </svg>
-                Monitoring 24/7
-              </div>
-              <div class="flex items-center text-sm text-slate-500">
-                <svg class="h-4 w-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                </svg>
-                Respons Cepat
-              </div>
-              <div class="flex items-center text-sm text-slate-500">
-                <svg class="h-4 w-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                </svg>
-                Standar Internasional
-              </div>
-            </div>
 
             <!-- Hover Effect -->
             <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500/5 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -219,13 +202,13 @@ const serviceGridClasses = computed(() => {
     <section ref="processRef" class="py-20 bg-white opacity-0 translate-y-10">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
-          <h2 class="text-base font-semibold uppercase tracking-wider text-indigo-600 mb-2">
+          <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
             Alur Kerja
           </h2>
-          <h3 class="text-3xl font-extrabold text-slate-900 sm:text-4xl mb-4">
+          <h3 class="text-4xl font-extrabold text-slate-900 sm:text-5xl mb-4">
             Proses Penanganan Insiden
           </h3>
-          <p class="mx-auto max-w-2xl text-xl text-slate-600">
+          <p class="mx-auto max-w-2xl text-2xl text-slate-600">
             Metodologi terstruktur untuk respons insiden yang efektif dan efisien
           </p>
         </div>
@@ -251,7 +234,7 @@ const serviceGridClasses = computed(() => {
                 <!-- Step Number Circle -->
                 <div class="relative mb-6">
                   <div class="w-16 h-16 mx-auto bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 transform group-hover:scale-110 relative z-20">
-                    <span class="text-xl font-bold text-white">{{ step.step }}</span>
+                    <span class="text-2xl font-bold text-white">{{ step.step }}</span>
                   </div>
                   <!-- Glow effect -->
                   <div class="absolute inset-0 w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-indigo-500/20 to-blue-600/20 group-hover:opacity-100 opacity-0 transition-opacity duration-300 scale-125"></div>
@@ -259,14 +242,14 @@ const serviceGridClasses = computed(() => {
 
                 <!-- Step Icon -->
                 <div class="w-12 h-12 mx-auto bg-slate-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-indigo-50 transition-colors duration-300">
-                  <i :class="`pi ${step.icon} text-xl text-indigo-600`"></i>
+                  <i :class="`pi ${step.icon} text-indigo-600`"></i>
                 </div>
 
                 <!-- Step Content -->
-                <h4 class="text-lg font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300">
+                <h4 class="text-xl font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300">
                   {{ step.title }}
                 </h4>
-                <p class="text-sm text-slate-600 leading-relaxed">
+                <p class="text-slate-600 leading-relaxed">
                   {{ step.description }}
                 </p>
 
@@ -295,7 +278,7 @@ const serviceGridClasses = computed(() => {
                 <div class="flex flex-col items-center">
                   <!-- Step Number Circle -->
                   <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 transform group-hover:scale-110 relative z-10">
-                    <span class="text-xl font-bold text-white">{{ step.step }}</span>
+                    <span class="text-2xl font-bold text-white">{{ step.step }}</span>
                   </div>
 
                   <!-- Vertical Connector Line (except last) -->
@@ -303,17 +286,17 @@ const serviceGridClasses = computed(() => {
                 </div>
 
                 <!-- Step Content -->
-                <div class="flex-1 pt-4">
+                <div class="flex-1 pt-2">
                   <!-- Step Icon -->
                   <div class="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-indigo-50 transition-colors duration-300">
-                    <i :class="`pi ${step.icon} text-xl text-indigo-600`"></i>
+                    <i :class="`pi ${step.icon} text-2xl text-indigo-600`"></i>
                   </div>
 
                   <!-- Step Title and Description -->
-                  <h4 class="text-lg font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300">
+                  <h4 class="text-xl font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300">
                     {{ step.title }}
                   </h4>
-                  <p class="text-sm text-slate-600 leading-relaxed">
+                  <p class="text-slate-600 leading-relaxed">
                     {{ step.description }}
                   </p>
                 </div>
@@ -325,10 +308,10 @@ const serviceGridClasses = computed(() => {
         <!-- Process Flow Legend -->
         <div class="mt-12 text-center">
           <div class="inline-flex items-center space-x-2 bg-slate-100 rounded-full px-4 py-2">
-            <svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 1.414L10.586 9.5 9.293 8.207a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L11 9.586z" clip-rule="evenodd" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-indigo-600 icon icon-tabler icons-tabler-outline icon-tabler-progress-check">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 20.777a8.942 8.942 0 0 1 -2.48 -.969" /><path d="M14 3.223a9.003 9.003 0 0 1 0 17.554" /><path d="M4.579 17.093a8.961 8.961 0 0 1 -1.227 -2.592" /><path d="M3.124 10.5c.16 -.95 .468 -1.85 .9 -2.675l.169 -.305" /><path d="M6.907 4.579a8.954 8.954 0 0 1 3.093 -1.356" /><path d="M9 12l2 2l4 -4" />
             </svg>
-            <span class="text-sm text-slate-600 font-medium">Proses berjalan secara berurutan untuk hasil optimal</span>
+            <span class="text-slate-600 font-medium">Proses berjalan secara berurutan untuk hasil optimal</span>
           </div>
         </div>
       </div>
@@ -337,17 +320,17 @@ const serviceGridClasses = computed(() => {
     <!-- CTA Section -->
     <section class="py-20 bg-gradient-to-br from-slate-900 via-indigo-900 to-blue-900">
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl font-extrabold text-white sm:text-4xl mb-6">
+        <h2 class="text-4xl font-extrabold text-white sm:text-5xl mb-6">
           Butuh Bantuan Keamanan Siber?
         </h2>
-        <p class="mx-auto max-w-2xl text-xl text-slate-300 mb-8">
+        <p class="mx-auto max-w-2xl text-2xl text-slate-300 mb-8">
           Tim CSIRT Bojonegoro siap membantu Anda 24/7 untuk mengatasi
           berbagai tantangan keamanan siber
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a
             href="/contact"
-            class="inline-flex items-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-indigo-600 to-blue-600 rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+            class="inline-flex items-center px-8 py-4 text-xl font-semibold text-white bg-gradient-to-r from-indigo-600 to-blue-600 rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
           >
             <svg class="mr-3 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
@@ -357,7 +340,7 @@ const serviceGridClasses = computed(() => {
           </a>
           <a
             href="/incident"
-            class="inline-flex items-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+            class="inline-flex items-center px-8 py-4 text-xl font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
           >
             <svg class="mr-3 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />

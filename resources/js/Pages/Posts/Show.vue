@@ -15,7 +15,7 @@ const contentRef = ref(null)
 const sidebarRef = ref(null)
 
 // Responsive composable
-const { isMobile } = useResponsive()
+const { isDesktop } = useResponsive()
 
 // State for rating
 const currentRating = ref(0);
@@ -93,16 +93,14 @@ const shareText = computed(() => props.post.title);
       </div>
 
       <div class="relative z-10 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div class="container mx-auto max-w-6xl">
+        <div class="container mx-auto max-w-7xl">
           <div class="animate-fade-in-up">
             <!-- Breadcrumb -->
             <nav class="flex justify-center mb-8" aria-label="Breadcrumb">
-              <ol class="inline-flex items-center space-x-1 md:space-x-2 text-sm">
+              <ol class="inline-flex items-center space-x-1 md:space-x-2">
                 <li class="inline-flex items-center">
                   <Link :href="route('posts.index')" class="inline-flex items-center text-slate-300 hover:text-white transition-colors duration-200">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L9 5.414V17a1 1 0 102 0V5.414l5.293 5.293a1 1 0 001.414-1.414l-7-7z"/>
-                    </svg>
+                    <i-lucide-arrow-up class="mr-2" />
                     Artikel
                   </Link>
                 </li>
@@ -116,7 +114,7 @@ const shareText = computed(() => props.post.title);
                     </Link>
                   </div>
                 </li>
-                <li v-if="!isMobile" aria-current="page">
+                <li v-if="isDesktop" aria-current="page">
                   <div class="flex items-center">
                     <svg class="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
@@ -128,7 +126,7 @@ const shareText = computed(() => props.post.title);
             </nav>
 
             <!-- Hero Content -->
-            <div class="text-center max-w-5xl mx-auto">
+            <div class="text-center max-w-7xl mx-auto">
               <!-- Categories -->
               <div v-if="post.categories.length > 0" class="mb-6">
                 <div class="flex flex-wrap justify-center gap-2">
@@ -136,7 +134,7 @@ const shareText = computed(() => props.post.title);
                     v-for="category in post.categories"
                     :key="category.id"
                     :href="route('categories.show', category.slug)"
-                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100/20 text-blue-200 hover:bg-blue-100/30 transition-colors duration-200 backdrop-blur-sm"
+                    class="inline-flex items-center px-3 py-1 rounded-full font-medium bg-blue-100/20 text-blue-200 hover:bg-blue-100/30 transition-colors duration-200 backdrop-blur-sm"
                   >
                     {{ category.name }}
                   </Link>
@@ -144,12 +142,12 @@ const shareText = computed(() => props.post.title);
               </div>
 
               <!-- Title -->
-              <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl mb-6 leading-tight">
+              <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl mb-6 leading-tight">
                 {{ post.title }}
               </h1>
 
               <!-- Excerpt -->
-              <p v-if="post.excerpt" class="text-xl text-slate-300 leading-relaxed mb-8 max-w-4xl mx-auto">
+              <p v-if="post.excerpt" class="text-2xl text-slate-300 leading-relaxed mb-8 max-w-5xl mx-auto">
                 {{ post.excerpt }}
               </p>
 
@@ -157,17 +155,13 @@ const shareText = computed(() => props.post.title);
               <div class="flex flex-wrap items-center justify-center gap-6 text-slate-300">
                 <!-- Author -->
                 <div class="flex items-center">
-                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
+                  <i-lucide-user-pen class="mr-2" />
                   {{ post.published_by }}
                 </div>
 
                 <!-- Date -->
                 <div class="flex items-center">
-                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
+                  <i-lucide-calendar-check-2 class="mr-2" />
                   <time :datetime="post.published_at">
                     {{ new Date(post.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) }}
                   </time>
@@ -175,24 +169,19 @@ const shareText = computed(() => props.post.title);
 
                 <!-- Reading Time -->
                 <div class="flex items-center">
-                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                  <i-lucide-clock class="mr-2" />
                   {{ readingTime }} menit baca
                 </div>
 
                 <!-- Views -->
                 <div class="flex items-center">
-                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
+                  <i-lucide-eye class="mr-2" />
                   {{ post.views_count }} kali dilihat
                 </div>
 
                 <!-- Rating -->
                 <div v-if="post.rating" class="flex items-center">
-                  <svg class="w-5 h-5 mr-2 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                  <svg class="w-5 h-5 mr-1.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                   {{ post.rating }}/5 ({{ post.ratings_count }} rating)
@@ -225,12 +214,12 @@ const shareText = computed(() => props.post.title);
 
             <!-- Tags -->
             <div v-if="post.tags.length > 0" class="mt-12 pt-8 border-t border-slate-200">
-              <h3 class="text-lg font-semibold text-slate-900 mb-4">Tags</h3>
+              <h3 class="text-xl font-semibold text-slate-900 mb-4">Tags</h3>
               <div class="flex flex-wrap gap-2">
                 <span
                   v-for="tag in post.tags"
                   :key="tag.id"
-                  class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors duration-200"
+                  class="inline-flex items-center px-3 py-1 rounded-full font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors duration-200"
                 >
                   #{{ tag.name }}
                 </span>
@@ -239,7 +228,7 @@ const shareText = computed(() => props.post.title);
 
             <!-- Social Share -->
             <div class="mt-8 pt-8 border-t border-slate-200">
-              <h3 class="text-lg font-semibold text-slate-900 mb-4">Bagikan Artikel</h3>
+              <h3 class="text-xl font-semibold text-slate-900 mb-4">Bagikan Artikel</h3>
               <div class="flex flex-wrap gap-3">
                 <a
                   :href="`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`"
@@ -281,7 +270,7 @@ const shareText = computed(() => props.post.title);
 
               <!-- Rating Section -->
               <div class="bg-gradient-to-br from-slate-50 to-blue-50 rounded-2xl p-6 border border-slate-200">
-                <h3 class="text-xl font-bold text-slate-900 mb-4">Rating Artikel</h3>
+                <h3 class="text-2xl font-bold text-slate-900 mb-4">Rating Artikel</h3>
 
                 <div v-if="userHasRated" class="text-center">
                   <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -290,7 +279,7 @@ const shareText = computed(() => props.post.title);
                     </svg>
                   </div>
                   <p class="text-green-700 font-medium">Terima kasih sudah memberi rating!</p>
-                  <p class="text-sm text-slate-600 mt-2">Rating Anda membantu pembaca lain</p>
+                  <p class="text-slate-600 mt-2">Rating Anda membantu pembaca lain</p>
                 </div>
 
                 <div v-else class="text-center">
@@ -313,8 +302,8 @@ const shareText = computed(() => props.post.title);
                       </svg>
                     </button>
                   </div>
-                  <p class="text-xs text-slate-500">Klik bintang untuk memberi rating</p>
-                  <div v-if="ratingForm.errors.rating" class="mt-2 text-sm text-red-600">
+                  <p class="text-sm text-slate-500">Klik bintang untuk memberi rating</p>
+                  <div v-if="ratingForm.errors.rating" class="mt-2 text-red-600">
                     {{ ratingForm.errors.rating }}
                   </div>
                 </div>
@@ -322,7 +311,7 @@ const shareText = computed(() => props.post.title);
 
               <!-- Recent Posts -->
               <div v-if="recentPosts.length > 0" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                <h3 class="text-xl font-bold text-slate-900 mb-6">Artikel Terbaru</h3>
+                <h3 class="text-2xl font-bold text-slate-900 mb-6">Artikel Terbaru</h3>
                 <div class="space-y-4">
                   <article
                     v-for="recentPost in recentPosts"
@@ -334,7 +323,7 @@ const shareText = computed(() => props.post.title);
                         <h4 class="font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors duration-200 line-clamp-2 leading-tight">
                           {{ recentPost.title }}
                         </h4>
-                        <p class="text-sm text-slate-500">
+                        <p class="text-slate-500">
                           {{ new Date(recentPost.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) }}
                         </p>
                       </div>
@@ -345,8 +334,8 @@ const shareText = computed(() => props.post.title);
 
               <!-- Back to Articles -->
               <div class="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl p-6 border border-indigo-200">
-                <h3 class="text-lg font-semibold text-slate-900 mb-3">Jelajahi Lebih Banyak</h3>
-                <p class="text-slate-600 text-sm mb-4">Temukan artikel dan panduan keamanan siber lainnya</p>
+                <h3 class="text-xl font-semibold text-slate-900 mb-3">Jelajahi Lebih Banyak</h3>
+                <p class="text-slate-600 mb-4">Temukan artikel dan panduan keamanan siber lainnya</p>
                 <Link
                   :href="route('posts.index')"
                   class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200 font-medium"
