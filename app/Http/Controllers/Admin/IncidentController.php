@@ -18,12 +18,34 @@ class IncidentController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index(): Response
+  public function index(Request $request): Response
   {
+    $query = Incident::with(['incidentType', 'assignedUser']);
+
+    // Apply search filter
+    if ($request->filled('search')) {
+      $search = $request->get('search');
+      $query->where(function ($q) use ($search) {
+        $q->where('case_id', 'ilike', "%{$search}%")
+          ->orWhere('reporter_name', 'ilike', "%{$search}%")
+          ->orWhere('reporter_email', 'ilike', "%{$search}%")
+          ->orWhere('description', 'ilike', "%{$search}%");
+      });
+    }
+
+    // Apply status filter
+    if ($request->filled('status')) {
+      $query->where('status', $request->get('status'));
+    }
+
+    // Apply priority filter
+    if ($request->filled('priority')) {
+      $query->where('priority', $request->get('priority'));
+    }
+
     return Inertia::render('Admin/Incidents/Index', [
-      'incidents' => Incident::with(['incidentType', 'assignedUser'])
-        ->latest('reported_at')
-        ->paginate(10),
+      'incidents' => $query->latest('reported_at')->paginate(8)->withQueryString(),
+      'filters' => $request->only(['search', 'status', 'priority']),
     ]);
   }
 

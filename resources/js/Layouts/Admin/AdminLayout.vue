@@ -149,14 +149,14 @@ onMounted(() => {
     <!-- Mobile sidebar backdrop -->
     <div
       v-if="sidebarOpen"
-      class="fixed inset-0 z-40 bg-slate-600 bg-opacity-75 transition-opacity md:hidden"
+      class="fixed inset-0 z-40 bg-slate-600 bg-opacity-75 transition-opacity lg:hidden"
       @click="toggleSidebar"
     ></div>
 
     <!-- Sidebar -->
     <div
       class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out"
-      :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
+      :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
     >
       <!-- Sidebar header -->
       <div class="flex items-center justify-between h-16 px-6 bg-gradient-to-r from-indigo-600 to-blue-600">
@@ -173,7 +173,7 @@ onMounted(() => {
         </div>
         <button
           @click="toggleSidebar"
-          class="p-1 rounded-md text-blue-100 hover:bg-white/10 md:hidden"
+          class="p-1 rounded-md text-blue-100 hover:bg-white/10 lg:hidden"
         >
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -258,20 +258,20 @@ onMounted(() => {
     </div>
 
     <!-- Main content -->
-    <div class="md:pl-64 min-h-screen">
+    <div class="lg:pl-64 min-h-screen">
       <!-- Top navbar -->
       <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-30">
         <div class="flex items-center justify-between h-16 px-6">
           <div class="flex items-center">
             <button
               @click="toggleSidebar"
-              class="p-2 rounded-md text-slate-400 hover:text-slate-500 hover:bg-slate-100 md:hidden"
+              class="p-2 rounded-md text-slate-400 hover:text-slate-500 hover:bg-slate-100 lg:hidden"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <div class="ml-4 md:ml-0">
+            <div class="ml-4 lg:ml-0">
               <h1 class="text-xl font-semibold text-slate-900">
                 {{ title || 'Dashboard' }}
               </h1>

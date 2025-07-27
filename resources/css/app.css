@@ -5,6 +5,9 @@
 @import './styles/_variables.scss';
 @import './styles/_keyframe-animations.scss';
 
+/* html {
+  font-size: 14px;
+} */
 
 /* Toast */
 .p-toast {
