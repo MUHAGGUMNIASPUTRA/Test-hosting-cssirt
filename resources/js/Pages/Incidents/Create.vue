@@ -87,7 +87,7 @@ onMounted(() => {
           <div class="animate-fade-in-up">
             <!-- Alert Icon -->
             <div class="w-20 h-20 bg-red-100/20 rounded-full flex items-center justify-center mx-auto mb-8 backdrop-blur-sm">
-                <i-lucide-triangle-alert class="w-10 h-10 text-red-400 mb-1" />
+              <i-lucide-triangle-alert class="w-10 h-10 text-red-400 mb-1" />
             </div>
 
             <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl mb-6 leading-tight">

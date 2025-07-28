@@ -213,11 +213,12 @@ watch(
               <div class="pl-8 ml-8 border-l border-slate-300">
                 <Link
                   :href="route('incident.create')"
-                  class="inline-flex items-center px-4 py-2 font-semibold rounded-lg border-2 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  class="inline-flex items-center px-4 py-2 font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
                   :class="navTextClasses.reportBtn"
                 >
-                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0Z" />
+                  <svg viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3 mr-2 icon icon-tabler icons-tabler-filled icon-tabler-alert-triangle">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M12 1.67c.955 0 1.845 .467 2.39 1.247l.105 .16l8.114 13.548a2.914 2.914 0 0 1 -2.307 4.363l-.195 .008h-16.225a2.914 2.914 0 0 1 -2.582 -4.2l.099 -.185l8.11 -13.538a2.914 2.914 0 0 1 2.491 -1.403zm.01 13.33l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm-.01 -7a1 1 0 0 0 -.993 .883l-.007 .117v4l.007 .117a1 1 0 0 0 1.986 0l.007 -.117v-4l-.007 -.117a1 1 0 0 0 -.993 -.883z" />
                   </svg>
                   Lapor Insiden
                 </Link>
@@ -319,8 +320,9 @@ watch(
                 class="flex items-center justify-center w-full px-4 py-3 text-lg font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all duration-200 transform hover:scale-105"
                 @click="isMenuOpen = false"
               >
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0Z" />
+                <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 mr-2 icon icon-tabler icons-tabler-filled icon-tabler-alert-triangle">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M12 1.67c.955 0 1.845 .467 2.39 1.247l.105 .16l8.114 13.548a2.914 2.914 0 0 1 -2.307 4.363l-.195 .008h-16.225a2.914 2.914 0 0 1 -2.582 -4.2l.099 -.185l8.11 -13.538a2.914 2.914 0 0 1 2.491 -1.403zm.01 13.33l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm-.01 -7a1 1 0 0 0 -.993 .883l-.007 .117v4l.007 .117a1 1 0 0 0 1.986 0l.007 -.117v-4l-.007 -.117a1 1 0 0 0 -.993 -.883z" />
                 </svg>
                 Lapor Insiden
               </Link>
@@ -357,77 +359,81 @@ watch(
             <!-- Quick Links -->
             <div>
               <h4 class="text-white font-semibold mb-4">Tautan Cepat</h4>
-              <ul class="space-y-3">
-                <li>
-                  <Link
-                    :href="route('landing')"
-                    class="hover:text-white transition-colors duration-200 flex items-center group"
-                  >
-                    <svg class="h-4 w-4 mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z" />
-                      <path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z" />
-                    </svg>
-                    Beranda
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    :href="route('profile.show')"
-                    class="hover:text-white transition-colors duration-200 flex items-center group"
-                  >
-                    <svg class="h-4 w-4 mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24">
-                      <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
-                    </svg>
-                    Profil
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    :href="route('services.index')"
-                    class="hover:text-white transition-colors duration-200 flex items-center group"
-                  >
-                    <svg class="h-4 w-4 mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24">
-                      <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
-                    </svg>
-                    Layanan
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    :href="route('posts.index')"
-                    class="hover:text-white transition-colors duration-200 flex items-center group"
-                  >
-                    <svg class="h-4 w-4 mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24">
-                      <path fill-rule="evenodd" d="M4.125 3C3.089 3 2.25 3.84 2.25 4.875V18a3 3 0 0 0 3 3h15a3 3 0 0 1-3-3V4.875C17.25 3.839 16.41 3 15.375 3H4.125ZM12 9.75a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5H12Zm-.75-2.25a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 0 1.5H12a.75.75 0 0 1-.75-.75ZM6 12.75a.75.75 0 0 0 0 1.5h7.5a.75.75 0 0 0 0-1.5H6Zm-.75 3.75a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5H6a.75.75 0 0 1-.75-.75ZM6 6.75a.75.75 0 0 0-.75.75v3c0 .414.336.75.75.75h3a.75.75 0 0 0 .75-.75v-3A.75.75 0 0 0 9 6.75H6Z" clip-rule="evenodd" />
-                      <path d="M18.75 6.75h1.875c.621 0 1.125.504 1.125 1.125V18a1.5 1.5 0 0 1-3 0V6.75Z" />
-                    </svg>
-                    Artikel
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    :href="route('faq.index')"
-                    class="hover:text-white transition-colors duration-200 flex items-center group"
-                  >
-                    <svg class="h-4 w-4 mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" viewBox="0 0 24 24" fill="currentColor">
-                      <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
-                    </svg>
-                    FAQ
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    :href="route('contact.index')"
-                    class="hover:text-white transition-colors duration-200 flex items-center group"
-                  >
-                    <svg class="h-4 w-4 mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
-                      <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
-                    </svg>
-                    Kontak
-                  </Link>
-                </li>
-              </ul>
+              <div class="flex items-center gap-12">
+                <ul class="space-y-1">
+                  <li>
+                    <Link
+                      :href="route('landing')"
+                      class="hover:text-white transition-colors duration-200 flex items-center group"
+                    >
+                      <svg class="h-4 w-4 mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z" />
+                        <path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z" />
+                      </svg>
+                      Beranda
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      :href="route('profile.show')"
+                      class="hover:text-white transition-colors duration-200 flex items-center group"
+                    >
+                      <svg class="h-4 w-4 mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
+                      </svg>
+                      Profil
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      :href="route('services.index')"
+                      class="hover:text-white transition-colors duration-200 flex items-center group"
+                    >
+                      <svg class="h-4 w-4 mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                      </svg>
+                      Layanan
+                    </Link>
+                  </li>
+                </ul>
+                <ul class="space-y-1">
+                  <li>
+                    <Link
+                      :href="route('posts.index')"
+                      class="hover:text-white transition-colors duration-200 flex items-center group"
+                    >
+                      <svg class="h-4 w-4 mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M4.125 3C3.089 3 2.25 3.84 2.25 4.875V18a3 3 0 0 0 3 3h15a3 3 0 0 1-3-3V4.875C17.25 3.839 16.41 3 15.375 3H4.125ZM12 9.75a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5H12Zm-.75-2.25a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 0 1.5H12a.75.75 0 0 1-.75-.75ZM6 12.75a.75.75 0 0 0 0 1.5h7.5a.75.75 0 0 0 0-1.5H6Zm-.75 3.75a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5H6a.75.75 0 0 1-.75-.75ZM6 6.75a.75.75 0 0 0-.75.75v3c0 .414.336.75.75.75h3a.75.75 0 0 0 .75-.75v-3A.75.75 0 0 0 9 6.75H6Z" clip-rule="evenodd" />
+                        <path d="M18.75 6.75h1.875c.621 0 1.125.504 1.125 1.125V18a1.5 1.5 0 0 1-3 0V6.75Z" />
+                      </svg>
+                      Artikel
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      :href="route('faq.index')"
+                      class="hover:text-white transition-colors duration-200 flex items-center group"
+                    >
+                      <svg class="h-4 w-4 mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" viewBox="0 0 24 24" fill="currentColor">
+                        <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
+                      </svg>
+                      FAQ
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      :href="route('contact.index')"
+                      class="hover:text-white transition-colors duration-200 flex items-center group"
+                    >
+                      <svg class="h-4 w-4 mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
+                        <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
+                      </svg>
+                      Kontak
+                    </Link>
+                  </li>
+                </ul>
+              </div>
             </div>
 
             <!-- Contact Info -->
@@ -435,7 +441,7 @@ watch(
               <h4 class="text-white font-semibold mb-4">Kontak Darurat</h4>
               <div class="space-y-3">
                 <div class="flex items-start">
-                  <svg class="h-4 w-4 mt-1 mr-3 text-red-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                  <svg class="h-4 w-4 mt-1 mr-2 text-red-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                     <path fill-rule="evenodd" d="M1.5 4.5a3 3 0 0 1 3-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 0 1-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 0 0 6.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 0 1 1.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 0 1-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5Z" clip-rule="evenodd" />
                   </svg>
                   <div>
@@ -444,7 +450,7 @@ watch(
                   </div>
                 </div>
                 <div class="flex items-start">
-                  <svg class="h-4 w-4 mt-1.5 mr-3 text-indigo-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                  <svg class="h-4 w-4 mt-1.5 mr-2 text-indigo-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
                     <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
                   </svg>
@@ -457,7 +463,7 @@ watch(
             <div>
               <h4 class="text-white font-semibold mb-4">Alamat</h4>
               <div class="flex items-start">
-                <svg class="h-4 w-4 mt-1 mr-3 text-indigo-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="h-4 w-4 mt-1 mr-2 text-indigo-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
                 </svg>
                 <div class="text-slate-400 leading-relaxed">

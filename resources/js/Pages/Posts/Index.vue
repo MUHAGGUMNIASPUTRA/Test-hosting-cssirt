@@ -215,11 +215,11 @@ onMounted(() => {
                 <!-- Categories -->
                 <div class="mb-3">
                   <div v-if="post.categories?.length > 0" class="flex flex-wrap gap-2">
-                    <span v-for="category in post.categories" :key="category.id" class="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 hover:bg-indigo-200 transition-colors duration-200">
+                    <span v-for="category in post.categories" :key="category.id" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 hover:bg-indigo-200 transition-colors duration-200">
                       <Link :href="route('categories.show', category.slug)">{{ category.name }}</Link>
                     </span>
                   </div>
-                  <span v-else class="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800">Artikel</span>
+                  <span v-else class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800">Artikel</span>
                 </div>
 
                 <!-- Title -->
