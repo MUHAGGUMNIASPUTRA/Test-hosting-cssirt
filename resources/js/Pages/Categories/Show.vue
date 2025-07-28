@@ -86,6 +86,8 @@ onMounted(() => {
   <AppLayout :title="`Kategori: ${category.name}`">
     <!-- Hero Section -->
     <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      <div class="sm:pt-16"></div>
+
       <!-- Background Pattern -->
       <div class="absolute inset-0 opacity-10">
         <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
@@ -108,7 +110,7 @@ onMounted(() => {
                     <svg class="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
                     </svg>
-                    <span class="ml-1 text-slate-400">Kategori</span>
+                    <span class="ml-1 text-slate-300">Kategori</span>
                   </div>
                 </li>
                 <li aria-current="page">
@@ -116,14 +118,14 @@ onMounted(() => {
                     <svg class="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
                     </svg>
-                    <span class="ml-1 text-white font-medium">{{ category.name }}</span>
+                    <span class="ml-1 text-slate-400 line-clamp-1">{{ category.name }}</span>
                   </div>
                 </li>
               </ol>
             </nav>
 
             <!-- Category Title -->
-            <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl">
+            <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-7xl">
               Kategori: <span class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">{{ category.name }}</span>
             </h1>
             <p class="mx-auto mt-6 max-w-3xl text-xl sm:text-2xl text-slate-300">

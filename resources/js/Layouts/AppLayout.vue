@@ -18,7 +18,7 @@ const toast = useToast();
 
 // Check if current page is landing/homepage
 const isLandingPage = computed(() => {
-  return page.url === '/' || page.url === ''
+  return page.url === '/' || page.url === '';
 });
 
 // Handle scroll for navbar styling
@@ -37,7 +37,7 @@ onMounted(() => {
 
 // Dynamic navbar classes based on page and scroll state
 const navbarClasses = computed(() => {
-  if (isLandingPage.value && !isScrolled.value) {
+  if (!isScrolled.value) {
     return 'bg-transparent'
   }
   return 'bg-white/95 backdrop-blur-md shadow-lg border-b border-slate-200/50'
@@ -45,7 +45,7 @@ const navbarClasses = computed(() => {
 
 // Dynamic text colors for navbar
 const navTextClasses = computed(() => {
-  if (isLandingPage.value && !isScrolled.value) {
+  if (!isScrolled.value) {
     return {
       logo: 'text-white',
       subtitle: 'text-slate-300',
@@ -128,7 +128,7 @@ watch(
               <Link :href="route('landing')" class="flex items-center space-x-3 group">
                 <div class="relative">
                   <!-- Government Crest -->
-                  <div v-if="isLandingPage && !isScrolled" class="h-9 w-9 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center mr-1">
+                  <div v-if="!isScrolled" class="h-9 w-9 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center mr-1">
                     <svg class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                     </svg>
@@ -332,7 +332,7 @@ watch(
       </nav>
 
       <!-- Page Content -->
-      <main :class="isLandingPage ? '' : 'pt-16'">
+      <main>
         <slot />
       </main>
 
