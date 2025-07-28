@@ -165,7 +165,9 @@ onMounted(() => {
     </section>
 
     <!-- Vision & Mission Section -->
-    <section ref="visionRef" class="py-8 sm:py-16 lg:py-20 bg-slate-50 opacity-0 translate-y-10">
+    <section ref="visionRef" class="py-8 sm:py-16 lg:py-20 bg-slate-50 opacity-0 translate-y-10 border border-y relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-slate-200 via-white to-green-100 opacity-40 -z-10"></div>
+
       <div class="container">
         <div class="text-center mb-8 sm:mb-16">
           <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
@@ -318,7 +320,9 @@ onMounted(() => {
     </section>
 
     <!-- Timeline Section -->
-    <section ref="timelineRef" class="py-8 sm:py-16 lg:py-20 bg-slate-50 opacity-0 translate-y-10">
+    <section ref="timelineRef" class="py-8 sm:py-16 lg:py-20 bg-slate-50 opacity-0 translate-y-10 border border-t relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-slate-100 via-white to-blue-200 opacity-40 -z-10"></div>
+
       <div class="container">
         <div class="text-center mb-8 sm:mb-16">
           <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">

@@ -11,7 +11,7 @@ const formRef = ref(null)
 const contactDetails = [
   {
     name: 'Alamat Kantor',
-    value: 'Dinas Komunikasi dan Informatika\nJl. P. Mastumapel No. 1, Bojonegoro, Jawa Timur 62115',
+    value: 'Dinas Komunikasi dan Informatika\nJl. P. Mas Tumapel No. 1, Bojonegoro,\nJawa Timur 62115',
     icon: 'pi-map-marker',
     color: 'text-indigo-600',
     bgColor: 'bg-indigo-100',
@@ -47,7 +47,7 @@ const contactDetails = [
 // Working hours data
 const workingHours = [
   { day: 'Senin - Kamis', hours: '07:30 - 16:00 WIB' },
-  { day: 'Jumat', hours: '07:30 - 16:30 WIB' },
+  { day: 'Jumat', hours: '07:30 - 16:00 WIB' },
   { day: 'Sabtu - Minggu', hours: 'Tutup' },
   { day: 'Hotline Darurat', hours: '24/7' }
 ]
@@ -138,69 +138,57 @@ onMounted(() => {
     </section>
 
     <!-- Contact Information -->
-    <section ref="contactRef" class="py-20 bg-white opacity-0 translate-y-10">
+    <section ref="contactRef" class="py-8 sm:py-16 lg:py-20 bg-white opacity-0 translate-y-10">
       <div class="container">
-        <div class="text-center mb-16">
+        <div class="text-center mb-8 sm:mb-16">
           <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
             Informasi Kontak
           </h2>
-          <h3 class="text-4xl font-extrabold text-slate-900 sm:text-5xl mb-4">
+          <h3 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-4">
             Beragam Cara Menghubungi Kami
           </h3>
-          <p class="mx-auto max-w-2xl text-2xl text-slate-600">
+          <p class="mx-auto max-w-2xl text-xl sm:text-2xl text-slate-600">
             Pilih cara yang paling sesuai untuk kebutuhan Anda
           </p>
         </div>
 
         <!-- Contact Cards -->
-        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 mb-16">
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 mb-8 sm:mb-16">
           <div
             v-for="(contact, index) in contactDetails"
             :key="contact.name"
-            class="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-slate-200 hover:border-indigo-300"
+            class="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border"
             :style="{ animationDelay: `${index * 100}ms` }"
-            :class="contact.type === 'emergency' ? 'ring-2 ring-red-200 bg-red-50' : ''"
+            :class="contact.type === 'emergency' ? 'border-red-200 bg-red-50 hover:border-red-300' : 'border-slate-200 hover:border-indigo-300'"
           >
-            <!-- Icon -->
-            <div class="relative mb-6">
-              <div
-                class="w-16 h-16 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300"
-                :class="contact.type === 'emergency' ? 'bg-gradient-to-br from-red-500 to-red-600' : `${contact.bgColor}`"
-              >
-                <i
-                  :class="[
-                    `pi ${contact.icon} !text-2xl`,
-                    contact.type === 'emergency' ? 'text-white' : contact.color
-                  ]"
-                ></i>
+            <div class="flex items-center mb-6">
+              <!-- Icon -->
+              <div class="relative mr-6">
+                <div
+                  class="w-12 h-12 rounded-xl flex items-center justify-center group-hover:shadow-xl transition-shadow duration-300"
+                  :class="contact.type === 'emergency' ? 'bg-gradient-to-br from-red-500 to-red-600' : `${contact.bgColor}`"
+                >
+                  <i :class="[`pi ${contact.icon} !text-xl`, contact.type === 'emergency' ? 'text-white' : contact.color]"></i>
+                </div>
+                <div
+                  class="absolute -inset-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"
+                  :class="contact.type === 'emergency' ? 'bg-gradient-to-br from-red-500/20 to-red-600/20' : 'bg-gradient-to-br from-indigo-500/20 to-blue-600/20'"
+                ></div>
               </div>
-              <div
-                class="absolute -inset-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"
-                :class="contact.type === 'emergency' ? 'bg-gradient-to-br from-red-500/20 to-red-600/20' : 'bg-gradient-to-br from-indigo-500/20 to-blue-600/20'"
-              ></div>
+
+              <!-- Content -->
+              <h4 class="text-2xl font-semibold group-hover:text-indigo-600 transition-colors duration-300" :class="contact.type === 'emergency' ? 'text-red-700 group-hover:text-red-600' : 'text-slate-900'">
+                {{ contact.name }}
+                <p v-if="contact.type === 'emergency'" class="text-sm text-red-500 font-normal">{{ contact.subtitle }}</p>
+              </h4>
             </div>
 
-            <!-- Content -->
-            <h4
-              class="text-2xl font-semibold mb-3 group-hover:text-indigo-600 transition-colors duration-300"
-              :class="contact.type === 'emergency' ? 'text-red-700' : 'text-slate-900'"
-            >
-              {{ contact.name }}
-            </h4>
-
-            <p
-              class="leading-relaxed whitespace-pre-line"
-              :class="contact.type === 'emergency' ? 'text-red-600 font-medium' : 'text-slate-600'"
-            >
+            <p class="leading-relaxed whitespace-pre-line" :class="contact.type === 'emergency' ? 'text-red-600 font-medium' : 'text-slate-600'">
               {{ contact.value }}
             </p>
 
-            <p v-if="contact.subtitle" class="text-red-500 mt-2 font-medium">
-              {{ contact.subtitle }}
-            </p>
-
             <!-- Action Button -->
-            <div class="mt-4">
+            <div v-if="contact.type != 'address'" class="mt-4">
               <a
                 v-if="contact.type === 'email'"
                 :href="`mailto:${contact.value}`"
@@ -226,43 +214,48 @@ onMounted(() => {
 
             <!-- Hover Effect -->
             <div
-              class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
               :class="contact.type === 'emergency' ? 'bg-gradient-to-br from-red-500/5 to-red-600/5' : 'bg-gradient-to-br from-indigo-500/5 to-blue-600/5'"
             ></div>
           </div>
         </div>
 
         <!-- Working Hours -->
-        <div class="bg-slate-50 rounded-2xl p-8 mb-16">
-          <h4 class="text-3xl font-bold text-slate-900 mb-6 text-center">Jam Operasional</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="rounded-2xl p-10 border">
+          <h4 class="text-3xl font-extrabold text-slate-900 mb-10 text-center tracking-tight">
+            Jam Operasional
+          </h4>
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <div
               v-for="(schedule, index) in workingHours"
               :key="schedule.day"
-              class="bg-white rounded-lg p-4 text-center shadow-sm"
-              :class="schedule.day === 'Hotline Darurat' ? 'bg-red-50 border border-red-200' : ''"
+              class="relative p-6 bg-white rounded-2xl shadow-sm border transition-all duration-300 hover:shadow-md hover:-translate-y-1"
+              :class="schedule.day === 'Hotline Darurat' ? 'border-red-300 bg-red-50/60' : 'border-slate-200'"
             >
-              <p
-                class="font-semibold mb-2"
-                :class="schedule.day === 'Hotline Darurat' ? 'text-red-700' : 'text-slate-900'"
-              >
+              <div class="absolute top-4 right-4">
+                <span v-if="schedule.day === 'Hotline Darurat'" class="inline-flex items-center gap-1 text-xs font-semibold text-red-700 bg-red-100 rounded-xl px-3 py-1">
+                  <i class="pi pi-phone !text-sm"></i> Darurat
+                </span>
+              </div>
+              <p class="text-lg font-semibold mb-1" :class="schedule.day === 'Hotline Darurat' ? 'text-red-700' : 'text-slate-800'">
                 {{ schedule.day }}
               </p>
-              <p
-                :class="schedule.day === 'Hotline Darurat' ? 'text-red-600 font-medium' : 'text-slate-600'"
-              >
+              <p class="text-base" :class="schedule.day === 'Hotline Darurat' ? 'text-red-600' : 'text-slate-600'">
                 {{ schedule.hours }}
               </p>
             </div>
           </div>
         </div>
+
       </div>
     </section>
 
     <!-- Contact Form & Map -->
-    <section ref="formRef" class="py-20 bg-slate-50 opacity-0 translate-y-10">
+    <section ref="formRef" class="py-8 sm:py-16 lg:py-20 bg-slate-50 opacity-0 translate-y-10 border border-t relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-slate-100 via-white to-blue-200 opacity-40 -z-10"></div>
+
       <div class="container">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
           <!-- Contact Form -->
           <div>
             <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
@@ -398,7 +391,7 @@ onMounted(() => {
               <h3 class="text-3xl font-bold text-slate-900 mb-6">Lokasi Kantor</h3>
               <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200">
                 <div class="h-80 w-full">
-                  <!-- <iframe
+                  <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3958.411656819588!2d111.878965!3d-7.1501326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7781a5963f7d6b%3A0x7c0d1b3e8e1f4b0!2sDinas%20Komunikasi%20dan%20Informatika%20Kabupaten%20Bojonegoro!5e0!3m2!1sen!2sid!4v1678886400000"
                     width="100%"
                     height="100%"
@@ -406,15 +399,15 @@ onMounted(() => {
                     allowfullscreen=""
                     loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade"
-                  ></iframe> -->
+                  ></iframe>
                 </div>
                 <div class="p-6">
                   <div class="flex items-start">
                     <i-lucide-map-pinned fill="yellow" class="h-5 w-5 text-indigo-600 mt-1 mr-3 flex-shrink-0"/>
                     <div>
                       <p class="font-semibold text-slate-900">Dinas Komunikasi dan Informatika</p>
-                      <p class="text-slate-600">Kabupaten Bojonegoro</p>
-                      <p class="text-slate-600">Jl. P. Mastumapel No. 1, Bojonegoro</p>
+                      <p class="text-slate-600">Pemerintah Kabupaten Bojonegoro</p>
+                      <p class="text-slate-600">Jl. P. Mas Tumapel No. 1, Bojonegoro</p>
                       <p class="text-slate-600">Jawa Timur 62115</p>
                     </div>
                   </div>

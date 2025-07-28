@@ -159,7 +159,9 @@ onMounted(() => {
     </section>
 
     <!-- Services Section -->
-    <section id="layanan" ref="servicesRef" class="py-8 sm:py-16 lg:py-20 bg-slate-50 opacity-0 translate-y-10">
+    <section id="layanan" ref="servicesRef" class="py-8 sm:py-16 lg:py-20 bg-slate-50 opacity-0 translate-y-10 border border-y relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-slate-100 via-white to-indigo-200 opacity-40 -z-10"></div>
+
       <div class="container">
         <div class="text-center mb-8 sm:mb-16">
           <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
@@ -204,7 +206,7 @@ onMounted(() => {
       </div>
     </section>
 
-    <!-- News Section -->
+    <!-- Articles Section -->
     <section id="berita" class="py-8 sm:py-16 lg:py-20 bg-white">
       <div class="container">
         <div class="text-center mb-8 sm:mb-16">
