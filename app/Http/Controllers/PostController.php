@@ -52,15 +52,15 @@ class PostController extends Controller
       $hasRated = $post->ratings()->where('ip_address', $request->ip())->exists();
     }
 
-    $recentPosts = Post::where('status', 'Published')
+    $popularPosts = Post::where('status', 'Published')
       ->where('id', '!=', $post->id)
-      ->latest('published_at')
+      ->orderBy('views_count', 'desc')
       ->take(4)
       ->get();
 
     return Inertia::render('Posts/Show', [
       'post' => $post->load(['categories', 'tags']),
-      'recentPosts' => $recentPosts,
+      'popularPosts' => $popularPosts,
       'hasRated' => $hasRated,
     ]);
   }

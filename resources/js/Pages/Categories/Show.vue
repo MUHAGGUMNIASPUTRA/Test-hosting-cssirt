@@ -92,7 +92,7 @@ onMounted(() => {
       </div>
 
       <div class="relative z-10 px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
-        <div class="container mx-auto text-center">
+        <div class="container text-center">
           <div class="animate-fade-in-up">
             <!-- Breadcrumb -->
             <nav class="flex justify-center mb-6" aria-label="Breadcrumb">
@@ -126,7 +126,7 @@ onMounted(() => {
             <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl">
               Kategori: <span class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">{{ category.name }}</span>
             </h1>
-            <p class="mx-auto mt-6 max-w-3xl text-xl text-slate-300 sm:text-2xl">
+            <p class="mx-auto mt-6 max-w-3xl text-xl sm:text-2xl text-slate-300">
               {{ posts.total }} artikel tersedia dalam kategori "{{ category.name }}"
             </p>
 
@@ -140,12 +140,12 @@ onMounted(() => {
     </section>
 
     <!-- Posts Section -->
-    <section ref="postsRef" class="py-20 bg-white opacity-0 translate-y-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref="postsRef" class="py-8 sm:py-16 lg:py-20 bg-white opacity-0 translate-y-10">
+      <div class="container">
 
         <!-- Posts Grid -->
         <div v-if="posts.data.length > 0">
-          <div class="text-center mb-12">
+          <div class="text-center mb-8 sm:mb-12">
             <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
               Artikel dalam Kategori
             </h2>
@@ -222,7 +222,7 @@ onMounted(() => {
         </div>
 
         <!-- Modern Pagination -->
-        <div v-if="posts.links.length > 3" class="mt-16 flex justify-center">
+        <div v-if="posts.links.length > 3" class="mt-8 sm:mt-16 flex justify-center">
           <nav class="flex items-center space-x-1" aria-label="Pagination">
             <!-- First Page -->
             <Link

@@ -133,7 +133,7 @@ html {
 .prose h4 { @apply text-lg mt-4 mb-2; }
 
 .prose p {
-  @apply mb-4 leading-relaxed;
+  @apply mb-2 leading-relaxed;
 }
 
 .prose a {

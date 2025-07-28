@@ -130,7 +130,7 @@ onMounted(() => {
       </div>
 
       <div class="relative z-10 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div class="container mx-auto max-w-4xl text-center">
+        <div class="container max-w-7xl text-center">
           <div class="animate-fade-in-up">
             <!-- FAQ Icon -->
             <div class="w-20 h-20 bg-blue-100/20 rounded-full flex items-center justify-center mx-auto mb-8 backdrop-blur-sm">
@@ -141,7 +141,7 @@ onMounted(() => {
               Frequently Asked <span class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">Questions</span>
             </h1>
 
-            <p class="text-2xl text-slate-300 leading-relaxed mb-8 max-w-3xl mx-auto">
+            <p class="text-xl sm:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto">
               Temukan jawaban untuk pertanyaan yang paling sering diajukan seputar keamanan siber dan layanan CSIRT
             </p>
           </div>
@@ -150,14 +150,14 @@ onMounted(() => {
     </section>
 
     <!-- Main Content -->
-    <section ref="faqRef" class="py-16 lg:py-24 bg-white opacity-0 translate-y-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref="faqRef" class="py-12 sm:py-16 lg:py-24 bg-white opacity-0 translate-y-10">
+      <div class="container">
         <div class="max-w-7xl mx-auto">
 
           <!-- Search Section -->
-          <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold text-slate-900 mb-4">Cari Jawaban Anda</h2>
-            <p class="text-slate-600 mb-8 max-w-2xl mx-auto">
+          <div class="text-center mb-12 sm:mb-16">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-4">Cari Jawaban Anda</h2>
+            <p class="text-slate-600 mb-8 text-lg max-w-2xl mx-auto">
               Gunakan pencarian untuk menemukan informasi yang Anda butuhkan dengan cepat
             </p>
 
@@ -172,7 +172,7 @@ onMounted(() => {
                   v-model="searchQuery"
                   @input="searchFaqs"
                   type="text"
-                  class="block w-full pl-12 pr-12 py-4 text-xl border border-slate-300 rounded-2xl leading-5 bg-white placeholder-slate-500 focus:outline-none focus:placeholder-slate-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                  class="block w-full pl-12 pr-12 py-4 text-lg border border-slate-300 rounded-2xl leading-5 bg-white placeholder-slate-500 focus:outline-none focus:placeholder-slate-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="Ketik pertanyaan Anda di sini..."
                 />
                 <div v-if="searchQuery" class="absolute inset-y-0 right-0 pr-4 flex items-center">
@@ -201,8 +201,8 @@ onMounted(() => {
                   >
                     <div class="flex items-start justify-between">
                       <div class="flex-1">
-                        <h4 class="text-xl font-semibold text-slate-900 mb-2">{{ result.question }}</h4>
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
+                        <h4 class="text-lg sm:text-xl font-semibold text-slate-900 mb-2">{{ result.question }}</h4>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
                           {{ result.category }}
                         </span>
                       </div>
@@ -218,7 +218,7 @@ onMounted(() => {
                     </div>
                     <div
                       v-show="openItems.has(`search-${result.id}`)"
-                      class="mt-4 prose prose-slate max-w-none"
+                      class="mt-4 max-w-none text-slate-500"
                       v-html="result.answer"
                     ></div>
                   </div>
@@ -236,11 +236,67 @@ onMounted(() => {
             </div>
           </div>
 
-          <!-- Categories and FAQ Content -->
-          <div v-if="!searchQuery || searchResults.length === 0" class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <!-- FAQ & Categories Content -->
+          <div v-if="!searchQuery || searchResults.length === 0" class="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12">
+
+            <!-- FAQ Content - Streamlined List -->
+            <div class="lg:col-span-8">
+              <div class="space-y-4">
+                <div
+                  v-for="faq in allFaqs"
+                  :key="faq.id"
+                  :id="`faq-${faq.id}`"
+                  class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow duration-200"
+                >
+                  <button
+                    @click="toggleItem(faq.id)"
+                    class="w-full text-left px-6 py-6 focus:outline-none hover:bg-slate-50 transition-colors duration-200"
+                  >
+                    <div class="flex items-start justify-between">
+                      <h3 class="text-lg sm:text-xl font-semibold text-slate-900 pr-4">{{ faq.question }}</h3>
+                      <svg
+                        class="w-5 h-5 text-slate-400 transition-transform duration-200 flex-shrink-0"
+                        :class="{ 'rotate-180': openItems.has(faq.id) }"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </button>
+                  <div
+                    v-show="openItems.has(faq.id)"
+                    class="px-6 pb-6"
+                  >
+                    <div class="max-w-none text-slate-500 mb-4" v-html="faq.answer"></div>
+                    <!-- Category information moved here -->
+                    <div class="pt-4 border-t border-slate-100">
+                      <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-700">
+                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+                        {{ faq.category }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- No FAQs Message -->
+              <div v-if="allFaqs.length === 0" class="text-center py-16">
+                <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg class="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-semibold text-slate-900 mb-2">FAQ Belum Tersedia</h3>
+                <p class="text-slate-600">FAQ akan segera hadir untuk membantu Anda.</p>
+              </div>
+            </div>
 
             <!-- Categories Sidebar -->
-            <div class="lg:col-span-3">
+            <div class="lg:col-span-4">
               <div class="sticky top-8">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                   <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
@@ -285,61 +341,6 @@ onMounted(() => {
               </div>
             </div>
 
-            <!-- FAQ Content - Streamlined List -->
-            <div class="lg:col-span-9">
-              <div class="space-y-4">
-                <div
-                  v-for="faq in allFaqs"
-                  :key="faq.id"
-                  :id="`faq-${faq.id}`"
-                  class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow duration-200"
-                >
-                  <button
-                    @click="toggleItem(faq.id)"
-                    class="w-full text-left px-6 py-6 focus:outline-none hover:bg-slate-50 transition-colors duration-200"
-                  >
-                    <div class="flex items-start justify-between">
-                      <h3 class="text-xl font-semibold text-slate-900 pr-4">{{ faq.question }}</h3>
-                      <svg
-                        class="w-5 h-5 text-slate-400 transition-transform duration-200 flex-shrink-0"
-                        :class="{ 'rotate-180': openItems.has(faq.id) }"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                  </button>
-                  <div
-                    v-show="openItems.has(faq.id)"
-                    class="px-6 pb-6"
-                  >
-                    <div class="prose prose-slate max-w-none mb-4" v-html="faq.answer"></div>
-                    <!-- Category information moved here -->
-                    <div class="pt-4 border-t border-slate-100">
-                      <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-700">
-                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                        </svg>
-                        {{ faq.category }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- No FAQs Message -->
-              <div v-if="allFaqs.length === 0" class="text-center py-16">
-                <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg class="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 class="text-2xl font-semibold text-slate-900 mb-2">FAQ Belum Tersedia</h3>
-                <p class="text-slate-600">FAQ akan segera hadir untuk membantu Anda.</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>

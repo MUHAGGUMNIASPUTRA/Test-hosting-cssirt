@@ -106,7 +106,7 @@ const serviceGridClasses = computed(() => {
         <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
       </div>
 
-      <div class="relative container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="relative container">
         <div class="text-center">
           <div class="animate-fade-in-up">
             <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl leading-tight">
@@ -115,7 +115,7 @@ const serviceGridClasses = computed(() => {
                 CSIRT Bojonegoro
               </span>
             </h1>
-            <p class="mx-auto mt-6 max-w-3xl text-2xl text-slate-300">
+            <p class="mx-auto mt-6 max-w-3xl text-xl sm:text-2xl text-slate-300">
               Solusi komprehensif keamanan siber untuk melindungi aset digital
               pemerintahan dengan standar internasional
             </p>
@@ -125,8 +125,8 @@ const serviceGridClasses = computed(() => {
     </section>
 
     <!-- Capabilities Section -->
-    <section ref="capabilitiesRef" class="py-20 bg-white opacity-0 translate-y-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref="capabilitiesRef" class="py-12 sm:py-16 lg:py-20 bg-white opacity-0 translate-y-10">
+      <div class="container">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div
             v-for="(capability, index) in capabilities"
@@ -148,16 +148,16 @@ const serviceGridClasses = computed(() => {
     </section>
 
     <!-- Services Section -->
-    <section ref="servicesRef" class="py-20 bg-slate-50 opacity-0 translate-y-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
+    <section ref="servicesRef" class="py-8 sm:py-16 lg:py-20 bg-slate-50 opacity-0 translate-y-10">
+      <div class="container">
+        <div class="text-center mb-8 sm:mb-16">
           <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
             Layanan Unggulan
           </h2>
-          <h3 class="text-4xl font-extrabold text-slate-900 sm:text-5xl mb-4">
+          <h3 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-4">
             Perlindungan Menyeluruh
           </h3>
-          <p class="mx-auto max-w-2xl text-2xl text-slate-600">
+          <p class="mx-auto max-w-2xl text-xl sm:text-2xl text-slate-600">
             Berbagai layanan terintegrasi untuk menjaga keamanan dan integritas
             sistem informasi pemerintahan
           </p>
@@ -170,7 +170,7 @@ const serviceGridClasses = computed(() => {
             class="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-slate-200 hover:border-indigo-300"
             :style="{ animationDelay: `${index * 100}ms` }"
           >
-            <!-- Service Icon -->
+            <!-- Service Content -->
             <div class="flex items-center gap-4 mb-4">
               <div class="relative">
                 <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
@@ -183,10 +183,6 @@ const serviceGridClasses = computed(() => {
               </h4>
             </div>
 
-            <!-- Service Content -->
-            <!-- <h4 class="text-2xl font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300">
-              {{ service.name }}
-            </h4> -->
             <p class="text-slate-600 leading-relaxed">
               {{ service.short_description }}
             </p>
@@ -199,16 +195,16 @@ const serviceGridClasses = computed(() => {
     </section>
 
     <!-- Process Section -->
-    <section ref="processRef" class="py-20 bg-white opacity-0 translate-y-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
+    <section ref="processRef" class="py-8 sm:py-16 lg:py-20 bg-white opacity-0 translate-y-10">
+      <div class="container">
+        <div class="text-center mb-8 sm:mb-16">
           <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
             Alur Kerja
           </h2>
-          <h3 class="text-4xl font-extrabold text-slate-900 sm:text-5xl mb-4">
+          <h3 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-4">
             Proses Penanganan Insiden
           </h3>
-          <p class="mx-auto max-w-2xl text-2xl text-slate-600">
+          <p class="mx-auto max-w-2xl text-xl sm:text-2xl text-slate-600">
             Metodologi terstruktur untuk respons insiden yang efektif dan efisien
           </p>
         </div>
@@ -286,9 +282,9 @@ const serviceGridClasses = computed(() => {
                 </div>
 
                 <!-- Step Content -->
-                <div class="flex-1 pt-2">
+                <div class="flex-1 pt-0 sm:pt-2">
                   <!-- Step Icon -->
-                  <div class="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-indigo-50 transition-colors duration-300">
+                  <div class="hidden sm:flex w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-indigo-50 transition-colors duration-300">
                     <i :class="`pi ${step.icon} text-2xl text-indigo-600`"></i>
                   </div>
 
@@ -306,7 +302,7 @@ const serviceGridClasses = computed(() => {
         </div>
 
         <!-- Process Flow Legend -->
-        <div class="mt-12 text-center">
+        <div class="pt-8 sm:mt-12 text-center">
           <div class="inline-flex items-center space-x-2 bg-slate-100 rounded-full px-4 py-2">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-indigo-600 icon icon-tabler icons-tabler-outline icon-tabler-progress-check">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 20.777a8.942 8.942 0 0 1 -2.48 -.969" /><path d="M14 3.223a9.003 9.003 0 0 1 0 17.554" /><path d="M4.579 17.093a8.961 8.961 0 0 1 -1.227 -2.592" /><path d="M3.124 10.5c.16 -.95 .468 -1.85 .9 -2.675l.169 -.305" /><path d="M6.907 4.579a8.954 8.954 0 0 1 3.093 -1.356" /><path d="M9 12l2 2l4 -4" />
@@ -318,16 +314,16 @@ const serviceGridClasses = computed(() => {
     </section>
 
     <!-- CTA Section -->
-    <section class="py-20 bg-gradient-to-br from-slate-900 via-indigo-900 to-blue-900">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-4xl font-extrabold text-white sm:text-5xl mb-6">
+    <section class="py-8 sm:py-16 lg:py-20 bg-gradient-to-br from-slate-900 via-indigo-900 to-blue-900">
+      <div class="container text-center">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-6">
           Butuh Bantuan Keamanan Siber?
         </h2>
-        <p class="mx-auto max-w-2xl text-2xl text-slate-300 mb-8">
+        <p class="mx-auto max-w-2xl text-xl sm:text-2xl text-slate-300 mb-8">
           Tim CSIRT Bojonegoro siap membantu Anda 24/7 untuk mengatasi
           berbagai tantangan keamanan siber
         </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
           <a
             href="/contact"
             class="inline-flex items-center px-8 py-4 text-xl font-semibold text-white bg-gradient-to-r from-indigo-600 to-blue-600 rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"

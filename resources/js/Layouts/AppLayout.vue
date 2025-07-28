@@ -121,7 +121,7 @@ watch(
         class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         :class="navbarClasses"
       >
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="container">
           <div class="flex h-16 items-center justify-between">
             <!-- Logo Section -->
             <div class="flex-shrink-0">
@@ -336,11 +336,11 @@ watch(
 
       <!-- Modern Footer -->
       <footer class="bg-slate-900 text-slate-300">
-        <div class="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="container py-8 sm:py-16">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <!-- Brand Section -->
             <div class="md:col-span-1">
-              <div class="flex items-center space-x-3 mb-6">
+              <div class="flex items-center space-x-3 mb-4">
                 <div class="h-10 w-10 px-1 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
                   <span class="text-white font-bold text-xs">CSIRT</span>
                 </div>
@@ -470,7 +470,7 @@ watch(
           </div>
 
           <!-- Bottom Bar -->
-          <div class="mt-12 pt-8 border-t border-slate-800">
+          <div class="mt-8 sm:mt-12 pt-8 border-t border-slate-800">
             <div class="flex flex-col md:flex-row justify-between items-center">
               <p class="text-slate-400">
                 &copy; {{ new Date().getFullYear() }} CSIRT Kabupaten Bojonegoro. Seluruh hak cipta dilindungi.

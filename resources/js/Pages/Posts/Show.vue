@@ -5,7 +5,7 @@ import { useResponsive } from '@/Composables/useResponsive'
 
 const props = defineProps({
   post: Object,
-  recentPosts: Array,
+  popularPosts: Array,
   hasRated: Boolean,
 })
 
@@ -92,11 +92,11 @@ const shareText = computed(() => props.post.title);
         <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
       </div>
 
-      <div class="relative z-10 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div class="container mx-auto max-w-7xl">
+      <div class="relative z-10 px-4 sm:px-6 lg:px-8 py-8 sm:py-16 lg:py-24">
+        <div class="container">
           <div class="animate-fade-in-up">
             <!-- Breadcrumb -->
-            <nav class="flex justify-center mb-8" aria-label="Breadcrumb">
+            <nav class="flex justify-center mb-6 sm:mb-8" aria-label="Breadcrumb">
               <ol class="inline-flex items-center space-x-1 md:space-x-2">
                 <li class="inline-flex items-center">
                   <Link :href="route('posts.index')" class="inline-flex items-center text-slate-300 hover:text-white transition-colors duration-200">
@@ -128,13 +128,13 @@ const shareText = computed(() => props.post.title);
             <!-- Hero Content -->
             <div class="text-center max-w-7xl mx-auto">
               <!-- Categories -->
-              <div v-if="post.categories.length > 0" class="mb-6">
+              <div v-if="post.categories.length > 0" class="mb-4 sm:mb-6">
                 <div class="flex flex-wrap justify-center gap-2">
                   <Link
                     v-for="category in post.categories"
                     :key="category.id"
                     :href="route('categories.show', category.slug)"
-                    class="inline-flex items-center px-3 py-1 rounded-full font-medium bg-blue-100/20 text-blue-200 hover:bg-blue-100/30 transition-colors duration-200 backdrop-blur-sm"
+                    class="inline-flex items-center px-3 py-1 rounded-full text-sm sm:text-base font-medium bg-blue-100/20 text-blue-200 hover:bg-blue-100/30 transition-colors duration-200 backdrop-blur-sm"
                   >
                     {{ category.name }}
                   </Link>
@@ -142,25 +142,25 @@ const shareText = computed(() => props.post.title);
               </div>
 
               <!-- Title -->
-              <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl mb-6 leading-tight">
+              <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-7xl mb-4 sm:mb-6 leading-tight">
                 {{ post.title }}
               </h1>
 
               <!-- Excerpt -->
-              <p v-if="post.excerpt" class="text-2xl text-slate-300 leading-relaxed mb-8 max-w-5xl mx-auto">
+              <p v-if="post.excerpt" class="text-lg/6 sm:text-xl lg:text-2xl text-slate-300 mb-4 sm:mb-6 max-w-5xl mx-auto italic">
                 {{ post.excerpt }}
               </p>
 
               <!-- Meta Info -->
-              <div class="flex flex-wrap items-center justify-center gap-6 text-slate-300">
+              <div class="text-sm sm:text-base flex flex-wrap items-center justify-center space-x-4 sm:space-x-6 gap-2 text-slate-300">
                 <!-- Author -->
-                <div class="flex items-center">
+                <div class="flex items-center text-gray-400">
                   <i-lucide-user-pen class="mr-2" />
                   {{ post.published_by }}
                 </div>
 
                 <!-- Date -->
-                <div class="flex items-center">
+                <div class="flex items-center text-gray-400">
                   <i-lucide-calendar-check-2 class="mr-2" />
                   <time :datetime="post.published_at">
                     {{ new Date(post.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) }}
@@ -168,19 +168,19 @@ const shareText = computed(() => props.post.title);
                 </div>
 
                 <!-- Reading Time -->
-                <div class="flex items-center">
+                <div class="flex items-center text-gray-400">
                   <i-lucide-clock class="mr-2" />
                   {{ readingTime }} menit baca
                 </div>
 
                 <!-- Views -->
-                <div class="flex items-center">
+                <div class="flex items-center text-gray-400">
                   <i-lucide-eye class="mr-2" />
                   {{ post.views_count }} kali dilihat
                 </div>
 
                 <!-- Rating -->
-                <div v-if="post.rating" class="flex items-center">
+                <div v-if="post.rating" class="flex items-center text-gray-400">
                   <svg class="w-5 h-5 mr-1.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
@@ -194,15 +194,15 @@ const shareText = computed(() => props.post.title);
     </section>
 
     <!-- Main Content -->
-    <div class="bg-white py-16 lg:py-24">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+    <div class="bg-white py-8 sm:py-16 lg:py-24">
+      <div class="container">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12">
 
           <!-- Article Content -->
           <article ref="contentRef" class="lg:col-span-8 opacity-0 translate-y-10">
             <!-- Featured Image -->
             <div v-if="post.image" class="relative mb-8 lg:mb-12">
-              <div class="aspect-[16/9] rounded-3xl overflow-hidden shadow-2xl">
+              <div class="aspect-[16/9] rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl">
                 <PostImage :post="post" class="w-full h-full object-cover" />
               </div>
             </div>
@@ -213,7 +213,7 @@ const shareText = computed(() => props.post.title);
             </div>
 
             <!-- Tags -->
-            <div v-if="post.tags.length > 0" class="mt-12 pt-8 border-t border-slate-200">
+            <div v-if="post.tags.length > 0" class="mt-6 sm:mt-12 pt-6 sm:pt-8 border-t border-slate-200">
               <h3 class="text-xl font-semibold text-slate-900 mb-4">Tags</h3>
               <div class="flex flex-wrap gap-2">
                 <span
@@ -227,7 +227,7 @@ const shareText = computed(() => props.post.title);
             </div>
 
             <!-- Social Share -->
-            <div class="mt-8 pt-8 border-t border-slate-200">
+            <div class="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-slate-200">
               <h3 class="text-xl font-semibold text-slate-900 mb-4">Bagikan Artikel</h3>
               <div class="flex flex-wrap gap-3">
                 <a
@@ -266,14 +266,14 @@ const shareText = computed(() => props.post.title);
 
           <!-- Sidebar -->
           <aside ref="sidebarRef" class="lg:col-span-4 opacity-0 translate-y-10">
-            <div class="sticky top-8 space-y-8">
+            <div class="sticky top-8 space-y-6 sm:space-y-8">
 
               <!-- Rating Section -->
               <div class="bg-gradient-to-br from-slate-50 to-blue-50 rounded-2xl p-6 border border-slate-200">
-                <h3 class="text-2xl font-bold text-slate-900 mb-4">Rating Artikel</h3>
+                <!-- <h3 class="text-2xl font-bold text-slate-900 mb-4">Rating Artikel</h3> -->
 
                 <div v-if="userHasRated" class="text-center">
-                  <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div class="w-12 sm:w-16 h-12 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
@@ -282,9 +282,9 @@ const shareText = computed(() => props.post.title);
                   <p class="text-slate-600 mt-2">Rating Anda membantu pembaca lain</p>
                 </div>
 
-                <div v-else class="text-center">
-                  <p class="text-slate-700 mb-4">Seberapa bermanfaat artikel ini?</p>
-                  <div class="flex justify-center items-center space-x-1 mb-4" @mouseleave="hoverRating = 0">
+                <div v-else class="text-center space-y-2 sm:space-y-4">
+                  <p class="text-slate-700">Seberapa bermanfaat artikel ini?</p>
+                  <div class="flex justify-center items-center space-x-1" @mouseleave="hoverRating = 0">
                     <button
                       v-for="star in 5"
                       :key="star"
@@ -310,22 +310,29 @@ const shareText = computed(() => props.post.title);
               </div>
 
               <!-- Recent Posts -->
-              <div v-if="recentPosts.length > 0" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-                <h3 class="text-2xl font-bold text-slate-900 mb-6">Artikel Terbaru</h3>
-                <div class="space-y-4">
+              <div v-if="popularPosts.length > 0" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                <h3 class="text-xl font-bold text-slate-900 mb-6">Artikel Terpopuler</h3>
+                <div class="space-y-4 sm:space-y-6">
                   <article
-                    v-for="recentPost in recentPosts"
-                    :key="recentPost.id"
-                    class="group"
+                    v-for="popularPost in popularPosts"
+                    :key="popularPost.id"
                   >
-                    <Link :href="route('posts.show', recentPost.slug)" class="block">
-                      <div class="space-y-2">
-                        <h4 class="font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors duration-200 line-clamp-2 leading-tight">
-                          {{ recentPost.title }}
-                        </h4>
-                        <p class="text-slate-500">
-                          {{ new Date(recentPost.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) }}
-                        </p>
+                    <Link :href="route('posts.show', popularPost.slug)" class="group block">
+                      <div class="flex items-center">
+                        <div class="w-16 h-16 rounded-lg overflow-hidden mr-3 flex-shrink-0">
+                          <PostImage
+                            :post="popularPost"
+                            class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
+                          />
+                        </div>
+                        <div class="space-y-1 flex flex-col justify-between">
+                          <h4 class="text-slate-900 group-hover:text-indigo-600 transition-colors duration-200 line-clamp-2 leading-tight">
+                            {{ popularPost.title }}
+                          </h4>
+                          <p class="text-sm text-slate-500">
+                            {{ new Date(popularPost.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) }}
+                          </p>
+                        </div>
                       </div>
                     </Link>
                   </article>

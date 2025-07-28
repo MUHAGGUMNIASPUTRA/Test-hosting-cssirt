@@ -52,7 +52,7 @@ onMounted(() => {
 
       <!-- Hero Content -->
       <div class="relative z-10 flex items-center justify-center min-h-screen">
-        <div class="container mx-auto px-4 py-20 text-center sm:px-6 lg:px-8">
+        <div class="container text-center">
           <div class="animate-fade-in-up">
             <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl leading-tight">
               <span class="block">Menjaga Integritas dan</span>
@@ -60,7 +60,7 @@ onMounted(() => {
                 Keamanan Digital
               </span>
             </h1>
-            <p class="mx-auto mt-6 max-w-3xl text-lg text-slate-300 sm:text-2xl md:text-3xl">
+            <p class="mx-auto mt-6 max-w-3xl text-slate-300 text-xl sm:text-2xl lg:text-3xl">
               CSIRT Bojonegoro hadir sebagai tim respons insiden keamanan siber untuk melindungi
               aset digital Pemerintah Kabupaten Bojonegoro
             </p>
@@ -89,8 +89,8 @@ onMounted(() => {
     </section>
 
     <!-- About Section -->
-    <section id="tentang" ref="aboutRef" class="py-20 bg-white opacity-0 translate-y-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="tentang" ref="aboutRef" class="py-8 sm:py-16 lg:py-20 bg-white opacity-0 translate-y-10">
+      <div class="container">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
@@ -99,7 +99,7 @@ onMounted(() => {
             <h3 class="text-4xl font-extrabold text-slate-900 sm:text-5xl mb-6">
               Melindungi Aset Digital Pemerintahan
             </h3>
-            <p class="text-lg text-slate-600 mb-8">
+            <p class="text-xl text-slate-600 mb-8">
               Computer Security Incident Response Team (CSIRT) Kabupaten Bojonegoro berkomitmen
               untuk menjaga keamanan dan integritas sistem informasi pemerintahan.
             </p>
@@ -108,33 +108,33 @@ onMounted(() => {
             <div class="space-y-4">
               <div class="flex items-start">
                 <div class="flex-shrink-0">
-                  <div class="h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center">
+                  <div class="h-6 w-6 lg:mt-0.5 rounded-full bg-indigo-100 flex items-center justify-center">
                     <svg class="h-3 w-3 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                     </svg>
                   </div>
                 </div>
-                <p class="ml-3 text-slate-700">Respons cepat terhadap insiden keamanan siber</p>
+                <p class="ml-3 text-slate-700 text-base lg:text-lg">Respons cepat terhadap insiden keamanan siber</p>
               </div>
               <div class="flex items-start">
                 <div class="flex-shrink-0">
-                  <div class="h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center">
+                  <div class="h-6 w-6 lg:mt-0.5 rounded-full bg-indigo-100 flex items-center justify-center">
                     <svg class="h-3 w-3 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                     </svg>
                   </div>
                 </div>
-                <p class="ml-3 text-slate-700">Koordinasi keamanan lintas instansi pemerintahan</p>
+                <p class="ml-3 text-slate-700 text-base lg:text-lg">Koordinasi keamanan lintas instansi pemerintahan</p>
               </div>
               <div class="flex items-start">
                 <div class="flex-shrink-0">
-                  <div class="h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center">
+                  <div class="h-6 w-6 lg:mt-0.5 rounded-full bg-indigo-100 flex items-center justify-center">
                     <svg class="h-3 w-3 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                     </svg>
                   </div>
                 </div>
-                <p class="ml-3 text-slate-700">Edukasi dan peningkatan kesadaran keamanan siber</p>
+                <p class="ml-3 text-slate-700 text-base lg:text-lg">Edukasi dan peningkatan kesadaran keamanan siber</p>
               </div>
             </div>
           </div>
@@ -159,16 +159,16 @@ onMounted(() => {
     </section>
 
     <!-- Services Section -->
-    <section id="layanan" ref="servicesRef" class="py-20 bg-slate-50 opacity-0 translate-y-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
+    <section id="layanan" ref="servicesRef" class="py-8 sm:py-16 lg:py-20 bg-slate-50 opacity-0 translate-y-10">
+      <div class="container">
+        <div class="text-center mb-8 sm:mb-16">
           <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
             Layanan Kami
           </h2>
           <h3 class="text-4xl font-extrabold text-slate-900 sm:text-5xl mb-4">
             Fokus Utama CSIRT Bojonegoro
           </h3>
-          <p class="mx-auto max-w-2xl text-2xl text-slate-600">
+          <p class="mx-auto max-w-2xl text-xl lg:text-2xl text-slate-600">
             Kami menyediakan layanan komprehensif untuk menjaga ekosistem digital yang aman dan terpercaya
           </p>
         </div>
@@ -180,18 +180,19 @@ onMounted(() => {
             class="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-slate-200 hover:border-indigo-300"
             :style="{ animationDelay: `${index * 100}ms` }"
           >
-            <!-- Service Icon -->
-            <div class="relative mb-6">
-              <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                <i :class="`pi ${service.icon} !text-2xl text-white`"></i>
+            <!-- Service Content -->
+            <div class="flex items-center gap-4 mb-4">
+              <div class="relative">
+                <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                  <i :class="`pi ${service.icon} !text-xl text-white`"></i>
+                </div>
+                <div class="absolute -inset-2 bg-gradient-to-br from-indigo-500/20 to-blue-600/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
               </div>
-              <div class="absolute -inset-2 bg-gradient-to-br from-indigo-500/20 to-blue-600/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+              <h4 class="text-2xl font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors duration-300">
+                {{ service.name }}
+              </h4>
             </div>
 
-            <!-- Service Content -->
-            <h4 class="text-2xl font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300">
-              {{ service.name }}
-            </h4>
             <p class="text-slate-600 leading-relaxed">
               {{ service.short_description }}
             </p>
@@ -204,16 +205,16 @@ onMounted(() => {
     </section>
 
     <!-- News Section -->
-    <section id="berita" class="py-20 bg-white">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
+    <section id="berita" class="py-8 sm:py-16 lg:py-20 bg-white">
+      <div class="container">
+        <div class="text-center mb-8 sm:mb-16">
           <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
             Pusat Informasi
           </h2>
           <h3 class="text-4xl font-extrabold text-slate-900 sm:text-5xl mb-4">
             Artikel & Panduan Terbaru
           </h3>
-          <p class="mx-auto max-w-2xl text-2xl text-slate-600">
+          <p class="mx-auto max-w-2xl text-xl lg:text-2xl text-slate-600">
             Ikuti informasi terkini seputar keamanan siber untuk meningkatkan kewaspadaan
           </p>
         </div>
@@ -268,7 +269,7 @@ onMounted(() => {
         </div>
 
         <!-- View All Button -->
-        <div class="text-center mt-12">
+        <div class="text-center mt-8 sm:mt-12">
           <Link
             :href="route('posts.index')"
             class="inline-flex items-center px-6 py-3 border border-indigo-300 text-lg font-medium rounded-lg text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-400 transition-all duration-200"
@@ -283,55 +284,55 @@ onMounted(() => {
     </section>
 
     <!-- Contact Section -->
-    <section id="kontak" class="py-20 bg-slate-900">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
+    <section id="kontak" class="py-8 sm:py-16 lg:py-20 bg-slate-900">
+      <div class="container">
+        <div class="text-center mb-8 sm:mb-16">
           <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-400 mb-2">
             Hubungi Kami
           </h2>
           <h3 class="text-4xl font-extrabold text-white sm:text-5xl mb-4">
             Siap Membantu 24/7
           </h3>
-          <p class="mx-auto max-w-2xl text-2xl text-slate-300">
+          <p class="mx-auto max-w-2xl text-xl lg:text-2xl text-slate-300">
             Tim CSIRT Bojonegoro siap merespons setiap laporan insiden keamanan siber
           </p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <!-- Emergency Contact -->
-          <div class="bg-gradient-to-br from-red-600 to-red-800 rounded-2xl p-8 text-center text-white">
-            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div class="bg-gradient-to-br from-red-600 to-red-800 rounded-2xl p-6 sm:p-8 text-center text-white">
+            <div class="hidden sm:flex w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
                 <path fill-rule="evenodd" d="M1.5 4.5a3 3 0 0 1 3-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 0 1-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 0 0 6.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 0 1 1.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 0 1-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5Z" clip-rule="evenodd" />
               </svg>
             </div>
-            <h4 class="text-2xl font-semibold mb-2">Darurat 24/7</h4>
-            <p class="text-red-100 mb-3">Laporan insiden keamanan siber</p>
+            <h4 class="text-2xl font-semibold mb-0 sm:mb-2">Darurat 24/7</h4>
+            <p class="text-red-100 mb-0 sm:mb-2">Laporan insiden keamanan siber</p>
             <p class="text-3xl font-bold">0353-881234</p>
           </div>
 
           <!-- General Contact -->
-          <div class="bg-gradient-to-br from-gray-100 to-indigo-100 rounded-2xl p-8 text-center border border-slate-200">
-            <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div class="bg-gradient-to-br from-gray-100 to-indigo-100 rounded-2xl p-6 sm:p-8 text-center border border-slate-200">
+            <div class="hidden sm:flex w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg class="h-8 w-8 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
                 <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
               </svg>
             </div>
-            <h4 class="text-2xl font-semibold text-slate-900 mb-2">Email</h4>
-            <p class="text-slate-600 mb-3">Kontak umum dan konsultasi</p>
+            <h4 class="text-2xl font-semibold text-slate-900 mb-0 sm:mb-2">Email</h4>
+            <p class="text-slate-600 mb-0 sm:mb-2">Kontak umum dan konsultasi</p>
             <p class="text-lg font-medium text-indigo-600">csirt@bojonegorokab.go.id</p>
           </div>
 
           <!-- Office Address -->
-          <div class="bg-gradient-to-br from-gray-100 to-indigo-100 rounded-2xl p-8 text-center border border-slate-200">
-            <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div class="bg-gradient-to-br from-gray-100 to-indigo-100 rounded-2xl p-6 sm:p-8 text-center border border-slate-200">
+            <div class="hidden sm:flex w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg class="h-8 w-8 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
               </svg>
             </div>
-            <h4 class="text-2xl font-semibold text-slate-900 mb-2">Alamat Kantor</h4>
-            <p class="text-slate-600 mb-3">Kantor Pemerintah Kabupaten</p>
+            <h4 class="text-2xl font-semibold text-slate-900 mb-0 sm:mb-2">Alamat Kantor</h4>
+            <p class="text-slate-600 mb-0 sm:mb-2">Kantor Pemerintah Kabupaten</p>
             <p class="text-slate-700">Jl. P. Mas Tumapel No.1, Bojonegoro, Jawa Timur 62115</p>
           </div>
         </div>

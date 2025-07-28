@@ -105,7 +105,7 @@ onMounted(() => {
       </div>
 
       <div class="relative z-10 px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
-        <div class="container mx-auto text-center">
+        <div class="container text-center">
           <div class="animate-fade-in-up">
             <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl leading-tight">
               <span class="">Hubungi</span>
@@ -113,7 +113,7 @@ onMounted(() => {
                 Kami
               </span>
             </h1>
-            <p class="mx-auto mt-6 max-w-3xl text-xl text-slate-300 sm:text-2xl">
+            <p class="mx-auto mt-6 max-w-3xl text-xl sm:text-2xl text-slate-300">
               Tim CSIRT Bojonegoro siap membantu Anda 24/7. Laporkan insiden keamanan siber
               atau konsultasikan kebutuhan keamanan digital Anda.
             </p>
@@ -124,9 +124,9 @@ onMounted(() => {
 
     <!-- Emergency Banner -->
     <section class="bg-red-600 py-4">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="container">
         <div class="flex items-center justify-center text-center">
-          <svg class="h-5 w-5 text-white mr-3 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+          <svg class="hidden sm:flex h-5 w-5 text-white mr-3 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
           </svg>
           <p class="text-xl text-white font-medium">
@@ -139,7 +139,7 @@ onMounted(() => {
 
     <!-- Contact Information -->
     <section ref="contactRef" class="py-20 bg-white opacity-0 translate-y-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="container">
         <div class="text-center mb-16">
           <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
             Informasi Kontak
@@ -261,7 +261,7 @@ onMounted(() => {
 
     <!-- Contact Form & Map -->
     <section ref="formRef" class="py-20 bg-slate-50 opacity-0 translate-y-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="container">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <!-- Contact Form -->
           <div>

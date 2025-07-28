@@ -108,7 +108,7 @@ onMounted(() => {
         <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
       </div>
 
-      <div class="relative container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="relative container">
         <div class="text-center">
           <div class="animate-fade-in-up">
             <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl leading-tight">
@@ -117,7 +117,7 @@ onMounted(() => {
                 CSIRT Bojonegoro
               </span>
             </h1>
-            <p class="mx-auto mt-6 max-w-3xl text-2xl text-slate-300">
+            <p class="mx-auto mt-6 max-w-3xl text-xl sm:text-2xl text-slate-300">
               Tim Respons Insiden Keamanan Siber yang berkomitmen melindungi aset digital
               Pemerintah Kabupaten Bojonegoro dengan standar internasional
             </p>
@@ -127,8 +127,8 @@ onMounted(() => {
     </section>
 
     <!-- About Section -->
-    <section ref="aboutRef" class="py-20 bg-white opacity-0 translate-y-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref="aboutRef" class="py-8 sm:py-16 lg:py-20 bg-white opacity-0 translate-y-10">
+      <div class="container">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
@@ -165,9 +165,9 @@ onMounted(() => {
     </section>
 
     <!-- Vision & Mission Section -->
-    <section ref="visionRef" class="py-20 bg-slate-50 opacity-0 translate-y-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
+    <section ref="visionRef" class="py-8 sm:py-16 lg:py-20 bg-slate-50 opacity-0 translate-y-10">
+      <div class="container">
+        <div class="text-center mb-8 sm:mb-16">
           <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
             Visi & Misi
           </h2>
@@ -176,7 +176,7 @@ onMounted(() => {
           </h3>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
           <!-- Vision Card -->
           <div class="relative bg-white rounded-2xl p-8 shadow-sm border border-slate-200 overflow-hidden transform hover:scale-105 transition-all duration-300">
             <!-- Big icon as decorative background -->
@@ -283,16 +283,16 @@ onMounted(() => {
     </section>
 
     <!-- Team Section -->
-    <section ref="teamRef" class="py-20 bg-white opacity-0 translate-y-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
+    <section ref="teamRef" class="py-8 sm:py-16 lg:py-20 bg-white opacity-0 translate-y-10">
+      <div class="container">
+        <div class="text-center mb-8 sm:mb-16">
           <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
             Tim Kami
           </h2>
           <h3 class="text-4xl font-extrabold text-slate-900 sm:text-5xl mb-4">
             Profesional Keamanan Siber
           </h3>
-          <p class="mx-auto max-w-2xl text-2xl text-slate-600">
+          <p class="mx-auto max-w-3xl text-xl text-slate-600">
             Tim berpengalaman yang siap melindungi aset digital dengan keahlian terdepan
           </p>
         </div>
@@ -305,7 +305,7 @@ onMounted(() => {
             :style="{ animationDelay: `${index * 100}ms` }"
           >
             <div class="flex flex-col items-center text-center">
-              <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
+              <div class="hidden sm:flex w-20 h-20 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
                 {{ member.avatar }}
               </div>
               <h4 class="text-xl font-semibold text-slate-900 mb-2">{{ member.name }}</h4>
@@ -318,9 +318,9 @@ onMounted(() => {
     </section>
 
     <!-- Timeline Section -->
-    <section ref="timelineRef" class="py-20 bg-slate-50 opacity-0 translate-y-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
+    <section ref="timelineRef" class="py-8 sm:py-16 lg:py-20 bg-slate-50 opacity-0 translate-y-10">
+      <div class="container">
+        <div class="text-center mb-8 sm:mb-16">
           <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
             Perjalanan Kami
           </h2>
@@ -331,33 +331,33 @@ onMounted(() => {
 
         <div class="relative">
           <!-- Timeline line -->
-          <div class="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-indigo-500 to-blue-600 rounded-full"></div>
+          <div class="absolute sm:left-1/2 sm:transform sm:-translate-x-1/2 w-1 h-full bg-gradient-to-b from-indigo-500 to-blue-600 rounded-full"></div>
 
-          <div class="space-y-12">
+          <div class="space-y-8 sm:space-y-12">
             <div
               v-for="(item, index) in timeline"
               :key="item.year"
               class="relative flex items-center"
-              :class="index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'"
+              :class="index % 2 === 0 ? 'flex-row' : 'flex-row sm:flex-row-reverse'"
             >
               <!-- Content -->
-              <div class="w-5/12">
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 transform hover:scale-105 transition-all duration-300">
-                  <div class="flex items-center mb-3">
+              <div class="sm:w-5/12">
+                <div class="bg-white rounded-2xl p-6 ml-8 sm:ml-0 shadow-sm border border-slate-200 transform hover:scale-105 transition-all duration-300">
+                  <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-3">
                     <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
                       {{ item.year }}
                     </div>
-                    <h4 class="text-xl font-semibold text-slate-900 ml-3">{{ item.title }}</h4>
+                    <h4 class="text-xl font-semibold text-slate-900">{{ item.title }}</h4>
                   </div>
                   <p class="text-slate-600">{{ item.description }}</p>
                 </div>
               </div>
 
               <!-- Center dot -->
-              <div class="absolute left-1/2 transform -translate-x-1/2 w-6 h-6 bg-white border-4 border-indigo-500 rounded-full shadow-lg"></div>
+              <div class="absolute left-[2px] sm:left-1/2 transform -translate-x-1/2 w-6 h-6 bg-white border-4 border-indigo-500 rounded-full shadow-lg"></div>
 
               <!-- Spacer -->
-              <div class="w-5/12"></div>
+              <div class="sm:w-5/12"></div>
             </div>
           </div>
         </div>

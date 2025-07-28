@@ -100,12 +100,12 @@ onMounted(() => {
       </div>
 
       <div class="relative z-10 px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
-        <div class="container mx-auto text-center">
+        <div class="container text-center">
           <div class="animate-fade-in-up">
             <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl">
               Artikel & <span class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">Panduan</span>
             </h1>
-            <p class="mx-auto mt-6 max-w-3xl text-xl text-slate-300 sm:text-2xl">
+            <p class="mx-auto mt-6 max-w-3xl text-xl sm:text-2xl text-slate-300">
               Ikuti informasi, panduan, dan berita terkini seputar keamanan siber
               untuk meningkatkan kewaspadaan kita bersama
             </p>
@@ -115,12 +115,12 @@ onMounted(() => {
     </section>
 
     <!-- Posts Section -->
-    <section ref="postsRef" class="py-20 bg-white opacity-0 translate-y-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref="postsRef" class="py-8 sm:py-16 lg:py-20 bg-white opacity-0 translate-y-10">
+      <div class="container">
 
         <!-- Featured Post (Only on First Page) -->
-        <div v-if="isFirstPage && posts.data.length > 0" class="mb-16">
-          <div class="text-center mb-12">
+        <div v-if="isFirstPage && posts.data.length > 0" class="mb-8 sm:mb-16">
+          <div class="text-center mb-8 sm:mb-12">
             <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
               Artikel Terbaru
             </h2>
@@ -129,7 +129,7 @@ onMounted(() => {
           <article class="group relative bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-slate-200">
             <div class="lg:grid lg:grid-cols-2 lg:gap-0">
               <!-- Featured Image -->
-              <div class="relative h-64 lg:h-auto">
+              <div class="relative h-64 lg:min-h-[420px] overflow-hidden">
                 <Link :href="route('posts.show', { post: posts.data[0].slug })" class="block h-full">
                   <PostImage :post="posts.data[0]" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -149,14 +149,14 @@ onMounted(() => {
                 </div>
 
                 <!-- Title -->
-                <h3 class="text-3xl lg:text-4xl font-bold text-slate-900 mb-4 group-hover:text-indigo-600 transition-colors duration-300">
+                <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-4 group-hover:text-indigo-600 transition-colors duration-300">
                   <Link :href="route('posts.show', { post: posts.data[0].slug })">
                     {{ posts.data[0].title }}
                   </Link>
                 </h3>
 
                 <!-- Excerpt -->
-                <p class="text-xl text-slate-600 mb-6 leading-relaxed">
+                <p class="sm:text-lg text-slate-600 mb-6">
                   {{ generateExcerpt(posts.data[0]) }}
                 </p>
 
@@ -189,7 +189,7 @@ onMounted(() => {
 
         <!-- Regular Posts Grid -->
         <div v-if="gridPosts.length > 0">
-          <div class="text-center mb-12">
+          <div class="text-center mb-8 sm:mb-12">
             <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
               {{ isFirstPage ? 'Artikel Lainnya' : 'Semua Artikel' }}
             </h2>
@@ -263,7 +263,7 @@ onMounted(() => {
         </div>
 
         <!-- Modern Pagination -->
-        <div v-if="posts.links.length > 3" class="mt-16 flex justify-center">
+        <div v-if="posts.links.length > 3" class="mt-8 sm:mt-16 flex justify-center">
           <nav class="flex items-center space-x-1" aria-label="Pagination">
             <!-- First Page -->
             <Link

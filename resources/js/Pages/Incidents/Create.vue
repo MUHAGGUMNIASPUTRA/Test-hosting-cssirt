@@ -83,7 +83,7 @@ onMounted(() => {
       </div>
 
       <div class="relative z-10 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div class="container mx-auto max-w-4xl text-center">
+        <div class="container max-w-4xl text-center">
           <div class="animate-fade-in-up">
             <!-- Alert Icon -->
             <div class="w-20 h-20 bg-red-100/20 rounded-full flex items-center justify-center mx-auto mb-8 backdrop-blur-sm">
@@ -94,23 +94,23 @@ onMounted(() => {
               Lapor <span class="bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">Insiden Siber</span>
             </h1>
 
-            <p class="text-2xl text-slate-300 leading-relaxed mb-8 max-w-3xl mx-auto">
+            <p class="text-xl sm:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto">
               Bantu kami melindungi ekosistem digital Indonesia dengan melaporkan insiden keamanan siber yang Anda alami atau ketahui
             </p>
 
             <!-- Quick Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-              <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div class="text-4xl font-bold text-white mb-2">24/7</div>
-                <div class="text-slate-300">Layanan Siaga</div>
+            <div class="grid grid-cols-3 gap-3 sm:gap-6 mt-8 sm:mt-12">
+              <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-2 sm:p-6 border border-white/20">
+                <div class="text-xl sm:text-2xl lg:text-4xl font-bold text-white mb-0 sm:mb-1 lg:mb-2">24/7</div>
+                <div class="text-sm sm:text-base text-slate-300">Layanan Siaga</div>
               </div>
-              <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div class="text-4xl font-bold text-white mb-2">< 24 Jam</div>
-                <div class="text-slate-300">Respons Awal</div>
+              <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-2 sm:p-6 border border-white/20">
+                <div class="text-xl sm:text-2xl lg:text-4xl font-bold text-white mb-0 sm:mb-1 lg:mb-2">< 24 Jam</div>
+                <div class="text-sm sm:text-base text-slate-300">Respons Awal</div>
               </div>
-              <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div class="text-4xl font-bold text-white mb-2">Rahasia</div>
-                <div class="text-slate-300">Data Terlindungi</div>
+              <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-2 sm:p-6 border border-white/20">
+                <div class="text-xl sm:text-2xl lg:text-4xl font-bold text-white mb-0 sm:mb-1 lg:mb-2">Rahasia</div>
+                <div class="text-sm sm:text-base text-slate-300">Data Terlindungi</div>
               </div>
             </div>
           </div>
@@ -119,8 +119,8 @@ onMounted(() => {
     </section>
 
     <!-- Main Content -->
-    <section ref="formRef" class="py-16 lg:py-24 bg-white opacity-0 translate-y-10">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref="formRef" class="py-8 sm:py-16 lg:py-24 bg-white opacity-0 translate-y-10">
+      <div class="container">
         <div class="max-w-7xl mx-auto">
 
           <!-- Flash Messages -->
@@ -135,7 +135,7 @@ onMounted(() => {
             </div>
           </div>
 
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
 
             <!-- Information Sidebar -->
             <div class="lg:col-span-4">
@@ -143,10 +143,12 @@ onMounted(() => {
 
                 <!-- Important Information -->
                 <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-200">
-                  <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
-                    <i class="pi pi-info-circle !text-lg text-blue-600"></i>
+                  <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-blue-100 border border-blue-200 rounded-xl flex items-center justify-center">
+                      <i class="pi pi-info-circle !text-lg text-blue-600"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900">Informasi Penting</h3>
                   </div>
-                  <h3 class="text-2xl font-bold text-slate-900 mb-4">Informasi Penting</h3>
                   <div class="space-y-4 text-slate-700">
                     <div class="flex items-start">
                       <i class="pi pi-lock text-blue-600 mt-1 mr-3"></i>
@@ -174,10 +176,12 @@ onMounted(() => {
 
                 <!-- Preparation Checklist -->
                 <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
-                  <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mb-6">
-                    <i class="pi pi-clipboard !text-lg text-amber-600"></i>
+                  <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-amber-100 border border-amber-200 rounded-xl flex items-center justify-center">
+                      <i class="pi pi-clipboard !text-lg text-amber-600"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900">Sebelum Melapor</h3>
                   </div>
-                  <h3 class="text-2xl font-bold text-slate-900 mb-4">Sebelum Melapor</h3>
                   <div class="space-y-3">
                     <div class="flex items-start">
                       <div class="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
@@ -216,15 +220,17 @@ onMounted(() => {
 
                 <!-- Emergency Contact -->
                 <div class="bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl p-8 border border-red-200">
-                  <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-6">
-                    <i class="pi pi-phone !text-lg text-red-600"></i>
+                  <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-red-100 border border-red-200 rounded-xl flex items-center justify-center">
+                      <i class="pi pi-phone !text-lg text-red-600"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900">Kontak Darurat</h3>
                   </div>
-                  <h3 class="text-2xl font-bold text-slate-900 mb-4">Kontak Darurat</h3>
                   <p class="text-slate-700 mb-4">Untuk insiden kritis yang memerlukan penanganan segera:</p>
                   <div class="space-y-2">
                     <p class="font-semibold text-slate-900"><i class="pi pi-phone !text-sm mr-2"></i> Hotline: 14000</p>
                     <p class="font-semibold text-slate-900"><i class="pi pi-envelope !text-sm mr-2"></i> Email: csirt@kominfo.go.id</p>
-                    <p class="text-sm text-slate-600 mt-3">*Layanan 24/7 untuk insiden kategori tinggi</p>
+                    <p class="text-sm text-slate-600 !mt-4">*Layanan 24/7 untuk insiden prioritas tinggi</p>
                   </div>
                 </div>
               </div>
@@ -471,7 +477,7 @@ onMounted(() => {
                     <!-- Privacy Notice -->
                     <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
                       <div class="flex items-start">
-                        <svg class="w-5 h-5 text-slate-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="hidden sm:flex w-5 h-5 text-slate-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
                         <div class="text-slate-600">
