@@ -1,11 +1,32 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3'
-import { ref, computed } from 'vue'
+import { Link, useForm } from '@inertiajs/vue3'
+import { computed } from 'vue'
 
 const props = defineProps({
+  incident: {
+    type: Object,
+    default: null // null means creating, object means editing
+  },
   incidentTypes: Array,
   staffUsers: Array,
 })
+
+// Determine if editing or creating
+const isEditing = computed(() => !!props.incident)
+const pageTitle = computed(() =>
+  isEditing.value ? `Edit Insiden: ${props.incident.case_id}` : 'Lapor Insiden Baru'
+)
+const headerTitle = computed(() =>
+  isEditing.value ? 'Edit Insiden' : 'Lapor Insiden Baru'
+)
+const headerDescription = computed(() =>
+  isEditing.value
+    ? 'Perbarui informasi insiden keamanan siber'
+    : 'Buat laporan insiden keamanan siber baru untuk ditindaklanjuti'
+)
+const submitButtonText = computed(() =>
+  isEditing.value ? 'Update Laporan' : 'Simpan Laporan'
+)
 
 // Format current date properly for the form
 const formatDateForInput = (date) => {
@@ -13,16 +34,17 @@ const formatDateForInput = (date) => {
   return d.toISOString().slice(0, 16) // Returns "YYYY-MM-DDTHH:MM"
 }
 
+// Initialize form with default or existing values
 const form = useForm({
-  reporter_name: '',
-  reporter_email: '',
-  reporter_phone: '',
-  incident_type_id: null,
-  incident_at: new Date(),
-  description: '',
-  status: 'Baru',
-  priority: 'Sedang',
-  assigned_to: null,
+  reporter_name: props.incident?.reporter_name || '',
+  reporter_email: props.incident?.reporter_email || '',
+  reporter_phone: props.incident?.reporter_phone || '',
+  incident_type_id: props.incident?.incident_type_id || null,
+  incident_at: props.incident ? new Date(props.incident.incident_at) : new Date(),
+  description: props.incident?.description || '',
+  status: props.incident?.status || 'Baru',
+  priority: props.incident?.priority || 'Sedang',
+  assigned_to: props.incident?.assigned_to || null,
 })
 
 const statusOptions = [
@@ -66,7 +88,13 @@ const submit = () => {
     formData.incident_at = formatDateForInput(formData.incident_at)
   }
 
-  form.transform(() => formData).post(route('admin.incidents.store'))
+  if (isEditing.value) {
+    // Update existing incident
+    form.transform(() => formData).put(route('admin.incidents.update', props.incident.id))
+  } else {
+    // Create new incident
+    form.transform(() => formData).post(route('admin.incidents.store'))
+  }
 }
 
 const getPrioritySeverity = (priority) => {
@@ -120,26 +148,52 @@ const formatDateTime = (date) => {
 </script>
 
 <template>
-  <AdminLayout title="Lapor Insiden Baru">
+  <AdminLayout :title="pageTitle">
     <form @submit.prevent="submit">
       <div class="space-y-6">
         <!-- Header Section -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h2 class="text-2xl font-bold text-slate-900">Lapor Insiden Baru</h2>
-              <p class="text-slate-600">Buat laporan insiden keamanan siber baru untuk ditindaklanjuti</p>
+              <h2 class="text-2xl font-bold text-slate-900">{{ headerTitle }}</h2>
+              <p class="text-slate-600">{{ !isEditing ? 'Buat laporan insiden keamanan siber baru untuk ditindaklanjuti' : '' }}</p>
+              <!-- Show incident ID when editing -->
+              <div v-if="isEditing" class="flex items-center gap-3 mt-2">
+                <Tag
+                  :value="incident.case_id"
+                  severity="secondary"
+                  size="small"
+                  class="font-mono !text-slate-500"
+                />
+                <Tag
+                  :value="incident.status"
+                  :severity="getStatusSeverity(incident.status)"
+                  size="small"
+                />
+                <Tag
+                  :value="incident.priority"
+                  :severity="getPrioritySeverity(incident.priority)"
+                  size="small"
+                />
+              </div>
             </div>
             <div class="flex items-center space-x-3">
+              <Link
+                :href="route('admin.incidents.index')"
+                class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+              >
+                <span class="material-symbols-outlined !text-xl">west</span>
+                  Kembali
+              </Link>
               <button
                 type="submit"
                 :disabled="form.processing"
-                class="bg-blue-600 hover:bg-blue-800 text-white w-full inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
+                class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
               >
                 <span class="material-symbols-outlined !text-xl" :class="{ 'animate-spin': form.processing }">
                   {{ form.processing ? 'progress_activity' : 'save' }}
                 </span>
-                {{ form.processing ? 'Menyimpan...' : 'Simpan Laporan' }}
+                {{ form.processing ? 'Menyimpan...' : submitButtonText }}
               </button>
             </div>
           </div>
@@ -353,12 +407,14 @@ const formatDateTime = (date) => {
 
             <!-- Preview Card -->
             <div class="bg-slate-50 rounded-xl border border-slate-200 p-6">
-              <h3 class="font-medium text-slate-700 mb-4">Preview Laporan</h3>
+              <h3 class="font-medium text-slate-700 mb-4">
+                {{ isEditing ? 'Ringkasan Perubahan' : 'Preview Laporan' }}
+              </h3>
               <div class="space-y-3">
                 <div class="flex justify-between items-center">
                   <span class="text-slate-500">ID Insiden:</span>
                   <span class="font-mono text-slate-700 bg-slate-200 px-2 py-1 rounded text-xs">
-                    Auto Generated
+                    {{ isEditing ? incident.case_id : 'Auto Generated' }}
                   </span>
                 </div>
                 <div class="flex justify-between items-center">
@@ -387,7 +443,6 @@ const formatDateTime = (date) => {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>

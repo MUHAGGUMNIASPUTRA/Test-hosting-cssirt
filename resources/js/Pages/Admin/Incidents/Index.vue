@@ -12,8 +12,8 @@ const { dtConfig } = useResponsive();
 
 const searchQuery = ref(props.filters?.search || '')
 const selectedCategory = ref(props.filters?.category || '')
-const selectedPriority = ref(props.filters?.priority || '')
 const selectedStatus = ref(props.filters?.status || '')
+const selectedPriority = ref(props.filters?.priority || '')
 const showDeleteDialog = ref(false)
 const incidentToDelete = ref(null)
 
@@ -29,8 +29,8 @@ const applyFilters = () => {
 
   if (searchQuery.value) params.set('search', searchQuery.value)
   if (selectedCategory.value) params.set('category', selectedCategory.value)
-  if (selectedPriority.value) params.set('priority', selectedPriority.value)
   if (selectedStatus.value) params.set('status', selectedStatus.value)
+  if (selectedPriority.value) params.set('priority', selectedPriority.value)
 
   // Add pagination params
   if (lazyParams.value.page > 1) params.set('page', lazyParams.value.page)
@@ -55,8 +55,8 @@ const onPage = (event) => {
 
   if (searchQuery.value) params.set('search', searchQuery.value)
   if (selectedCategory.value) params.set('category', selectedCategory.value)
-  if (selectedPriority.value) params.set('priority', selectedPriority.value)
   if (selectedStatus.value) params.set('status', selectedStatus.value)
+  if (selectedPriority.value) params.set('priority', selectedPriority.value)
 
   params.set('page', lazyParams.value.page)
 
@@ -87,16 +87,6 @@ const deleteIncident = () => {
   })
 }
 
-const getPrioritySeverity = (priority) => {
-  const severities = {
-    'Rendah': 'success',
-    'Sedang': 'info',
-    'Tinggi': 'warn',
-    'Kritikal': 'danger'
-  }
-  return severities[priority] || 'warn'
-}
-
 const getStatusSeverity = (status) => {
   const severities = {
     'Baru': 'info',
@@ -106,6 +96,16 @@ const getStatusSeverity = (status) => {
     'Ditutup': 'secondary'
   }
   return severities[status] || 'info'
+}
+
+const getPrioritySeverity = (priority) => {
+  const severities = {
+    'Rendah': 'success',
+    'Sedang': 'info',
+    'Tinggi': 'warn',
+    'Kritikal': 'danger'
+  }
+  return severities[priority] || 'warn'
 }
 
 const formatDate = (dateString) => {
@@ -126,13 +126,6 @@ const categoryOptions = [
   { label: 'Kebocoran Data', value: 5 },
 ];
 
-const priorityOptions = [
-  { label: 'Rendah', value: 'Rendah' },
-  { label: 'Sedang', value: 'Sedang' },
-  { label: 'Tinggi', value: 'Tinggi' },
-  { label: 'Kritikal', value: 'Kritikal' },
-];
-
 const statusOptions = [
   { label: 'Baru', value: 'Baru' },
   { label: 'Diverifikasi', value: 'Diverifikasi' },
@@ -141,11 +134,18 @@ const statusOptions = [
   { label: 'Ditutup', value: 'Ditutup' },
 ];
 
+const priorityOptions = [
+  { label: 'Rendah', value: 'Rendah' },
+  { label: 'Sedang', value: 'Sedang' },
+  { label: 'Tinggi', value: 'Tinggi' },
+  { label: 'Kritikal', value: 'Kritikal' },
+];
+
 const clearFilters = () => {
   searchQuery.value = '';
   selectedCategory.value = '';
-  selectedPriority.value = '';
   selectedStatus.value = '';
+  selectedPriority.value = '';
   lazyParams.value.page = 1;
   lazyParams.value.first = 0;
   applyFilters();
@@ -360,20 +360,6 @@ const serverSideConfig = computed(() => {
           </div>
 
           <div>
-            <label class="block font-medium text-slate-700 mb-2">Filter Prioritas</label>
-            <Select
-              v-model="selectedPriority"
-              :options="priorityOptions"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Pilih Prioritas"
-              class="w-full"
-              showClear
-              @change="applyFilters"
-            />
-          </div>
-
-          <div>
             <label class="block font-medium text-slate-700 mb-2">Filter Status</label>
             <Select
               v-model="selectedStatus"
@@ -381,6 +367,20 @@ const serverSideConfig = computed(() => {
               optionLabel="label"
               optionValue="value"
               placeholder="Pilih Status"
+              class="w-full"
+              showClear
+              @change="applyFilters"
+            />
+          </div>
+
+          <div>
+            <label class="block font-medium text-slate-700 mb-2">Filter Prioritas</label>
+            <Select
+              v-model="selectedPriority"
+              :options="priorityOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Pilih Prioritas"
               class="w-full"
               showClear
               @change="applyFilters"
@@ -413,12 +413,14 @@ const serverSideConfig = computed(() => {
 
           <Column field="case_id" header="ID Insiden">
             <template #body="{ data }">
-              <Tag
-                :value="data.case_id"
-                severity="secondary"
-                size="small"
-                class="font-mono !text-slate-500"
-              />
+              <Link :href="route('admin.incidents.show', data.id)">
+                <Tag
+                  :value="data.case_id"
+                  severity="secondary"
+                  size="small"
+                  class="font-mono !text-slate-500"
+                />
+              </Link>
             </template>
           </Column>
 
@@ -437,21 +439,21 @@ const serverSideConfig = computed(() => {
             </template>
           </Column>
 
-          <Column field="priority" header="Prioritas">
-            <template #body="{ data }">
-              <Tag
-                :value="data.priority"
-                :severity="getPrioritySeverity(data.priority)"
-                size="small"
-              />
-            </template>
-          </Column>
-
           <Column field="status" header="Status">
             <template #body="{ data }">
               <Tag
                 :value="data.status"
                 :severity="getStatusSeverity(data.status)"
+                size="small"
+              />
+            </template>
+          </Column>
+
+          <Column field="priority" header="Prioritas">
+            <template #body="{ data }">
+              <Tag
+                :value="data.priority"
+                :severity="getPrioritySeverity(data.priority)"
                 size="small"
               />
             </template>

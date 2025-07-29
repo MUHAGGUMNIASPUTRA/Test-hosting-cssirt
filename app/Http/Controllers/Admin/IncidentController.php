@@ -110,7 +110,7 @@ class IncidentController extends Controller
    */
   public function edit(Incident $incident): Response
   {
-    return Inertia::render('Admin/Incidents/Edit', [
+    return Inertia::render('Admin/Incidents/Create', [
       'incident' => $incident,
       'incidentTypes' => IncidentType::all(['id', 'name']),
       'staffUsers' => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
@@ -138,7 +138,7 @@ class IncidentController extends Controller
 
     $incident->update($validated);
 
-    return redirect()->route('admin.incidents.index')->with('success', 'Insiden berhasil diperbarui.');
+    return redirect()->route('admin.incidents.show', $incident)->with('success', 'Insiden berhasil diperbarui.');
   }
 
   /**

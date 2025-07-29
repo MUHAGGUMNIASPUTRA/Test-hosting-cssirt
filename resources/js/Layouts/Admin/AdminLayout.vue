@@ -279,7 +279,7 @@ watch(
       <div class="border-t border-slate-200 p-4">
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full flex items-center justify-center">
+            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
               <span class="text-xs font-medium text-white">
                 {{ page.props.auth.user?.name?.charAt(0)?.toUpperCase() || 'U' }}
               </span>
@@ -325,7 +325,7 @@ watch(
                 @click.stop="userMenuOpen = !userMenuOpen"
                 class="flex items-center p-2 text-sm rounded-lg hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
-                <div class="w-8 h-8 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full flex items-center justify-center">
+                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                   <span class="text-xs font-medium text-white">{{ page.props.auth.user?.name?.charAt(0)?.toUpperCase() || 'U' }}</span>
                 </div>
                 <span class="ml-2 text-slate-700 hidden sm:block">{{ page.props.auth.user?.name || 'User' }}</span>

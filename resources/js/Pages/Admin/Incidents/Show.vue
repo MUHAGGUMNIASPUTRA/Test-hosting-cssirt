@@ -163,14 +163,14 @@ const getLogIconColor = (index, total) => {
           <div class="flex items-center space-x-3">
             <Link
               :href="route('admin.incidents.index')"
-              class="bg-slate-100 hover:bg-slate-200 text-slate-600 inline-flex items-center gap-2 px-4 py-2 rounded-md transition"
+              class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
             >
               <span class="material-symbols-outlined !text-xl">west</span>
                 Kembali
             </Link>
             <Link
               :href="route('admin.incidents.edit', incident.id)"
-              class="bg-blue-600 hover:bg-blue-800 text-white inline-flex items-center gap-2 px-4 py-2 rounded-md transition"
+              class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
             >
               <span class="material-symbols-outlined !text-xl">edit_notifications</span>
               Edit Insiden
@@ -285,7 +285,7 @@ const getLogIconColor = (index, total) => {
           </div>
 
           <!-- Management Form -->
-          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <!-- <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
             <div class="flex items-center mb-6">
               <div class="w-12 h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
                 <span class="material-symbols-outlined text-green-600">markdown_paste</span>
@@ -352,7 +352,7 @@ const getLogIconColor = (index, total) => {
                 </button>
               </div>
             </form>
-          </div>
+          </div> -->
         </div>
 
         <!-- Sidebar -->
