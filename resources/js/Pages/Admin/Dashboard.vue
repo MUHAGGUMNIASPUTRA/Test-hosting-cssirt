@@ -131,7 +131,7 @@ const truncateText = (text, length = 50) => {
                 <span class="font-medium">+{{ stats.incidents.thisMonth }}</span> bulan ini
               </p>
             </div>
-            <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
               <span class="material-symbols-outlined text-red-600">e911_emergency</span>
             </div>
           </div>
@@ -147,7 +147,7 @@ const truncateText = (text, length = 50) => {
                 <span class="font-medium">{{ stats.incidents.critical }}</span> kritikal
               </p>
             </div>
-            <div class="w-12 h-12 bg-orange-50 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
               <span class="material-symbols-outlined text-orange-600">data_alert</span>
             </div>
           </div>
@@ -163,7 +163,7 @@ const truncateText = (text, length = 50) => {
                 <span class="font-medium">{{ stats.posts.draft }}</span> draft
               </p>
             </div>
-            <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
               <span class="material-symbols-outlined text-blue-600">article</span>
             </div>
           </div>
@@ -179,7 +179,7 @@ const truncateText = (text, length = 50) => {
                 <span class="font-medium">{{ stats.faqs.published }}</span> FAQ aktif
               </p>
             </div>
-            <div class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
+            <div class="w-12 h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
               <span class="material-symbols-outlined text-green-600">group</span>
             </div>
           </div>

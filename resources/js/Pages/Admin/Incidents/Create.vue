@@ -131,18 +131,16 @@ const formatDateTime = (date) => {
               <p class="text-slate-600">Buat laporan insiden keamanan siber baru untuk ditindaklanjuti</p>
             </div>
             <div class="flex items-center space-x-3">
-              <Button
+              <button
                 type="submit"
                 :disabled="form.processing"
-                :loading="form.processing"
-                class="w-full"
-                severity="primary"
+                class="bg-blue-600 hover:bg-blue-800 text-white w-full inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
               >
-                <template #default>
-                  <i class="pi pi-save"></i>
-                  {{ form.processing ? 'Menyimpan...' : 'Simpan Laporan' }}
-                </template>
-              </Button>
+                <span class="material-symbols-outlined !text-xl" :class="{ 'animate-spin': form.processing }">
+                  {{ form.processing ? 'progress_activity' : 'save' }}
+                </span>
+                {{ form.processing ? 'Menyimpan...' : 'Simpan Laporan' }}
+              </button>
             </div>
           </div>
         </div>
