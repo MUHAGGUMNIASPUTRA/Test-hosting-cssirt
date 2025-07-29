@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
 import { useConfirm } from "primevue/useconfirm"
-import { useToast } from "primevue/usetoast"
 import { useResponsive } from '@/Composables/useResponsive'
 
 const props = defineProps({
@@ -12,7 +11,6 @@ const props = defineProps({
 
 const { isMobile, dtConfig } = useResponsive()
 const confirm = useConfirm()
-const toast = useToast()
 
 // Search and filters - exactly like incidents
 const searchQuery = ref(props.filters?.search || '')
@@ -94,12 +92,6 @@ const deletePost = () => {
     onSuccess: () => {
       showDeleteDialog.value = false
       postToDelete.value = null
-      toast.add({
-        severity: 'success',
-        summary: 'Berhasil',
-        detail: 'Artikel berhasil dihapus',
-        life: 3000
-      })
     },
     onError: () => {}
   })
@@ -153,7 +145,6 @@ const serverSideConfig = computed(() => {
 <template>
   <AdminLayout title="Daftar Artikel">
     <ConfirmDialog />
-    <Toast position="top-right" />
 
     <!-- Custom Delete Confirmation Dialog -->
     <Dialog
@@ -238,7 +229,7 @@ const serverSideConfig = computed(() => {
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 class="text-2xl font-bold text-slate-900">Daftar Artikel</h2>
+            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Daftar Artikel</h2>
             <p class="text-slate-600">Kelola artikel dan konten website</p>
           </div>
           <Link
@@ -330,7 +321,7 @@ const serverSideConfig = computed(() => {
                 </div>
 
                 <div class="flex-1 min-w-0">
-                  <h3 class="font-semibold text-slate-900 mb-1 line-clamp-1">
+                  <h3 class="font-semibold text-slate-700 mb-1 line-clamp-1">
                     {{ data.title }}
                   </h3>
 

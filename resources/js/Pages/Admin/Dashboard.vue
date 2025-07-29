@@ -102,7 +102,7 @@ const truncateText = (text, length = 50) => {
       <div class="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl p-6 text-white">
         <div class="flex items-center justify-between">
           <div>
-            <h2 class="text-2xl font-bold mb-1">
+            <h2 class="text-xl sm:text-2xl font-bold mb-1">
               Selamat Datang, {{ $page.props.auth.user?.name || 'Admin' }}! 👋
             </h2>
             <p class="text-blue-100">

@@ -125,7 +125,7 @@ const getPriorityButtonClasses = (priority, isSelected) => {
   if (isSelected) {
     const selectedClasses = {
       'Rendah': 'border-green-500 bg-green-50 text-green-700 ring-2 ring-green-500 ring-opacity-20',
-      'Sedang': 'border-blue-500 bg-blue-50 text-blue-700 ring-2 ring-blue-500 ring-opacity-20',
+      'Sedang': 'border-sky-500 bg-sky-50 text-sky-700 ring-2 ring-sky-500 ring-opacity-20',
       'Tinggi': 'border-orange-500 bg-orange-50 text-orange-700 ring-2 ring-orange-500 ring-opacity-20',
       'Kritikal': 'border-red-500 bg-red-50 text-red-700 ring-2 ring-red-500 ring-opacity-20'
     }
@@ -133,7 +133,7 @@ const getPriorityButtonClasses = (priority, isSelected) => {
   } else {
     const unselectedClasses = {
       'Rendah': 'border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300',
-      'Sedang': 'border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300',
+      'Sedang': 'border-sky-200 text-sky-600 hover:bg-sky-50 hover:border-sky-300',
       'Tinggi': 'border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300',
       'Kritikal': 'border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300'
     }
@@ -155,7 +155,7 @@ const formatDateTime = (date) => {
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h2 class="text-2xl font-bold text-slate-900">{{ headerTitle }}</h2>
+              <h2 class="text-xl sm:text-2xl font-bold text-slate-900">{{ headerTitle }}</h2>
               <p class="text-slate-600">{{ !isEditing ? 'Buat laporan insiden keamanan siber baru untuk ditindaklanjuti' : '' }}</p>
               <!-- Show incident ID when editing -->
               <div v-if="isEditing" class="flex items-center gap-3 mt-2">
@@ -210,7 +210,7 @@ const formatDateTime = (date) => {
                 </div>
                 <div class="ml-3">
                   <h3 class="font-semibold text-slate-900">Informasi Pelapor</h3>
-                  <p class="text-slate-600">Data kontak pelapor insiden</p>
+                  <p class="text-xs sm:text-base text-slate-600">Data kontak pelapor insiden</p>
                 </div>
               </div>
 
@@ -277,7 +277,7 @@ const formatDateTime = (date) => {
                 </div>
                 <div class="ml-3">
                   <h3 class="font-semibold text-slate-900">Detail Insiden</h3>
-                  <p class="text-slate-600">Informasi lengkap tentang insiden yang terjadi</p>
+                  <p class="text-xs sm:text-base text-slate-600">Informasi lengkap tentang insiden yang terjadi</p>
                 </div>
               </div>
 
@@ -354,7 +354,7 @@ const formatDateTime = (date) => {
                 </div>
                 <div class="ml-3">
                   <h3 class="font-semibold text-slate-900">Manajemen</h3>
-                  <p class="text-slate-600">Status dan penugasan</p>
+                  <p class="text-xs sm:text-base text-slate-600">Status dan penugasan</p>
                 </div>
               </div>
 

@@ -207,11 +207,6 @@ watch(
       <!-- Sidebar header -->
       <div class="flex items-center justify-between h-16 px-6 bg-gradient-to-r from-indigo-600 to-blue-600">
         <div class="flex items-center">
-          <!-- <img
-            src="/logo-bojonegoro.png"
-            alt="Logo CSIRT"
-            class="w-8 h-8 rounded-lg bg-white/10 p-1"
-          /> -->
           <div class="h-9 w-9 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center mr-1">
             <svg class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
@@ -226,9 +221,6 @@ watch(
           @click="toggleSidebar"
           class="p-1 rounded-md text-blue-100 hover:bg-white/10 lg:hidden"
         >
-          <!-- <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg> -->
         </button>
       </div>
 
@@ -259,7 +251,7 @@ watch(
                   :href="route(subItem.route)"
                   @click="closeSidebarOnMobile"
                   class="flex items-center px-3 py-2 text-sm rounded-md transition-colors"
-                  :class="isCurrentRoute(subItem.route) ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
+                  :class="isCurrentRoute(subItem.route) ? 'bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500 font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
                 >
                   <span class="material-symbols-outlined icon-wght-300 mr-3" :class="[isCurrentRoute(subItem.route) ? 'text-indigo-500' : 'text-slate-400']">{{ subItem.icon }}</span>{{ subItem.label }}
                 </Link>
@@ -311,14 +303,6 @@ watch(
           </div>
 
           <div class="flex items-center space-x-4">
-            <!-- Notifications -->
-            <!-- <button class="relative p-2 text-slate-400 hover:text-slate-500 hover:bg-slate-100 rounded-lg">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5-5v5h5m-15.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zm0 0V9a9 9 0 019 9v1m-9-10a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-              </svg>
-              <span class="absolute top-1 right-1 w-2 h-2 bg-red-400 rounded-full"></span>
-            </button> -->
-
             <!-- User menu -->
             <div class="relative user-menu">
               <button

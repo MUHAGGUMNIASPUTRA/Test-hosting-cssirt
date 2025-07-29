@@ -244,7 +244,7 @@ const serverSideConfig = computed(() => {
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 class="text-2xl font-bold text-slate-900">Daftar Laporan Insiden</h2>
+            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Daftar Laporan Insiden</h2>
             <p class="text-slate-600">Kelola dan monitor laporan insiden keamanan siber</p>
           </div>
           <Link

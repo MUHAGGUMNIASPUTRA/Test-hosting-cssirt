@@ -67,7 +67,7 @@ class PostController extends Controller
     $validated = $request->validate([
       'title' => 'required|string|max:255',
       'body' => 'required|string',
-      'excerpt' => 'nullable|string|max:500',
+      'excerpt' => 'required|string|max:500',
       'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
       'status' => 'required|in:Draft,Published',
       'categories' => 'required|array|min:1',
@@ -85,7 +85,7 @@ class PostController extends Controller
       'title' => $validated['title'],
       'slug' => Str::slug($validated['title']),
       'body' => $validated['body'],
-      'excerpt' => $validated['excerpt'] ? $validated['excerpt'] : Str::limit(strip_tags($validated['body']), 150),
+      'excerpt' => $validated['excerpt'],
       'image' => $path,
       'status' => $validated['status'],
       'published_by' => Auth::user()->name,
@@ -99,7 +99,7 @@ class PostController extends Controller
     }
 
     // Redirect to the post list (we will create this page later)
-    return redirect()->route('admin.dashboard')->with('success', 'Artikel berhasil dibuat.');
+    return redirect()->route('admin.posts.index')->with('success', 'Artikel berhasil dibuat.');
   }
 
   /**
@@ -107,7 +107,7 @@ class PostController extends Controller
    */
   public function edit(Post $post): Response
   {
-    return Inertia::render('Admin/Posts/Edit', [
+    return Inertia::render('Admin/Posts/Create', [
       'post' => $post->load(['categories', 'tags']),
       'categories' => Category::all(['id', 'name']),
       'tags' => Tag::all(['id', 'name']),
