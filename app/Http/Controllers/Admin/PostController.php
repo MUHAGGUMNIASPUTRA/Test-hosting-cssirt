@@ -19,10 +19,27 @@ class PostController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index(): Response
+  public function index(Request $request): Response
   {
+    $query = Post::with(['categories', 'tags'])
+      ->latest();
+
+    // Apply search filter
+    if ($request->filled('search')) {
+      $query->where('title', 'ilike', '%' . $request->search . '%')
+        ->orWhere('excerpt', 'ilike', '%' . $request->search . '%');
+    }
+
+    // Apply status filter
+    if ($request->filled('status')) {
+      $query->where('status', $request->status);
+    }
+
+    $posts = $query->paginate(10)->withQueryString();
+
     return Inertia::render('Admin/Posts/Index', [
-      'posts' => Post::latest()->paginate(10),
+      'posts' => $posts,
+      'filters' => $request->only(['search', 'status']),
     ]);
   }
 

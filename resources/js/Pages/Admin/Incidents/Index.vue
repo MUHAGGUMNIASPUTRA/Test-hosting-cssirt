@@ -249,7 +249,7 @@ const serverSideConfig = computed(() => {
           </div>
           <Link
             :href="route('admin.incidents.create')"
-            class="bg-blue-600 hover:bg-blue-800 text-white inline-flex items-center gap-2 px-4 py-2 rounded-md transition"
+            class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
           >
             <span class="material-symbols-outlined !text-xl">notification_add</span>
               Lapor Insiden Baru
