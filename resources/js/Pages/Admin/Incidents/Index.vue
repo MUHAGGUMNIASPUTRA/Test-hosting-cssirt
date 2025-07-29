@@ -247,13 +247,16 @@ const serverSideConfig = computed(() => {
             <h2 class="text-2xl font-bold text-slate-900">Daftar Laporan Insiden</h2>
             <p class="text-slate-600">Kelola dan monitor laporan insiden keamanan siber</p>
           </div>
-          <Link
+          <Button
+            as="a"
             :href="route('admin.incidents.create')"
-            class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800 transition-colors duration-200 font-medium"
+            severity="primary"
           >
-            <i class="pi pi-plus-circle mr-2"></i>
-            Lapor Insiden Baru
-          </Link>
+            <template #default>
+              <i class="pi pi-plus-circle"></i>
+              Lapor Insiden Baru
+            </template>
+          </Button>
         </div>
       </div>
 
