@@ -265,9 +265,7 @@ const serverSideConfig = computed(() => {
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
             <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+              <span class="material-symbols-outlined text-blue-600">problem</span>
             </div>
             <div class="ml-3">
               <p class="font-medium text-slate-600">Total Insiden</p>
@@ -279,9 +277,7 @@ const serverSideConfig = computed(() => {
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
             <div class="w-12 h-12 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center justify-center">
-              <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <span class="material-symbols-outlined text-yellow-600">cycle</span>
             </div>
             <div class="ml-3">
               <p class="font-medium text-slate-600">Dalam Proses</p>
@@ -295,9 +291,7 @@ const serverSideConfig = computed(() => {
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
             <div class="w-12 h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
-              <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.996-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
-              </svg>
+              <span class="material-symbols-outlined text-red-600">warning</span>
             </div>
             <div class="ml-3">
               <p class="font-medium text-slate-600">Kritikal</p>
@@ -311,9 +305,7 @@ const serverSideConfig = computed(() => {
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
             <div class="w-12 h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <span class="material-symbols-outlined text-green-600">done_all</span>
             </div>
             <div class="ml-3">
               <p class="font-medium text-slate-600">Selesai</p>

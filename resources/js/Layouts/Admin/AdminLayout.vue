@@ -17,64 +17,64 @@ const userMenuOpen = ref(false)
 const sidebarItems = ref([
   {
     label: 'Dashboard',
-    icon: 'pi pi-home',
+    icon: 'empty_dashboard',
     route: 'admin.dashboard',
   },
   {
     label: 'Insiden',
-    icon: 'pi pi-exclamation-triangle',
+    icon: 'e911_emergency',
     items: [
       {
         label: 'Daftar Insiden',
-        icon: 'pi pi-list',
+        icon: 'problem',
         route: 'admin.incidents.index'
       },
       {
         label: 'Lapor Insiden Baru',
-        icon: 'pi pi-plus-circle',
+        icon: 'notification_add',
         route: 'admin.incidents.create'
       },
     ],
   },
   {
     label: 'Konten',
-    icon: 'pi pi-file-edit',
+    icon: 'full_coverage',
     items: [
       {
         label: 'Daftar Artikel',
-        icon: 'pi pi-file',
+        icon: 'article',
         route: 'admin.posts.index'
       },
       {
         label: 'Tambah Artikel',
-        icon: 'pi pi-plus',
+        icon: 'post_add',
         route: 'admin.posts.create'
       },
       {
         label: 'Kategori & Tag',
-        icon: 'pi pi-tags',
+        icon: 'bookmarks',
         route: 'admin.taxonomy.index'
       }
     ],
   },
   {
     label: 'Layanan',
-    icon: 'pi pi-shield',
+    icon: 'verified_user',
     route: '',
   },
   {
     label: 'FAQ',
-    icon: 'pi pi-question-circle',
+    icon: 'help',
     route: '',
   },
   {
     label: 'Pengumuman',
-    icon: 'pi pi-megaphone',
+    icon: 'campaign',
     route: '',
   },
   {
     label: 'Pengguna',
-    icon: 'pi pi-users',
+    icon: 'group',
     route: 'admin.users.index',
     visible: () => page.props.auth.user?.role === 'admin'
   },
@@ -187,7 +187,7 @@ watch(
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50">
+  <div class="min-h-screen bg-slate-50 flex flex-col">
     <Head :title="title" />
 
     <loading-page />
@@ -244,13 +244,13 @@ watch(
               class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors group"
               :class="isCurrentRoute(item.route) ? 'bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
             >
-              <i class="mr-3" :class="[item.icon, isCurrentRoute(item.route) ? 'text-indigo-500' : 'text-slate-400']"></i>{{ item.label }}
+              <span class="material-symbols-outlined icon-wght-300 mr-3" :class="[isCurrentRoute(item.route) ? 'text-indigo-500' : 'text-slate-400']">{{ item.icon }}</span>{{ item.label }}
             </Link>
 
             <!-- Menu with subitems -->
             <div v-else-if="item.items && item.items.length > 0" class="space-y-1">
               <div class="flex items-center px-3 py-2 text-sm font-medium text-slate-600">
-                <i :class="item.icon" class="mr-3 text-slate-400"></i>{{ item.label }}
+                <span class="material-symbols-outlined icon-wght-300 mr-3 text-slate-400">{{ item.icon }}</span>{{ item.label }}
               </div>
               <div class="ml-6 space-y-1">
                 <Link
@@ -261,14 +261,14 @@ watch(
                   class="flex items-center px-3 py-2 text-sm rounded-md transition-colors"
                   :class="isCurrentRoute(subItem.route) ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
                 >
-                  <i class="mr-3" :class="[subItem.icon, isCurrentRoute(subItem.route) ? 'text-indigo-500' : 'text-slate-400']"></i>{{ subItem.label }}
+                  <span class="material-symbols-outlined icon-wght-300 mr-3" :class="[isCurrentRoute(subItem.route) ? 'text-indigo-500' : 'text-slate-400']">{{ subItem.icon }}</span>{{ subItem.label }}
                 </Link>
               </div>
             </div>
 
             <!-- Single menu item without route (disabled) -->
             <div v-else-if="!item.route" class="flex items-center px-3 py-2 text-sm font-medium text-slate-400 cursor-not-allowed">
-              <i :class="item.icon" class="mr-3"></i>{{ item.label }}
+              <span class="material-symbols-outlined icon-wght-300 mr-3">{{ item.icon }}</span>{{ item.label }}
               <span class="ml-auto text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded">Soon</span>
             </div>
           </div>
@@ -294,10 +294,10 @@ watch(
     </div>
 
     <!-- Main content -->
-    <div class="lg:pl-64 min-h-screen">
+    <div class="flex-1 lg:pl-64">
       <!-- Top navbar -->
       <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-30">
-        <div class="flex items-center justify-between h-16 px-6">
+        <div class="flex items-center justify-between h-16 px-3 lg:px-6">
           <div class="flex items-center">
             <button @click="toggleSidebar" class="p-2 rounded-md text-slate-400 hover:text-slate-500 hover:bg-slate-100 lg:hidden">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -357,6 +357,11 @@ watch(
       <main class="p-6">
         <slot />
       </main>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-sm py-5 mx-6 border-t border-slate-200 text-center sm:text-right mb-0.5">
+      <span>© 2025 CSIRT Kabupaten Bojonegoro. Seluruh hak cipta dilindungi.</span>
     </div>
 
     <!-- Toast notifications -->

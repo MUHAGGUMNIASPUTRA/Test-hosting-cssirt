@@ -68,6 +68,18 @@ export default {
     forms,
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
+    function ({ addUtilities }) {
+      const newUtilities = {
+        '.icon-wght-100': { 'font-variation-settings': "'wght' 100" },
+        '.icon-wght-200': { 'font-variation-settings': "'wght' 200" },
+        '.icon-wght-300': { 'font-variation-settings': "'wght' 300" },
+        '.icon-wght-400': { 'font-variation-settings': "'wght' 400" },
+        '.icon-wght-500': { 'font-variation-settings': "'wght' 500" },
+        '.icon-wght-600': { 'font-variation-settings': "'wght' 600" },
+        '.icon-wght-700': { 'font-variation-settings': "'wght' 700" },
+      };
+      addUtilities(newUtilities, ['responsive', 'hover']); // Bisa juga responsif dan hover
+    },
   ],
 
 }
