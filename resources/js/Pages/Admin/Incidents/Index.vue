@@ -1,27 +1,64 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
-import { useToast } from "primevue/usetoast"
-import AdminLayout from '@/Layouts/Admin/AdminLayout.vue'
+import { useResponsive } from '@/Composables/useResponsive';
 
 const props = defineProps({
   incidents: Object,
   filters: Object
 })
 
-const toast = useToast()
+const { dtConfig } = useResponsive();
+
 const searchQuery = ref(props.filters?.search || '')
-const selectedStatus = ref(props.filters?.status || '')
+const selectedCategory = ref(props.filters?.category || '')
 const selectedPriority = ref(props.filters?.priority || '')
+const selectedStatus = ref(props.filters?.status || '')
 const showDeleteDialog = ref(false)
 const incidentToDelete = ref(null)
+
+// Add pagination state
+const lazyParams = ref({
+  first: 0,
+  rows: props.incidents.per_page || 10,
+  page: props.incidents.current_page || 1
+})
 
 const applyFilters = () => {
   const params = new URLSearchParams()
 
   if (searchQuery.value) params.set('search', searchQuery.value)
-  if (selectedStatus.value) params.set('status', selectedStatus.value)
+  if (selectedCategory.value) params.set('category', selectedCategory.value)
   if (selectedPriority.value) params.set('priority', selectedPriority.value)
+  if (selectedStatus.value) params.set('status', selectedStatus.value)
+
+  // Add pagination params
+  if (lazyParams.value.page > 1) params.set('page', lazyParams.value.page)
+
+  const queryString = params.toString()
+  const url = route('admin.incidents.index') + (queryString ? '?' + queryString : '')
+
+  router.get(url, {}, {
+    preserveState: true,
+    preserveScroll: true,
+    replace: true
+  })
+}
+
+// Handle pagination change
+const onPage = (event) => {
+  lazyParams.value.first = event.first
+  lazyParams.value.rows = event.rows
+  lazyParams.value.page = Math.floor(event.first / event.rows) + 1
+
+  const params = new URLSearchParams()
+
+  if (searchQuery.value) params.set('search', searchQuery.value)
+  if (selectedCategory.value) params.set('category', selectedCategory.value)
+  if (selectedPriority.value) params.set('priority', selectedPriority.value)
+  if (selectedStatus.value) params.set('status', selectedStatus.value)
+
+  params.set('page', lazyParams.value.page)
 
   const queryString = params.toString()
   const url = route('admin.incidents.index') + (queryString ? '?' + queryString : '')
@@ -43,45 +80,32 @@ const deleteIncident = () => {
 
   router.delete(route('admin.incidents.destroy', incidentToDelete.value.id), {
     onSuccess: () => {
-      toast.add({
-        severity: 'success',
-        summary: 'Berhasil',
-        detail: 'Insiden berhasil dihapus',
-        life: 3000
-      })
       showDeleteDialog.value = false
       incidentToDelete.value = null
     },
-    onError: () => {
-      toast.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Gagal menghapus insiden',
-        life: 3000
-      })
-    }
+    onError: () => {}
   })
+}
+
+const getPrioritySeverity = (priority) => {
+  const severities = {
+    'Rendah': 'success',
+    'Sedang': 'info',
+    'Tinggi': 'warn',
+    'Kritikal': 'danger'
+  }
+  return severities[priority] || 'warn'
 }
 
 const getStatusSeverity = (status) => {
   const severities = {
     'Baru': 'info',
-    'Diverifikasi': 'warn',
+    'Diverifikasi': 'primary',
     'Dalam Penyelidikan': 'warn',
     'Selesai': 'success',
     'Ditutup': 'secondary'
   }
   return severities[status] || 'info'
-}
-
-const getPrioritySeverity = (priority) => {
-  const severities = {
-    'Rendah': 'info',
-    'Sedang': 'warn',
-    'Tinggi': 'warn',
-    'Kritikal': 'danger'
-  }
-  return severities[priority] || 'warn'
 }
 
 const formatDate = (dateString) => {
@@ -94,35 +118,53 @@ const formatDate = (dateString) => {
   })
 }
 
+const categoryOptions = [
+  { label: 'Phishing', value: 1 },
+  { label: 'Malware', value: 2 },
+  { label: 'Defacement', value: 3 },
+  { label: 'Serangan DDoS', value: 4 },
+  { label: 'Kebocoran Data', value: 5 },
+];
+
+const priorityOptions = [
+  { label: 'Rendah', value: 'Rendah' },
+  { label: 'Sedang', value: 'Sedang' },
+  { label: 'Tinggi', value: 'Tinggi' },
+  { label: 'Kritikal', value: 'Kritikal' },
+];
+
 const statusOptions = [
-  { label: 'Semua Status', value: '' },
   { label: 'Baru', value: 'Baru' },
   { label: 'Diverifikasi', value: 'Diverifikasi' },
   { label: 'Dalam Penyelidikan', value: 'Dalam Penyelidikan' },
   { label: 'Selesai', value: 'Selesai' },
-  { label: 'Ditutup', value: 'Ditutup' }
-]
-
-const priorityOptions = [
-  { label: 'Semua Prioritas', value: '' },
-  { label: 'Rendah', value: 'Rendah' },
-  { label: 'Sedang', value: 'Sedang' },
-  { label: 'Tinggi', value: 'Tinggi' },
-  { label: 'Kritikal', value: 'Kritikal' }
-]
+  { label: 'Ditutup', value: 'Ditutup' },
+];
 
 const clearFilters = () => {
-  searchQuery.value = ''
-  selectedStatus.value = ''
-  selectedPriority.value = ''
-  applyFilters()
-}
+  searchQuery.value = '';
+  selectedCategory.value = '';
+  selectedPriority.value = '';
+  selectedStatus.value = '';
+  lazyParams.value.page = 1;
+  lazyParams.value.first = 0;
+  applyFilters();
+};
+
+// Server-side DataTable configuration
+const serverSideConfig = computed(() => {
+  return {
+    ...dtConfig(),
+    lazy: true,
+    totalRecords: props.incidents.total,
+    first: (props.incidents.current_page - 1) * props.incidents.per_page,
+    rows: props.incidents.per_page,
+  }
+})
 </script>
 
 <template>
   <AdminLayout title="Daftar Laporan Insiden">
-    <Toast position="top-right" />
-
     <!-- Custom Delete Confirmation Dialog -->
     <Dialog
       v-model:visible="showDeleteDialog"
@@ -135,8 +177,8 @@ const clearFilters = () => {
           <!-- Header -->
           <div class="bg-gradient-to-r from-red-500 to-red-600 px-6 py-4">
             <div class="flex items-center">
-              <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.996-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
               </div>
@@ -155,11 +197,11 @@ const clearFilters = () => {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               </div>
-              <p class="text-slate-700 mb-2 text-sm">
+              <p class="text-slate-700 mb-2">
                 Apakah Anda yakin ingin menghapus insiden berikut?
               </p>
-              <div class="bg-slate-50 rounded-lg p-3 text-left">
-                <div class="text-sm">
+              <div class="bg-slate-50 border border-slate-100 rounded-lg p-3 text-left">
+                <div class="">
                   <div class="flex justify-between items-center mb-1">
                     <span class="font-medium text-slate-600">ID Insiden:</span>
                     <span class="font-mono text-slate-900 bg-slate-200 px-2 py-1 rounded text-xs">
@@ -168,7 +210,7 @@ const clearFilters = () => {
                   </div>
                   <div class="flex justify-between items-center">
                     <span class="font-medium text-slate-600">Pelapor:</span>
-                    <span class="text-slate-900 text-sm">{{ incidentToDelete?.reporter_name }}</span>
+                    <span class="text-slate-900">{{ incidentToDelete?.reporter_name }}</span>
                   </div>
                 </div>
               </div>
@@ -202,32 +244,30 @@ const clearFilters = () => {
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 class="text-2xl font-bold text-slate-900">Daftar Laporan Insiden</h1>
-            <p class="text-slate-600 mt-1 text-sm">Kelola dan monitor laporan insiden keamanan siber</p>
+            <h2 class="text-2xl font-bold text-slate-900">Daftar Laporan Insiden</h2>
+            <p class="text-slate-600">Kelola dan monitor laporan insiden keamanan siber</p>
           </div>
           <Link
             :href="route('admin.incidents.create')"
-            class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors duration-200 text-sm"
+            class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800 transition-colors duration-200 font-medium"
           >
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
+            <i class="pi pi-plus-circle mr-2"></i>
             Lapor Insiden Baru
           </Link>
         </div>
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
             <div class="ml-3">
-              <p class="text-sm font-medium text-slate-600">Total Insiden</p>
+              <p class="font-medium text-slate-600">Total Insiden</p>
               <p class="text-2xl font-bold text-slate-900">{{ incidents.total || 0 }}</p>
             </div>
           </div>
@@ -235,13 +275,13 @@ const clearFilters = () => {
 
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center">
-              <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-12 h-12 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div class="ml-3">
-              <p class="text-sm font-medium text-slate-600">Dalam Proses</p>
+              <p class="font-medium text-slate-600">Dalam Proses</p>
               <p class="text-2xl font-bold text-slate-900">
                 {{ incidents.data?.filter(i => ['Baru', 'Diverifikasi', 'Dalam Penyelidikan'].includes(i.status)).length || 0 }}
               </p>
@@ -251,13 +291,13 @@ const clearFilters = () => {
 
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
-              <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-12 h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.996-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
             </div>
             <div class="ml-3">
-              <p class="text-sm font-medium text-slate-600">Kritikal</p>
+              <p class="font-medium text-slate-600">Kritikal</p>
               <p class="text-2xl font-bold text-slate-900">
                 {{ incidents.data?.filter(i => i.priority === 'Kritikal').length || 0 }}
               </p>
@@ -267,13 +307,13 @@ const clearFilters = () => {
 
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-              <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-12 h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             <div class="ml-3">
-              <p class="text-sm font-medium text-slate-600">Selesai</p>
+              <p class="font-medium text-slate-600">Selesai</p>
               <p class="text-2xl font-bold text-slate-900">
                 {{ incidents.data?.filter(i => i.status === 'Selesai').length || 0 }}
               </p>
@@ -285,49 +325,50 @@ const clearFilters = () => {
       <!-- Filters Section -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-slate-900">Filter & Pencarian</h3>
+          <h3 class="text-xl font-semibold text-slate-900">Filter & Pencarian</h3>
           <button
             v-if="searchQuery || selectedStatus || selectedPriority"
             @click="clearFilters"
-            class="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+            class="text-indigo-600 hover:text-indigo-800 font-medium"
           >
             Reset Filter
           </button>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-2">Cari Insiden</label>
+            <label class="block font-medium text-slate-700 mb-2">Cari Insiden</label>
             <div class="relative">
-              <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <InputText
-                v-model="searchQuery"
-                placeholder="Cari berdasarkan ID insiden, pelapor..."
-                class="w-full pl-10"
-                size="small"
-                @keyup.enter="applyFilters"
-              />
+              <IconField class="w-full sm:w-auto">
+                <InputIcon>
+                  <i class="pi pi-search" />
+                </InputIcon>
+                <InputText
+                  v-model="searchQuery"
+                  placeholder="Cari berdasarkan ID insiden, pelapor..."
+                  class="w-full pl-10"
+                  @keyup.enter="applyFilters"
+                />
+              </IconField>
             </div>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-2">Filter Status</label>
+            <label class="block font-medium text-slate-700 mb-2">Filter Kategori</label>
             <Select
-              v-model="selectedStatus"
-              :options="statusOptions"
+              v-model="selectedCategory"
+              :options="categoryOptions"
               optionLabel="label"
               optionValue="value"
-              placeholder="Pilih Status"
+              placeholder="Pilih Kategori"
               class="w-full"
-              size="small"
+              showClear
               @change="applyFilters"
             />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700 mb-2">Filter Prioritas</label>
+            <label class="block font-medium text-slate-700 mb-2">Filter Prioritas</label>
             <Select
               v-model="selectedPriority"
               :options="priorityOptions"
@@ -335,38 +376,34 @@ const clearFilters = () => {
               optionValue="value"
               placeholder="Pilih Prioritas"
               class="w-full"
-              size="small"
+              showClear
               @change="applyFilters"
             />
           </div>
 
-          <div class="flex items-end">
-            <Button
-              @click="applyFilters"
-              label="Terapkan Filter"
+          <div>
+            <label class="block font-medium text-slate-700 mb-2">Filter Status</label>
+            <Select
+              v-model="selectedStatus"
+              :options="statusOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Pilih Status"
               class="w-full"
-              severity="secondary"
-              size="small"
+              showClear
+              @change="applyFilters"
             />
           </div>
+
         </div>
       </div>
 
       <!-- DataTable -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <DataTable
+          v-bind="serverSideConfig"
           :value="incidents.data"
-          :paginator="false"
-          stripedRows
-          :pt="{
-            table: 'w-full text-sm',
-            thead: 'bg-slate-50',
-            tbody: 'bg-white',
-            headerRow: 'border-b border-slate-200',
-            row: 'border-b border-slate-100 hover:bg-slate-50 transition-colors',
-            headerCell: 'px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider',
-            bodyCell: 'px-6 py-4 text-sm'
-          }"
+          @page="onPage"
         >
           <template #empty>
             <div class="text-center py-12">
@@ -384,9 +421,12 @@ const clearFilters = () => {
 
           <Column field="case_id" header="ID Insiden">
             <template #body="{ data }">
-              <span class="text-sm font-mono text-slate-900 bg-slate-100 px-2 py-1 rounded">
-                {{ data.case_id }}
-              </span>
+              <Tag
+                :value="data.case_id"
+                severity="secondary"
+                size="small"
+                class="font-mono !text-slate-500"
+              />
             </template>
           </Column>
 
@@ -431,12 +471,12 @@ const clearFilters = () => {
             </template>
           </Column>
 
-          <Column header="Aksi" class="text-right">
+          <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
             <template #body="{ data }">
               <div class="flex items-center justify-end space-x-2">
                 <Link
                   :href="route('admin.incidents.show', data.id)"
-                  class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                  class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
                   title="Lihat Detail"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -467,30 +507,6 @@ const clearFilters = () => {
           </Column>
         </DataTable>
 
-        <!-- Pagination -->
-        <div v-if="incidents.data.length > 0" class="px-6 py-4 bg-slate-50 border-t border-slate-200">
-          <div class="flex items-center justify-between">
-            <div class="text-sm text-slate-700">
-              Menampilkan {{ incidents.from }} sampai {{ incidents.to }} dari {{ incidents.total }} hasil
-            </div>
-            <div class="flex items-center space-x-2">
-              <Link
-                v-if="incidents.prev_page_url"
-                :href="incidents.prev_page_url"
-                class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-md hover:bg-slate-50"
-              >
-                Sebelumnya
-              </Link>
-              <Link
-                v-if="incidents.next_page_url"
-                :href="incidents.next_page_url"
-                class="px-3 py-2 text-sm font-medium text-slate-500 bg-white border border-slate-300 rounded-md hover:bg-slate-50"
-              >
-                Selanjutnya
-              </Link>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </AdminLayout>

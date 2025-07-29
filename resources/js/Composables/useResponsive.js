@@ -42,8 +42,8 @@ export function useResponsive() {
     rowsPerPageOptions: [5, 10, 20, 50],
     pageLinkSize: breakpoint.value.isMobile ? 1 : 5,
     paginatorTemplate: breakpoint.value.isMobile
-      ? "RowsPerPageDropdown PrevPageLink PageLinks NextPageLink CurrentPageReport"
-      : "RowsPerPageDropdown FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport",
+      ? "PrevPageLink PageLinks NextPageLink CurrentPageReport"
+      : "FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport",
     currentPageReportTemplate: breakpoint.value.isMobile
       ? "{first}-{last} dari {totalRecords}"
       : "Data ke {first} - {last} dari total {totalRecords}",

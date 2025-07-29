@@ -53,7 +53,7 @@ const togglePassword = () => {
           Selamat Datang
         </h1>
         <p class="text-blue-200 text-lg">
-          Panel Admin CSIRT Bojonegoro
+          Admin Panel CSIRT Bojonegoro
         </p>
         <div class="w-20 h-1 bg-gradient-to-r from-blue-400 to-emerald-400 mx-auto mt-4 rounded-full"></div>
       </div>

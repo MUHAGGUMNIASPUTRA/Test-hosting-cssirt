@@ -25,14 +25,7 @@ const generateExcerpt = (post) => {
   }
 
   content = content.trim();
-  if (content.length <= 150) {
-    return content;
-  }
-
-  let truncated = content.substring(0, 150);
-  truncated = truncated.substring(0, Math.min(truncated.length, truncated.lastIndexOf(' ')));
-
-  return truncated + '...';
+  return content;
 };
 
 // Get posts for grid display (exclude featured post on first page)
@@ -131,7 +124,7 @@ onMounted(() => {
           <article class="group relative bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-slate-200">
             <div class="lg:grid lg:grid-cols-2 lg:gap-0">
               <!-- Featured Image -->
-              <div class="relative h-64 lg:min-h-[420px] overflow-hidden">
+              <div class="relative h-64 lg:min-h-[400px] overflow-hidden">
                 <Link :href="route('posts.show', { post: posts.data[0].slug })" class="block h-full">
                   <PostImage :post="posts.data[0]" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -151,14 +144,14 @@ onMounted(() => {
                 </div>
 
                 <!-- Title -->
-                <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-4 group-hover:text-indigo-600 transition-colors duration-300">
+                <h3 class="text-2xl sm:text-3xl lg:text-4xl line-clamp-3 font-bold text-slate-900 mb-4 group-hover:text-indigo-600 transition-colors duration-300">
                   <Link :href="route('posts.show', { post: posts.data[0].slug })">
                     {{ posts.data[0].title }}
                   </Link>
                 </h3>
 
                 <!-- Excerpt -->
-                <p class="sm:text-lg text-slate-600 mb-6">
+                <p class="sm:text-lg text-slate-600 line-clamp-3 mb-6">
                   {{ generateExcerpt(posts.data[0]) }}
                 </p>
 

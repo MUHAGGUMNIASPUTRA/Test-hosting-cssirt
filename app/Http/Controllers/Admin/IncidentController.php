@@ -33,9 +33,9 @@ class IncidentController extends Controller
       });
     }
 
-    // Apply status filter
-    if ($request->filled('status')) {
-      $query->where('status', $request->get('status'));
+    // Apply category filter
+    if ($request->filled('category')) {
+      $query->where('incident_type_id', $request->get('category'));
     }
 
     // Apply priority filter
@@ -43,8 +43,13 @@ class IncidentController extends Controller
       $query->where('priority', $request->get('priority'));
     }
 
+    // Apply status filter
+    if ($request->filled('status')) {
+      $query->where('status', $request->get('status'));
+    }
+
     return Inertia::render('Admin/Incidents/Index', [
-      'incidents' => $query->latest('reported_at')->paginate(8)->withQueryString(),
+      'incidents' => $query->latest('reported_at')->paginate(10)->withQueryString(),
       'filters' => $request->only(['search', 'status', 'priority']),
     ]);
   }
@@ -222,7 +227,19 @@ class IncidentController extends Controller
    */
   public function destroy(Incident $incident)
   {
-    $incident->delete();
-    return redirect()->route('admin.incidents.index')->with('success', 'Insiden berhasil dihapus.');
+    try {
+      $incident->delete();
+      return back()->with('success', [
+        'title' => 'Berhasil',
+        'message' => 'Insiden berhasil dihapus.',
+        'icon' => 'success',
+      ])->withInput();
+    } catch (\Exception $e) {
+      return back()->with('error', [
+        'title' => 'Gagal',
+        'message' => 'Gagal menghapus insiden. Pastikan tidak ada data terkait yang menghalangi penghapusan.',
+        'icon' => 'error',
+      ])->withInput();
+    }
   }
 }

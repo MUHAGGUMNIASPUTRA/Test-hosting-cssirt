@@ -74,7 +74,7 @@ watch(
         toast.add({
           severity: "success",
           summary: flash.success?.title || "Berhasil",
-          detail: flash.success?.message || "Operasi berhasil.",
+          detail: flash.success?.message || flash.success || "Operasi berhasil.",
           life: 4000,
         });
       });
@@ -83,7 +83,7 @@ watch(
         toast.add({
           severity: "info",
           summary: flash.info?.title || "Informasi",
-          detail: flash.info?.message || "Informasi penting.",
+          detail: flash.info?.message || flash.info || "Informasi penting.",
           life: 4000,
         });
       });
@@ -92,7 +92,7 @@ watch(
         toast.add({
           severity: "warning",
           summary: flash.warning?.title || "Peringatan",
-          detail: flash.warning?.message || "Perhatian diperlukan.",
+          detail: flash.warning?.message || flash.warning || "Perhatian diperlukan.",
           life: 4000,
         });
       });
@@ -101,7 +101,7 @@ watch(
         toast.add({
           severity: "error",
           summary: flash.error?.title || "Kesalahan",
-          detail: flash.error?.message || "Terjadi kesalahan.",
+          detail: flash.error?.message || flash.error || "Terjadi kesalahan.",
           life: 4000,
         });
       });

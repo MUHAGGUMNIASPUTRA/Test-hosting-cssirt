@@ -25,14 +25,7 @@ const generateExcerpt = (post) => {
   }
 
   content = content.trim();
-  if (content.length <= 150) {
-    return content;
-  }
-
-  let truncated = content.substring(0, 150);
-  truncated = truncated.substring(0, Math.min(truncated.length, truncated.lastIndexOf(' ')));
-
-  return truncated + '...';
+  return content;
 };
 
 const paginationLinks = computed(() => {

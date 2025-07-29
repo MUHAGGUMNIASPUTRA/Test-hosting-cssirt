@@ -53,7 +53,7 @@ class DashboardController extends Controller
         'incidents.*',
         'incident_types.name as type_name'
       )
-      ->orderBy('incidents.created_at', 'desc')
+      ->orderBy('incidents.reported_at', 'desc')
       ->limit(5)
       ->get();
 
