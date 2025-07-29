@@ -228,7 +228,7 @@ onMounted(() => {
                     </div>
                     <h3 class="text-2xl font-bold text-slate-900">Kontak Darurat</h3>
                   </div>
-                  <p class="text-slate-700 mb-4">Untuk insiden kritis yang memerlukan penanganan segera:</p>
+                  <p class="text-slate-700 mb-4">Untuk insiden kritikal yang memerlukan penanganan segera:</p>
                   <div class="space-y-2">
                     <p class="font-semibold text-slate-900"><i class="pi pi-phone !text-sm mr-2"></i> Hotline: 14000</p>
                     <p class="font-semibold text-slate-900"><i class="pi pi-envelope !text-sm mr-2"></i> Email: csirt@kominfo.go.id</p>

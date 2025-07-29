@@ -2,6 +2,7 @@
 import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { useToast } from "primevue/usetoast";
+import { useResponsive } from "@/Composables/useResponsive";
 
 // The 'title' prop will be passed from individual pages
 defineProps({
@@ -15,6 +16,8 @@ const page = usePage();
 
 // Toast notification setup
 const toast = useToast();
+
+const { isMobile } = useResponsive();
 
 // Check if current page is landing/homepage
 const isLandingPage = computed(() => {
@@ -138,19 +141,9 @@ watch(
                     <span class="text-white font-bold text-xs">CSIRT</span>
                   </div>
                 </div>
-                <div class="hidden sm:block">
-                  <h2
-                    class="text-xl font-bold transition-colors duration-200"
-                    :class="navTextClasses.logo"
-                  >
-                    CSIRT Bojonegoro
-                  </h2>
-                  <p
-                    class="text-sm transition-colors duration-200"
-                    :class="navTextClasses.subtitle"
-                  >
-                    Kabupaten Bojonegoro
-                  </p>
+                <div :class="!isScrolled && isMobile ? 'hidden' : 'block'">
+                  <h2 class="text-xl font-bold transition-colors duration-200" :class="navTextClasses.logo">CSIRT Bojonegoro</h2>
+                  <!-- <p class="text-sm transition-colors duration-200" :class="navTextClasses.subtitle">Bojonegoro</p> -->
                 </div>
               </Link>
             </div>
@@ -348,7 +341,7 @@ watch(
                 </div>
                 <div>
                   <h3 class="text-xl font-bold text-white">CSIRT Bojonegoro</h3>
-                  <p class="text-sm text-slate-400">Kabupaten Bojonegoro</p>
+                  <!-- <p class="text-sm text-slate-400">Bojonegoro</p> -->
                 </div>
               </div>
               <p class="text-slate-400 leading-relaxed">

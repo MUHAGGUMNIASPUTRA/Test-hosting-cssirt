@@ -72,7 +72,7 @@ class IncidentController extends Controller
       'incident_at' => 'required|date',
       'description' => 'required|string',
       'status' => 'required|in:Baru,Diverifikasi,Dalam Penyelidikan,Selesai,Ditutup',
-      'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritis',
+      'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritikal',
       'assigned_to' => 'nullable|exists:users,id',
     ]);
 
@@ -124,7 +124,7 @@ class IncidentController extends Controller
       'incident_at' => 'required|date',
       'description' => 'required|string',
       'status' => 'required|in:Baru,Diverifikasi,Dalam Penyelidikan,Selesai,Ditutup',
-      'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritis',
+      'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritikal',
       'assigned_to' => 'nullable|exists:users,id',
     ]);
 
@@ -143,7 +143,7 @@ class IncidentController extends Controller
   {
     $validated = $request->validate([
         'status' => 'required|in:Baru,Diverifikasi,Dalam Penyelidikan,Selesai,Ditutup',
-        'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritis',
+        'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritikal',
         'assigned_to' => 'nullable|exists:users,id',
     ]);
 

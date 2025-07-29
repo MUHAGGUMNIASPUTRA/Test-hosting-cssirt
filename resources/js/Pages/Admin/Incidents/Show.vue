@@ -21,7 +21,7 @@ const managementForm = useForm({
 });
 
 const statusOptions = ref(['Baru', 'Diverifikasi', 'Dalam Penyelidikan', 'Selesai', 'Ditutup']);
-const priorityOptions = ref(['Rendah', 'Sedang', 'Tinggi', 'Kritis']);
+const priorityOptions = ref(['Rendah', 'Sedang', 'Tinggi', 'Kritikal']);
 
 const submitLog = () => {
   logForm.post(route('admin.incidents.logs.store', props.incident.id), {
@@ -48,7 +48,7 @@ const getStatusSeverity = (status) => {
 };
 
 const getPrioritySeverity = (priority) => {
-  const map = { 'Rendah': 'success', 'Sedang': 'info', 'Tinggi': 'warn', 'Kritis': 'danger' };
+  const map = { 'Rendah': 'success', 'Sedang': 'info', 'Tinggi': 'warn', 'Kritikal': 'danger' };
   return map[priority] || 'info';
 };
 </script>

@@ -44,7 +44,7 @@ const capabilities = [
   {
     title: 'Response Time',
     value: '< 1 jam',
-    description: 'Waktu respons rata-rata untuk insiden kritis',
+    description: 'Waktu respons rata-rata untuk insiden kritikal',
     color: 'from-red-500 to-red-600'
   },
   {

@@ -27,7 +27,7 @@ class DashboardController extends Controller
           ->whereIn('status', ['Selesai', 'Ditutup'])
           ->count(),
         'critical' => DB::table('incidents')
-          ->where('priority', 'Kritis')
+          ->where('priority', 'Kritikal')
           ->whereIn('status', ['Baru', 'Diverifikasi', 'Dalam Penyelidikan'])
           ->count(),
       ],

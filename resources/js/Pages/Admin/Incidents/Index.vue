@@ -79,7 +79,7 @@ const getPrioritySeverity = (priority) => {
     'Rendah': 'info',
     'Sedang': 'warn',
     'Tinggi': 'warn',
-    'Kritis': 'danger'
+    'Kritikal': 'danger'
   }
   return severities[priority] || 'warn'
 }
@@ -108,7 +108,7 @@ const priorityOptions = [
   { label: 'Rendah', value: 'Rendah' },
   { label: 'Sedang', value: 'Sedang' },
   { label: 'Tinggi', value: 'Tinggi' },
-  { label: 'Kritis', value: 'Kritis' }
+  { label: 'Kritikal', value: 'Kritikal' }
 ]
 
 const clearFilters = () => {
@@ -259,7 +259,7 @@ const clearFilters = () => {
             <div class="ml-3">
               <p class="text-sm font-medium text-slate-600">Kritikal</p>
               <p class="text-2xl font-bold text-slate-900">
-                {{ incidents.data?.filter(i => i.priority === 'Kritis').length || 0 }}
+                {{ incidents.data?.filter(i => i.priority === 'Kritikal').length || 0 }}
               </p>
             </div>
           </div>

@@ -37,7 +37,7 @@ const priorityOptions = [
   { label: 'Rendah', value: 'Rendah', color: 'bg-blue-50 text-blue-700 border-blue-200' },
   { label: 'Sedang', value: 'Sedang', color: 'bg-yellow-50 text-yellow-700 border-yellow-200' },
   { label: 'Tinggi', value: 'Tinggi', color: 'bg-orange-50 text-orange-700 border-orange-200' },
-  { label: 'Kritis', value: 'Kritis', color: 'bg-red-50 text-red-700 border-red-200' }
+  { label: 'Kritikal', value: 'Kritikal', color: 'bg-red-50 text-red-700 border-red-200' }
 ]
 
 // Transform incident types for select

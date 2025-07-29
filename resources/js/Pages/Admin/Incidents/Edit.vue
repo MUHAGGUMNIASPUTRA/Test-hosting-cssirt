@@ -21,7 +21,7 @@ const form = useForm({
 });
 
 const statusOptions = ref(['Baru', 'Diverifikasi', 'Dalam Penyelidikan', 'Selesai', 'Ditutup']);
-const priorityOptions = ref(['Rendah', 'Sedang', 'Tinggi', 'Kritis']);
+const priorityOptions = ref(['Rendah', 'Sedang', 'Tinggi', 'Kritikal']);
 
 const submit = () => {
   form.post(route('admin.incidents.update', props.incident.id));
