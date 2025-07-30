@@ -13,9 +13,9 @@ class ServiceSeeder extends Seeder
     Service::truncate();
 
     $services = [
-      ['name' => 'Penanganan Insiden', 'icon' => 'pi-shield', 'desc' => 'Memberikan respons cepat saat terjadi insiden siber, seperti peretasan atau serangan malware, termasuk analisis penyebab, pemulihan sistem, dan pencegahan agar kejadian serupa tidak terulang.'],
-      ['name' => 'Notifikasi Keamanan', 'icon' => 'pi-bell', 'desc' => 'Menyebarkan informasi penting terkait ancaman keamanan, seperti celah kerentanan, aktivitas mencurigakan, atau tren serangan terkini agar pengguna dapat segera melakukan tindakan pengamanan.'],
-      ['name' => 'Edukasi & Panduan', 'icon' => 'pi-book', 'desc' => 'Menyediakan berbagai materi edukatif berupa artikel, infografis, dan pelatihan teknis dasar yang membantu pengguna memahami risiko siber dan cara menghadapinya dengan langkah yang tepat.'],
+      ['name' => 'Penanganan Insiden', 'icon' => 'e911_emergency', 'desc' => 'Memberikan respons cepat saat terjadi insiden siber, seperti peretasan atau serangan malware, termasuk analisis penyebab, pemulihan sistem, dan pencegahan agar kejadian serupa tidak terulang.'],
+      ['name' => 'Notifikasi Keamanan', 'icon' => 'notifications_active', 'desc' => 'Menyebarkan informasi penting terkait ancaman keamanan, seperti celah kerentanan, aktivitas mencurigakan, atau tren serangan terkini agar pengguna dapat segera melakukan tindakan pengamanan.'],
+      ['name' => 'Edukasi & Panduan', 'icon' => 'book_2', 'desc' => 'Menyediakan berbagai materi edukatif berupa artikel, infografis, dan pelatihan teknis dasar yang membantu pengguna memahami risiko siber dan cara menghadapinya dengan langkah yang tepat.'],
     ];
 
     foreach ($services as $service) {

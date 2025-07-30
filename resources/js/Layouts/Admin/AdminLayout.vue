@@ -59,8 +59,8 @@ const sidebarItems = ref([
   },
   {
     label: 'Layanan',
-    icon: 'verified_user',
-    route: '',
+    icon: 'volunteer_activism',
+    route: 'admin.services.index',
   },
   {
     label: 'FAQ',

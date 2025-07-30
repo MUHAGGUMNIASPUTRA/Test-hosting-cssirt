@@ -1,42 +1,43 @@
 <script setup>
+// filepath: resources/js/Pages/Admin/Services/Index.vue
+
 import { ref, computed } from 'vue'
-import { Link, router } from '@inertiajs/vue3'
-import { useResponsive } from '@/Composables/useResponsive';
+import { Link, router, useForm } from '@inertiajs/vue3'
+import { useConfirm } from "primevue/useconfirm"
+import { useResponsive } from '@/Composables/useResponsive'
 
 const props = defineProps({
-  incidents: Object,
-  filters: Object
+  services: Object,
+  filters: Object,
 })
 
-const { dtConfig } = useResponsive();
+const { dtConfig } = useResponsive()
+const confirm = useConfirm()
 
+// Search and filters
 const searchQuery = ref(props.filters?.search || '')
-const selectedCategory = ref(props.filters?.category || '')
 const selectedStatus = ref(props.filters?.status || '')
-const selectedPriority = ref(props.filters?.priority || '')
 const showDeleteDialog = ref(false)
-const incidentToDelete = ref(null)
+const serviceToDelete = ref(null)
 
 // Add pagination state
 const lazyParams = ref({
   first: 0,
-  rows: props.incidents.per_page || 10,
-  page: props.incidents.current_page || 1
+  rows: props.services.per_page || 10,
+  page: props.services.current_page || 1
 })
 
 const applyFilters = () => {
   const params = new URLSearchParams()
 
   if (searchQuery.value) params.set('search', searchQuery.value)
-  if (selectedCategory.value) params.set('category', selectedCategory.value)
   if (selectedStatus.value) params.set('status', selectedStatus.value)
-  if (selectedPriority.value) params.set('priority', selectedPriority.value)
 
   // Add pagination params
   if (lazyParams.value.page > 1) params.set('page', lazyParams.value.page)
 
   const queryString = params.toString()
-  const url = route('admin.incidents.index') + (queryString ? '?' + queryString : '')
+  const url = route('admin.services.index') + (queryString ? '?' + queryString : '')
 
   router.get(url, {}, {
     preserveState: true,
@@ -54,14 +55,12 @@ const onPage = (event) => {
   const params = new URLSearchParams()
 
   if (searchQuery.value) params.set('search', searchQuery.value)
-  if (selectedCategory.value) params.set('category', selectedCategory.value)
   if (selectedStatus.value) params.set('status', selectedStatus.value)
-  if (selectedPriority.value) params.set('priority', selectedPriority.value)
 
   params.set('page', lazyParams.value.page)
 
   const queryString = params.toString()
-  const url = route('admin.incidents.index') + (queryString ? '?' + queryString : '')
+  const url = route('admin.services.index') + (queryString ? '?' + queryString : '')
 
   router.get(url, {}, {
     preserveState: true,
@@ -70,45 +69,42 @@ const onPage = (event) => {
   })
 }
 
-const confirmDeleteIncident = (incident) => {
-  incidentToDelete.value = incident
+const statusOptions = [
+  { label: 'Aktif', value: 'active' },
+  { label: 'Tidak Aktif', value: 'inactive' },
+]
+
+const clearFilters = () => {
+  searchQuery.value = ''
+  selectedStatus.value = ''
+  lazyParams.value.page = 1
+  lazyParams.value.first = 0
+  applyFilters()
+}
+
+const confirmDeleteService = (service) => {
+  serviceToDelete.value = service
   showDeleteDialog.value = true
 }
 
-const deleteIncident = () => {
-  if (!incidentToDelete.value) return
+const deleteService = () => {
+  if (!serviceToDelete.value) return
 
-  router.delete(route('admin.incidents.destroy', incidentToDelete.value.id), {
+  router.delete(route('admin.services.destroy', serviceToDelete.value.id), {
     onSuccess: () => {
       showDeleteDialog.value = false
-      incidentToDelete.value = null
+      serviceToDelete.value = null
     },
     onError: () => {}
   })
 }
 
-const getStatusSeverity = (status) => {
-  const severities = {
-    'Baru': 'info',
-    'Diverifikasi': 'primary',
-    'Dalam Penyelidikan': 'warn',
-    'Selesai': 'success',
-    'Ditutup': 'secondary'
-  }
-  return severities[status] || 'info'
-}
-
-const getPrioritySeverity = (priority) => {
-  const severities = {
-    'Rendah': 'success',
-    'Sedang': 'info',
-    'Tinggi': 'warn',
-    'Kritikal': 'danger'
-  }
-  return severities[priority] || 'warn'
+const getStatusSeverity = (isActive) => {
+  return isActive ? 'success' : 'secondary'
 }
 
 const formatDate = (dateString) => {
+  if (!dateString) return '-'
   return new Date(dateString).toLocaleDateString('id-ID', {
     year: 'numeric',
     month: 'short',
@@ -118,53 +114,36 @@ const formatDate = (dateString) => {
   })
 }
 
-const categoryOptions = [
-  { label: 'Phishing', value: 1 },
-  { label: 'Malware', value: 2 },
-  { label: 'Defacement', value: 3 },
-  { label: 'Serangan DDoS', value: 4 },
-  { label: 'Kebocoran Data', value: 5 },
-];
+const truncateText = (text, length = 80) => {
+  if (!text || text.length <= length) return text
+  return text.substring(0, length) + '...'
+}
 
-const statusOptions = [
-  { label: 'Baru', value: 'Baru' },
-  { label: 'Diverifikasi', value: 'Diverifikasi' },
-  { label: 'Dalam Penyelidikan', value: 'Dalam Penyelidikan' },
-  { label: 'Selesai', value: 'Selesai' },
-  { label: 'Ditutup', value: 'Ditutup' },
-];
+// Stats computed
+const stats = computed(() => {
+  const allData = props.services.data || []
+  const active = allData.filter(service => service.is_active).length
+  const inactive = allData.filter(service => !service.is_active).length
 
-const priorityOptions = [
-  { label: 'Rendah', value: 'Rendah' },
-  { label: 'Sedang', value: 'Sedang' },
-  { label: 'Tinggi', value: 'Tinggi' },
-  { label: 'Kritikal', value: 'Kritikal' },
-];
-
-const clearFilters = () => {
-  searchQuery.value = '';
-  selectedCategory.value = '';
-  selectedStatus.value = '';
-  selectedPriority.value = '';
-  lazyParams.value.page = 1;
-  lazyParams.value.first = 0;
-  applyFilters();
-};
+  return { active, inactive }
+})
 
 // Server-side DataTable configuration
 const serverSideConfig = computed(() => {
   return {
     ...dtConfig(),
     lazy: true,
-    totalRecords: props.incidents.total,
-    first: (props.incidents.current_page - 1) * props.incidents.per_page,
-    rows: props.incidents.per_page,
+    totalRecords: props.services.total,
+    first: (props.services.current_page - 1) * props.services.per_page,
+    rows: props.services.per_page,
   }
 })
 </script>
 
 <template>
-  <AdminLayout title="Daftar Laporan Insiden">
+  <AdminLayout title="Kelola Layanan">
+    <ConfirmDialog />
+
     <!-- Custom Delete Confirmation Dialog -->
     <Dialog
       v-model:visible="showDeleteDialog"
@@ -198,19 +177,23 @@ const serverSideConfig = computed(() => {
                 </svg>
               </div>
               <p class="text-slate-700 mb-2">
-                Apakah Anda yakin ingin menghapus insiden berikut?
+                Apakah Anda yakin ingin menghapus layanan berikut?
               </p>
               <div class="bg-slate-50 border border-slate-100 rounded-lg p-3 text-left">
                 <div class="">
                   <div class="flex justify-between items-center mb-1">
-                    <span class="font-medium text-slate-600">ID Insiden:</span>
-                    <span class="font-mono text-slate-900 bg-slate-200 px-2 py-1 rounded text-xs">
-                      {{ incidentToDelete?.case_id }}
+                    <span class="font-medium text-slate-600">Nama:</span>
+                    <span class="text-slate-900 text-right max-w-48 truncate">
+                      {{ serviceToDelete?.name }}
                     </span>
                   </div>
                   <div class="flex justify-between items-center">
-                    <span class="font-medium text-slate-600">Pelapor:</span>
-                    <span class="text-slate-900">{{ incidentToDelete?.reporter_name }}</span>
+                    <span class="font-medium text-slate-600">Status:</span>
+                    <Tag
+                      :value="serviceToDelete?.is_active ? 'Aktif' : 'Tidak Aktif'"
+                      :severity="getStatusSeverity(serviceToDelete?.is_active)"
+                      size="small"
+                    />
                   </div>
                 </div>
               </div>
@@ -228,8 +211,8 @@ const serverSideConfig = computed(() => {
                 size="small"
               />
               <Button
-                @click="deleteIncident"
-                label="Ya, Hapus Insiden"
+                @click="deleteService"
+                label="Ya, Hapus Layanan"
                 severity="danger"
                 size="small"
               />
@@ -244,57 +227,29 @@ const serverSideConfig = computed(() => {
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Daftar Laporan Insiden</h2>
-            <p class="text-slate-600">Kelola dan monitor laporan insiden keamanan siber</p>
+            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Kelola Layanan</h2>
+            <p class="text-slate-600">Kelola layanan yang disediakan organisasi</p>
           </div>
           <Link
-            :href="route('admin.incidents.create')"
+            :href="route('admin.services.create')"
             class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
           >
-            <span class="material-symbols-outlined !text-xl">notification_add</span>
-              Lapor Insiden Baru
+            <span class="material-symbols-outlined !text-xl">add_reaction</span>
+              Tambah Layanan
           </Link>
         </div>
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
             <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-blue-600">problem</span>
+              <span class="material-symbols-outlined text-blue-600">volunteer_activism</span>
             </div>
             <div class="ml-3">
-              <p class="font-medium text-slate-600">Total Insiden</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ incidents.total || 0 }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-          <div class="flex items-center">
-            <div class="w-12 h-12 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-yellow-600">cycle</span>
-            </div>
-            <div class="ml-3">
-              <p class="font-medium text-slate-600">Dalam Proses</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">
-                {{ incidents.data?.filter(i => ['Baru', 'Diverifikasi', 'Dalam Penyelidikan'].includes(i.status)).length || 0 }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
-          <div class="flex items-center">
-            <div class="w-12 h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-red-600">warning</span>
-            </div>
-            <div class="ml-3">
-              <p class="font-medium text-slate-600">Kritikal</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">
-                {{ incidents.data?.filter(i => i.priority === 'Kritikal').length || 0 }}
-              </p>
+              <p class="font-medium text-slate-600">Total Layanan</p>
+              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ services.total || 0 }}</p>
             </div>
           </div>
         </div>
@@ -302,13 +257,23 @@ const serverSideConfig = computed(() => {
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
             <div class="w-12 h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-green-600">done_all</span>
+              <span class="material-symbols-outlined text-green-600">check_circle</span>
             </div>
             <div class="ml-3">
-              <p class="font-medium text-slate-600">Selesai</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">
-                {{ incidents.data?.filter(i => i.status === 'Selesai').length || 0 }}
-              </p>
+              <p class="font-medium text-slate-600">Layanan Aktif</p>
+              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ stats.active }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+          <div class="flex items-center">
+            <div class="w-12 h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
+              <span class="material-symbols-outlined text-orange-600">pause_circle</span>
+            </div>
+            <div class="ml-3">
+              <p class="font-medium text-slate-600">Tidak Aktif</p>
+              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ stats.inactive }}</p>
             </div>
           </div>
         </div>
@@ -319,7 +284,7 @@ const serverSideConfig = computed(() => {
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-xl font-semibold text-slate-900">Filter & Pencarian</h3>
           <button
-            v-if="searchQuery || selectedStatus || selectedPriority"
+            v-if="searchQuery || selectedStatus"
             @click="clearFilters"
             class="text-blue-600 hover:text-blue-800 font-medium"
           >
@@ -327,36 +292,22 @@ const serverSideConfig = computed(() => {
           </button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
           <div>
-            <label class="block font-medium text-slate-700 mb-2">Cari Insiden</label>
+            <label class="block font-medium text-slate-700 mb-2">Cari Layanan</label>
             <div class="relative">
-              <IconField class="w-full sm:w-auto">
+              <IconField class="w-full">
                 <InputIcon>
                   <i class="pi pi-search" />
                 </InputIcon>
                 <InputText
                   v-model="searchQuery"
-                  placeholder="Cari berdasarkan ID insiden, pelapor..."
+                  placeholder="Cari berdasarkan nama layanan..."
                   class="w-full pl-10"
                   @keyup.enter="applyFilters"
                 />
               </IconField>
             </div>
-          </div>
-
-          <div>
-            <label class="block font-medium text-slate-700 mb-2">Filter Kategori</label>
-            <Select
-              v-model="selectedCategory"
-              :options="categoryOptions"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Pilih Kategori"
-              class="w-full"
-              showClear
-              @change="applyFilters"
-            />
           </div>
 
           <div>
@@ -372,21 +323,6 @@ const serverSideConfig = computed(() => {
               @change="applyFilters"
             />
           </div>
-
-          <div>
-            <label class="block font-medium text-slate-700 mb-2">Filter Prioritas</label>
-            <Select
-              v-model="selectedPriority"
-              :options="priorityOptions"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Pilih Prioritas"
-              class="w-full"
-              showClear
-              @change="applyFilters"
-            />
-          </div>
-
         </div>
       </div>
 
@@ -394,79 +330,57 @@ const serverSideConfig = computed(() => {
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <DataTable
           v-bind="serverSideConfig"
-          :value="incidents.data"
+          :value="services.data"
           @page="onPage"
         >
           <template #empty>
             <div class="text-center py-12">
               <svg class="w-12 h-12 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
               <p class="text-slate-500 text-lg font-medium">
-                {{ searchQuery || selectedStatus || selectedPriority ? 'Tidak ada insiden yang sesuai filter' : 'Belum ada insiden yang dilaporkan' }}
+                {{ searchQuery || selectedStatus ? 'Tidak ada layanan yang sesuai filter' : 'Belum ada layanan yang dibuat' }}
               </p>
               <p class="text-slate-400 mt-1 text-sm">
-                {{ searchQuery || selectedStatus || selectedPriority ? 'Coba ubah kriteria pencarian' : 'Insiden yang dilaporkan akan muncul di sini' }}
+                {{ searchQuery || selectedStatus ? 'Coba ubah kriteria pencarian' : 'Layanan yang dibuat akan muncul di sini' }}
               </p>
             </div>
           </template>
 
-          <Column field="case_id" header="ID Insiden">
+          <Column field="icon" header="Ikon" :style="{ width: '60px' }" class="hidden sm:table-cell">
             <template #body="{ data }">
-              <Link :href="route('admin.incidents.show', data.id)">
-                <Tag
-                  :value="data.case_id"
-                  severity="secondary"
-                  size="small"
-                  class="font-mono !text-slate-500"
-                />
-              </Link>
-              <div class="sm:hidden text-xs text-slate-500 space-x-1 mt-1">
-                <span>{{ data.reporter_name }}</span>
-                <span>•</span>
-                <span>{{ data.incident_type?.name || 'N/A' }}</span>
-              </div>
+              <span v-if="data.icon" class="material-symbols-outlined text-slate-500">{{ data.icon }}</span>
+              <span v-else class="material-symbols-outlined text-slate-500">volunteer_activism</span>
             </template>
           </Column>
 
-          <Column field="reporter_name" header="Pelapor" class="hidden lg:table-cell">
+          <Column field="name" header="Layanan">
             <template #body="{ data }">
               <div>
-                <div class="text-sm text-slate-700 font-medium">{{ data.reporter_name }}</div>
-                <div class="text-sm text-slate-500">{{ data.reporter_email }}</div>
+                <h3 class="font-medium text-slate-700 line-clamp-2">{{ data.name }}</h3>
               </div>
             </template>
           </Column>
 
-          <Column field="incident_type" header="Kategori" class="hidden sm:table-cell">
+          <Column field="short_description" header="Deskripsi Singkat" class="hidden lg:table-cell">
             <template #body="{ data }">
-              <span class="text-sm text-slate-700">{{ data.incident_type?.name || 'N/A' }}</span>
+              <span class="text-sm text-slate-500 line-clamp-2">{{ truncateText(data.short_description, 80) }}</span>
             </template>
           </Column>
 
-          <Column field="status" header="Status" class="hidden sm:table-cell">
+          <Column field="is_active" header="Status">
             <template #body="{ data }">
               <Tag
-                :value="data.status"
-                :severity="getStatusSeverity(data.status)"
+                :value="data.is_active ? 'Aktif' : 'Tidak Aktif'"
+                :severity="getStatusSeverity(data.is_active)"
                 size="small"
               />
             </template>
           </Column>
 
-          <Column field="priority" header="Prioritas" class="hidden sm:table-cell">
+          <Column field="updated_at" header="Diperbarui" class="hidden sm:table-cell">
             <template #body="{ data }">
-              <Tag
-                :value="data.priority"
-                :severity="getPrioritySeverity(data.priority)"
-                size="small"
-              />
-            </template>
-          </Column>
-
-          <Column field="reported_at" header="Dilaporkan" class="hidden lg:table-cell">
-            <template #body="{ data }">
-              <span class="text-sm text-slate-500">{{ formatDate(data.reported_at) }}</span>
+              <span class="text-sm text-slate-500">{{ formatDate(data.updated_at) }}</span>
             </template>
           </Column>
 
@@ -474,9 +388,9 @@ const serverSideConfig = computed(() => {
             <template #body="{ data }">
               <div class="flex items-center justify-end space-x-2">
                 <Link
-                  :href="route('admin.incidents.show', data.id)"
-                  class="p-2 text-slate-400 hover:text-green-600 hover:bg-green-100 rounded-lg transition-colors"
-                  title="Lihat Detail"
+                  :href="route('admin.services.show', data.id)"
+                  class="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                  title="Lihat"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -484,7 +398,7 @@ const serverSideConfig = computed(() => {
                   </svg>
                 </Link>
                 <Link
-                  :href="route('admin.incidents.edit', data.id)"
+                  :href="route('admin.services.edit', data.id)"
                   class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                   title="Edit"
                 >
@@ -493,7 +407,7 @@ const serverSideConfig = computed(() => {
                   </svg>
                 </Link>
                 <button
-                  @click="confirmDeleteIncident(data)"
+                  @click="confirmDeleteService(data)"
                   class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   title="Hapus"
                 >
@@ -505,7 +419,6 @@ const serverSideConfig = computed(() => {
             </template>
           </Column>
         </DataTable>
-
       </div>
     </div>
   </AdminLayout>

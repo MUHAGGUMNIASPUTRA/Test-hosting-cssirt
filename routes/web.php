@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ImageUploadController;
 use App\Http\Controllers\Admin\IncidentController as AdminIncidentController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
+use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\TaxonomyController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -48,6 +49,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
   Route::post('/tags', [TaxonomyController::class, 'storeTag'])->name('tags.store');
   Route::put('/tags/{tag}', [TaxonomyController::class, 'updateTag'])->name('tags.update');
   Route::delete('/tags/{tag}', [TaxonomyController::class, 'destroyTag'])->name('tags.destroy');
+
+  // Routes for Services
+  Route::resource('services', AdminServiceController::class);
 
   Route::resource('users', AdminUserController::class)->except(['show'])->middleware('admin');
 });

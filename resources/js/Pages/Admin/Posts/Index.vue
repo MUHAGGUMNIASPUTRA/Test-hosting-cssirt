@@ -249,7 +249,7 @@ const serverSideConfig = computed(() => {
           <button
             v-if="searchQuery || selectedStatus"
             @click="clearFilters"
-            class="text-indigo-600 hover:text-indigo-800 font-medium"
+            class="text-blue-600 hover:text-blue-800 font-medium"
           >
             Reset Filter
           </button>
@@ -310,7 +310,7 @@ const serverSideConfig = computed(() => {
             </div>
           </template>
 
-          <Column header="Artikel">
+          <Column :header="`Artikel (${posts.total})`">
             <template #body="{ data }">
               <div class="flex items-center gap-3">
                 <div class="hidden lg:flex flex-shrink-0 relative w-16 h-16 overflow-hidden rounded-xl group">
@@ -369,7 +369,7 @@ const serverSideConfig = computed(() => {
               <div class="flex items-center justify-end space-x-2">
                 <Link
                   :href="route('admin.posts.edit', data.id)"
-                  class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                  class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                   title="Edit"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

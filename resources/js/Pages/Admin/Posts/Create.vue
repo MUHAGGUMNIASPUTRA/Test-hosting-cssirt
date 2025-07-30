@@ -348,6 +348,21 @@ function triggerFileInput() {
                 </div>
               </div>
             </div>
+
+            <!-- Button Submit (Mobile Only) -->
+            <div class="block sm:hidden">
+              <button
+                type="submit"
+                :disabled="form.processing"
+                class="bg-blue-600 hover:bg-blue-800 text-white w-full inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
+              >
+                <span class="material-symbols-outlined !text-xl" :class="{ 'animate-spin': form.processing }">
+                  {{ form.processing ? 'progress_activity' : 'save' }}
+                </span>
+                {{ form.processing ? 'Menyimpan...' : isEditMode ? 'Update Artikel' : 'Simpan Artikel' }}
+              </button>
+            </div>
+
           </div>
         </div>
       </form>
