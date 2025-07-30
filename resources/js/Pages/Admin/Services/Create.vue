@@ -49,6 +49,18 @@ const isShortDescOverLimit = computed(() => shortDescWordCount.value > shortDesc
 // Character count for short description
 const shortDescCharCount = computed(() => form.short_description.length)
 const shortDescCharLimit = 200
+const isShortDescCharOverLimit = computed(() => shortDescCharCount.value > shortDescCharLimit)
+
+// Combined validation check
+const isShortDescInvalid = computed(() => isShortDescOverLimit.value || isShortDescCharOverLimit.value)
+
+// Form validation check
+const canSubmit = computed(() => {
+  return form.name.trim() &&
+         form.short_description.trim() &&
+         !isShortDescInvalid.value &&
+         !form.processing
+})
 
 // Popular Material Symbols icons for services
 const iconSuggestions = [
@@ -84,6 +96,10 @@ const selectIcon = (icon) => {
 }
 
 const submit = () => {
+  if (!canSubmit.value) {
+    return
+  }
+
   if (isEditing.value) {
     form.put(route('admin.services.update', props.service.id))
   } else {
@@ -103,8 +119,8 @@ watch(() => form.icon, filterIconSuggestions)
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h2 class="text-xl sm:text-2xl font-bold text-slate-900">{{ headerTitle }}: {{ service.name }}</h2>
-              <!-- <p class="text-slate-600">{{ headerDescription }}</p> -->
+              <h2 class="text-xl sm:text-2xl font-bold text-slate-900">{{ headerTitle }}{{ isEditing ? `: ${service.name}` : '' }}</h2>
+              <p v-if="!isEditing" class="text-slate-600">{{ headerDescription }}</p>
               <!-- Show service status when editing -->
               <div v-if="isEditing" class="flex items-center gap-3 mt-2">
                 <Tag

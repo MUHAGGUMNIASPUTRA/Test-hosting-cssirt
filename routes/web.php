@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\ImageUploadController;
 use App\Http\Controllers\Admin\IncidentController as AdminIncidentController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
@@ -35,13 +36,14 @@ Route::post('/incident', [IncidentController::class, 'store'])->name('incident.s
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
   Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
   Route::resource('incidents', AdminIncidentController::class);
   Route::put('/incidents/{incident}/management', [AdminIncidentController::class, 'updateManagement'])->name('incidents.management.update');
   Route::post('/incidents/{incident}/logs', [AdminIncidentController::class, 'addLog'])->name('incidents.logs.store');
+
   Route::resource('posts', AdminPostController::class)->except(['show']);
   Route::post('/images/upload', [ImageUploadController::class, 'store'])->name('images.upload');
 
-  // Routes for Taxonomy (Categories & Tags)
   Route::get('/taxonomy', [TaxonomyController::class, 'index'])->name('taxonomy.index');
   Route::post('/categories', [TaxonomyController::class, 'storeCategory'])->name('categories.store');
   Route::put('/categories/{category}', [TaxonomyController::class, 'updateCategory'])->name('categories.update');
@@ -50,9 +52,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
   Route::put('/tags/{tag}', [TaxonomyController::class, 'updateTag'])->name('tags.update');
   Route::delete('/tags/{tag}', [TaxonomyController::class, 'destroyTag'])->name('tags.destroy');
 
-  // Routes for Services
   Route::resource('services', AdminServiceController::class);
-
+  Route::resource('faqs', AdminFaqController::class)->except(['show', 'create', 'edit']);
   Route::resource('users', AdminUserController::class)->except(['show'])->middleware('admin');
 });
 

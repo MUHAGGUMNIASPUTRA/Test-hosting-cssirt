@@ -65,7 +65,7 @@ const sidebarItems = ref([
   {
     label: 'FAQ',
     icon: 'help',
-    route: '',
+    route: 'admin.faqs.index',
   },
   {
     label: 'Pengumuman',

@@ -223,7 +223,7 @@ const truncateText = (text, length = 50) => {
                         size="small"
                       />
                     </div>
-                    <h4 class="font-medium text-slate-900 text-sm mb-1 line-clamp-1">
+                    <h4 class="font-medium text-slate-700 text-sm mb-1 line-clamp-1">
                       {{ incident.description }}
                     </h4>
                     <div class="flex items-center gap-3 text-sm text-slate-500">
@@ -311,7 +311,7 @@ const truncateText = (text, length = 50) => {
               >
                 <div class="flex justify-between items-start gap-3">
                   <div class="flex-1 min-w-0">
-                    <h4 class="font-medium text-slate-900 text-sm mb-2 line-clamp-2">{{ post.title }}</h4>
+                    <h4 class="font-medium text-slate-700 text-sm mb-2 line-clamp-2">{{ post.title }}</h4>
                     <div class="flex items-center gap-2 text-sm text-slate-500">
                       <Tag
                         :value="post.status"
