@@ -83,7 +83,7 @@ function triggerFileInput() {
 <template>
   <AdminLayout :title="isEditMode ? 'Edit Artikel' : 'Tambah Artikel Baru'">
     <div class="min-h-screen bg-gray-50">
-      <form @submit.prevent="submit" class="space-y-6">
+      <form @submit.prevent="submit" class="space-y-4 sm:space-y-6">
         <!-- Header Section -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -118,12 +118,12 @@ function triggerFileInput() {
           {{ $page.props.flash?.success }}
         </Message>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           <!-- Main Content (Left Column) -->
-          <div class="lg:col-span-2 space-y-6">
+          <div class="lg:col-span-2 space-y-4 sm:space-y-6">
             <!-- Title & Content Card -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <div class="flex items-center mb-6">
+              <div class="flex items-center mb-4 sm:mb-6">
                 <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
                   <span class="material-symbols-outlined text-blue-600">title</span>
                 </div>
@@ -165,7 +165,7 @@ function triggerFileInput() {
 
             <!-- Excerpt Card -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <div class="flex items-center mb-6">
+              <div class="flex items-center mb-4 sm:mb-6">
                 <div class="w-12 h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
                   <span class="material-symbols-outlined text-purple-600">text_snippet</span>
                 </div>
@@ -201,10 +201,10 @@ function triggerFileInput() {
           </div>
 
           <!-- Sidebar (Right Column) -->
-          <div class="space-y-6">
+          <div class="space-y-4 sm:space-y-6">
             <!-- Publication Options Card -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <div class="flex items-center mb-6">
+              <div class="flex items-center mb-4 sm:mb-6">
                 <div class="w-12 h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
                   <span class="material-symbols-outlined text-green-600">upload_2</span>
                 </div>
@@ -297,7 +297,7 @@ function triggerFileInput() {
 
             <!-- Categories & Tags Card -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <div class="flex items-center mb-6">
+              <div class="flex items-center mb-4 sm:mb-6">
                 <div class="w-12 h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
                   <span class="material-symbols-outlined text-orange-600">bookmarks</span>
                 </div>

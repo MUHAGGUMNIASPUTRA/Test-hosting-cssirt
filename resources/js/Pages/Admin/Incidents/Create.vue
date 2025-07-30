@@ -150,7 +150,7 @@ const formatDateTime = (date) => {
 <template>
   <AdminLayout :title="pageTitle">
     <form @submit.prevent="submit">
-      <div class="space-y-6">
+      <div class="space-y-4 sm:space-y-6">
         <!-- Header Section -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -201,10 +201,10 @@ const formatDateTime = (date) => {
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Main Content -->
-          <div class="lg:col-span-2 space-y-6">
+          <div class="lg:col-span-2 space-y-4 sm:space-y-6">
             <!-- Reporter Information -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-              <div class="flex items-center mb-6">
+              <div class="flex items-center mb-4 sm:mb-6">
                 <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
                   <span class="material-symbols-outlined text-blue-600">record_voice_over</span>
                 </div>
@@ -214,7 +214,7 @@ const formatDateTime = (date) => {
                 </div>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label for="reporter_name" class="block font-medium text-slate-700 mb-2">
                     Nama Pelapor <span class="text-red-500">*</span>
@@ -271,7 +271,7 @@ const formatDateTime = (date) => {
 
             <!-- Incident Details -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-              <div class="flex items-center mb-6">
+              <div class="flex items-center mb-4 sm:mb-6">
                 <div class="w-12 h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
                   <span class="material-symbols-outlined text-red-600">e911_emergency</span>
                 </div>
@@ -281,8 +281,8 @@ const formatDateTime = (date) => {
                 </div>
               </div>
 
-              <div class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-4 sm:space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   <div>
                     <label for="incident_type_id" class="block font-medium text-slate-700 mb-2">
                       Jenis Insiden <span class="text-red-500">*</span>
@@ -336,7 +336,7 @@ const formatDateTime = (date) => {
                   <p v-if="form.errors.description" class="mt-1 text-red-600">
                     {{ form.errors.description }}
                   </p>
-                  <p class="mt-1 text-slate-500">
+                  <p class="mt-1 text-sm text-slate-500">
                     Berikan informasi selengkap mungkin untuk membantu proses penanganan
                   </p>
                 </div>
@@ -345,10 +345,10 @@ const formatDateTime = (date) => {
           </div>
 
           <!-- Sidebar -->
-          <div class="space-y-6">
+          <div class="space-y-4 sm:space-y-6">
             <!-- Status Management -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-              <div class="flex items-center mb-6">
+              <div class="flex items-center mb-4 sm:mb-6">
                 <div class="w-12 h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
                   <span class="material-symbols-outlined text-green-600">markdown_paste</span>
                 </div>
@@ -358,7 +358,7 @@ const formatDateTime = (date) => {
                 </div>
               </div>
 
-              <div class="space-y-6">
+              <div class="space-y-4 sm:space-y-6">
                 <div>
                   <label for="status" class="block font-medium text-slate-700 mb-2">Status</label>
                   <Select

@@ -239,7 +239,7 @@ const serverSideConfig = computed(() => {
       </template>
     </Dialog>
 
-    <div class="space-y-6">
+    <div class="space-y-4 sm:space-y-6">
       <!-- Header Section -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -258,7 +258,7 @@ const serverSideConfig = computed(() => {
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
             <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">

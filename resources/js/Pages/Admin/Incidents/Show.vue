@@ -135,7 +135,7 @@ const getLogIconColor = (index, total) => {
 
 <template>
   <AdminLayout :title="`Detail Insiden: ${incident.case_id}`">
-    <div class="space-y-6">
+    <div class="space-y-4 sm:space-y-6">
       <!-- Header Section -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -179,12 +179,12 @@ const getLogIconColor = (index, total) => {
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         <!-- Main Content -->
-        <div class="lg:col-span-2 space-y-6">
+        <div class="lg:col-span-2 space-y-4 sm:space-y-6">
           <!-- Reporter Information -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <div class="flex items-center mb-6">
+            <div class="flex items-center mb-4 sm:mb-6">
               <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
                 <span class="material-symbols-outlined text-blue-600">record_voice_over</span>
               </div>
@@ -194,7 +194,7 @@ const getLogIconColor = (index, total) => {
               </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label class="block font-medium text-slate-700 mb-2">Nama Pelapor</label>
                 <div class="p-2 bg-slate-50 border border-slate-200 rounded-lg">
@@ -220,7 +220,7 @@ const getLogIconColor = (index, total) => {
 
           <!-- Incident Details -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <div class="flex items-center mb-6">
+            <div class="flex items-center mb-4 sm:mb-6">
               <div class="w-12 h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
                 <span class="material-symbols-outlined text-red-600">e911_emergency</span>
               </div>
@@ -231,7 +231,7 @@ const getLogIconColor = (index, total) => {
             </div>
 
             <div class="space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <label class="block font-medium text-slate-700 mb-2">Jenis Insiden</label>
                   <div class="p-2 bg-slate-50 border border-slate-200 rounded-lg">
@@ -356,7 +356,7 @@ const getLogIconColor = (index, total) => {
         </div>
 
         <!-- Sidebar -->
-        <div class="space-y-6">
+        <div class="space-y-4 sm:space-y-6">
           <!-- Summary Card -->
           <div class="bg-slate-50 rounded-xl border border-slate-200 p-6">
             <h3 class="font-medium text-slate-700 mb-4">Ringkasan Insiden</h3>
@@ -396,7 +396,7 @@ const getLogIconColor = (index, total) => {
 
           <!-- Timeline/Logs -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <div class="flex items-center mb-6">
+            <div class="flex items-center mb-4 sm:mb-6">
               <div class="w-12 h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
                 <span class="material-symbols-outlined text-purple-600">timeline</span>
               </div>
@@ -407,7 +407,7 @@ const getLogIconColor = (index, total) => {
             </div>
 
             <!-- Timeline -->
-            <div v-if="incident.incident_logs.length > 0" class="space-y-4 mb-6">
+            <div v-if="incident.incident_logs.length > 0" class="space-y-4 mb-4 sm:mb-6">
               <div
                 v-for="(log, index) in incident.incident_logs"
                 :key="log.id"
@@ -425,7 +425,7 @@ const getLogIconColor = (index, total) => {
                 </div>
 
                 <!-- Content -->
-                <div class="flex-1 min-w-0 pb-4">
+                <div class="flex-1 min-w-0 pb-0 sm:pb-4">
                   <div class="flex items-center gap-2 mb-1">
                     <p class="font-medium text-slate-900">{{ log.user.name }}</p>
                     <span class="text-xs text-slate-400">{{ formatDate(log.created_at) }}</span>

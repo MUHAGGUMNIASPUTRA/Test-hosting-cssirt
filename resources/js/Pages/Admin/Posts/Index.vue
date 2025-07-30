@@ -224,7 +224,7 @@ const serverSideConfig = computed(() => {
       </template>
     </Dialog>
 
-    <div class="space-y-6">
+    <div class="space-y-4 sm:space-y-6">
       <!-- Header Section -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

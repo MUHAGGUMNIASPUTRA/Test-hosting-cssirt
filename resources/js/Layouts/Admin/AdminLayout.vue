@@ -338,7 +338,7 @@ watch(
       </header>
 
       <!-- Page content -->
-      <main class="p-6">
+      <main class="p-4 sm:p-6">
         <slot />
       </main>
     </div>

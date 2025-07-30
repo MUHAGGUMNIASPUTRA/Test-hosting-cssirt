@@ -186,7 +186,7 @@ onMounted(() => {
             <div class="flex items-center gap-4 mb-4">
               <div class="relative">
                 <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <i :class="`pi ${service.icon} !text-xl text-white`"></i>
+                  <span class="material-symbols-outlined text-white !text-2xl">{{ service.icon }}</span>
                 </div>
                 <div class="absolute -inset-2 bg-gradient-to-br from-indigo-500/20 to-blue-600/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
               </div>

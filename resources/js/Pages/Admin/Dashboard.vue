@@ -97,7 +97,7 @@ const truncateText = (text, length = 50) => {
 
 <template>
   <AdminLayout title="Dashboard">
-    <div class="space-y-6">
+    <div class="space-y-4 sm:space-y-6">
       <!-- Welcome Section -->
       <div class="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl p-6 text-white">
         <div class="flex items-center justify-between">
@@ -120,7 +120,7 @@ const truncateText = (text, length = 50) => {
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <!-- Total Incidents -->
         <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
@@ -186,7 +186,7 @@ const truncateText = (text, length = 50) => {
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         <!-- Recent Incidents -->
         <div class="lg:col-span-2">
           <div class="bg-white rounded-xl shadow-sm border border-slate-200">
@@ -246,7 +246,7 @@ const truncateText = (text, length = 50) => {
         </div>
 
         <!-- System Alerts & Recent Posts -->
-        <div class="space-y-6">
+        <div class="space-y-4 sm:space-y-6">
           <!-- System Alerts -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200">
             <div class="p-6 border-b border-slate-200">
