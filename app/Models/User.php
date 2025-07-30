@@ -22,6 +22,7 @@ class User extends Authenticatable
     'name',
     'email',
     'password',
+    'role',
   ];
 
   /**
@@ -44,6 +45,18 @@ class User extends Authenticatable
     return [
       'email_verified_at' => 'datetime',
       'password' => 'hashed',
+    ];
+  }
+
+  /**
+   * Get role options
+   */
+  public static function getRoleOptions()
+  {
+    return [
+      'admin' => 'Administrator',
+      'staff' => 'Staff',
+      'user' => 'Pengguna',
     ];
   }
 }

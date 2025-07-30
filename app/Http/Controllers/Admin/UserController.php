@@ -1,5 +1,5 @@
 <?php
-// File: app/Http/Controllers/Admin/UserController.php
+// filepath: app/Http/Controllers/Admin/UserController.php
 
 namespace App\Http\Controllers\Admin;
 
@@ -16,19 +16,30 @@ class UserController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index(): Response
+  public function index(Request $request): Response
   {
-    return Inertia::render('Admin/Users/Index', [
-      'users' => User::latest()->paginate(10),
-    ]);
-  }
+    $query = User::latest();
 
-  /**
-   * Show the form for creating a new resource.
-   */
-  public function create(): Response
-  {
-    return Inertia::render('Admin/Users/Create');
+    // Apply search filter
+    if ($request->filled('search')) {
+      $query->where(function ($q) use ($request) {
+        $q->where('name', 'ilike', '%' . $request->search . '%')
+          ->orWhere('email', 'ilike', '%' . $request->search . '%');
+      });
+    }
+
+    // Apply role filter
+    if ($request->filled('role')) {
+      $query->where('role', $request->role);
+    }
+
+    $users = $query->orderBy('name')->paginate(10)->withQueryString();
+
+    return Inertia::render('Admin/Users/Index', [
+      'users' => $users,
+      'roleOptions' => User::getRoleOptions(),
+      'filters' => $request->only(['search', 'role']),
+    ]);
   }
 
   /**
@@ -39,7 +50,7 @@ class UserController extends Controller
     $request->validate([
       'name' => 'required|string|max:255',
       'email' => 'required|string|email|max:255|unique:'.User::class,
-      'password' => ['required', 'confirmed', Rules\Password::defaults()],
+      'password' => ['required', 'confirmed', Rules\Password::min(8)],
       'role' => 'required|in:admin,staff,user',
     ]);
 
@@ -50,17 +61,7 @@ class UserController extends Controller
       'role' => $request->role,
     ]);
 
-    return redirect()->route('admin.users.index')->with('success', 'Pengguna baru berhasil ditambahkan.');
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(User $user): Response
-  {
-    return Inertia::render('Admin/Users/Edit', [
-      'user' => $user,
-    ]);
+    return redirect()->back()->with('success', 'Pengguna baru berhasil ditambahkan.');
   }
 
   /**
@@ -71,21 +72,30 @@ class UserController extends Controller
     $request->validate([
       'name' => 'required|string|max:255',
       'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
-      'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+      'current_password' => 'required|string',
+      'password' => ['nullable', 'confirmed', Rules\Password::min(8)],
       'role' => 'required|in:admin,staff,user',
     ]);
 
-    $user->name = $request->name;
-    $user->email = $request->email;
-    $user->role = $request->role;
-
-    if ($request->password) {
-      $user->password = Hash::make($request->password);
+    // Verify the current password for the user being edited
+    if (!Hash::check($request->current_password, $user->password)) {
+      return back()->withErrors(['current_password' => 'Password saat ini salah.']);
     }
 
-    $user->save();
+    $updateData = [
+      'name' => $request->name,
+      'email' => $request->email,
+      'role' => $request->role,
+    ];
 
-    return redirect()->route('admin.users.index')->with('success', 'Data pengguna berhasil diperbarui.');
+    // Only update password if new password is provided
+    if ($request->filled('password')) {
+      $updateData['password'] = Hash::make($request->password);
+    }
+
+    $user->update($updateData);
+
+    return redirect()->back()->with('success', 'Data pengguna berhasil diperbarui.');
   }
 
   /**
@@ -95,10 +105,10 @@ class UserController extends Controller
   {
     // Prevent admin from deleting their own account
     if ($user->id === auth()->id()) {
-      return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+      return back()->withErrors(['error' => 'Anda tidak dapat menghapus akun Anda sendiri.']);
     }
 
     $user->delete();
-    return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil dihapus.');
+    return redirect()->back()->with('success', 'Pengguna berhasil dihapus.');
   }
 }

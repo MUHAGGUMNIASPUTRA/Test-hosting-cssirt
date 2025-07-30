@@ -56,7 +56,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
   Route::resource('services', AdminServiceController::class);
   Route::resource('faqs', AdminFaqController::class)->except(['show', 'create', 'edit']);
   Route::resource('announcements', AnnouncementController::class)->except(['show', 'create', 'edit']);
-  Route::resource('users', AdminUserController::class)->except(['show'])->middleware('admin');
+  Route::resource('users', AdminUserController::class)->except(['show', 'create', 'edit'])->middleware('admin');
 });
 
 Route::middleware('auth')->group(function () {
