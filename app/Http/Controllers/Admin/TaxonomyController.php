@@ -16,8 +16,8 @@ class TaxonomyController extends Controller
   public function index()
   {
     return Inertia::render('Admin/Taxonomy/Index', [
-      'categories' => Category::withCount('posts')->latest()->get(),
-      'tags' => Tag::withCount('posts')->latest()->get(),
+      'categories' => Category::withCount('posts')->orderBy('name')->get(),
+      'tags' => Tag::withCount('posts')->orderBy('name')->get(),
     ]);
   }
 

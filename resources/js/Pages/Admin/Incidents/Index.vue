@@ -266,7 +266,7 @@ const serverSideConfig = computed(() => {
             </div>
             <div class="ml-3">
               <p class="font-medium text-slate-600">Total Insiden</p>
-              <p class="text-2xl font-bold text-slate-900">{{ incidents.total || 0 }}</p>
+              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ incidents.total || 0 }}</p>
             </div>
           </div>
         </div>
@@ -278,7 +278,7 @@ const serverSideConfig = computed(() => {
             </div>
             <div class="ml-3">
               <p class="font-medium text-slate-600">Dalam Proses</p>
-              <p class="text-2xl font-bold text-slate-900">
+              <p class="text-xl sm:text-2xl font-bold text-slate-900">
                 {{ incidents.data?.filter(i => ['Baru', 'Diverifikasi', 'Dalam Penyelidikan'].includes(i.status)).length || 0 }}
               </p>
             </div>
@@ -292,7 +292,7 @@ const serverSideConfig = computed(() => {
             </div>
             <div class="ml-3">
               <p class="font-medium text-slate-600">Kritikal</p>
-              <p class="text-2xl font-bold text-slate-900">
+              <p class="text-xl sm:text-2xl font-bold text-slate-900">
                 {{ incidents.data?.filter(i => i.priority === 'Kritikal').length || 0 }}
               </p>
             </div>
@@ -306,7 +306,7 @@ const serverSideConfig = computed(() => {
             </div>
             <div class="ml-3">
               <p class="font-medium text-slate-600">Selesai</p>
-              <p class="text-2xl font-bold text-slate-900">
+              <p class="text-xl sm:text-2xl font-bold text-slate-900">
                 {{ incidents.data?.filter(i => i.status === 'Selesai').length || 0 }}
               </p>
             </div>

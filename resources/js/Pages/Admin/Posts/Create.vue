@@ -221,7 +221,8 @@ function triggerFileInput() {
                   <SelectButton
                     v-model="form.status"
                     :options="statusOptions"
-                    class="w-full" />
+                    class="w-full"
+                  />
                 </div>
 
                 <!-- Featured Image -->
@@ -321,7 +322,10 @@ function triggerFileInput() {
                     class="w-full"
                     :class="{ 'p-invalid': form.errors.categories }"
                     display="chip"
-                    required />
+                    :maxSelectedLabels="3"
+                    :showToggleAll="false"
+                    required
+                  />
                   <small v-if="form.errors.categories" class="p-error block mt-1">{{ form.errors.categories }}</small>
                 </div>
 
@@ -337,7 +341,10 @@ function triggerFileInput() {
                     optionValue="id"
                     placeholder="Pilih Tag"
                     class="w-full"
-                    display="chip" />
+                    display="chip"
+                    :maxSelectedLabels="3"
+                    :showToggleAll="false"
+                  />
                 </div>
               </div>
             </div>

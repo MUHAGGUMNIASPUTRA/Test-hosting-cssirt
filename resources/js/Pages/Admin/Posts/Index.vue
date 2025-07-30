@@ -321,17 +321,17 @@ const serverSideConfig = computed(() => {
                 </div>
 
                 <div class="flex-1 min-w-0">
-                  <h3 class="font-semibold text-slate-700 mb-1 line-clamp-1">
+                  <h3 class="font-medium mb-1 line-clamp-1">
                     {{ data.title }}
                   </h3>
 
                   <div class="flex items-center gap-3 text-slate-500">
                     <span v-if="data.published_by" class="lg:hidden">
-                      <span class="material-symbols-outlined !text-xl mr-1">article_person</span>
+                      <span class="material-symbols-outlined icon-wght-300 !text-xl mr-1">article_person</span>
                       <span class="text-sm">{{ data.published_by }}</span>
                     </span>
                     <span v-if="data.categories?.length > 0">
-                      <span class="material-symbols-outlined !text-xl mr-1">label_important</span>
+                      <span class="material-symbols-outlined icon-wght-300 !text-xl mr-1">category</span>
                       <span class="text-sm">{{ !isMobile ? data.categories.map(cat => cat.name).join(', ') : data.categories[0].name }}</span>
                     </span>
                   </div>

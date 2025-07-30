@@ -125,9 +125,9 @@ const truncateText = (text, length = 50) => {
         <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
             <div>
-              <p class="font-medium text-slate-600">Total Insiden</p>
-              <p class="text-3xl font-bold text-slate-900">{{ stats.incidents.total }}</p>
-              <p class="text-sm text-green-600 mt-1">
+              <p class="text-sm sm:text-base font-medium text-slate-600">Total Insiden</p>
+              <p class="text-xl sm:text-3xl font-bold text-slate-900">{{ stats.incidents.total }}</p>
+              <p class="text-xs sm:text-sm text-green-600 mt-1">
                 <span class="font-medium">+{{ stats.incidents.thisMonth }}</span> bulan ini
               </p>
             </div>
@@ -141,9 +141,9 @@ const truncateText = (text, length = 50) => {
         <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
             <div>
-              <p class="font-medium text-slate-600">Insiden Terbuka</p>
-              <p class="text-3xl font-bold text-slate-900">{{ stats.incidents.open }}</p>
-              <p class="text-sm text-red-600 mt-1">
+              <p class="text-sm sm:text-base font-medium text-slate-600">Insiden Terbuka</p>
+              <p class="text-xl sm:text-3xl font-bold text-slate-900">{{ stats.incidents.open }}</p>
+              <p class="text-xs sm:text-sm text-red-600 mt-1">
                 <span class="font-medium">{{ stats.incidents.critical }}</span> kritikal
               </p>
             </div>
@@ -157,9 +157,9 @@ const truncateText = (text, length = 50) => {
         <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
             <div>
-              <p class="font-medium text-slate-600">Artikel Dipublikasi</p>
-              <p class="text-3xl font-bold text-slate-900">{{ stats.posts.published }}</p>
-              <p class="text-sm text-slate-500 mt-1">
+              <p class="text-sm sm:text-base font-medium text-slate-600">Artikel Dipublikasi</p>
+              <p class="text-xl sm:text-3xl font-bold text-slate-900">{{ stats.posts.published }}</p>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1">
                 <span class="font-medium">{{ stats.posts.draft }}</span> draft
               </p>
             </div>
@@ -173,9 +173,9 @@ const truncateText = (text, length = 50) => {
         <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
             <div>
-              <p class="font-medium text-slate-600">Total Pengguna</p>
-              <p class="text-3xl font-bold text-slate-900">{{ stats.users.total }}</p>
-              <p class="text-sm text-slate-500 mt-1">
+              <p class="text-sm sm:text-base font-medium text-slate-600">Total Pengguna</p>
+              <p class="text-xl sm:text-3xl font-bold text-slate-900">{{ stats.users.total }}</p>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1">
                 <span class="font-medium">{{ stats.faqs.published }}</span> FAQ aktif
               </p>
             </div>

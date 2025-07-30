@@ -51,8 +51,8 @@ class PostController extends Controller
   public function create(): Response
   {
     return Inertia::render('Admin/Posts/Create', [
-      'categories' => Category::all(['id', 'name']),
-      'tags' => Tag::all(['id', 'name']),
+      'categories' => Category::orderBy('name', 'asc')->get(['id', 'name']),
+      'tags' => Tag::orderBy('name', 'asc')->get(['id', 'name']),
     ]);
   }
 
@@ -109,8 +109,8 @@ class PostController extends Controller
   {
     return Inertia::render('Admin/Posts/Create', [
       'post' => $post->load(['categories', 'tags']),
-      'categories' => Category::all(['id', 'name']),
-      'tags' => Tag::all(['id', 'name']),
+      'categories' => Category::orderBy('name', 'asc')->get(['id', 'name']),
+      'tags' => Tag::orderBy('name', 'asc')->get(['id', 'name']),
     ]);
   }
 

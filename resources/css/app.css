@@ -20,6 +20,7 @@ html {
 
 /* Tag */
 .p-tag {
+  font-weight: 500 !important;
   border: 1px solid oklch(88.2% 0.059 254.128) !important;
 }
 .p-tag-secondary {
