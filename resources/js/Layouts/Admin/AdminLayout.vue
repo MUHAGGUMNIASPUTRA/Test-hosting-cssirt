@@ -70,7 +70,7 @@ const sidebarItems = ref([
   {
     label: 'Pengumuman',
     icon: 'campaign',
-    route: '',
+    route: 'admin.announcements.index',
   },
   {
     label: 'Pengguna',

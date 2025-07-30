@@ -1,13 +1,13 @@
 <script setup>
-// filepath: resources/js/Pages/Admin/Faq/Index.vue
+// filepath: resources/js/Pages/Admin/Announcements/Index.vue
 import { ref, computed } from 'vue'
 import { router, useForm } from '@inertiajs/vue3'
 import { useConfirm } from "primevue/useconfirm"
 import { useResponsive } from '@/Composables/useResponsive'
 
 const props = defineProps({
-  faqs: Object,
-  categories: Array,
+  announcements: Object,
+  levelOptions: Object,
   filters: Object,
 })
 
@@ -17,49 +17,54 @@ const confirm = useConfirm()
 // Dialog states
 const dialogVisible = ref(false)
 const isEditing = ref(false)
-const currentFaq = ref(null)
+const currentAnnouncement = ref(null)
 
 // Search and filters
 const searchQuery = ref(props.filters?.search || '')
-const selectedCategory = ref(props.filters?.category || '')
+const selectedLevel = ref(props.filters?.level || '')
 const selectedStatus = ref(props.filters?.status || '')
 
 // Add pagination state
 const lazyParams = ref({
   first: 0,
-  rows: props.faqs.per_page || 10,
-  page: props.faqs.current_page || 1
+  rows: props.announcements.per_page || 10,
+  page: props.announcements.current_page || 1
 })
 
-// Form for FAQ operations
+// Form for announcement operations
 const form = useForm({
-  question: '',
-  answer: '',
-  category: '',
-  is_published: true,
+  title: '',
+  content: '',
+  level: 'info',
+  start_date: '',
+  end_date: '',
+  is_active: true,
 })
 
 const statusOptions = [
-  { label: 'Dipublikasi', value: 'published' },
-  { label: 'Draft', value: 'draft' },
+  { label: 'Aktif', value: 'active' },
+  { label: 'Tidak Aktif', value: 'inactive' },
+  { label: 'Sedang Berjalan', value: 'current' },
+  { label: 'Terjadwal', value: 'scheduled' },
+  { label: 'Kedaluwarsa', value: 'expired' },
 ]
 
-const categoryOptions = computed(() => {
-  return props.categories.map(cat => ({ label: cat, value: cat }))
+const levelOptionsArray = computed(() => {
+  return Object.entries(props.levelOptions).map(([value, label]) => ({ label, value }))
 })
 
 const applyFilters = () => {
   const params = new URLSearchParams()
 
   if (searchQuery.value) params.set('search', searchQuery.value)
-  if (selectedCategory.value) params.set('category', selectedCategory.value)
+  if (selectedLevel.value) params.set('level', selectedLevel.value)
   if (selectedStatus.value) params.set('status', selectedStatus.value)
 
   // Add pagination params
   if (lazyParams.value.page > 1) params.set('page', lazyParams.value.page)
 
   const queryString = params.toString()
-  const url = route('admin.faqs.index') + (queryString ? '?' + queryString : '')
+  const url = route('admin.announcements.index') + (queryString ? '?' + queryString : '')
 
   router.get(url, {}, {
     preserveState: true,
@@ -77,13 +82,13 @@ const onPage = (event) => {
   const params = new URLSearchParams()
 
   if (searchQuery.value) params.set('search', searchQuery.value)
-  if (selectedCategory.value) params.set('category', selectedCategory.value)
+  if (selectedLevel.value) params.set('level', selectedLevel.value)
   if (selectedStatus.value) params.set('status', selectedStatus.value)
 
   params.set('page', lazyParams.value.page)
 
   const queryString = params.toString()
-  const url = route('admin.faqs.index') + (queryString ? '?' + queryString : '')
+  const url = route('admin.announcements.index') + (queryString ? '?' + queryString : '')
 
   router.get(url, {}, {
     preserveState: true,
@@ -94,7 +99,7 @@ const onPage = (event) => {
 
 const clearFilters = () => {
   searchQuery.value = ''
-  selectedCategory.value = ''
+  selectedLevel.value = ''
   selectedStatus.value = ''
   lazyParams.value.page = 1
   lazyParams.value.first = 0
@@ -103,19 +108,29 @@ const clearFilters = () => {
 
 const openCreateDialog = () => {
   isEditing.value = false
-  currentFaq.value = null
+  currentAnnouncement.value = null
   form.reset()
-  form.is_published = true
+
+  // Set default dates
+  const now = new Date()
+  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000)
+  form.start_date = now
+  form.end_date = tomorrow
+  form.level = 'info'
+  form.is_active = true
+
   dialogVisible.value = true
 }
 
-const openEditDialog = (faq) => {
+const openEditDialog = (announcement) => {
   isEditing.value = true
-  currentFaq.value = faq
-  form.question = faq.question
-  form.answer = faq.answer
-  form.category = faq.category || ''
-  form.is_published = faq.is_published
+  currentAnnouncement.value = announcement
+  form.title = announcement.title
+  form.content = announcement.content
+  form.level = announcement.level
+  form.start_date = new Date(announcement.start_date)
+  form.end_date = new Date(announcement.end_date)
+  form.is_active = announcement.is_active
   dialogVisible.value = true
 }
 
@@ -127,13 +142,13 @@ const closeDialog = () => {
 
 const submitForm = () => {
   if (isEditing.value) {
-    form.put(route('admin.faqs.update', currentFaq.value.id), {
+    form.put(route('admin.announcements.update', currentAnnouncement.value.id), {
       onSuccess: () => {
         closeDialog()
       },
     })
   } else {
-    form.post(route('admin.faqs.store'), {
+    form.post(route('admin.announcements.store'), {
       onSuccess: () => {
         closeDialog()
       },
@@ -141,9 +156,9 @@ const submitForm = () => {
   }
 }
 
-const deleteFaq = (faq) => {
+const deleteAnnouncement = (announcement) => {
   confirm.require({
-    message: `Apakah Anda yakin ingin menghapus FAQ ini?`,
+    message: `Hapus pengumuman "${announcement.title}"?`,
     header: 'Konfirmasi Penghapusan',
     rejectProps: {
       label: 'Batal',
@@ -158,13 +173,38 @@ const deleteFaq = (faq) => {
       size: 'small'
     },
     accept: () => {
-      router.delete(route('admin.faqs.destroy', faq.id))
+      router.delete(route('admin.announcements.destroy', announcement.id))
     }
   })
 }
 
-const getStatusSeverity = (isPublished) => {
-  return isPublished ? 'success' : 'secondary'
+const getLevelSeverity = (level) => {
+  const severityMap = {
+    info: 'info',
+    warning: 'warn',
+    critical: 'danger'
+  }
+  return severityMap[level] || 'info'
+}
+
+const getAnnouncementStatus = (announcement) => {
+  const now = new Date()
+  const startDate = new Date(announcement.start_date)
+  const endDate = new Date(announcement.end_date)
+
+  if (!announcement.is_active) {
+    return { label: 'Tidak Aktif', severity: 'secondary' }
+  }
+
+  if (startDate > now) {
+    return { label: 'Terjadwal', severity: 'info' }
+  }
+
+  if (endDate < now) {
+    return { label: 'Kedaluwarsa', severity: 'secondary' }
+  }
+
+  return { label: 'Aktif', severity: 'success' }
 }
 
 const formatDate = (dateString) => {
@@ -172,9 +212,7 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('id-ID', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+    day: 'numeric'
   })
 }
 
@@ -185,12 +223,25 @@ const truncateText = (text, length = 100) => {
 
 // Stats computed
 const stats = computed(() => {
-  const allData = props.faqs.data || []
-  const published = allData.filter(faq => faq.is_published).length
-  const draft = allData.filter(faq => !faq.is_published).length
-  const categoriesCount = new Set(allData.filter(faq => faq.category).map(faq => faq.category)).size
+  const allData = props.announcements.data || []
+  const now = new Date()
 
-  return { published, draft, categoriesCount }
+  const active = allData.filter(ann => ann.is_active).length
+  const current = allData.filter(ann => {
+    const start = new Date(ann.start_date)
+    const end = new Date(ann.end_date)
+    return ann.is_active && start <= now && end >= now
+  }).length
+  const scheduled = allData.filter(ann => {
+    const start = new Date(ann.start_date)
+    return ann.is_active && start > now
+  }).length
+  const expired = allData.filter(ann => {
+    const end = new Date(ann.end_date)
+    return end < now
+  }).length
+
+  return { active, current, scheduled, expired }
 })
 
 // Server-side DataTable configuration
@@ -198,21 +249,21 @@ const serverSideConfig = computed(() => {
   return {
     ...dtConfig(),
     lazy: true,
-    totalRecords: props.faqs.total,
-    first: (props.faqs.current_page - 1) * props.faqs.per_page,
-    rows: props.faqs.per_page,
+    totalRecords: props.announcements.total,
+    first: (props.announcements.current_page - 1) * props.announcements.per_page,
+    rows: props.announcements.per_page,
   }
 })
 
-// Word count for answer
-const answerWordCount = computed(() => {
-  if (!form.answer) return 0
-  return form.answer.trim().split(/\s+/).filter(word => word.length > 0).length
+// Word count for content
+const contentWordCount = computed(() => {
+  if (!form.content) return 0
+  return form.content.trim().split(/\s+/).filter(word => word.length > 0).length
 })
 </script>
 
 <template>
-  <AdminLayout title="Kelola FAQ">
+  <AdminLayout title="Kelola Pengumuman">
     <ConfirmDialog />
 
     <div class="space-y-4 sm:space-y-6">
@@ -220,8 +271,8 @@ const answerWordCount = computed(() => {
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Kelola FAQ</h2>
-            <p class="text-slate-600">Kelola pertanyaan yang sering diajukan</p>
+            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Kelola Pengumuman</h2>
+            <p class="text-slate-600">Kelola pengumuman penting untuk pengguna</p>
           </div>
           <Button
             @click="openCreateDialog"
@@ -230,7 +281,7 @@ const answerWordCount = computed(() => {
           >
             <template #default>
               <span class="material-symbols-outlined !text-xl">add</span>
-              Tambah FAQ
+              Tambah Pengumuman
             </template>
           </Button>
         </div>
@@ -241,11 +292,11 @@ const answerWordCount = computed(() => {
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
             <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-blue-600">help</span>
+              <span class="material-symbols-outlined text-blue-600">campaign</span>
             </div>
             <div class="ml-3">
-              <p class="font-medium text-slate-600">Total FAQ</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ faqs.total || 0 }}</p>
+              <p class="font-medium text-slate-600">Total</p>
+              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ announcements.total || 0 }}</p>
             </div>
           </div>
         </div>
@@ -256,8 +307,8 @@ const answerWordCount = computed(() => {
               <span class="material-symbols-outlined text-green-600">check_circle</span>
             </div>
             <div class="ml-3">
-              <p class="font-medium text-slate-600">Dipublikasi</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ stats.published }}</p>
+              <p class="font-medium text-slate-600">Aktif</p>
+              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ stats.current }}</p>
             </div>
           </div>
         </div>
@@ -265,23 +316,23 @@ const answerWordCount = computed(() => {
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
             <div class="w-12 h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-orange-600">draft</span>
+              <span class="material-symbols-outlined text-orange-600">schedule</span>
             </div>
             <div class="ml-3">
-              <p class="font-medium text-slate-600">Draft</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ stats.draft }}</p>
+              <p class="font-medium text-slate-600">Terjadwal</p>
+              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ stats.scheduled }}</p>
             </div>
           </div>
         </div>
 
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-12 h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-purple-600">category</span>
+            <div class="w-12 h-12 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-center">
+              <span class="material-symbols-outlined text-slate-600">history</span>
             </div>
             <div class="ml-3">
-              <p class="font-medium text-slate-600">Kategori</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ stats.categoriesCount }}</p>
+              <p class="font-medium text-slate-600">Kedaluwarsa</p>
+              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ stats.expired }}</p>
             </div>
           </div>
         </div>
@@ -292,7 +343,7 @@ const answerWordCount = computed(() => {
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-xl font-semibold text-slate-900">Filter & Pencarian</h3>
           <button
-            v-if="searchQuery || selectedCategory || selectedStatus"
+            v-if="searchQuery || selectedLevel || selectedStatus"
             @click="clearFilters"
             class="text-blue-600 hover:text-blue-800 font-medium"
           >
@@ -302,7 +353,7 @@ const answerWordCount = computed(() => {
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div>
-            <label class="block font-medium text-slate-700 mb-2">Cari FAQ</label>
+            <label class="block font-medium text-slate-700 mb-2">Cari Pengumuman</label>
             <div class="relative">
               <IconField class="w-full">
                 <InputIcon>
@@ -310,7 +361,7 @@ const answerWordCount = computed(() => {
                 </InputIcon>
                 <InputText
                   v-model="searchQuery"
-                  placeholder="Cari pertanyaan, jawaban, atau kategori..."
+                  placeholder="Cari judul atau konten..."
                   class="w-full pl-10"
                   @keyup.enter="applyFilters"
                 />
@@ -319,13 +370,13 @@ const answerWordCount = computed(() => {
           </div>
 
           <div>
-            <label class="block font-medium text-slate-700 mb-2">Filter Kategori</label>
+            <label class="block font-medium text-slate-700 mb-2">Filter Level</label>
             <Select
-              v-model="selectedCategory"
-              :options="categoryOptions"
+              v-model="selectedLevel"
+              :options="levelOptionsArray"
               optionLabel="label"
               optionValue="value"
-              placeholder="Pilih Kategori"
+              placeholder="Pilih Level"
               class="w-full"
               showClear
               @change="applyFilters"
@@ -352,50 +403,57 @@ const answerWordCount = computed(() => {
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <DataTable
           v-bind="serverSideConfig"
-          :value="faqs.data"
+          :value="announcements.data"
           @page="onPage"
         >
           <template #empty>
             <div class="text-center py-12">
-              <span class="material-symbols-outlined text-slate-300 mb-4 !text-5xl">help</span>
+              <span class="material-symbols-outlined text-slate-300 mb-4 !text-5xl">campaign</span>
               <p class="text-slate-500 text-lg font-medium">
-                {{ searchQuery || selectedCategory || selectedStatus ? 'Tidak ada FAQ yang sesuai filter' : 'Belum ada FAQ yang dibuat' }}
+                {{ searchQuery || selectedLevel || selectedStatus ? 'Tidak ada pengumuman yang sesuai filter' : 'Belum ada pengumuman yang dibuat' }}
               </p>
               <p class="text-slate-400 mt-1 text-sm">
-                {{ searchQuery || selectedCategory || selectedStatus ? 'Coba ubah kriteria pencarian' : 'FAQ yang dibuat akan muncul di sini' }}
+                {{ searchQuery || selectedLevel || selectedStatus ? 'Coba ubah kriteria pencarian' : 'Pengumuman yang dibuat akan muncul di sini' }}
               </p>
             </div>
           </template>
 
-          <Column header="FAQ" class="min-w-80">
+          <Column header="Pengumuman" class="min-w-80">
             <template #body="{ data }">
               <div class="flex items-start gap-3">
                 <div class="flex-1 min-w-0">
-                  <h3 class="font-medium text-slate-700 mb-1 line-clamp-2">
-                    {{ data.question }}
+                  <h3 class="font-medium text-slate-700 line-clamp-2">
+                    {{ data.title }}
                   </h3>
 
                   <p class="text-slate-600 text-sm line-clamp-2">
-                    {{ truncateText(data.answer, 120) }}
+                    {{ truncateText(data.content, 120) }}
                   </p>
+
+                  <div class="text-xs text-slate-500">
+                    <span class="material-symbols-outlined text-slate-400 !text-base mb-0.5 mr-1">schedule</span>
+                    <span>{{ formatDate(data.start_date) }} - {{ formatDate(data.end_date) }}</span>
+                  </div>
                 </div>
               </div>
             </template>
           </Column>
 
-          <Column field="category" header="Kategori" class="hidden sm:table-cell">
+          <Column field="level" header="Level" class="hidden sm:table-cell">
             <template #body="{ data }">
-              <span class="text-sm text-slate-500">
-                {{ data.category || 'Tidak ada' }}
-              </span>
+              <Tag
+                :value="levelOptions[data.level]"
+                :severity="getLevelSeverity(data.level)"
+                size="small"
+              />
             </template>
           </Column>
 
-          <Column field="is_published" header="Status" class="hidden sm:table-cell">
+          <Column field="status" header="Status" class="hidden lg:table-cell">
             <template #body="{ data }">
               <Tag
-                :value="data.is_published ? 'Dipublikasi' : 'Draft'"
-                :severity="getStatusSeverity(data.is_published)"
+                :value="getAnnouncementStatus(data).label"
+                :severity="getAnnouncementStatus(data).severity"
                 size="small"
               />
             </template>
@@ -420,7 +478,7 @@ const answerWordCount = computed(() => {
                   </svg>
                 </button>
                 <button
-                  @click="deleteFaq(data)"
+                  @click="deleteAnnouncement(data)"
                   class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   title="Hapus"
                 >
@@ -445,15 +503,13 @@ const answerWordCount = computed(() => {
       <template #container="{ closeCallback }">
         <div class="bg-white rounded-xl shadow-2xl border border-slate-200">
           <!-- Header -->
-          <div class="p-4 sm:p-6 border-b border-slate-200">
-            <div class="flex items-center gap-4">
-              <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-blue-600">{{ isEditing ? 'edit' : 'help' }}</span>
-              </div>
-              <div>
-                <h3 class="text-lg font-semibold text-slate-900">{{ isEditing ? 'Edit FAQ' : 'Tambah FAQ Baru' }}</h3>
-                <p class="text-sm text-slate-500">{{ isEditing ? 'Perbarui informasi FAQ' : 'Buat FAQ baru untuk membantu pengguna' }}</p>
-              </div>
+          <div class="p-4 sm:p-6 border-b border-slate-200 flex items-center gap-4">
+            <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+              <span class="material-symbols-outlined text-blue-600">{{ isEditing ? 'edit' : 'campaign' }}</span>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-slate-900">{{ isEditing ? 'Edit Pengumuman' : 'Tambah Pengumuman Baru' }}</h3>
+              <p class="text-sm text-slate-500">{{ isEditing ? 'Perbarui informasi pengumuman' : 'Buat pengumuman baru untuk pengguna' }}</p>
             </div>
           </div>
 
@@ -463,81 +519,121 @@ const answerWordCount = computed(() => {
               <!-- Main Content -->
               <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 sm:p-6 space-y-4">
                 <div>
-                  <label for="question" class="block font-medium text-slate-700 mb-2">
-                    Pertanyaan <span class="text-red-500">*</span>
+                  <label for="title" class="block font-medium text-slate-700 mb-2">
+                    Judul Pengumuman <span class="text-red-500">*</span>
                   </label>
-                  <Textarea
-                    id="question"
-                    v-model="form.question"
-                    rows="2"
-                    placeholder="Masukkan pertanyaan yang sering diajukan..."
+                  <InputText
+                    id="title"
+                    v-model="form.title"
+                    placeholder="Masukkan judul pengumuman..."
                     required
                     class="w-full"
-                    :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.question }"
+                    :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.title }"
                   />
-                  <p v-if="form.errors.question" class="mt-1 text-red-600 text-sm">
-                    {{ form.errors.question }}
+                  <p v-if="form.errors.title" class="mt-1 text-red-600 text-sm">
+                    {{ form.errors.title }}
                   </p>
                 </div>
 
                 <div>
-                  <label for="answer" class="block font-medium text-slate-700 mb-2">
-                    Jawaban <span class="text-red-500">*</span>
+                  <label for="content" class="block font-medium text-slate-700 mb-2">
+                    Konten Pengumuman <span class="text-red-500">*</span>
                   </label>
                   <Textarea
-                    id="answer"
-                    v-model="form.answer"
-                    rows="5"
-                    placeholder="Masukkan jawaban yang lengkap dan informatif..."
+                    id="content"
+                    v-model="form.content"
+                    rows="3"
+                    placeholder="Masukkan konten pengumuman..."
                     required
                     class="w-full"
-                    :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.answer }"
+                    :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.content }"
                   />
                   <div class="flex justify-between items-center mt-1">
-                    <p v-if="form.errors.answer" class="text-red-600 text-sm">
-                      {{ form.errors.answer }}
+                    <p v-if="form.errors.content" class="text-red-600 text-sm">
+                      {{ form.errors.content }}
                     </p>
                     <p class="text-xs text-slate-400 ml-auto">
-                      {{ answerWordCount }} kata
+                      {{ contentWordCount }} kata
+                    </p>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label for="start_date" class="block font-medium text-slate-700 mb-2">
+                      Tanggal Mulai <span class="text-red-500">*</span>
+                    </label>
+                    <DatePicker
+                      id="start_date"
+                      v-model="form.start_date"
+                      required
+                      class="w-full"
+                      dateFormat="dd M yy"
+                      placeholder="Pilih tanggal mulai"
+                      :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.start_date }"
+                    />
+                    <p v-if="form.errors.start_date" class="mt-1 text-red-600 text-sm">
+                      {{ form.errors.start_date }}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label for="end_date" class="block font-medium text-slate-700 mb-2">
+                      Tanggal Berakhir <span class="text-red-500">*</span>
+                    </label>
+                    <DatePicker
+                      id="end_date"
+                      v-model="form.end_date"
+                      required
+                      class="w-full"
+                      dateFormat="dd M yy"
+                      placeholder="Pilih tanggal berakhir"
+                      :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.end_date }"
+                    />
+                    <p v-if="form.errors.end_date" class="mt-1 text-red-600 text-sm">
+                      {{ form.errors.end_date }}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <!-- Category and Status -->
+              <!-- Settings -->
               <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 sm:p-6">
                 <div class="space-y-4">
                   <div>
-                    <label for="category" class="block font-medium text-slate-700 mb-2">
-                      Kategori <span class="text-slate-500 font-normal">(Opsional)</span>
+                    <label for="level" class="block font-medium text-slate-700 mb-2">
+                      Level Pengumuman <span class="text-red-500">*</span>
                     </label>
-                    <InputText
-                      id="category"
-                      v-model="form.category"
-                      placeholder="Masukkan kategori"
+                    <Select
+                      id="level"
+                      v-model="form.level"
+                      :options="levelOptionsArray"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Pilih Level"
                       class="w-full"
-                      :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.category }"
+                      :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.level }"
                     />
-                    <p v-if="form.errors.category" class="mt-1 text-red-600 text-sm">
-                      {{ form.errors.category }}
+                    <p v-if="form.errors.level" class="mt-1 text-red-600 text-sm">
+                      {{ form.errors.level }}
                     </p>
                     <p class="mt-1 text-slate-500 text-xs">
-                      Contoh: Keamanan, Teknis, Umum
+                      Level menentukan prioritas dan warna pengumuman
                     </p>
                   </div>
 
                   <div>
                     <div class="flex items-center justify-between">
-                      <label for="is_published" class="font-medium text-slate-700">
-                        Status Publikasi
+                      <label for="is_active" class="font-medium text-slate-700">
+                        Status Aktif
                       </label>
                       <ToggleSwitch
-                        id="is_published"
-                        v-model="form.is_published"
+                        id="is_active"
+                        v-model="form.is_active"
                       />
                     </div>
                     <p class="text-sm text-slate-500 mt-1">
-                      {{ form.is_published ? 'FAQ akan ditampilkan di website publik' : 'FAQ disimpan sebagai draft' }}
+                      {{ form.is_active ? 'Pengumuman akan ditampilkan sesuai jadwal' : 'Pengumuman disimpan sebagai draft' }}
                     </p>
                   </div>
                 </div>
@@ -565,7 +661,7 @@ const answerWordCount = computed(() => {
                   <span class="material-symbols-outlined !text-xl/4" :class="{ 'animate-spin': form.processing }">
                     {{ form.processing ? 'progress_activity' : 'save' }}
                   </span>
-                  {{ form.processing ? 'Menyimpan...' : (isEditing ? 'Update FAQ' : 'Simpan FAQ') }}
+                  {{ form.processing ? 'Menyimpan...' : (isEditing ? 'Update Pengumuman' : 'Simpan Pengumuman') }}
                 </template>
               </Button>
             </div>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\ImageUploadController;
@@ -54,6 +55,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
   Route::resource('services', AdminServiceController::class);
   Route::resource('faqs', AdminFaqController::class)->except(['show', 'create', 'edit']);
+  Route::resource('announcements', AnnouncementController::class)->except(['show', 'create', 'edit']);
   Route::resource('users', AdminUserController::class)->except(['show'])->middleware('admin');
 });
 
