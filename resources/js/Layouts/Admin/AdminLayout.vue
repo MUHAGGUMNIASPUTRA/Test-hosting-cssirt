@@ -16,6 +16,12 @@ const userMenuOpen = ref(false)
 // Sidebar items configuration
 const sidebarItems = ref([
   {
+    label: 'Website',
+    icon: 'captive_portal',
+    route: 'landing',
+  },
+  { separator: true },
+  {
     label: 'Dashboard',
     icon: 'empty_dashboard',
     route: 'admin.dashboard',
@@ -225,43 +231,47 @@ watch(
       </div>
 
       <!-- Navigation -->
-      <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto h-[calc(100vh-8rem)]">
+      <nav class="flex-1 p-4 space-y-2 overflow-y-auto h-[calc(100vh-8rem)]">
         <template v-for="item in sidebarItems" :key="item.label">
           <div v-if="!item.visible || item.visible()">
+            <div v-if="item.separator" class="border-t border-slate-200 my-1"></div>
+            <div v-else>
             <!-- Single menu item -->
-            <Link
-              v-if="item.route && !item.items"
-              :href="route(item.route)"
-              @click="closeSidebarOnMobile"
-              class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors group"
-              :class="isCurrentRoute(item.route) ? 'bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
-            >
-              <span class="material-symbols-outlined icon-wght-300 mr-3" :class="[isCurrentRoute(item.route) ? 'text-indigo-500' : 'text-slate-400']">{{ item.icon }}</span>{{ item.label }}
-            </Link>
+              <Link
+                v-if="item.route && !item.items"
+                :href="route(item.route)"
+                @click="closeSidebarOnMobile"
+                class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors group"
+                :class="isCurrentRoute(item.route) ? 'bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
+              >
+                <span class="material-symbols-outlined icon-wght-300 mr-3" :class="[isCurrentRoute(item.route) ? 'text-indigo-500' : 'text-slate-400']">{{ item.icon }}</span>{{ item.label }}
+              </Link>
 
-            <!-- Menu with subitems -->
-            <div v-else-if="item.items && item.items.length > 0" class="space-y-1">
-              <div class="flex items-center px-3 py-2 text-sm font-medium text-slate-600">
-                <span class="material-symbols-outlined icon-wght-300 mr-3 text-slate-400">{{ item.icon }}</span>{{ item.label }}
+              <!-- Menu with subitems -->
+              <div v-else-if="item.items && item.items.length > 0" class="space-y-1">
+                <div class="flex items-center px-3 py-2 text-sm font-medium text-slate-600">
+                  <span class="material-symbols-outlined icon-wght-300 mr-3 text-slate-400">{{ item.icon }}</span>{{ item.label }}
+                </div>
+                <div class="ml-6 space-y-1">
+                  <Link
+                    v-for="subItem in item.items"
+                    :key="subItem.label"
+                    :href="route(subItem.route)"
+                    @click="closeSidebarOnMobile"
+                    class="flex items-center px-3 py-2 text-sm rounded-md transition-colors"
+                    :class="isCurrentRoute(subItem.route) ? 'bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500 font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
+                  >
+                    <span class="material-symbols-outlined icon-wght-300 mr-3" :class="[isCurrentRoute(subItem.route) ? 'text-indigo-500' : 'text-slate-400']">{{ subItem.icon }}</span>{{ subItem.label }}
+                  </Link>
+                </div>
               </div>
-              <div class="ml-6 space-y-1">
-                <Link
-                  v-for="subItem in item.items"
-                  :key="subItem.label"
-                  :href="route(subItem.route)"
-                  @click="closeSidebarOnMobile"
-                  class="flex items-center px-3 py-2 text-sm rounded-md transition-colors"
-                  :class="isCurrentRoute(subItem.route) ? 'bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500 font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
-                >
-                  <span class="material-symbols-outlined icon-wght-300 mr-3" :class="[isCurrentRoute(subItem.route) ? 'text-indigo-500' : 'text-slate-400']">{{ subItem.icon }}</span>{{ subItem.label }}
-                </Link>
-              </div>
-            </div>
 
-            <!-- Single menu item without route (disabled) -->
-            <div v-else-if="!item.route" class="flex items-center px-3 py-2 text-sm font-medium text-slate-400 cursor-not-allowed">
-              <span class="material-symbols-outlined icon-wght-300 mr-3">{{ item.icon }}</span>{{ item.label }}
-              <span class="ml-auto text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded">Soon</span>
+              <!-- Single menu item without route (disabled) -->
+              <div v-else-if="!item.route" class="flex items-center px-3 py-2 text-sm font-medium text-slate-400 cursor-not-allowed">
+                <span class="material-symbols-outlined icon-wght-300 mr-3">{{ item.icon }}</span>{{ item.label }}
+                <span class="ml-auto text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded">Soon</span>
+              </div>
+
             </div>
           </div>
         </template>

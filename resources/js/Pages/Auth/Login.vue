@@ -95,7 +95,7 @@ const togglePassword = () => {
                 autofocus
                 class="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-white"
                 :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.email }"
-                placeholder="admin@bojonegorokab.go.id"
+                placeholder="Masukkan password"
               />
             </div>
           </div>
@@ -119,7 +119,7 @@ const togglePassword = () => {
                 autocomplete="current-password"
                 class="w-full pl-12 pr-12 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 bg-white"
                 :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.password }"
-                placeholder="Masukkan password Anda"
+                placeholder="Masukkan password"
               />
               <button
                 type="button"

@@ -13,6 +13,7 @@ defineProps({
 const isMenuOpen = ref(false);
 const isScrolled = ref(false);
 const page = usePage();
+const isLoggedIn = computed(() => !!(page.props.auth && page.props.auth.user));
 
 // Toast notification setup
 const toast = useToast();
@@ -198,6 +199,14 @@ watch(
                   :class="navTextClasses.link"
                 >
                   <span class="relative z-10">Kontak</span>
+                  <div class="absolute inset-0 rounded-lg bg-gradient-to-r from-indigo-500 to-blue-600 opacity-0 group-hover:opacity-10 transition-opacity duration-200"></div>
+                </Link>
+                <Link
+                  :href="isLoggedIn ? route('admin.dashboard') : route('login')"
+                  class="relative px-4 py-2 font-medium rounded-lg transition-all duration-200 group"
+                  :class="navTextClasses.link"
+                >
+                  <span class="relative z-10">{{ isLoggedIn ? 'Dashboard' : 'Login' }}</span>
                   <div class="absolute inset-0 rounded-lg bg-gradient-to-r from-indigo-500 to-blue-600 opacity-0 group-hover:opacity-10 transition-opacity duration-200"></div>
                 </Link>
               </div>
