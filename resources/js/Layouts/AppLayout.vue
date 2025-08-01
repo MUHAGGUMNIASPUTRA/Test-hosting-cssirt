@@ -324,7 +324,7 @@ watch(
               class="block px-4 py-3 text-lg font-medium text-slate-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
               @click="isMenuOpen = false"
             >
-              Kontak
+              <span class="relative z-10">{{ isLoggedIn ? 'Dashboard' : 'Login' }}</span>
             </Link>
 
             <!-- Mobile Report Incident Button -->
