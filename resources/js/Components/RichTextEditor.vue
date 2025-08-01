@@ -243,7 +243,7 @@ const handleImageUpload = (event) => {
         :class="editor.isActive({ textAlign: 'left' }) || editor.isActive({ textAlign: 'center' }) || editor.isActive({ textAlign: 'right' }) || editor.isActive({ textAlign: 'justify' }) ? 'bg-gray-100 !text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'"
         title="Text Align"
       >
-        <component :is="activeAlignIcon" :size="16" />
+        <component :is="activeAlignIcon" :size="14" />
       </Button>
       <Popover ref="textAlignPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
         <div class="flex items-center gap-[2px]">

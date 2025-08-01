@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 use App\Http\Traits\HandlesSeoRequests;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class PostController extends Controller
 {
@@ -38,28 +40,30 @@ class PostController extends Controller
   /**
    * Display the specified post.
    */
-  public function show(Request $request, $slug)
+  public function show(Request $request, Post $post): Response
   {
-    $post = Post::with(['category', 'tags'])
-      ->where('status', 'published')
-      ->where('slug', $slug)
-      ->firstOrFail();
+    $post->increment('views_count');
 
+    // Check if the current user/guest has already rated this post
     $hasRated = false;
     $user = $request->user();
 
     if ($user) {
       $hasRated = $post->ratings()->where('user_id', $user->id)->exists();
     } else {
-      // For guest users, check by IP
       $hasRated = $post->ratings()->where('ip_address', $request->ip())->exists();
     }
 
-    $postWithRating = $post;
-    $postWithRating->has_rated = $hasRated;
+    $popularPosts = Post::where('status', 'Published')
+      ->where('id', '!=', $post->id)
+      ->orderBy('views_count', 'desc')
+      ->take(4)
+      ->get();
 
-    return $this->handleSeoRequest('Posts/Show', [
-      'post' => $postWithRating
+    return Inertia::render('Posts/Show', [
+      'post' => $post->load(['categories', 'tags']),
+      'popularPosts' => $popularPosts,
+      'hasRated' => $hasRated,
     ]);
   }
 }

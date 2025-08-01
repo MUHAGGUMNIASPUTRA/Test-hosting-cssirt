@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ExcerptController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\ImageUploadController;
 use App\Http\Controllers\Admin\IncidentController as AdminIncidentController;
@@ -44,6 +45,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
   Route::resource('posts', AdminPostController::class)->except(['show']);
   Route::post('/images/upload', [ImageUploadController::class, 'store'])->name('images.upload');
+  Route::post('/generate-excerpt', [ExcerptController::class, 'generate'])->name('generate-excerpt');
 
   Route::get('/taxonomy', [TaxonomyController::class, 'index'])->name('taxonomy.index');
   Route::post('/categories', [TaxonomyController::class, 'storeCategory'])->name('categories.store');

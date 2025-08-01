@@ -30,6 +30,10 @@ const statusOptions = ref(['Draft', 'Published']);
 const imagePreview = ref(null);
 const excerptWords = ref(0);
 
+// AI excerpt generation
+const isGeneratingExcerpt = ref(false);
+const excerptGenerationMessage = ref('');
+
 // Word count for excerpt (limit to 35 words)
 const excerptWordCount = computed(() => {
   if (!form.excerpt) return 0;
@@ -38,6 +42,11 @@ const excerptWordCount = computed(() => {
 
 const excerptWordLimit = 35;
 const isExcerptOverLimit = computed(() => excerptWordCount.value > excerptWordLimit);
+
+// Check if we can generate excerpt
+const canGenerateExcerpt = computed(() => {
+  return form.title.trim().length > 0 && form.body.trim().length > 100 && !isGeneratingExcerpt.value;
+});
 
 // Watch excerpt changes for word count
 watch(() => form.excerpt, (newExcerpt) => {
@@ -61,6 +70,64 @@ const onImageSelect = (event) => {
 const removeImage = () => {
   form.image = null;
   imagePreview.value = null;
+};
+
+// Generate excerpt using AI
+const generateExcerpt = async () => {
+  if (!canGenerateExcerpt.value) {
+    excerptGenerationMessage.value = 'Mohon isi judul dan isi artikel terlebih dahulu';
+    setTimeout(() => {
+      excerptGenerationMessage.value = '';
+    }, 3000);
+    return;
+  }
+
+  isGeneratingExcerpt.value = true;
+  excerptGenerationMessage.value = 'Sedang membuat ringkasan...';
+
+  try {
+    const response = await fetch(route('admin.generate-excerpt'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        title: form.title,
+        body: form.body
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      form.excerpt = data.excerpt;
+      excerptGenerationMessage.value = `✓ ${data.message} (${data.word_count} kata)`;
+
+      // Clear success message after 5 seconds
+      setTimeout(() => {
+        excerptGenerationMessage.value = '';
+      }, 5000);
+    } else {
+      excerptGenerationMessage.value = `❌ ${data.message}`;
+
+      // Clear error message after 5 seconds
+      setTimeout(() => {
+        excerptGenerationMessage.value = '';
+      }, 5000);
+    }
+  } catch (error) {
+    console.error('Error generating excerpt:', error);
+    excerptGenerationMessage.value = '❌ Terjadi kesalahan saat membuat ringkasan';
+
+    // Clear error message after 5 seconds
+    setTimeout(() => {
+      excerptGenerationMessage.value = '';
+    }, 5000);
+  } finally {
+    isGeneratingExcerpt.value = false;
+  }
 };
 
 const submit = () => {
@@ -176,16 +243,46 @@ function triggerFileInput() {
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Ringkasan Artikel <span class="text-red-500">*</span>
-                  <span class="text-xs text-gray-500 ml-1">(maksimal {{ excerptWordLimit }} kata)</span>
-                </label>
+                <div class="flex items-center justify-between mb-2">
+                  <label class="block text-sm font-medium text-gray-700">
+                    Ringkasan Artikel <span class="text-red-500">*</span>
+                    <span class="text-xs text-gray-500 ml-1">(maksimal {{ excerptWordLimit }} kata)</span>
+                  </label>
+
+                  <!-- AI Generate Button -->
+                  <button
+                    type="button"
+                    @click="generateExcerpt"
+                    :disabled="!canGenerateExcerpt"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md transition-colors"
+                    :class="canGenerateExcerpt
+                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-sm'
+                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'"
+                  >
+                    <span class="material-symbols-outlined !text-sm" :class="{ 'animate-spin': isGeneratingExcerpt }">
+                      {{ isGeneratingExcerpt ? 'autorenew' : 'auto_awesome' }}
+                    </span>
+                    {{ isGeneratingExcerpt ? 'Membuat...' : 'Buat Ringkasan' }}
+                  </button>
+                </div>
+
+                <!-- AI Generation Message -->
+                <div v-if="excerptGenerationMessage" class="mb-3">
+                  <small
+                    :class="excerptGenerationMessage.includes('✓') ? 'text-green-600' :
+                            excerptGenerationMessage.includes('❌') ? 'text-red-600' : 'text-blue-600'"
+                    class="text-xs block p-2 bg-gray-50 rounded border"
+                  >
+                    {{ excerptGenerationMessage }}
+                  </small>
+                </div>
+
                 <Textarea
                   v-model="form.excerpt"
                   rows="4"
                   class="w-full"
                   :class="{ 'p-invalid': form.errors.excerpt || isExcerptOverLimit }"
-                  placeholder="Tulis ringkasan singkat dari artikel ini..."
+                  placeholder="Tulis ringkasan singkat dari artikel ini atau gunakan tombol 'Buat Ringkasan' untuk generate otomatis..."
                   maxlength="500" />
 
                 <div class="flex justify-between items-center mt-2">
