@@ -74,7 +74,7 @@
 
     <div class="footer">
       <p>Email ini dikirim otomatis dari sistem CSIRT Bojonegoro</p>
-      <p>Untuk laporan darurat, hubungi: 0353-881234 (24/7)</p>
+      <p>Untuk laporan darurat, hubungi: 0353-881826 (24/7)</p>
     </div>
   </div>
 </body>

@@ -3,13 +3,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\HandlesSeoRequests;
 use App\Models\Faq;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Inertia\Inertia;
 
 class FaqController extends Controller
 {
+  use HandlesSeoRequests;
+
   /**
    * Display the FAQ page with cached data
    */
@@ -34,7 +36,7 @@ class FaqController extends Controller
         ->toArray();
     });
 
-    return Inertia::render('Faq/Index', [
+    return $this->handleSeoRequest('Faq/Index', [
       'faqs' => $faqs,
       'categories' => $categories,
     ]);

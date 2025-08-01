@@ -19,7 +19,7 @@ const contactDetails = [
   },
   {
     name: 'Email Resmi',
-    value: 'csirt@bojonegorokab.go.id',
+    value: 'ttis@bojonegorokab.go.id',
     icon: 'pi-envelope',
     color: 'text-blue-600',
     bgColor: 'bg-blue-100',
@@ -35,7 +35,7 @@ const contactDetails = [
   },
   {
     name: 'Hotline Darurat',
-    value: '0353-881234',
+    value: '0353-881826',
     subtitle: 'Laporan Insiden 24/7',
     icon: 'pi-exclamation-triangle',
     color: 'text-red-600',
@@ -133,7 +133,7 @@ onMounted(() => {
           </svg>
           <p class="text-xl text-white font-medium">
             <span class="font-bold">DARURAT:</span> Untuk laporan insiden keamanan siber segera hubungi
-            <a href="tel:0353881234" class="underline hover:no-underline ml-1">0353-881234</a>
+            <a href="tel:0353881826" class="underline hover:no-underline ml-1">0353-881826</a>
           </p>
         </div>
       </div>
@@ -379,7 +379,7 @@ onMounted(() => {
                   <i class="pi pi-info-circle text-blue-600 mt-1 mr-3"></i>
                   <div class="text-blue-700">
                     <p class="font-medium mb-1">Catatan Penting:</p>
-                    <p>Untuk laporan insiden keamanan yang mendesak, segera hubungi hotline darurat kami di <strong>0353-881234</strong> (24/7).</p>
+                    <p>Untuk laporan insiden keamanan yang mendesak, segera hubungi hotline darurat kami di <strong>0353-881826</strong> (24/7).</p>
                   </div>
                 </div>
               </div>

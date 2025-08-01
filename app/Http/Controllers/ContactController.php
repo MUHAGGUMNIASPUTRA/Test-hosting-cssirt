@@ -3,23 +3,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\HandlesSeoRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
-use Inertia\Inertia;
-use Inertia\Response;
 use App\Mail\ContactFormMail;
 use App\Mail\ContactConfirmationMail;
 use Illuminate\Support\Facades\Log;
 
 class ContactController extends Controller
 {
+  use HandlesSeoRequests;
+
   /**
    * Display the contact page.
    */
-  public function index(): Response
+  public function index()
   {
-    return Inertia::render('Contact/Index');
+    return $this->handleSeoRequest('Contact/Index');
   }
 
   /**
@@ -52,7 +53,7 @@ class ContactController extends Controller
 
     try {
       // Send email to CSIRT team
-      Mail::to(config('mail.csirt_email', 'csirt@bojonegorokab.go.id'))
+      Mail::to(config('mail.csirt_email', 'ttis@bojonegorokab.go.id'))
         ->send(new ContactFormMail($validated));
 
       // Send confirmation email to user

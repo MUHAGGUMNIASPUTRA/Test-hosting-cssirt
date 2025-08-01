@@ -44,7 +44,7 @@ class FaqSeeder extends Seeder
       ],
       [
         'question' => 'Bagaimana cara melaporkan insiden kepada CSIRT Bojonegoro?',
-        'answer' => 'Laporan dapat dikirimkan melalui: Email: csirt@bojonegorokab.go.id, Website: csirt.bojonegorokab.go.id, atau kontak darurat lainnya. Sertakan informasi yang lengkap dan jelas agar penanganan dapat segera dilakukan.',
+        'answer' => 'Laporan dapat dikirimkan melalui: Email: ttis@bojonegorokab.go.id, Website: csirt.bojonegorokab.go.id, atau kontak darurat lainnya. Sertakan informasi yang lengkap dan jelas agar penanganan dapat segera dilakukan.',
         'category' => 'Pelaporan Insiden',
       ],
       [

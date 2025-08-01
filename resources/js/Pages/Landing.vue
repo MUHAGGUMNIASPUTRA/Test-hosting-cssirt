@@ -310,7 +310,7 @@ onMounted(() => {
             </div>
             <h4 class="text-2xl font-semibold mb-0 sm:mb-2">Darurat 24/7</h4>
             <p class="text-red-100 mb-0 sm:mb-2">Laporan insiden keamanan siber</p>
-            <p class="text-3xl font-bold">0353-881234</p>
+            <p class="text-3xl font-bold">0353-881826</p>
           </div>
 
           <!-- General Contact -->
@@ -323,7 +323,7 @@ onMounted(() => {
             </div>
             <h4 class="text-2xl font-semibold text-slate-900 mb-0 sm:mb-2">Email</h4>
             <p class="text-slate-600 mb-0 sm:mb-2">Kontak umum dan konsultasi</p>
-            <p class="text-lg font-medium text-indigo-600">csirt@bojonegorokab.go.id</p>
+            <p class="text-lg font-medium text-indigo-600">ttis@bojonegorokab.go.id</p>
           </div>
 
           <!-- Office Address -->

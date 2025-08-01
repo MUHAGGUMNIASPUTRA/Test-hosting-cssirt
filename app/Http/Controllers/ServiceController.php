@@ -3,18 +3,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\HandlesSeoRequests;
 use App\Models\Service;
-use Inertia\Inertia;
-use Inertia\Response;
 
 class ServiceController extends Controller
 {
+  use HandlesSeoRequests;
+
   /**
    * Display a listing of the services.
    */
-  public function index(): Response
+  public function index()
   {
-    return Inertia::render('Services/Index', [
+    return $this->handleSeoRequest('Services/Index', [
       'services' => Service::where('is_active', true)->get(),
     ]);
   }

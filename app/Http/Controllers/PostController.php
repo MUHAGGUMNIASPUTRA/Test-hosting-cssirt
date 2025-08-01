@@ -3,17 +3,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\HandlesSeoRequests;
 use App\Models\Post;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Inertia\Response;
 
 class PostController extends Controller
 {
+  use HandlesSeoRequests;
+
   /**
    * Display a listing of the posts.
    */
-  public function index(Request $request): Response
+  public function index(Request $request)
   {
     $page = $request->get('page', 1);
     $isFirstPage = $page == 1;
@@ -28,7 +29,7 @@ class PostController extends Controller
       ->paginate($perPage)
       ->withQueryString();
 
-    return Inertia::render('Posts/Index', [
+    return $this->handleSeoRequest('Posts/Index', [
       'posts' => $posts,
       'isFirstPage' => $isFirstPage,
     ]);
@@ -36,32 +37,29 @@ class PostController extends Controller
 
   /**
    * Display the specified post.
-   *
-   * @param  \App\Models\Post  $post
-   * @return \Inertia\Response
    */
-  public function show(Request $request, Post $post): Response
+  public function show(Request $request, $slug)
   {
-    $post->increment('views_count');
+    $post = Post::with(['category', 'tags'])
+      ->where('status', 'published')
+      ->where('slug', $slug)
+      ->firstOrFail();
 
-    // Check if the current user/guest has already rated this post
     $hasRated = false;
-    if (auth()->check()) {
-      $hasRated = $post->ratings()->where('user_id', auth()->id())->exists();
+    $user = $request->user();
+
+    if ($user) {
+      $hasRated = $post->ratings()->where('user_id', $user->id)->exists();
     } else {
+      // For guest users, check by IP
       $hasRated = $post->ratings()->where('ip_address', $request->ip())->exists();
     }
 
-    $popularPosts = Post::where('status', 'Published')
-      ->where('id', '!=', $post->id)
-      ->orderBy('views_count', 'desc')
-      ->take(4)
-      ->get();
+    $postWithRating = $post;
+    $postWithRating->has_rated = $hasRated;
 
-    return Inertia::render('Posts/Show', [
-      'post' => $post->load(['categories', 'tags']),
-      'popularPosts' => $popularPosts,
-      'hasRated' => $hasRated,
+    return $this->handleSeoRequest('Posts/Show', [
+      'post' => $postWithRating
     ]);
   }
 }

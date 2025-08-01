@@ -55,7 +55,7 @@
         <ul style="color: #1e40af; margin-bottom: 0;">
           <li>Tim CSIRT akan meninjau pesan Anda dalam 1x24 jam</li>
           <li>Anda akan menerima balasan melalui email ini</li>
-          <li>Untuk keperluan mendesak, hubungi hotline kami di <strong>0353-881234</strong></li>
+          <li>Untuk keperluan mendesak, hubungi hotline kami di <strong>0353-881826</strong></li>
         </ul>
       </div>
 
@@ -70,7 +70,7 @@
         <p style="margin-bottom: 0; color: #64748b;">
           Butuh bantuan segera? Hubungi hotline darurat kami
         </p>
-        <h3 style="color: #dc2626; margin: 10px 0;">📞 0353-881234</h3>
+        <h3 style="color: #dc2626; margin: 10px 0;">📞 0353-881826</h3>
         <p style="margin-top: 0; color: #64748b; font-size: 14px;">
           Tersedia 24/7 untuk laporan insiden keamanan siber
         </p>
@@ -80,8 +80,8 @@
     <div class="footer">
       <p><strong>CSIRT Kabupaten Bojonegoro</strong></p>
       <p>Dinas Komunikasi dan Informatika</p>
-      <p>Jl. P. Mastumapel No. 1, Bojonegoro, Jawa Timur 62115</p>
-      <p>Email: csirt@bojonegorokab.go.id | Telp: (0353) 881-234</p>
+      <p>Jl. P. Mas Tumapel No. 1, Bojonegoro, Jawa Timur 62115</p>
+      <p>Email: ttis@bojonegorokab.go.id | Telp: (0353) 881-234</p>
     </div>
   </div>
 </body>

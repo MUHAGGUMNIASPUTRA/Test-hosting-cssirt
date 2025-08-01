@@ -8,10 +8,11 @@ import { PrimeVueResolver } from '@primevue/auto-import-resolver';
 import Icons from 'unplugin-icons/vite';
 import IconsResolver from 'unplugin-icons/resolver';
 
-export default defineConfig({
+export default defineConfig(({ command, mode, isSsrBuild }) => ({
   plugins: [
     laravel({
-      input: 'resources/js/app.js',
+      input: isSsrBuild ? 'resources/js/ssr.js' : 'resources/js/app.js',
+      ssr: isSsrBuild ? 'resources/js/ssr.js' : undefined,
       refresh: true,
     }),
     vue({
@@ -23,22 +24,42 @@ export default defineConfig({
       },
     }),
     Components({
-      // Tell the plugin where to scan for components
       dirs: ['resources/js/Components', 'resources/js/Layouts'],
-
-      // This part is for PrimeVue auto-import (already exists)
       resolvers: [
         PrimeVueResolver(),
         IconsResolver({
           prefix: 'i',
         }),
       ],
-
-      // This makes it work with Inertia's <Link> component
       directives: false,
     }),
     Icons({
       autoInstall: true,
     }),
   ],
-});
+  ssr: {
+    noExternal: [
+      'primevue',
+      '@primevue/core',
+      '@primevue/themes',
+      '@primevue/auto-import-resolver',
+      'primeicons',
+      '@inertiajs/vue3',
+      '@inertiajs/core',
+      'laravel-vite-plugin'
+    ],
+    external: ['fs', 'path', 'url'],
+    // Allow Node.js modules in SSR
+    target: 'node',
+  },
+  resolve: {
+    alias: {
+      '@': '/resources/js',
+    },
+  },
+  define: {
+    global: 'globalThis',
+    // Disable SSR-incompatible features
+    'process.browser': 'false',
+  },
+}));

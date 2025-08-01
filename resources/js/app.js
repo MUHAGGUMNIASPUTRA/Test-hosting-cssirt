@@ -34,12 +34,13 @@ createInertiaApp({
             darkModeSelector: '.p-dark',
           },
         },
-        ripple: true,
+        ripple: true, // Enable ripple for client
       })
       .use(ConfirmationService)
       .use(ToastService)
       .mount(el)
   },
+  // Progress bar enabled for client
   progress: {
     color: '#4B5563',
   },

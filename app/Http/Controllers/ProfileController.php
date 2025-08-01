@@ -3,16 +3,17 @@
 
 namespace App\Http\Controllers;
 
-use Inertia\Inertia;
-use Inertia\Response;
+use App\Http\Traits\HandlesSeoRequests;
 
 class ProfileController extends Controller
 {
+  use HandlesSeoRequests;
+
   /**
    * Display the profile page.
    */
-  public function __invoke(): Response
+  public function __invoke()
   {
-    return Inertia::render('Profile/Index');
+    return $this->handleSeoRequest('Profile/Index');
   }
 }

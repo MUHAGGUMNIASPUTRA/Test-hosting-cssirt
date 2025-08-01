@@ -3,21 +3,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\HandlesSeoRequests;
 use App\Models\Incident;
 use App\Models\IncidentType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Inertia\Inertia;
-use Inertia\Response;
 
 class IncidentController extends Controller
 {
+  use HandlesSeoRequests;
+
   /**
    * Show the form for creating a new incident report.
    */
-  public function create(): Response
+  public function create()
   {
-    return Inertia::render('Incidents/Create', [
+    return $this->handleSeoRequest('Incidents/Create', [
       'incidentTypes' => IncidentType::all(['id', 'name']),
     ]);
   }

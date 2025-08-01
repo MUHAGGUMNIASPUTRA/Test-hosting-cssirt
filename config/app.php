@@ -123,4 +123,16 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | SSR Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This value is the URL for the SSR server used for rendering
+    | SEO-optimized pages for search engine crawlers.
+    |
+    */
+
+    'ssr_url' => env('SSR_URL', 'http://localhost:13714'),
+
 ];
