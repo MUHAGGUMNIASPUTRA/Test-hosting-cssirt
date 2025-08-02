@@ -1,5 +1,6 @@
 <script setup>
 // filepath: resources/js/Pages/Admin/Faq/Index.vue
+
 import { ref, computed } from 'vue'
 import { router, useForm } from '@inertiajs/vue3'
 import { useConfirm } from "primevue/useconfirm"
@@ -11,7 +12,7 @@ const props = defineProps({
   filters: Object,
 })
 
-const { dtConfig } = useResponsive()
+const { isMobile, dtConfig } = useResponsive()
 const confirm = useConfirm()
 
 // Dialog states
@@ -40,8 +41,8 @@ const form = useForm({
 })
 
 const statusOptions = [
-  { label: 'Dipublikasi', value: 'published' },
   { label: 'Draft', value: 'draft' },
+  { label: 'Diterbitkan', value: 'published' },
 ]
 
 const categoryOptions = computed(() => {
@@ -229,7 +230,7 @@ const answerWordCount = computed(() => {
             class="px-4 py-2"
           >
             <template #default>
-              <span class="material-symbols-outlined !text-xl">add</span>
+              <IconCirclePlus size="16" />
               Tambah FAQ
             </template>
           </Button>
@@ -240,48 +241,48 @@ const answerWordCount = computed(() => {
       <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-blue-600">help</span>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+              <IconHelp class="text-blue-600" :size="isMobile ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="font-medium text-slate-600">Total FAQ</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ faqs.total || 0 }}</p>
+              <p class="text-sm sm:text-base font-medium text-slate-600">Total FAQ</p>
+              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ faqs.total || 0 }}</p>
             </div>
           </div>
         </div>
 
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-12 h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-green-600">check_circle</span>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+              <IconCircleCheck class="text-green-600" :size="isMobile ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="font-medium text-slate-600">Dipublikasi</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ stats.published }}</p>
+              <p class="text-sm sm:text-base font-medium text-slate-600">Diterbitkan</p>
+              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.published }}</p>
             </div>
           </div>
         </div>
 
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-12 h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-orange-600">draft</span>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
+              <IconFile class="text-orange-600" :size="isMobile ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="font-medium text-slate-600">Draft</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ stats.draft }}</p>
+              <p class="text-sm sm:text-base font-medium text-slate-600">Draft</p>
+              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.draft }}</p>
             </div>
           </div>
         </div>
 
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-12 h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-purple-600">category</span>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
+              <IconCategory class="text-purple-600" :size="isMobile ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="font-medium text-slate-600">Kategori</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ stats.categoriesCount }}</p>
+              <p class="text-sm sm:text-base font-medium text-slate-600">Kategori</p>
+              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.categoriesCount }}</p>
             </div>
           </div>
         </div>
@@ -409,24 +410,20 @@ const answerWordCount = computed(() => {
 
           <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
             <template #body="{ data }">
-              <div class="flex items-center justify-end space-x-2">
+              <div class="flex items-center justify-end">
                 <button
                   @click="openEditDialog(data)"
                   class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                   title="Edit"
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
+                  <IconEdit size="14" />
                 </button>
                 <button
                   @click="deleteFaq(data)"
                   class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   title="Hapus"
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
+                  <IconTrash size="14" />
                 </button>
               </div>
             </template>
@@ -446,13 +443,14 @@ const answerWordCount = computed(() => {
         <div class="bg-white rounded-xl shadow-2xl border border-slate-200">
           <!-- Header -->
           <div class="p-4 sm:p-6 border-b border-slate-200">
-            <div class="flex items-center gap-4">
-              <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-blue-600">{{ isEditing ? 'edit' : 'help' }}</span>
+            <div class="flex items-center gap-3 sm:gap-4">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+                <IconEdit class="text-blue-600" :size="isMobile ? 18 : undefined" v-if="isEditing"/>
+                <IconHelp class="text-blue-600" :size="isMobile ? 18 : undefined" v-else/>
               </div>
               <div>
-                <h3 class="text-lg font-semibold text-slate-900">{{ isEditing ? 'Edit FAQ' : 'Tambah FAQ Baru' }}</h3>
-                <p class="text-sm text-slate-500">{{ isEditing ? 'Perbarui informasi FAQ' : 'Buat FAQ baru untuk membantu pengguna' }}</p>
+                <h3 class="text-base sm:text-lg font-semibold text-slate-900">{{ isEditing ? 'Edit FAQ' : 'Tambah FAQ Baru' }}</h3>
+                <p class="text-xs sm:text-sm text-slate-500">{{ isEditing ? 'Perbarui informasi FAQ' : 'Buat FAQ baru untuk membantu pengguna' }}</p>
               </div>
             </div>
           </div>
@@ -562,9 +560,8 @@ const answerWordCount = computed(() => {
                 :loading="form.processing"
               >
                 <template #default>
-                  <span class="material-symbols-outlined !text-xl/4" :class="{ 'animate-spin': form.processing }">
-                    {{ form.processing ? 'progress_activity' : 'save' }}
-                  </span>
+                  <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
+                  <IconDeviceFloppy v-else size="16"/>
                   {{ form.processing ? 'Menyimpan...' : (isEditing ? 'Update FAQ' : 'Simpan FAQ') }}
                 </template>
               </Button>

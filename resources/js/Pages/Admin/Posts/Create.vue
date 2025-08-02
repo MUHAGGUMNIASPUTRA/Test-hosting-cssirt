@@ -1,6 +1,9 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+// filepath: resources/js/Pages/Admin/Posts/Create.vue
+
+import { ref, computed, watch } from 'vue';
 import { Link, useForm } from '@inertiajs/vue3';
+import { useResponsive } from '@/Composables/useResponsive';
 
 const props = defineProps({
   post: {
@@ -10,6 +13,8 @@ const props = defineProps({
   categories: Array,
   tags: Array,
 });
+
+const { isMobile } = useResponsive();
 
 // Check if we're in edit mode
 const isEditMode = computed(() => !!props.post);
@@ -163,7 +168,7 @@ function triggerFileInput() {
                 :href="route('admin.posts.index')"
                 class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
               >
-                <span class="material-symbols-outlined !text-xl">west</span>
+                <IconArrowLeft size="16"/>
                   Kembali
               </Link>
               <button
@@ -171,9 +176,8 @@ function triggerFileInput() {
                 :disabled="form.processing"
                 class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
               >
-                <span class="material-symbols-outlined !text-xl" :class="{ 'animate-spin': form.processing }">
-                  {{ form.processing ? 'progress_activity' : 'save' }}
-                </span>
+                <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
+                <IconDeviceFloppy v-else size="16"/>
                 {{ form.processing ? 'Menyimpan...' : isEditMode ? 'Update Artikel' : 'Simpan Artikel' }}
               </button>
             </div>
@@ -191,8 +195,8 @@ function triggerFileInput() {
             <!-- Title & Content Card -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-                  <span class="material-symbols-outlined text-blue-600">title</span>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+                  <IconLetterT class="text-blue-600" :size="isMobile ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
                   <h3 class="font-semibold text-slate-900">Judul & Konten</h3>
@@ -203,7 +207,7 @@ function triggerFileInput() {
               <!-- Title -->
               <div class="space-y-4">
                 <div>
-                  <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+                  <label for="title" class="block font-medium text-gray-700 mb-2">
                     Judul Artikel <span class="text-red-500">*</span>
                   </label>
                   <InputText
@@ -218,7 +222,7 @@ function triggerFileInput() {
 
                 <!-- Body -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <label class="block font-medium text-gray-700 mb-2">
                     Isi Artikel <span class="text-red-500">*</span>
                   </label>
                   <RichTextEditor
@@ -233,8 +237,8 @@ function triggerFileInput() {
             <!-- Excerpt Card -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-12 h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
-                  <span class="material-symbols-outlined text-purple-600">text_snippet</span>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
+                  <IconReceipt class="text-purple-600" :size="isMobile ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
                   <h3 class="font-semibold text-slate-900">Kutipan Singkat (Excerpt)</h3>
@@ -244,7 +248,7 @@ function triggerFileInput() {
 
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <label class="block text-sm font-medium text-gray-700">
+                  <label class="block font-medium text-gray-700">
                     Ringkasan Artikel <span class="text-red-500">*</span>
                     <span class="text-xs text-gray-500 ml-1">(maksimal {{ excerptWordLimit }} kata)</span>
                   </label>
@@ -285,7 +289,7 @@ function triggerFileInput() {
                   placeholder="Tulis ringkasan singkat dari artikel ini atau gunakan tombol 'Buat Ringkasan' untuk generate otomatis..."
                   maxlength="500" />
 
-                <div class="flex justify-between items-center mt-2">
+                <div class="flex justify-between items-center">
                   <small v-if="form.errors.excerpt" class="p-error">{{ form.errors.excerpt }}</small>
                   <small :class="{ 'text-red-500': isExcerptOverLimit, 'text-gray-500': !isExcerptOverLimit }"
                           class="text-xs">
@@ -302,8 +306,8 @@ function triggerFileInput() {
             <!-- Publication Options Card -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-12 h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-                  <span class="material-symbols-outlined text-green-600">upload_2</span>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+                  <IconBrowserShare class="text-green-600" :size="isMobile ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
                   <h3 class="font-semibold text-slate-900">Opsi Publikasi</h3>
@@ -314,7 +318,7 @@ function triggerFileInput() {
               <!-- Status -->
               <div class="space-y-4">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-3">Status Publikasi</label>
+                  <label class="block font-medium text-gray-700 mb-3">Status Publikasi</label>
                   <SelectButton
                     v-model="form.status"
                     :options="statusOptions"
@@ -324,7 +328,7 @@ function triggerFileInput() {
 
                 <!-- Featured Image -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Utama</label>
+                  <label class="block font-medium text-gray-700 mb-2">Gambar Utama</label>
 
                   <!-- Current Image Preview (Edit Mode) -->
                   <div v-if="isEditMode && props.post?.image && !imagePreview" class="mb-3">
@@ -380,7 +384,8 @@ function triggerFileInput() {
                         class="flex flex-col items-center justify-center py-6 px-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-600 transition-colors cursor-pointer"
                         @click="triggerFileInput"
                       >
-                        <span class="material-symbols-outlined text-gray-400 text-2xl mb-2">add_photo_alternate</span>
+                        <!-- <span class="material-symbols-outlined text-gray-400 text-2xl mb-2">add_photo_alternate</span> -->
+                        <IconPhotoSearch class="text-gray-400 mb-2" :size="isMobile ? 18 : undefined"/>
                         <p class="text-sm text-gray-600 text-center">
                           {{ isEditMode ? 'Pilih gambar baru untuk mengganti' : 'Drag & drop atau klik untuk memilih gambar' }}
                         </p>
@@ -395,8 +400,8 @@ function triggerFileInput() {
             <!-- Categories & Tags Card -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-12 h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
-                  <span class="material-symbols-outlined text-orange-600">bookmarks</span>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
+                  <IconBookmarks class="text-orange-600" :size="isMobile ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
                   <h3 class="font-semibold text-slate-900">Kategori & Tag</h3>
@@ -407,7 +412,7 @@ function triggerFileInput() {
               <div class="space-y-4">
                 <!-- Categories -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <label class="block font-medium text-gray-700 mb-2">
                     Kategori <span class="text-red-500">*</span>
                   </label>
                   <MultiSelect
@@ -428,7 +433,7 @@ function triggerFileInput() {
 
                 <!-- Tags -->
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <label class="block font-medium text-gray-700 mb-2">
                     Tag <span class="text-gray-400">(Opsional)</span>
                   </label>
                   <MultiSelect

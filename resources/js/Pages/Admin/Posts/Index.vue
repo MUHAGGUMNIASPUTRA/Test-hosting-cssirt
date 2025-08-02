@@ -1,4 +1,6 @@
 <script setup>
+// filepath: resources/js/Pages/Admin/Posts/Index.vue
+
 import { ref, computed } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
 import { useConfirm } from "primevue/useconfirm"
@@ -236,7 +238,7 @@ const serverSideConfig = computed(() => {
             :href="route('admin.posts.create')"
             class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
           >
-            <span class="material-symbols-outlined !text-xl">post_add</span>
+            <IconTextPlus size="16" />
               Tambah Artikel
           </Link>
         </div>
@@ -326,12 +328,12 @@ const serverSideConfig = computed(() => {
                   </h3>
 
                   <div class="flex items-center gap-3 text-slate-500">
-                    <span v-if="data.published_by" class="lg:hidden">
-                      <span class="material-symbols-outlined icon-wght-300 !text-xl mr-1">article_person</span>
+                    <span v-if="data.published_by" class="lg:hidden flex items-center gap-1">
+                      <IconUserEdit size="14" stroke-width="1.5"/>
                       <span class="text-sm">{{ data.published_by }}</span>
                     </span>
-                    <span v-if="data.categories?.length > 0">
-                      <span class="material-symbols-outlined icon-wght-300 !text-xl mr-1">category</span>
+                    <span v-if="data.categories?.length > 0" class="flex items-center gap-1">
+                      <IconCategory size="14" stroke-width="1.5"/>
                       <span class="text-sm">{{ !isMobile ? data.categories.map(cat => cat.name).join(', ') : data.categories[0].name }}</span>
                     </span>
                   </div>
@@ -366,7 +368,7 @@ const serverSideConfig = computed(() => {
 
           <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
             <template #body="{ data }">
-              <div class="flex items-center justify-end space-x-2">
+              <div class="flex items-center justify-end">
                 <a
                   :href="route('posts.show', data.slug)"
                   class="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
@@ -374,28 +376,21 @@ const serverSideConfig = computed(() => {
                   target="_blank"
                   rel="noopener"
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
+                  <IconEye size="14" />
                 </a>
                 <Link
                   :href="route('admin.posts.edit', data.id)"
                   class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                   title="Edit"
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
+                  <IconEdit size="14" />
                 </Link>
                 <button
                   @click="confirmDeletePost(data)"
                   class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   title="Hapus"
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
+                  <IconTrash size="14" />
                 </button>
               </div>
             </template>

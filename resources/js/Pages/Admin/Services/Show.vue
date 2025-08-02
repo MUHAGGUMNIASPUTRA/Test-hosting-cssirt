@@ -2,10 +2,13 @@
 // filepath: resources/js/Pages/Admin/Services/Show.vue
 
 import { Link } from '@inertiajs/vue3'
+import { useResponsive } from '@/Composables/useResponsive'
 
 const props = defineProps({
   service: Object
 })
+
+const { isMobile } = useResponsive()
 
 const formatDate = (dateString) => {
   if (!dateString) return '-'
@@ -45,14 +48,14 @@ const getStatusSeverity = (isActive) => {
               :href="route('admin.services.index')"
               class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
             >
-              <span class="material-symbols-outlined !text-xl">west</span>
+              <IconArrowLeft size="16" />
                 Kembali
             </Link>
             <Link
               :href="route('admin.services.edit', service.id)"
               class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
             >
-              <span class="material-symbols-outlined !text-xl">edit</span>
+              <IconEdit size="16" />
               Edit Layanan
             </Link>
           </div>
@@ -65,12 +68,12 @@ const getStatusSeverity = (isActive) => {
           <!-- Full Description -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
             <div class="flex items-center mb-6">
-              <div class="w-12 h-12 bg-indigo-50 border border-indigo-200 rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-indigo-600">description</span>
+              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-50 border border-indigo-200 rounded-lg flex items-center justify-center">
+                <IconFileDescription class="text-indigo-600" :size="isMobile ? 18 : undefined"/>
               </div>
               <div class="ml-3">
                 <h3 class="font-semibold text-slate-900">Deskripsi Layanan</h3>
-                <p class="text-slate-600">Detail informasi tentang layanan ini</p>
+                <p class="text-xs sm:text-base text-slate-600">Detail informasi tentang layanan ini</p>
               </div>
             </div>
 
@@ -84,10 +87,10 @@ const getStatusSeverity = (isActive) => {
               <p class="text-slate-500">{{ service.full_description }}</p>
             </div>
             <div v-else class="text-center py-8">
-              <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span class="material-symbols-outlined text-slate-400 !text-2xl">description</span>
+              <div class="w-14 h-14 sm:w-16 sm:h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <IconFileDescription class="text-slate-400" :size="isMobile ? 18 : undefined"/>
               </div>
-              <p class="text-slate-500">Deskripsi lengkap belum tersedia</p>
+              <p class="text-slate-400">Deskripsi lengkap belum tersedia</p>
             </div>
           </div>
         </div>
@@ -97,12 +100,12 @@ const getStatusSeverity = (isActive) => {
           <!-- Service Information -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
             <div class="flex items-center mb-6">
-              <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-blue-600">info</span>
+              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+                <IconMoodHeart class="text-blue-600" :size="isMobile ? 18 : undefined"/>
               </div>
               <div class="ml-3">
                 <h3 class="font-semibold text-slate-900">Informasi Layanan</h3>
-                <p class="text-slate-600">Detail teknis layanan</p>
+                <p class="text-xs sm:text-base text-slate-600">Detail teknis layanan</p>
               </div>
             </div>
 

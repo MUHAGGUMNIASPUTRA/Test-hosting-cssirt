@@ -1,6 +1,9 @@
 <script setup>
+// filepath: resources/js/Pages/Admin/Dashboard.vue
+
 import { ref, computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
+import { useResponsive } from '@/Composables/useResponsive'
 
 const props = defineProps({
   stats: {
@@ -45,6 +48,8 @@ const props = defineProps({
     default: () => []
   }
 })
+
+const { isMobile } = useResponsive()
 
 const getPrioritySeverity = (priority) => {
   const severities = {
@@ -131,8 +136,8 @@ const truncateText = (text, length = 50) => {
                 <span class="font-medium">+{{ stats.incidents.thisMonth }}</span> bulan ini
               </p>
             </div>
-            <div class="w-12 h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-red-600">e911_emergency</span>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
+              <IconUrgent class="text-red-600" :size="isMobile ? 18 : undefined"/>
             </div>
           </div>
         </div>
@@ -147,8 +152,8 @@ const truncateText = (text, length = 50) => {
                 <span class="font-medium">{{ stats.incidents.critical }}</span> kritikal
               </p>
             </div>
-            <div class="w-12 h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-orange-600">data_alert</span>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
+              <IconFileAlert class="text-orange-600" :size="isMobile ? 18 : undefined"/>
             </div>
           </div>
         </div>
@@ -163,8 +168,8 @@ const truncateText = (text, length = 50) => {
                 <span class="font-medium">{{ stats.posts.draft }}</span> draft
               </p>
             </div>
-            <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-blue-600">article</span>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+              <IconArticle class="text-blue-600" :size="isMobile ? 18 : undefined"/>
             </div>
           </div>
         </div>
@@ -179,8 +184,8 @@ const truncateText = (text, length = 50) => {
                 <span class="font-medium">{{ stats.faqs.published }}</span> FAQ aktif
               </p>
             </div>
-            <div class="w-12 h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-green-600">group</span>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+              <IconUsers class="text-green-600" :size="isMobile ? 18 : undefined"/>
             </div>
           </div>
         </div>
@@ -210,16 +215,23 @@ const truncateText = (text, length = 50) => {
               >
                 <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                   <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2 mb-2">
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                      <div class="flex items-center gap-2">
+                        <Tag
+                          :value="incident.case_id"
+                          severity="secondary"
+                          size="small"
+                          class="font-mono !text-slate-500"
+                        />
+                        <Tag
+                          :value="incident.priority"
+                          :severity="getPrioritySeverity(incident.priority)"
+                          size="small"
+                        />
+                      </div>
                       <Tag
-                        :value="incident.case_id"
-                        severity="secondary"
-                        size="small"
-                        class="font-mono !text-slate-500"
-                      />
-                      <Tag
-                        :value="incident.priority"
-                        :severity="getPrioritySeverity(incident.priority)"
+                        :value="incident.status"
+                        :severity="getStatusSeverity(incident.status)"
                         size="small"
                       />
                     </div>
@@ -231,13 +243,6 @@ const truncateText = (text, length = 50) => {
                       <span>•</span>
                       <span>{{ formatDate(incident.created_at) }}</span>
                     </div>
-                  </div>
-                  <div class="flex-shrink-0">
-                    <Tag
-                      :value="incident.status"
-                      :severity="getStatusSeverity(incident.status)"
-                      size="small"
-                    />
                   </div>
                 </div>
               </div>
@@ -264,19 +269,13 @@ const truncateText = (text, length = 50) => {
               <div
                 v-for="alert in systemAlerts"
                 :key="alert.id"
-                class="flex gap-3 p-3 rounded-lg border"
+                class="flex gap-2 p-3 rounded-lg border"
                 :class="getAlertColor(alert.level)"
               >
                 <div class="flex-shrink-0 mt-0.5">
-                  <svg v-if="alert.level === 'info'" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                  </svg>
-                  <svg v-else-if="alert.level === 'warning'" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                  </svg>
-                  <svg v-else class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                  </svg>
+                  <IconInfoCircle v-if="alert.level === 'info'" class="w-4 h-4 text-blue-600" />
+                  <IconAlertCircle v-else-if="alert.level === 'warning'" class="w-4 h-4 text-yellow-600" />
+                  <IconCircleX v-else class="w-4 h-4 text-red-600" />
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="text-sm font-medium">{{ alert.title }}</p>

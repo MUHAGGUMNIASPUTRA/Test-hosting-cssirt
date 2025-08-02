@@ -1,13 +1,17 @@
 <script setup>
+// filepath: resources/js/Pages/Admin/Taxonomy/Index.vue
+
 import { ref, computed } from 'vue'
 import { Link, useForm } from '@inertiajs/vue3'
 import { useConfirm } from "primevue/useconfirm"
+import { useResponsive } from '@/Composables/useResponsive';
 
 const props = defineProps({
   categories: Array,
   tags: Array,
 })
 
+const { isMobile } = useResponsive()
 const confirm = useConfirm()
 
 // State for Dialog
@@ -121,48 +125,48 @@ const formatDate = (dateString) => {
       <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-blue-600">category</span>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+              <IconCategory class="text-blue-600" :size="isMobile ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="sm:text-base font-medium text-slate-600">Total Kategori</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ stats.totalCategories }}</p>
+              <p class="text-sm sm:text-base font-medium text-slate-600">Total Kategori</p>
+              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.totalCategories }}</p>
             </div>
           </div>
         </div>
 
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-12 h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-green-600">tag</span>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+              <IconTags class="text-green-600" :size="isMobile ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="sm:text-base font-medium text-slate-600">Total Tag</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ stats.totalTags }}</p>
+              <p class="text-sm sm:text-base font-medium text-slate-600">Total Tag</p>
+              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.totalTags }}</p>
             </div>
           </div>
         </div>
 
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-12 h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-orange-600">label</span>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
+              <IconBookmark class="text-orange-600" :size="isMobile ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="sm:text-base font-medium text-slate-600">Artikel Kategori</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ stats.totalCategoryPosts }}</p>
+              <p class="text-sm sm:text-base font-medium text-slate-600">Artikel Kategori</p>
+              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.totalCategoryPosts }}</p>
             </div>
           </div>
         </div>
 
         <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-12 h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
-              <span class="material-symbols-outlined text-purple-600">local_offer</span>
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
+              <IconTag class="text-purple-600" :size="isMobile ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="sm:text-base font-medium text-slate-600">Artikel Tag</p>
-              <p class="text-xl sm:text-2xl font-bold text-slate-900">{{ stats.totalTagPosts }}</p>
+              <p class="text-sm sm:text-base font-medium text-slate-600">Artikel Tag</p>
+              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.totalTagPosts }}</p>
             </div>
           </div>
         </div>
@@ -176,7 +180,7 @@ const formatDate = (dateString) => {
             <div class="flex items-center justify-between">
               <div class="flex items-center">
                 <div class="w-10 h-10 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-                  <span class="material-symbols-outlined text-blue-600 !text-xl">category</span>
+                  <IconCategory class="text-blue-600" size="18"/>
                 </div>
                 <h3 class="ml-3 font-bold text-slate-900">
                   Kategori ({{ stats.totalCategories }})
@@ -189,7 +193,7 @@ const formatDate = (dateString) => {
                 class="px-4 py-2"
               >
                 <template #default>
-                  <span class="material-symbols-outlined">add</span>
+                  <IconPlus size="16" />
                   Tambah Kategori
                 </template>
               </Button>
@@ -229,24 +233,20 @@ const formatDate = (dateString) => {
 
               <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
                 <template #body="{ data }">
-                  <div class="flex items-center justify-end space-x-2">
+                  <div class="flex items-center justify-end">
                     <button
                       @click="openDialog('Kategori', data)"
                       class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                       title="Edit"
                     >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
+                      <IconEdit size="14" />
                     </button>
                     <button
                       @click="deleteItem('Kategori', data)"
                       class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       title="Hapus"
                     >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
+                      <IconTrash size="14" />
                     </button>
                   </div>
                 </template>
@@ -258,7 +258,7 @@ const formatDate = (dateString) => {
           <!-- Empty State for Categories -->
           <div v-else class="text-center py-12">
             <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span class="material-symbols-outlined text-blue-400 !text-2xl">category</span>
+              <IconCategory class="text-blue-300"/>
             </div>
             <h3 class="font-medium text-slate-900 mb-2">Belum Ada Kategori</h3>
             <p class="text-slate-500 mb-6">Tambah kategori untuk mengorganisir artikel</p>
@@ -271,7 +271,7 @@ const formatDate = (dateString) => {
             <div class="flex items-center justify-between">
               <div class="flex items-center">
                 <div class="w-10 h-10 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-                  <span class="material-symbols-outlined text-green-600 !text-xl">tag</span>
+                  <IconTags class="text-green-600" size="18"/>
                 </div>
                 <h3 class="ml-3 font-bold text-slate-900">
                   Tag ({{ stats.totalTags }})
@@ -284,7 +284,7 @@ const formatDate = (dateString) => {
                 class="px-4 py-2"
               >
                 <template #default>
-                  <span class="material-symbols-outlined">add</span>
+                  <IconPlus size="16" />
                   Tambah Tag
                 </template>
               </Button>
@@ -324,24 +324,20 @@ const formatDate = (dateString) => {
 
               <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
                 <template #body="{ data }">
-                  <div class="flex items-center justify-end space-x-2">
+                  <div class="flex items-center justify-end">
                     <button
                       @click="openDialog('Tag', data)"
                       class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                       title="Edit"
                     >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
+                      <IconEdit size="14" />
                     </button>
                     <button
                       @click="deleteItem('Tag', data)"
                       class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       title="Hapus"
                     >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
+                      <IconTrash size="14" />
                     </button>
                   </div>
                 </template>
@@ -353,7 +349,7 @@ const formatDate = (dateString) => {
           <!-- Empty State for Tags -->
           <div v-else class="text-center py-12">
             <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span class="material-symbols-outlined text-green-400 !text-2xl">tag</span>
+              <IconTags class="text-green-300"/>
             </div>
             <h3 class="font-medium text-slate-900 mb-2">Belum Ada Tag</h3>
             <p class="text-slate-500 mb-6">Tambah tag untuk mengelompokkan artikel</p>
@@ -374,17 +370,18 @@ const formatDate = (dateString) => {
           <!-- Header -->
           <div class="p-6 border-b border-slate-200">
             <div class="flex items-center">
-              <div class="w-12 h-12 rounded-lg flex items-center justify-center"
+              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center"
                    :class="currentType === 'Kategori'
                      ? 'bg-blue-50 border border-blue-200'
                      : 'bg-green-50 border border-green-200'">
                 <span class="material-symbols-outlined"
                       :class="currentType === 'Kategori' ? 'text-blue-600' : 'text-green-600'">
-                  {{ currentType === 'Kategori' ? 'category' : 'sell' }}
+                  <IconCategory v-if="currentType === 'Kategori'" :size="isMobile ? 18 : undefined" />
+                  <IconTags v-else :size="isMobile ? 18 : undefined" />
                 </span>
               </div>
               <div class="ml-3">
-                <h3 class="text-lg font-semibold text-slate-900">
+                <h3 class="sm:text-lg font-semibold text-slate-900">
                   {{ isEditing ? 'Edit' : 'Tambah' }} {{ currentType }}
                 </h3>
                 <p class="text-sm text-slate-500">
@@ -434,9 +431,8 @@ const formatDate = (dateString) => {
                 :loading="form.processing"
               >
                 <template #default>
-                  <span class="material-symbols-outlined !text-xl/4" :class="{ 'animate-spin': form.processing }">
-                    {{ form.processing ? 'progress_activity' : 'save' }}
-                  </span>
+                  <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
+                  <IconDeviceFloppy v-else size="16"/>
                   {{ form.processing ? 'Menyimpan...' : (isEditing ? 'Update' : 'Simpan') }}
                 </template>
               </Button>

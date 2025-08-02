@@ -3,6 +3,7 @@
 
 import { ref, computed, watch } from 'vue'
 import { Link, useForm } from '@inertiajs/vue3'
+import { useResponsive } from '@/Composables/useResponsive'
 
 const props = defineProps({
   service: {
@@ -10,6 +11,8 @@ const props = defineProps({
     default: null
   }
 })
+
+const { isMobile } = useResponsive()
 
 // Determine if we're editing or creating
 const isEditing = computed(() => !!props.service)
@@ -114,7 +117,7 @@ watch(() => form.icon, filterIconSuggestions)
 <template>
   <AdminLayout :title="pageTitle">
     <form @submit.prevent="submit">
-      <div class="space-y-6">
+      <div class="space-y-4 sm:space-y-6">
         <!-- Header Section -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -136,39 +139,39 @@ watch(() => form.icon, filterIconSuggestions)
                 :href="route('admin.services.index')"
                 class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
               >
-                <span class="material-symbols-outlined !text-xl">west</span>
+                <IconArrowLeft size="16" />
                   Kembali
               </Link>
               <button
+                v-if="!isMobile"
                 type="submit"
                 :disabled="form.processing"
                 class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
               >
-                <span class="material-symbols-outlined !text-xl" :class="{ 'animate-spin': form.processing }">
-                  {{ form.processing ? 'progress_activity' : 'save' }}
-                </span>
+                <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
+                <IconDeviceFloppy v-else size="16"/>
                 {{ form.processing ? 'Menyimpan...' : submitButtonText }}
               </button>
             </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           <!-- Main Content -->
-          <div class="lg:col-span-2 space-y-6">
+          <div class="lg:col-span-2 space-y-4 sm:space-y-6">
             <!-- Service Information -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-              <div class="flex items-center mb-6">
-                <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-                  <span class="material-symbols-outlined text-blue-600">volunteer_activism</span>
+              <div class="flex items-center mb-4 sm:mb-6">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+                  <IconHeart class="text-blue-600" :size="isMobile ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
                   <h3 class="font-semibold text-slate-900">Informasi Layanan</h3>
-                  <p class="text-slate-600">Data dasar layanan yang akan ditampilkan</p>
+                  <p class="text-xs sm:text-base text-slate-600">Data dasar layanan yang akan ditampilkan</p>
                 </div>
               </div>
 
-              <div class="space-y-6">
+              <div class="space-y-4 sm:space-y-6">
                 <div>
                   <label for="name" class="block font-medium text-slate-700 mb-2">
                     Nama Layanan <span class="text-red-500">*</span>
@@ -293,20 +296,20 @@ watch(() => form.icon, filterIconSuggestions)
           </div>
 
           <!-- Sidebar -->
-          <div class="space-y-6">
+          <div class="space-y-4 sm:space-y-6">
             <!-- Status Management -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-              <div class="flex items-center mb-6">
-                <div class="w-12 h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-                  <span class="material-symbols-outlined text-green-600">toggle_on</span>
+              <div class="flex items-center mb-4 sm:mb-6">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+                  <IconToggleRight class="text-green-600" :size="isMobile ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
                   <h3 class="font-semibold text-slate-900">Status Layanan</h3>
-                  <p class="text-slate-600">Kontrol visibilitas layanan</p>
+                  <p class="text-xs sm:text-base text-slate-600">Kontrol visibilitas layanan</p>
                 </div>
               </div>
 
-              <div class="space-y-4">
+              <div>
                 <div class="flex items-center justify-between">
                   <label for="is_active" class="font-medium text-slate-700">
                     Status Aktif
@@ -324,12 +327,12 @@ watch(() => form.icon, filterIconSuggestions)
 
             <!-- Preview Card -->
             <div class="bg-slate-50 rounded-xl border border-slate-200 p-6">
-              <h3 class="font-medium text-slate-700 mb-4">
+              <h3 class="font-semibold text-slate-700 mb-4">
                 {{ isEditing ? 'Ringkasan Perubahan' : 'Preview Layanan' }}
               </h3>
-              <div class="space-y-3">
+              <div class="space-y-4">
                 <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div class="w-10 h-10 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
                     <span v-if="form.icon" class="material-symbols-outlined text-blue-600 !text-xl">{{ form.icon }}</span>
                     <span v-else class="material-symbols-outlined text-blue-600 !text-xl">volunteer_activism</span>
                   </div>
@@ -361,9 +364,8 @@ watch(() => form.icon, filterIconSuggestions)
                 :disabled="form.processing"
                 class="bg-blue-600 hover:bg-blue-800 text-white w-full inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
               >
-                <span class="material-symbols-outlined !text-xl" :class="{ 'animate-spin': form.processing }">
-                  {{ form.processing ? 'progress_activity' : 'save' }}
-                </span>
+                <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
+                <IconDeviceFloppy v-else size="16"/>
                 {{ form.processing ? 'Menyimpan...' : submitButtonText }}
               </button>
             </div>

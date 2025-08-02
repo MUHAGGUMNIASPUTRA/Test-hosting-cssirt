@@ -1,8 +1,12 @@
 <script setup>
+// filepath: resources/js/Layouts/Admin/AdminLayout.vue
+
 import { ref, onMounted, nextTick, watch } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3'
 import { useToast } from 'primevue/usetoast'
 import Toast from 'primevue/toast'
+
+import { IconWorldCheck, IconLayoutBoard, IconUrgent, IconMailExclamation, IconBellPlus, IconNews, IconArticle, IconTextPlus, IconBookmarks, IconHeartHandshake, IconHelp, IconSpeakerphone, IconUsers } from '@tabler/icons-vue';
 
 defineProps({
   title: String,
@@ -17,70 +21,70 @@ const userMenuOpen = ref(false)
 const sidebarItems = ref([
   {
     label: 'Website',
-    icon: 'captive_portal',
+    icon: IconWorldCheck,
     route: 'landing',
   },
   { separator: true },
   {
     label: 'Dashboard',
-    icon: 'empty_dashboard',
+    icon: IconLayoutBoard,
     route: 'admin.dashboard',
   },
   {
     label: 'Insiden',
-    icon: 'e911_emergency',
+    icon: IconUrgent,
     items: [
       {
         label: 'Daftar Insiden',
-        icon: 'problem',
+        icon: IconMailExclamation,
         route: 'admin.incidents.index'
       },
       {
         label: 'Lapor Insiden Baru',
-        icon: 'notification_add',
+        icon: IconBellPlus,
         route: 'admin.incidents.create'
       },
     ],
   },
   {
     label: 'Konten',
-    icon: 'full_coverage',
+    icon: IconNews,
     items: [
       {
         label: 'Daftar Artikel',
-        icon: 'article',
+        icon: IconArticle,
         route: 'admin.posts.index'
       },
       {
         label: 'Tambah Artikel',
-        icon: 'post_add',
+        icon: IconTextPlus,
         route: 'admin.posts.create'
       },
       {
         label: 'Kategori & Tag',
-        icon: 'bookmarks',
+        icon: IconBookmarks,
         route: 'admin.taxonomy.index'
       }
     ],
   },
   {
     label: 'Layanan',
-    icon: 'volunteer_activism',
+    icon: IconHeartHandshake,
     route: 'admin.services.index',
   },
   {
     label: 'FAQ',
-    icon: 'help',
+    icon: IconHelp,
     route: 'admin.faqs.index',
   },
   {
     label: 'Pengumuman',
-    icon: 'campaign',
+    icon: IconSpeakerphone,
     route: 'admin.announcements.index',
   },
   {
     label: 'Pengguna',
-    icon: 'group',
+    icon: IconUsers,
     route: 'admin.users.index',
     visible: () => page.props.auth.user?.role === 'admin'
   },
@@ -214,9 +218,7 @@ watch(
       <div class="flex items-center justify-between h-16 px-6 bg-gradient-to-r from-indigo-600 to-blue-600">
         <div class="flex items-center">
           <div class="h-9 w-9 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center mr-1">
-            <svg class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-            </svg>
+            <IconShieldCheckFilled size="16" class="text-white"/>
           </div>
           <div class="ml-3">
             <h1 class="font-bold text-white">CSIRT Bojonegoro</h1>
@@ -241,16 +243,16 @@ watch(
                 v-if="item.route && !item.items"
                 :href="route(item.route)"
                 @click="closeSidebarOnMobile"
-                class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors group"
+                class="flex items-center px-3 py-2 font-medium rounded-lg transition-colors group"
                 :class="isCurrentRoute(item.route) ? 'bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
               >
-                <span class="material-symbols-outlined icon-wght-300 mr-3" :class="[isCurrentRoute(item.route) ? 'text-indigo-500' : 'text-slate-400']">{{ item.icon }}</span>{{ item.label }}
+                <component :is="item.icon" size="18" stroke-width="1.75" class="mr-3" :class="[isCurrentRoute(item.route) ? 'text-indigo-500' : 'text-slate-400']" />{{ item.label }}
               </Link>
 
               <!-- Menu with subitems -->
               <div v-else-if="item.items && item.items.length > 0" class="space-y-1">
-                <div class="flex items-center px-3 py-2 text-sm font-medium text-slate-600">
-                  <span class="material-symbols-outlined icon-wght-300 mr-3 text-slate-400">{{ item.icon }}</span>{{ item.label }}
+                <div class="flex items-center px-3 py-2 font-medium text-slate-600">
+                  <component :is="item.icon" size="18" stroke-width="1.75" class="mr-3 text-slate-400" />{{ item.label }}
                 </div>
                 <div class="ml-6 space-y-1">
                   <Link
@@ -258,17 +260,17 @@ watch(
                     :key="subItem.label"
                     :href="route(subItem.route)"
                     @click="closeSidebarOnMobile"
-                    class="flex items-center px-3 py-2 text-sm rounded-md transition-colors"
+                    class="flex items-center px-3 py-2 rounded-md transition-colors"
                     :class="isCurrentRoute(subItem.route) ? 'bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500 font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
                   >
-                    <span class="material-symbols-outlined icon-wght-300 mr-3" :class="[isCurrentRoute(subItem.route) ? 'text-indigo-500' : 'text-slate-400']">{{ subItem.icon }}</span>{{ subItem.label }}
+                    <component :is="subItem.icon" size="18" stroke-width="1.75" class="mr-3" :class="[isCurrentRoute(subItem.route) ? 'text-indigo-500' : 'text-slate-400']" />{{ subItem.label }}
                   </Link>
                 </div>
               </div>
 
               <!-- Single menu item without route (disabled) -->
-              <div v-else-if="!item.route" class="flex items-center px-3 py-2 text-sm font-medium text-slate-400 cursor-not-allowed">
-                <span class="material-symbols-outlined icon-wght-300 mr-3">{{ item.icon }}</span>{{ item.label }}
+              <div v-else-if="!item.route" class="flex items-center px-3 py-2 font-medium text-slate-400 cursor-not-allowed">
+                <component :is="item.icon" size="18" stroke-width="1.75" class="mr-3" />{{ item.label }}
                 <span class="ml-auto text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded">Soon</span>
               </div>
 

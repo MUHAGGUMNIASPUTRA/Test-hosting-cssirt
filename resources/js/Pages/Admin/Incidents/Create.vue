@@ -1,6 +1,9 @@
 <script setup>
+// filepath: resources/js/Pages/Admin/Incidents/Create.vue
+
 import { Link, useForm } from '@inertiajs/vue3'
 import { computed } from 'vue'
+import { useResponsive } from '@/Composables/useResponsive';
 
 const props = defineProps({
   incident: {
@@ -10,6 +13,8 @@ const props = defineProps({
   incidentTypes: Array,
   staffUsers: Array,
 })
+
+const { isMobile } = useResponsive();
 
 // Determine if editing or creating
 const isEditing = computed(() => !!props.incident)
@@ -182,7 +187,7 @@ const formatDateTime = (date) => {
                 :href="route('admin.incidents.index')"
                 class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
               >
-                <span class="material-symbols-outlined !text-xl">west</span>
+                <IconArrowLeft size="16"/>
                   Kembali
               </Link>
               <button
@@ -190,9 +195,8 @@ const formatDateTime = (date) => {
                 :disabled="form.processing"
                 class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
               >
-                <span class="material-symbols-outlined !text-xl" :class="{ 'animate-spin': form.processing }">
-                  {{ form.processing ? 'progress_activity' : 'save' }}
-                </span>
+                <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
+                <IconDeviceFloppy v-else size="16"/>
                 {{ form.processing ? 'Menyimpan...' : submitButtonText }}
               </button>
             </div>
@@ -205,8 +209,8 @@ const formatDateTime = (date) => {
             <!-- Reporter Information -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
               <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-                  <span class="material-symbols-outlined text-blue-600">record_voice_over</span>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+                  <IconUserExclamation class="text-blue-600" :size="isMobile ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
                   <h3 class="font-semibold text-slate-900">Informasi Pelapor</h3>
@@ -272,8 +276,8 @@ const formatDateTime = (date) => {
             <!-- Incident Details -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
               <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-12 h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
-                  <span class="material-symbols-outlined text-red-600">e911_emergency</span>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
+                  <IconUrgent class="text-red-600" :size="isMobile ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
                   <h3 class="font-semibold text-slate-900">Detail Insiden</h3>
@@ -349,8 +353,8 @@ const formatDateTime = (date) => {
             <!-- Status Management -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
               <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-12 h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-                  <span class="material-symbols-outlined text-green-600">markdown_paste</span>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+                  <IconClipboardList class="text-green-600" :size="isMobile ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
                   <h3 class="font-semibold text-slate-900">Manajemen</h3>
@@ -451,9 +455,8 @@ const formatDateTime = (date) => {
                 :disabled="form.processing"
                 class="bg-blue-600 hover:bg-blue-800 text-white w-full inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
               >
-                <span class="material-symbols-outlined !text-xl" :class="{ 'animate-spin': form.processing }">
-                  {{ form.processing ? 'progress_activity' : 'save' }}
-                </span>
+                <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
+                <IconDeviceFloppy v-else size="16"/>
                 {{ form.processing ? 'Menyimpan...' : submitButtonText }}
               </button>
             </div>

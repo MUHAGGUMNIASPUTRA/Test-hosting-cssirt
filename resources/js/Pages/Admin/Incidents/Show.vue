@@ -1,10 +1,15 @@
 <script setup>
+// filepath: resources/js/Pages/Admin/Incidents/Show.vue
+
 import { Link, useForm } from '@inertiajs/vue3';
+import { useResponsive } from '@/Composables/useResponsive';
 
 const props = defineProps({
   incident: Object,
   staffUsers: Array,
 });
+
+const { isMobile } = useResponsive();
 
 const logForm = useForm({
   log_message: '',
@@ -165,14 +170,14 @@ const getLogIconColor = (index, total) => {
               :href="route('admin.incidents.index')"
               class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
             >
-              <span class="material-symbols-outlined !text-xl">west</span>
+              <IconArrowLeft size="16"/>
                 Kembali
             </Link>
             <Link
               :href="route('admin.incidents.edit', incident.id)"
               class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
             >
-              <span class="material-symbols-outlined !text-xl">edit_notifications</span>
+              <IconEdit size="16"/>
               Edit Insiden
             </Link>
           </div>
@@ -185,12 +190,12 @@ const getLogIconColor = (index, total) => {
           <!-- Reporter Information -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
             <div class="flex items-center mb-4 sm:mb-6">
-              <div class="w-12 h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-blue-600">record_voice_over</span>
+              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+                <IconUserExclamation class="text-blue-600" :size="isMobile ? 18 : undefined"/>
               </div>
               <div class="ml-3">
                 <h3 class="font-semibold text-slate-900">Informasi Pelapor</h3>
-                <p class="text-slate-600">Data kontak pelapor insiden</p>
+                <p class="text-xs sm:text-base text-slate-600">Data kontak pelapor insiden</p>
               </div>
             </div>
 
@@ -221,12 +226,12 @@ const getLogIconColor = (index, total) => {
           <!-- Incident Details -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
             <div class="flex items-center mb-4 sm:mb-6">
-              <div class="w-12 h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-red-600">e911_emergency</span>
+              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
+                <IconUrgent class="text-red-600" :size="isMobile ? 18 : undefined"/>
               </div>
               <div class="ml-3">
                 <h3 class="font-semibold text-slate-900">Detail Insiden</h3>
-                <p class="text-slate-600">Informasi lengkap tentang insiden yang terjadi</p>
+                <p class="text-xs sm:text-base text-slate-600">Informasi lengkap tentang insiden yang terjadi</p>
               </div>
             </div>
 
@@ -287,12 +292,12 @@ const getLogIconColor = (index, total) => {
           <!-- Management Form -->
           <!-- <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
             <div class="flex items-center mb-6">
-              <div class="w-12 h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-green-600">markdown_paste</span>
+              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+                <IconClipboardList class="text-green-600" :size="isMobile ? 18 : undefined"/>
               </div>
               <div class="ml-3">
                 <h3 class="font-semibold text-slate-900">Manajemen Insiden</h3>
-                <p class="text-slate-600">Update status dan penugasan insiden</p>
+                <p class="text-xs sm:text-base text-slate-600">Update status dan penugasan insiden</p>
               </div>
             </div>
 
@@ -396,13 +401,13 @@ const getLogIconColor = (index, total) => {
 
           <!-- Timeline/Logs -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <div class="flex items-center mb-4 sm:mb-6">
-              <div class="w-12 h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
-                <span class="material-symbols-outlined text-purple-600">timeline</span>
+            <div class="flex items-center mb-6">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
+                <IconTimeline class="text-purple-600" :size="isMobile ? 18 : undefined"/>
               </div>
               <div class="ml-3">
                 <h3 class="font-semibold text-slate-900">Riwayat Penanganan</h3>
-                <p class="text-slate-600">Log aktivitas penanganan</p>
+                <p class="text-xs sm:text-base text-slate-600">Log aktivitas penanganan</p>
               </div>
             </div>
 
@@ -436,8 +441,8 @@ const getLogIconColor = (index, total) => {
             </div>
 
             <div v-else class="text-center py-8 mb-6">
-              <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <span class="material-symbols-outlined text-slate-400">history</span>
+              <div class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <IconHistory class="text-slate-400" :size="isMobile ? 18 : undefined"/>
               </div>
               <p class="text-slate-500">Belum ada riwayat penanganan</p>
               <p class="text-slate-400 mt-1">Log aktivitas akan muncul di sini</p>
@@ -468,9 +473,8 @@ const getLogIconColor = (index, total) => {
                 :disabled="logForm.processing"
                 class="bg-blue-600 hover:bg-blue-800 text-white w-full inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
               >
-                <span class="material-symbols-outlined !text-xl" :class="{ 'animate-spin': logForm.processing }">
-                  {{ logForm.processing ? 'progress_activity' : 'note_stack' }}
-                </span>
+                <IconLoader3 v-if="logForm.processing" class="animate-spin" size="16"/>
+                <IconSticker2 v-else :size="16" />
                 {{ logForm.processing ? 'Menambahkan...' : 'Tambah Catatan' }}
               </button>
             </form>
