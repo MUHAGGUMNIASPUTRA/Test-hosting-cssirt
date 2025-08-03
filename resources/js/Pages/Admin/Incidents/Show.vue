@@ -350,9 +350,8 @@ const getLogIconColor = (index, total) => {
                   :disabled="managementForm.processing"
                   class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
                 >
-                  <span class="material-symbols-outlined !text-xl" :class="{ 'animate-spin': managementForm.processing }">
-                    {{ managementForm.processing ? 'progress_activity' : 'save' }}
-                  </span>
+                  <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
+                  <IconDeviceFloppy v-else size="16"/>
                   {{ managementForm.processing ? 'Menyimpan...' : 'Update Status' }}
                 </button>
               </div>

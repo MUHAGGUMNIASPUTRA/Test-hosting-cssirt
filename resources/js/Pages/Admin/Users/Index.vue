@@ -340,7 +340,7 @@ const serverSideConfig = computed(() => {
         >
           <template #empty>
             <div class="text-center py-12">
-              <span class="material-symbols-outlined text-slate-300 mb-4 !text-5xl">group</span>
+              <IconUsers class="text-slate-300 mx-auto mb-4" size="30"/>
               <p class="text-slate-500 text-lg font-medium">
                 {{ searchQuery || selectedRole ? 'Tidak ada pengguna yang sesuai filter' : 'Belum ada pengguna yang terdaftar' }}
               </p>

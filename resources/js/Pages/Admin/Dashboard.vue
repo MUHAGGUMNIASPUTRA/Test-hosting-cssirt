@@ -162,7 +162,7 @@ const truncateText = (text, length = 50) => {
         <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm sm:text-base font-medium text-slate-600">Artikel Dipublikasi</p>
+              <p class="text-sm sm:text-base font-medium text-slate-600">Artikel Diterbitkan</p>
               <p class="text-xl sm:text-3xl font-bold text-slate-900">{{ stats.posts.published }}</p>
               <p class="text-xs sm:text-sm text-slate-500 mt-1">
                 <span class="font-medium">{{ stats.posts.draft }}</span> draft

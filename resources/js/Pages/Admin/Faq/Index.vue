@@ -358,7 +358,7 @@ const answerWordCount = computed(() => {
         >
           <template #empty>
             <div class="text-center py-12">
-              <span class="material-symbols-outlined text-slate-300 mb-4 !text-5xl">help</span>
+              <IconHelp class="text-slate-300 mx-auto mb-4" size="30"/>
               <p class="text-slate-500 text-lg font-medium">
                 {{ searchQuery || selectedCategory || selectedStatus ? 'Tidak ada FAQ yang sesuai filter' : 'Belum ada FAQ yang dibuat' }}
               </p>
@@ -395,7 +395,7 @@ const answerWordCount = computed(() => {
           <Column field="is_published" header="Status" class="hidden sm:table-cell">
             <template #body="{ data }">
               <Tag
-                :value="data.is_published ? 'Dipublikasi' : 'Draft'"
+                :value="data.is_published ? 'Diterbitkan' : 'Draft'"
                 :severity="getStatusSeverity(data.is_published)"
                 size="small"
               />

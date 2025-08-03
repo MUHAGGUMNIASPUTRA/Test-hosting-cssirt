@@ -371,11 +371,8 @@ const formatDate = (dateString) => {
           <div class="p-6 border-b border-slate-200">
             <div class="flex items-center">
               <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center"
-                   :class="currentType === 'Kategori'
-                     ? 'bg-blue-50 border border-blue-200'
-                     : 'bg-green-50 border border-green-200'">
-                <span class="material-symbols-outlined"
-                      :class="currentType === 'Kategori' ? 'text-blue-600' : 'text-green-600'">
+                   :class="currentType === 'Kategori' ? 'bg-blue-50 border border-blue-200' : 'bg-green-50 border border-green-200'">
+                <span :class="currentType === 'Kategori' ? 'text-blue-600' : 'text-green-600'">
                   <IconCategory v-if="currentType === 'Kategori'" :size="isMobile ? 18 : undefined" />
                   <IconTags v-else :size="isMobile ? 18 : undefined" />
                 </span>

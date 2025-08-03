@@ -161,7 +161,7 @@ function triggerFileInput() {
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h2 class="text-xl sm:text-2xl font-bold text-slate-900">{{ isEditMode ? 'Edit Artikel' : 'Tambah Artikel Baru' }}</h2>
-              <p class="text-slate-600">{{ isEditMode ? 'Perbarui informasi artikel' : 'Buat artikel baru untuk dipublikasikan' }}</p>
+              <p class="text-slate-600">{{ isEditMode ? 'Perbarui informasi artikel' : 'Buat artikel baru untuk diterbitkankan' }}</p>
             </div>
             <div class="flex items-center space-x-3">
               <Link
@@ -172,6 +172,7 @@ function triggerFileInput() {
                   Kembali
               </Link>
               <button
+                v-if="!isMobile"
                 type="submit"
                 :disabled="form.processing"
                 class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
@@ -263,9 +264,8 @@ function triggerFileInput() {
                       ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-sm'
                       : 'bg-gray-100 text-gray-400 cursor-not-allowed'"
                   >
-                    <span class="material-symbols-outlined !text-sm" :class="{ 'animate-spin': isGeneratingExcerpt }">
-                      {{ isGeneratingExcerpt ? 'autorenew' : 'auto_awesome' }}
-                    </span>
+                    <IconLoader3 v-if="isGeneratingExcerpt" class="animate-spin" size="14"/>
+                    <IconSparkles v-else size="14"/>
                     {{ isGeneratingExcerpt ? 'Membuat...' : 'Buat Ringkasan' }}
                   </button>
                 </div>
@@ -358,7 +358,7 @@ function triggerFileInput() {
                         type="button"
                         @click="removeImage"
                         class="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-500 transition-colors">
-                        <span class="material-symbols-outlined !text-sm">close</span>
+                        <IconX class="text-white" size="10"/>
                       </button>
                     </div>
                     <p class="text-xs text-gray-500 mt-1">
@@ -384,7 +384,6 @@ function triggerFileInput() {
                         class="flex flex-col items-center justify-center py-6 px-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-600 transition-colors cursor-pointer"
                         @click="triggerFileInput"
                       >
-                        <!-- <span class="material-symbols-outlined text-gray-400 text-2xl mb-2">add_photo_alternate</span> -->
                         <IconPhotoSearch class="text-gray-400 mb-2" :size="isMobile ? 18 : undefined"/>
                         <p class="text-sm text-gray-600 text-center">
                           {{ isEditMode ? 'Pilih gambar baru untuk mengganti' : 'Drag & drop atau klik untuk memilih gambar' }}
@@ -458,9 +457,8 @@ function triggerFileInput() {
                 :disabled="form.processing"
                 class="bg-blue-600 hover:bg-blue-800 text-white w-full inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
               >
-                <span class="material-symbols-outlined !text-xl" :class="{ 'animate-spin': form.processing }">
-                  {{ form.processing ? 'progress_activity' : 'save' }}
-                </span>
+                <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
+                <IconDeviceFloppy v-else size="16"/>
                 {{ form.processing ? 'Menyimpan...' : isEditMode ? 'Update Artikel' : 'Simpan Artikel' }}
               </button>
             </div>

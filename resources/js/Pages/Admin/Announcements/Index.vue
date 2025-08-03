@@ -409,7 +409,7 @@ const contentWordCount = computed(() => {
         >
           <template #empty>
             <div class="text-center py-12">
-              <span class="material-symbols-outlined text-slate-300 mb-4 !text-5xl">campaign</span>
+              <IconSpeakerphone class="text-slate-300 mx-auto mb-4" size="30"/>
               <p class="text-slate-500 text-lg font-medium">
                 {{ searchQuery || selectedLevel || selectedStatus ? 'Tidak ada pengumuman yang sesuai filter' : 'Belum ada pengumuman yang dibuat' }}
               </p>
@@ -431,8 +431,8 @@ const contentWordCount = computed(() => {
                     {{ truncateText(data.content, 120) }}
                   </p>
 
-                  <div class="text-xs text-slate-500">
-                    <span class="material-symbols-outlined text-slate-400 !text-base mb-0.5 mr-1">schedule</span>
+                  <div class="text-xs text-slate-500 flex items-center gap-1 mt-1">
+                    <IconClock size="14" stroke-width="1.5"/>
                     <span>{{ formatDate(data.start_date) }} - {{ formatDate(data.end_date) }}</span>
                   </div>
                 </div>

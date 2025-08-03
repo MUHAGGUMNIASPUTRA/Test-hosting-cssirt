@@ -191,6 +191,7 @@ const formatDateTime = (date) => {
                   Kembali
               </Link>
               <button
+                v-if="!isMobile"
                 type="submit"
                 :disabled="form.processing"
                 class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"

@@ -161,9 +161,7 @@ const serverSideConfig = computed(() => {
           <div class="bg-gradient-to-r from-red-500 to-red-600 px-6 py-4">
             <div class="flex items-center">
               <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.996-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                </svg>
+                <IconAlertTriangle class="text-white" />
               </div>
               <div class="ml-3">
                 <h3 class="text-lg font-semibold text-white">Konfirmasi Penghapusan</h3>
@@ -176,9 +174,7 @@ const serverSideConfig = computed(() => {
           <div class="p-6">
             <div class="text-center mb-6">
               <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
+                <IconTrash class="text-red-500" />
               </div>
               <p class="text-slate-700 mb-2">
                 Apakah Anda yakin ingin menghapus artikel berikut?
@@ -360,7 +356,7 @@ const serverSideConfig = computed(() => {
             </template>
           </Column>
 
-          <Column field="published_at" header="Dipublikasi" class="hidden sm:table-cell">
+          <Column field="published_at" header="Diterbitkan" class="hidden sm:table-cell">
             <template #body="{ data }">
               <span class="text-sm text-slate-500">{{ formatDate(data.published_at || data.created_at) }}</span>
             </template>
