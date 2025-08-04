@@ -153,18 +153,19 @@ const serverSideConfig = computed(() => {
       v-model:visible="showDeleteDialog"
       :modal="true"
       :closable="false"
-      class="w-full max-w-md"
+      class="w-full max-w-lg"
+      :style="{ width: isMobile ? '95vw' : undefined }"
     >
       <template #container="{ closeCallback }">
         <div class="bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
           <!-- Header -->
-          <div class="bg-gradient-to-r from-red-500 to-red-600 px-6 py-4">
+          <div class="bg-gradient-to-r from-red-500 to-red-600 p-6">
             <div class="flex items-center">
               <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
                 <IconAlertTriangle class="text-white" />
               </div>
               <div class="ml-3">
-                <h3 class="text-lg font-semibold text-white">Konfirmasi Penghapusan</h3>
+                <h3 class="text-lg/6 font-semibold text-white">Konfirmasi Penghapusan</h3>
                 <p class="text-red-100 text-sm">Tindakan ini tidak dapat dibatalkan</p>
               </div>
             </div>
@@ -173,12 +174,7 @@ const serverSideConfig = computed(() => {
           <!-- Content -->
           <div class="p-6">
             <div class="text-center mb-6">
-              <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <IconTrash class="text-red-500" />
-              </div>
-              <p class="text-slate-700 mb-2">
-                Apakah Anda yakin ingin menghapus artikel berikut?
-              </p>
+              <p class="text-slate-700 mb-6">Apakah Anda yakin ingin menghapus artikel berikut?</p>
               <div class="bg-slate-50 border border-slate-100 rounded-lg p-3 text-left">
                 <div class="">
                   <div class="flex justify-between items-center mb-1">
@@ -197,24 +193,25 @@ const serverSideConfig = computed(() => {
                   </div>
                 </div>
               </div>
-              <p class="text-sm text-red-600 mt-3">
+              <p class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg py-4 mt-3">
                 <strong>Peringatan:</strong> Data yang dihapus tidak dapat dikembalikan
               </p>
             </div>
 
             <!-- Actions -->
-            <div class="flex items-center justify-end space-x-3">
+            <div class="flex items-center justify-between space-x-3">
               <Button
                 @click="closeCallback"
+                icon="pi pi-times"
                 label="Batal"
-                severity="secondary"
-                size="small"
+                severity="info"
+                variant="outlined"
               />
               <Button
                 @click="deletePost"
-                label="Ya, Hapus Artikel"
+                icon="pi pi-trash"
+                label="Hapus"
                 severity="danger"
-                size="small"
               />
             </div>
           </div>
@@ -222,17 +219,17 @@ const serverSideConfig = computed(() => {
       </template>
     </Dialog>
 
-    <div class="space-y-4 sm:space-y-6">
+    <div class="space-y-4 lg:space-y-6">
       <!-- Header Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Daftar Artikel</h2>
+            <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Daftar Artikel</h2>
             <p class="text-slate-600">Kelola artikel dan konten website</p>
           </div>
           <Link
             :href="route('admin.posts.create')"
-            class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+            class="bg-blue-600 hover:bg-blue-800 text-white w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
           >
             <IconTextPlus size="16" />
               Tambah Artikel
@@ -241,7 +238,7 @@ const serverSideConfig = computed(() => {
       </div>
 
       <!-- Filters Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-xl font-semibold text-slate-900">Filter & Pencarian</h3>
           <button
@@ -253,7 +250,7 @@ const serverSideConfig = computed(() => {
           </button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-2 gap-4">
           <div>
             <label class="block font-medium text-slate-700 mb-2">Cari Artikel</label>
             <div class="relative">
@@ -346,7 +343,7 @@ const serverSideConfig = computed(() => {
             </template>
           </Column>
 
-          <Column field="status" header="Status" class="hidden sm:table-cell">
+          <Column field="status" header="Status" class="hidden lg:table-cell">
             <template #body="{ data }">
               <Tag
                 :value="data.status === 'Published' ? 'Diterbitkan' : 'Draft'"
@@ -356,7 +353,7 @@ const serverSideConfig = computed(() => {
             </template>
           </Column>
 
-          <Column field="published_at" header="Diterbitkan" class="hidden sm:table-cell">
+          <Column field="published_at" header="Diterbitkan" class="hidden lg:table-cell">
             <template #body="{ data }">
               <span class="text-sm text-slate-500">{{ formatDate(data.published_at || data.created_at) }}</span>
             </template>

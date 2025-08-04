@@ -9,7 +9,7 @@ const props = defineProps({
   staffUsers: Array,
 });
 
-const { isMobile } = useResponsive();
+const { isDesktop } = useResponsive();
 
 const logForm = useForm({
   log_message: '',
@@ -140,12 +140,12 @@ const getLogIconColor = (index, total) => {
 
 <template>
   <AdminLayout :title="`Detail Insiden: ${incident.case_id}`">
-    <div class="space-y-4 sm:space-y-6">
+    <div class="space-y-4 lg:space-y-6">
       <!-- Header Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Detail Insiden</h2>
+            <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Detail Insiden</h2>
             <div class="flex items-center gap-3 mt-2">
               <Tag
                 :value="incident.case_id"
@@ -168,14 +168,14 @@ const getLogIconColor = (index, total) => {
           <div class="flex items-center space-x-3">
             <Link
               :href="route('admin.incidents.index')"
-              class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+              class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
             >
               <IconArrowLeft size="16"/>
                 Kembali
             </Link>
             <Link
               :href="route('admin.incidents.edit', incident.id)"
-              class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+              class="bg-blue-600 hover:bg-blue-800 text-white w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
             >
               <IconEdit size="16"/>
               Edit Insiden
@@ -184,22 +184,22 @@ const getLogIconColor = (index, total) => {
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         <!-- Main Content -->
-        <div class="lg:col-span-2 space-y-4 sm:space-y-6">
+        <div class="lg:col-span-2 space-y-4 lg:space-y-6">
           <!-- Reporter Information -->
-          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <div class="flex items-center mb-4 sm:mb-6">
-              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-                <IconUserExclamation class="text-blue-600" :size="isMobile ? 18 : undefined"/>
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+            <div class="flex items-center mb-4 lg:mb-6">
+              <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+                <IconUserExclamation class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
               </div>
               <div class="ml-3">
-                <h3 class="font-semibold text-slate-900">Informasi Pelapor</h3>
-                <p class="text-xs sm:text-base text-slate-600">Data kontak pelapor insiden</p>
+                <h3 class="text-xl/6 font-semibold text-slate-900">Informasi Pelapor</h3>
+                <p class="text-xs lg:text-sm text-slate-600">Data kontak pelapor insiden</p>
               </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
               <div>
                 <label class="block font-medium text-slate-700 mb-2">Nama Pelapor</label>
                 <div class="p-2 bg-slate-50 border border-slate-200 rounded-lg">
@@ -224,19 +224,19 @@ const getLogIconColor = (index, total) => {
           </div>
 
           <!-- Incident Details -->
-          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <div class="flex items-center mb-4 sm:mb-6">
-              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
-                <IconUrgent class="text-red-600" :size="isMobile ? 18 : undefined"/>
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+            <div class="flex items-center mb-4 lg:mb-6">
+              <div class="w-10 h-10 lg:w-12 lg:h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
+                <IconUrgent class="text-red-600" :size="!isDesktop ? 18 : undefined"/>
               </div>
               <div class="ml-3">
-                <h3 class="font-semibold text-slate-900">Detail Insiden</h3>
-                <p class="text-xs sm:text-base text-slate-600">Informasi lengkap tentang insiden yang terjadi</p>
+                <h3 class="text-xl/6 font-semibold text-slate-900">Detail Insiden</h3>
+                <p class="text-xs lg:text-sm text-slate-600">Informasi lengkap tentang insiden yang terjadi</p>
               </div>
             </div>
 
             <div class="space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
                 <div>
                   <label class="block font-medium text-slate-700 mb-2">Jenis Insiden</label>
                   <div class="p-2 bg-slate-50 border border-slate-200 rounded-lg">
@@ -288,82 +288,13 @@ const getLogIconColor = (index, total) => {
               </div>
             </div>
           </div>
-
-          <!-- Management Form -->
-          <!-- <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <div class="flex items-center mb-6">
-              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-                <IconClipboardList class="text-green-600" :size="isMobile ? 18 : undefined"/>
-              </div>
-              <div class="ml-3">
-                <h3 class="font-semibold text-slate-900">Manajemen Insiden</h3>
-                <p class="text-xs sm:text-base text-slate-600">Update status dan penugasan insiden</p>
-              </div>
-            </div>
-
-            <form @submit.prevent="submitManagement" class="space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label for="status" class="block font-medium text-slate-700 mb-2">Status</label>
-                  <Select
-                    id="status"
-                    v-model="managementForm.status"
-                    :options="statusOptions"
-                    optionLabel="label"
-                    optionValue="value"
-                    class="w-full"
-                  />
-                </div>
-
-                <div>
-                  <label for="assigned_to" class="block font-medium text-slate-700 mb-2">Ditugaskan Kepada</label>
-                  <Select
-                    id="assigned_to"
-                    v-model="managementForm.assigned_to"
-                    :options="staffUserOptions"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Pilih Staf"
-                    class="w-full"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label class="block font-medium text-slate-700 mb-3">Prioritas</label>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  <button
-                    v-for="option in priorityOptions"
-                    :key="option.value"
-                    type="button"
-                    @click="managementForm.priority = option.value"
-                    :class="getPriorityButtonClasses(option.value, managementForm.priority === option.value)"
-                  >
-                    {{ option.label }}
-                  </button>
-                </div>
-              </div>
-
-              <div class="flex justify-end">
-                <button
-                  type="submit"
-                  :disabled="managementForm.processing"
-                  class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
-                >
-                  <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
-                  <IconDeviceFloppy v-else size="16"/>
-                  {{ managementForm.processing ? 'Menyimpan...' : 'Update Status' }}
-                </button>
-              </div>
-            </form>
-          </div> -->
         </div>
 
         <!-- Sidebar -->
-        <div class="space-y-4 sm:space-y-6">
+        <div class="space-y-4 lg:space-y-6">
           <!-- Summary Card -->
-          <div class="bg-slate-50 rounded-xl border border-slate-200 p-6">
-            <h3 class="font-medium text-slate-700 mb-4">Ringkasan Insiden</h3>
+          <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 lg:p-6">
+            <h3 class="text-xl/6 font-semibold text-slate-900 mb-4">Ringkasan Insiden</h3>
             <div class="space-y-3">
               <div class="flex justify-between items-center">
                 <span class="text-slate-500">ID Insiden:</span>
@@ -399,19 +330,19 @@ const getLogIconColor = (index, total) => {
           </div>
 
           <!-- Timeline/Logs -->
-          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
             <div class="flex items-center mb-6">
-              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
-                <IconTimeline class="text-purple-600" :size="isMobile ? 18 : undefined"/>
+              <div class="w-10 h-10 lg:w-12 lg:h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
+                <IconTimeline class="text-purple-600" :size="!isDesktop ? 18 : undefined"/>
               </div>
               <div class="ml-3">
-                <h3 class="font-semibold text-slate-900">Riwayat Penanganan</h3>
-                <p class="text-xs sm:text-base text-slate-600">Log aktivitas penanganan</p>
+                <h3 class="text-xl/6 font-semibold text-slate-900">Riwayat Penanganan</h3>
+                <p class="text-xs lg:text-sm text-slate-600">Log aktivitas penanganan</p>
               </div>
             </div>
 
             <!-- Timeline -->
-            <div v-if="incident.incident_logs.length > 0" class="space-y-4 mb-4 sm:mb-6">
+            <div v-if="incident.incident_logs.length > 0" class="space-y-4 mb-4 lg:mb-6">
               <div
                 v-for="(log, index) in incident.incident_logs"
                 :key="log.id"
@@ -425,23 +356,23 @@ const getLogIconColor = (index, total) => {
                   class="relative z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border"
                   :class="getLogIconColor(index, incident.incident_logs.length)"
                 >
-                  <span class="material-symbols-outlined !text-xl">{{ getLogIcon(index, incident.incident_logs.length) }}</span>
+                  <span class="material-symbols-outlined !text-lg">{{ getLogIcon(index, incident.incident_logs.length) }}</span>
                 </div>
 
                 <!-- Content -->
-                <div class="flex-1 min-w-0 pb-0 sm:pb-4">
-                  <div class="flex items-center gap-2 mb-1">
+                <div class="flex-1 min-w-0 pb-0">
+                  <div class="flex items-center gap-2">
                     <p class="font-medium text-slate-900">{{ log.user.name }}</p>
                     <span class="text-xs text-slate-400">{{ formatDate(log.created_at) }}</span>
                   </div>
-                  <p class="text-slate-700 leading-relaxed">{{ log.log_message }}</p>
+                  <p class="text-sm text-slate-500 leading-relaxed">{{ log.log_message }}</p>
                 </div>
               </div>
             </div>
 
             <div v-else class="text-center py-8 mb-6">
-              <div class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <IconHistory class="text-slate-400" :size="isMobile ? 18 : undefined"/>
+              <div class="w-12 h-12 lg:w-14 lg:h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <IconHistory class="text-slate-400" :size="!isDesktop ? 18 : undefined"/>
               </div>
               <p class="text-slate-500">Belum ada riwayat penanganan</p>
               <p class="text-slate-400 mt-1">Log aktivitas akan muncul di sini</p>

@@ -5,6 +5,7 @@ import { ref, computed } from 'vue'
 import { router, useForm } from '@inertiajs/vue3'
 import { useConfirm } from "primevue/useconfirm"
 import { useResponsive } from '@/Composables/useResponsive'
+import { icons } from 'lucide-vue-next'
 
 const props = defineProps({
   announcements: Object,
@@ -12,7 +13,7 @@ const props = defineProps({
   filters: Object,
 })
 
-const { isMobile, dtConfig } = useResponsive()
+const { isMobile, isDesktop, dtConfig } = useResponsive()
 const confirm = useConfirm()
 
 // Dialog states
@@ -162,16 +163,16 @@ const deleteAnnouncement = (announcement) => {
     message: `Hapus pengumuman "${announcement.title}"?`,
     header: 'Konfirmasi Penghapusan',
     rejectProps: {
+      icon: 'pi pi-times',
       label: 'Batal',
       severity: 'secondary',
       outlined: true,
-      size: 'small',
       class: 'mr-2'
     },
     acceptProps: {
-      label: 'Ya, Hapus',
+      icon: 'pi pi-trash',
+      label: 'Hapus',
       severity: 'danger',
-      size: 'small'
     },
     accept: () => {
       router.delete(route('admin.announcements.destroy', announcement.id))
@@ -265,14 +266,14 @@ const contentWordCount = computed(() => {
 
 <template>
   <AdminLayout title="Kelola Pengumuman">
-    <ConfirmDialog />
+    <ConfirmDialog :style="{ width: isMobile ? '95vw' : undefined }" />
 
-    <div class="space-y-4 sm:space-y-6">
+    <div class="space-y-4 lg:space-y-6">
       <!-- Header Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Kelola Pengumuman</h2>
+            <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Kelola Pengumuman</h2>
             <p class="text-slate-600">Kelola pengumuman penting untuk pengguna</p>
           </div>
           <Button
@@ -289,58 +290,58 @@ const contentWordCount = computed(() => {
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+      <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <IconSpeakerphone class="text-blue-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+              <IconSpeakerphone class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Total</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ announcements.total || 0 }}</p>
+              <p class="text-sm lg:text-base font-medium text-slate-600">Total</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ announcements.total || 0 }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-              <IconCircleCheck class="text-green-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+              <IconCircleCheck class="text-green-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Aktif</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.current }}</p>
+              <p class="text-sm lg:text-base font-medium text-slate-600">Aktif</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats.current }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
-              <IconClock class="text-orange-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
+              <IconClock class="text-orange-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Terjadwal</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.scheduled }}</p>
+              <p class="text-sm lg:text-base font-medium text-slate-600">Terjadwal</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats.scheduled }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-center">
-              <IconHistory class="text-slate-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-center">
+              <IconHistory class="text-slate-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Kedaluwarsa</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.expired }}</p>
+              <p class="text-sm lg:text-base font-medium text-slate-600">Kedaluwarsa</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats.expired }}</p>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Filters Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-xl font-semibold text-slate-900">Filter & Pencarian</h3>
           <button
@@ -352,7 +353,7 @@ const contentWordCount = computed(() => {
           </button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-3 gap-4">
           <div>
             <label class="block font-medium text-slate-700 mb-2">Cari Pengumuman</label>
             <div class="relative">
@@ -423,14 +424,8 @@ const contentWordCount = computed(() => {
             <template #body="{ data }">
               <div class="flex items-start gap-3">
                 <div class="flex-1 min-w-0">
-                  <h3 class="font-medium text-slate-700 line-clamp-2">
-                    {{ data.title }}
-                  </h3>
-
-                  <p class="text-slate-600 text-sm line-clamp-2">
-                    {{ truncateText(data.content, 120) }}
-                  </p>
-
+                  <h3 class="font-medium text-slate-700 line-clamp-2">{{ data.title }}</h3>
+                  <p class="text-slate-600 text-sm line-clamp-2">{{ truncateText(data.content, 120) }}</p>
                   <div class="text-xs text-slate-500 flex items-center gap-1 mt-1">
                     <IconClock size="14" stroke-width="1.5"/>
                     <span>{{ formatDate(data.start_date) }} - {{ formatDate(data.end_date) }}</span>
@@ -440,7 +435,7 @@ const contentWordCount = computed(() => {
             </template>
           </Column>
 
-          <Column field="level" header="Level" class="hidden sm:table-cell">
+          <Column field="level" header="Level" class="hidden lg:table-cell">
             <template #body="{ data }">
               <Tag
                 :value="levelOptions[data.level]"
@@ -495,27 +490,27 @@ const contentWordCount = computed(() => {
       v-model:visible="dialogVisible"
       :modal="true"
       :closable="false"
-      class="w-full max-w-[95vw] sm:max-w-3xl"
+      class="w-full max-w-[95vw] lg:max-w-3xl"
     >
       <template #container="{ closeCallback }">
         <div class="bg-white rounded-xl shadow-2xl border border-slate-200">
           <!-- Header -->
-          <div class="p-4 sm:p-6 border-b border-slate-200 flex items-center gap-3 sm:gap-4">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <IconEdit class="text-blue-600" :size="isMobile ? 18 : undefined" v-if="isEditing"/>
-              <IconSpeakerphone class="text-blue-600" :size="isMobile ? 18 : undefined" v-else/>
+          <div class="p-4 lg:p-6 border-b border-slate-200 flex items-center gap-3 lg:gap-4">
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+              <IconEdit class="text-blue-600" :size="!isDesktop ? 18 : undefined" v-if="isEditing"/>
+              <IconSpeakerphone class="text-blue-600" :size="!isDesktop ? 18 : undefined" v-else/>
             </div>
             <div>
-              <h3 class="text-base sm:text-lg font-semibold text-slate-900">{{ isEditing ? 'Edit Pengumuman' : 'Tambah Pengumuman Baru' }}</h3>
-              <p class="text-xs sm:text-sm text-slate-500">{{ isEditing ? 'Perbarui informasi pengumuman' : 'Buat pengumuman baru untuk pengguna' }}</p>
+              <h3 class="text-xl/6 font-semibold text-slate-900">{{ isEditing ? 'Edit Pengumuman' : 'Tambah Pengumuman Baru' }}</h3>
+              <p class="text-xs lg:text-sm text-slate-500">{{ isEditing ? 'Perbarui informasi pengumuman' : 'Buat pengumuman baru untuk pengguna' }}</p>
             </div>
           </div>
 
           <!-- Content -->
-          <form @submit.prevent="submitForm" class="p-4 sm:p-6">
-            <div class="space-y-4 sm:space-y-6">
+          <form @submit.prevent="submitForm" class="p-4 lg:p-6">
+            <div class="space-y-4 lg:space-y-6">
               <!-- Main Content -->
-              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 sm:p-6 space-y-4">
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 lg:p-6 space-y-4">
                 <div>
                   <label for="title" class="block font-medium text-slate-700 mb-2">
                     Judul Pengumuman <span class="text-red-500">*</span>
@@ -596,7 +591,7 @@ const contentWordCount = computed(() => {
               </div>
 
               <!-- Settings -->
-              <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 sm:p-6">
+              <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 lg:p-6">
                 <div class="space-y-4">
                   <div>
                     <label for="level" class="block font-medium text-slate-700 mb-2">
@@ -641,18 +636,16 @@ const contentWordCount = computed(() => {
             <!-- Actions -->
             <div class="flex items-center justify-end space-x-3 mt-6 pt-6 border-t border-slate-200">
               <Button
-                type="button"
+                icon="pi pi-times"
+                label="Batal"
                 @click="closeCallback"
                 severity="secondary"
-                size="small"
+                variant="outlined"
                 :disabled="form.processing"
-              >
-                Batal
-              </Button>
+              />
               <Button
                 type="submit"
                 severity="primary"
-                size="small"
                 :loading="form.processing"
               >
                 <template #default>

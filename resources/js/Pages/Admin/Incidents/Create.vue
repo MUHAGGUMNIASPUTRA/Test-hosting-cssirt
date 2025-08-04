@@ -14,7 +14,7 @@ const props = defineProps({
   staffUsers: Array,
 })
 
-const { isMobile } = useResponsive();
+const { isMobile, isDesktop } = useResponsive();
 
 // Determine if editing or creating
 const isEditing = computed(() => !!props.incident)
@@ -155,12 +155,12 @@ const formatDateTime = (date) => {
 <template>
   <AdminLayout :title="pageTitle">
     <form @submit.prevent="submit">
-      <div class="space-y-4 sm:space-y-6">
+      <div class="space-y-4 lg:space-y-6">
         <!-- Header Section -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <h2 class="text-xl sm:text-2xl font-bold text-slate-900">{{ headerTitle }}</h2>
+              <h2 class="text-xl lg:text-2xl font-bold text-slate-900">{{ headerTitle }}</h2>
               <p class="text-slate-600">{{ !isEditing ? 'Buat laporan insiden keamanan siber baru untuk ditindaklanjuti' : '' }}</p>
               <!-- Show incident ID when editing -->
               <div v-if="isEditing" class="flex items-center gap-3 mt-2">
@@ -185,7 +185,7 @@ const formatDateTime = (date) => {
             <div class="flex items-center space-x-3">
               <Link
                 :href="route('admin.incidents.index')"
-                class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+                class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
               >
                 <IconArrowLeft size="16"/>
                   Kembali
@@ -194,7 +194,7 @@ const formatDateTime = (date) => {
                 v-if="!isMobile"
                 type="submit"
                 :disabled="form.processing"
-                class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
+                class="bg-blue-600 hover:bg-blue-800 text-white w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
               >
                 <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
                 <IconDeviceFloppy v-else size="16"/>
@@ -204,22 +204,22 @@ const formatDateTime = (date) => {
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
           <!-- Main Content -->
-          <div class="lg:col-span-2 space-y-4 sm:space-y-6">
+          <div class="lg:col-span-2 space-y-4 lg:space-y-6">
             <!-- Reporter Information -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-              <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-                  <IconUserExclamation class="text-blue-600" :size="isMobile ? 18 : undefined"/>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+              <div class="flex items-center mb-4 lg:mb-6">
+                <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+                  <IconUserExclamation class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
-                  <h3 class="font-semibold text-slate-900">Informasi Pelapor</h3>
-                  <p class="text-xs sm:text-base text-slate-600">Data kontak pelapor insiden</p>
+                  <h3 class="text-xl/6 font-semibold text-slate-900">Informasi Pelapor</h3>
+                  <p class="text-xs lg:text-sm text-slate-600">Data kontak pelapor insiden</p>
                 </div>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
                 <div>
                   <label for="reporter_name" class="block font-medium text-slate-700 mb-2">
                     Nama Pelapor <span class="text-red-500">*</span>
@@ -275,19 +275,19 @@ const formatDateTime = (date) => {
             </div>
 
             <!-- Incident Details -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-              <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
-                  <IconUrgent class="text-red-600" :size="isMobile ? 18 : undefined"/>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+              <div class="flex items-center mb-4 lg:mb-6">
+                <div class="w-10 h-10 lg:w-12 lg:h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
+                  <IconUrgent class="text-red-600" :size="!isDesktop ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
-                  <h3 class="font-semibold text-slate-900">Detail Insiden</h3>
-                  <p class="text-xs sm:text-base text-slate-600">Informasi lengkap tentang insiden yang terjadi</p>
+                  <h3 class="text-xl/6 font-semibold text-slate-900">Detail Insiden</h3>
+                  <p class="text-xs lg:text-sm text-slate-600">Informasi lengkap tentang insiden yang terjadi</p>
                 </div>
               </div>
 
-              <div class="space-y-4 sm:space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              <div class="space-y-4 lg:space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
                   <div>
                     <label for="incident_type_id" class="block font-medium text-slate-700 mb-2">
                       Jenis Insiden <span class="text-red-500">*</span>
@@ -341,7 +341,7 @@ const formatDateTime = (date) => {
                   <p v-if="form.errors.description" class="mt-1 text-red-600">
                     {{ form.errors.description }}
                   </p>
-                  <p class="mt-1 text-sm text-slate-500">
+                  <p class="text-sm text-slate-400">
                     Berikan informasi selengkap mungkin untuk membantu proses penanganan
                   </p>
                 </div>
@@ -350,20 +350,20 @@ const formatDateTime = (date) => {
           </div>
 
           <!-- Sidebar -->
-          <div class="space-y-4 sm:space-y-6">
+          <div class="space-y-4 lg:space-y-6">
             <!-- Status Management -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-              <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-                  <IconClipboardList class="text-green-600" :size="isMobile ? 18 : undefined"/>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+              <div class="flex items-center mb-4 lg:mb-6">
+                <div class="w-10 h-10 lg:w-12 lg:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+                  <IconClipboardList class="text-green-600" :size="!isDesktop ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
-                  <h3 class="font-semibold text-slate-900">Manajemen</h3>
-                  <p class="text-xs sm:text-base text-slate-600">Status dan penugasan</p>
+                  <h3 class="text-xl/6 font-semibold text-slate-900">Manajemen</h3>
+                  <p class="text-xs lg:text-sm text-slate-600">Status dan penugasan</p>
                 </div>
               </div>
 
-              <div class="space-y-4 sm:space-y-6">
+              <div class="space-y-4 lg:space-y-6">
                 <div>
                   <label for="status" class="block font-medium text-slate-700 mb-2">Status</label>
                   <Select
@@ -411,8 +411,8 @@ const formatDateTime = (date) => {
             </div>
 
             <!-- Preview Card -->
-            <div class="bg-slate-50 rounded-xl border border-slate-200 p-6">
-              <h3 class="font-medium text-slate-700 mb-4">
+            <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 lg:p-6">
+              <h3 class="text-xl/6 font-semibold text-slate-700 mb-4">
                 {{ isEditing ? 'Ringkasan Perubahan' : 'Preview Laporan' }}
               </h3>
               <div class="space-y-3">
@@ -450,7 +450,7 @@ const formatDateTime = (date) => {
             </div>
 
             <!-- Button Submit (Mobile Only) -->
-            <div class="block sm:hidden">
+            <div v-if="isMobile">
               <button
                 type="submit"
                 :disabled="form.processing"

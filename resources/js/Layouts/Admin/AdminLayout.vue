@@ -3,15 +3,22 @@
 
 import { ref, onMounted, nextTick, watch } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3'
+import { useResponsive } from '@/Composables/useResponsive'
 import { useToast } from 'primevue/usetoast'
 import Toast from 'primevue/toast'
 
-import { IconWorldCheck, IconLayoutBoard, IconUrgent, IconMailExclamation, IconBellPlus, IconNews, IconArticle, IconTextPlus, IconBookmarks, IconHeartHandshake, IconHelp, IconSpeakerphone, IconUsers } from '@tabler/icons-vue';
+import {
+  IconWorldCheck, IconLayoutBoard, IconUrgent,
+  IconMailExclamation, IconBellPlus, IconNews,
+  IconArticle, IconTextPlus, IconBookmarks,
+  IconHeartHandshake, IconHelp, IconSpeakerphone, IconUsers
+} from '@tabler/icons-vue';
 
 defineProps({
   title: String,
 })
 
+const { isDesktop } = useResponsive()
 const page = usePage()
 const toast = useToast()
 const sidebarOpen = ref(false)
@@ -309,7 +316,7 @@ watch(
               </svg>
             </button>
             <div class="ml-4 lg:ml-0">
-              <h1 class="text-lg font-semibold text-slate-900">{{ title || 'Dashboard' }}</h1>
+              <h1 class="text-lg font-semibold text-slate-900">{{ isDesktop ? title : 'CSIRT Bojonegoro: Admin Panel' }}</h1>
               <p class="text-xs text-slate-500">{{ new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</p>
             </div>
           </div>
@@ -350,13 +357,13 @@ watch(
       </header>
 
       <!-- Page content -->
-      <main class="p-4 sm:p-6">
+      <main class="p-4 lg:p-6">
         <slot />
       </main>
     </div>
 
     <!-- Footer -->
-    <div class="text-sm py-5 mx-6 border-t border-slate-200 text-center sm:text-right mb-0.5">
+    <div class="text-sm py-5 mx-6 border-t border-slate-200 text-center lg:text-right mb-0.5">
       <span>© 2025 CSIRT Kabupaten Bojonegoro. Seluruh hak cipta dilindungi.</span>
     </div>
 

@@ -12,7 +12,7 @@ const props = defineProps({
   filters: Object,
 })
 
-const { isMobile, dtConfig } = useResponsive()
+const { isMobile, isDesktop, dtConfig } = useResponsive()
 const confirm = useConfirm()
 
 // Dialog states
@@ -142,16 +142,16 @@ const deleteUser = (user) => {
     message: `Apakah Anda yakin ingin menghapus pengguna "${user.name}"?`,
     header: 'Konfirmasi Penghapusan',
     rejectProps: {
+      icon: 'pi pi-times',
       label: 'Batal',
       severity: 'secondary',
       outlined: true,
-      size: 'small',
       class: 'mr-2'
     },
     acceptProps: {
-      label: 'Ya, Hapus',
+      icon: 'pi pi-trash',
+      label: 'Hapus',
       severity: 'danger',
-      size: 'small'
     },
     accept: () => {
       router.delete(route('admin.users.destroy', user.id))
@@ -210,14 +210,14 @@ const serverSideConfig = computed(() => {
 
 <template>
   <AdminLayout title="Kelola Pengguna">
-    <ConfirmDialog />
+    <ConfirmDialog :style="{ width: isMobile ? '95vw' : undefined }" />
 
-    <div class="space-y-4 sm:space-y-6">
+    <div class="space-y-4 lg:space-y-6">
       <!-- Header Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Kelola Pengguna</h2>
+            <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Kelola Pengguna</h2>
             <p class="text-slate-600">Kelola akun pengguna sistem</p>
           </div>
           <Button
@@ -234,58 +234,58 @@ const serverSideConfig = computed(() => {
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+      <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <IconUsers class="text-blue-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+              <IconUsers class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Total</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ users.total || 0 }}</p>
+              <p class="text-sm lg:text-base font-medium text-slate-600">Total</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ users.total || 0 }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
-              <IconUserShield class="text-red-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
+              <IconUserShield class="text-red-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Administrator</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.admin }}</p>
+              <p class="text-sm lg:text-base font-medium text-slate-600">Administrator</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats.admin }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <IconIdBadge2 class="text-blue-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+              <IconIdBadge2 class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Staff</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.staff }}</p>
+              <p class="text-sm lg:text-base font-medium text-slate-600">Staff</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats.staff }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-              <IconUser class="text-green-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+              <IconUser class="text-green-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Pengguna</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.users }}</p>
+              <p class="text-sm lg:text-base font-medium text-slate-600">Pengguna</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats.users }}</p>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Filters Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-xl font-semibold text-slate-900">Filter & Pencarian</h3>
           <button
@@ -297,7 +297,7 @@ const serverSideConfig = computed(() => {
           </button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div>
             <label class="block font-medium text-slate-700 mb-2">Cari Pengguna</label>
             <div class="relative">
@@ -378,7 +378,7 @@ const serverSideConfig = computed(() => {
             </template>
           </Column>
 
-          <Column field="role" header="Role" class="hidden sm:table-cell">
+          <Column field="role" header="Role" class="hidden lg:table-cell">
             <template #body="{ data }">
               <Tag
                 :value="roleOptions[data.role]"
@@ -425,38 +425,32 @@ const serverSideConfig = computed(() => {
       v-model:visible="dialogVisible"
       :modal="true"
       :closable="false"
-      class="w-full max-w-[95vw] sm:max-w-2xl"
+      class="w-full max-w-[95vw] lg:max-w-2xl"
     >
       <template #container="{ closeCallback }">
         <div class="bg-white rounded-xl shadow-2xl border border-slate-200">
           <!-- Header -->
-          <div class="p-4 sm:p-6 border-b border-slate-200 flex items-center gap-3 sm:gap-4">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <IconEdit class="text-blue-600" :size="isMobile ? 18 : undefined" v-if="isEditing"/>
-              <IconUser class="text-blue-600" :size="isMobile ? 18 : undefined" v-else/>
+          <div class="p-4 lg:p-6 border-b border-slate-200 flex items-center gap-3 lg:gap-4">
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+              <IconEdit class="text-blue-600" :size="!isDesktop ? 18 : undefined" v-if="isEditing"/>
+              <IconUser class="text-blue-600" :size="!isDesktop ? 18 : undefined" v-else/>
             </div>
             <div>
-              <h3 class="text-lg font-semibold text-slate-900">{{ isEditing ? 'Edit Pengguna' : 'Tambah Pengguna Baru' }}</h3>
-              <p class="text-sm text-slate-500">
-                {{ isEditing ? `Perbarui informasi ${currentUser?.name}` : 'Buat akun pengguna baru' }}
-              </p>
+              <h3 class="text-xl/6 font-semibold text-slate-900">{{ isEditing ? 'Edit Pengguna' : 'Tambah Pengguna Baru' }}</h3>
+              <p class="text-xs lg:text-sm text-slate-500">{{ isEditing ? `Perbarui informasi ${currentUser?.name}` : 'Buat akun pengguna baru' }}</p>
             </div>
           </div>
 
           <!-- Content -->
-          <form @submit.prevent="submitForm" class="p-4 sm:p-6">
-            <div class="space-y-4 sm:space-y-6">
+          <form @submit.prevent="submitForm" class="p-4 lg:p-6">
+            <div class="space-y-4 lg:space-y-6">
               <!-- Authentication Section (Only for Edit) -->
-              <div v-if="isEditing" class="bg-amber-50 border border-amber-200 rounded-xl p-4 sm:p-6">
-                <div class="flex items-start gap-3 mb-4">
+              <div v-if="isEditing" class="bg-amber-50 border border-amber-200 rounded-xl p-4 lg:p-6">
+                <div class="flex items-start gap-3 mb-2">
                   <IconShieldLock class="text-amber-600"/>
-                  <div>
-                    <h4 class="font-medium text-amber-800">Verifikasi Keamanan</h4>
-                    <p class="text-sm text-amber-700 mt-1">
-                      Masukkan password saat ini dari akun <strong>{{ currentUser?.name }}</strong> untuk melanjutkan
-                    </p>
-                  </div>
+                  <div><h4 class="font-medium text-amber-800">Verifikasi Keamanan</h4></div>
                 </div>
+                <p class="text-sm text-amber-700 mb-4">Masukkan password dari akun <strong>{{ currentUser?.name }}</strong> untuk melanjutkan</p>
 
                 <div>
                   <label for="current_password" class="block font-medium text-slate-700 mb-2">
@@ -465,7 +459,7 @@ const serverSideConfig = computed(() => {
                   <Password
                     id="current_password"
                     v-model="form.current_password"
-                    placeholder="Masukkan password saat ini dari akun yang akan diedit..."
+                    :placeholder="'Masukkan password ' + currentUser?.name"
                     toggleMask
                     required
                     class="w-full"
@@ -476,14 +470,11 @@ const serverSideConfig = computed(() => {
                   <p v-if="form.errors.current_password" class="mt-1 text-red-600 text-xs">
                     {{ form.errors.current_password }}
                   </p>
-                  <p class="mt-1 text-amber-600 text-xs">
-                    Password yang diperlukan adalah milik {{ currentUser?.name }}.
-                  </p>
                 </div>
               </div>
 
               <!-- User Information -->
-              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 sm:p-6 space-y-4">
+              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 lg:p-6 space-y-4">
                 <div>
                   <label for="name" class="block font-medium text-slate-700 mb-2">
                     Nama Lengkap <span class="text-red-500">*</span>
@@ -519,7 +510,7 @@ const serverSideConfig = computed(() => {
                   </p>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div>
                     <label for="password" class="block font-medium text-slate-700 mb-2">
                       {{ isEditing ? 'Password Baru' : 'Password' }} <span v-if="!isEditing" class="text-red-500">*</span>
@@ -566,7 +557,7 @@ const serverSideConfig = computed(() => {
               </div>
 
               <!-- Settings -->
-              <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 sm:p-6">
+              <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 lg:p-6">
                 <div>
                   <label for="role" class="block font-medium text-slate-700 mb-2">
                     Role Pengguna <span class="text-red-500">*</span>
@@ -594,18 +585,15 @@ const serverSideConfig = computed(() => {
             <!-- Actions -->
             <div class="flex items-center justify-end space-x-3 mt-6 pt-6 border-t border-slate-200">
               <Button
-                type="button"
+                icon="pi pi-times"
+                label="Batal"
                 @click="closeCallback"
                 severity="secondary"
-                size="small"
                 :disabled="form.processing"
-              >
-                Batal
-              </Button>
+              />
               <Button
                 type="submit"
                 severity="primary"
-                size="small"
                 :loading="form.processing"
               >
                 <template #default>

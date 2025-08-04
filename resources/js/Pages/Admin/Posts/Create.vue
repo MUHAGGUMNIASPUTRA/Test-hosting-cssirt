@@ -14,7 +14,7 @@ const props = defineProps({
   tags: Array,
 });
 
-const { isMobile } = useResponsive();
+const { isMobile, isDesktop } = useResponsive();
 
 // Check if we're in edit mode
 const isEditMode = computed(() => !!props.post);
@@ -155,18 +155,18 @@ function triggerFileInput() {
 <template>
   <AdminLayout :title="isEditMode ? 'Edit Artikel' : 'Tambah Artikel Baru'">
     <div class="min-h-screen bg-gray-50">
-      <form @submit.prevent="submit" class="space-y-4 sm:space-y-6">
+      <form @submit.prevent="submit" class="space-y-4 lg:space-y-6">
         <!-- Header Section -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <h2 class="text-xl sm:text-2xl font-bold text-slate-900">{{ isEditMode ? 'Edit Artikel' : 'Tambah Artikel Baru' }}</h2>
+              <h2 class="text-xl lg:text-2xl font-bold text-slate-900">{{ isEditMode ? 'Edit Artikel' : 'Tambah Artikel Baru' }}</h2>
               <p class="text-slate-600">{{ isEditMode ? 'Perbarui informasi artikel' : 'Buat artikel baru untuk diterbitkankan' }}</p>
             </div>
             <div class="flex items-center space-x-3">
               <Link
                 :href="route('admin.posts.index')"
-                class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+                class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
               >
                 <IconArrowLeft size="16"/>
                   Kembali
@@ -175,7 +175,7 @@ function triggerFileInput() {
                 v-if="!isMobile"
                 type="submit"
                 :disabled="form.processing"
-                class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
+                class="bg-blue-600 hover:bg-blue-800 text-white w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
               >
                 <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
                 <IconDeviceFloppy v-else size="16"/>
@@ -190,18 +190,18 @@ function triggerFileInput() {
           {{ $page.props.flash?.success }}
         </Message>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
           <!-- Main Content (Left Column) -->
-          <div class="lg:col-span-2 space-y-4 sm:space-y-6">
+          <div class="lg:col-span-2 space-y-4 lg:space-y-6">
             <!-- Title & Content Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-                  <IconLetterT class="text-blue-600" :size="isMobile ? 18 : undefined"/>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 lg:p-6">
+              <div class="flex items-center mb-4 lg:mb-6">
+                <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+                  <IconLetterT class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
-                  <h3 class="font-semibold text-slate-900">Judul & Konten</h3>
-                  <p class="text-xs sm:text-base text-slate-600">Masukkan judul dan isi artikel yang ingin Anda buat atau edit</p>
+                  <h3 class="text-xl/6 font-semibold text-slate-900">Judul & Konten</h3>
+                  <p class="text-xs lg:text-sm text-slate-600">Masukkan judul dan isi artikel yang ingin Anda buat atau edit</p>
                 </div>
               </div>
 
@@ -236,14 +236,14 @@ function triggerFileInput() {
             </div>
 
             <!-- Excerpt Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
-                  <IconReceipt class="text-purple-600" :size="isMobile ? 18 : undefined"/>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 lg:p-6">
+              <div class="flex items-center mb-4 lg:mb-6">
+                <div class="w-10 h-10 lg:w-12 lg:h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
+                  <IconReceipt class="text-purple-600" :size="!isDesktop ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
-                  <h3 class="font-semibold text-slate-900">Kutipan Singkat (Excerpt)</h3>
-                  <p class="text-xs sm:text-base text-slate-600">Ringkasan singkat dari artikel ini</p>
+                  <h3 class="text-xl/6 font-semibold text-slate-900">Kutipan Singkat (Excerpt)</h3>
+                  <p class="text-xs lg:text-sm text-slate-600">Ringkasan singkat dari artikel ini</p>
                 </div>
               </div>
 
@@ -302,16 +302,16 @@ function triggerFileInput() {
           </div>
 
           <!-- Sidebar (Right Column) -->
-          <div class="space-y-4 sm:space-y-6">
+          <div class="space-y-4 lg:space-y-6">
             <!-- Publication Options Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-                  <IconBrowserShare class="text-green-600" :size="isMobile ? 18 : undefined"/>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 lg:p-6">
+              <div class="flex items-center mb-4 lg:mb-6">
+                <div class="w-10 h-10 lg:w-12 lg:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+                  <IconBrowserShare class="text-green-600" :size="!isDesktop ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
-                  <h3 class="font-semibold text-slate-900">Opsi Publikasi</h3>
-                  <p class="text-xs sm:text-base text-slate-600">Atur status publikasi artikel ini</p>
+                  <h3 class="text-xl/6 font-semibold text-slate-900">Opsi Publikasi</h3>
+                  <p class="text-xs lg:text-sm text-slate-600">Atur status publikasi artikel ini</p>
                 </div>
               </div>
 
@@ -322,7 +322,8 @@ function triggerFileInput() {
                   <SelectButton
                     v-model="form.status"
                     :options="statusOptions"
-                    class="w-full"
+                    :invalid="form.status === null"
+                    required
                   />
                 </div>
 
@@ -384,7 +385,7 @@ function triggerFileInput() {
                         class="flex flex-col items-center justify-center py-6 px-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-600 transition-colors cursor-pointer"
                         @click="triggerFileInput"
                       >
-                        <IconPhotoSearch class="text-gray-400 mb-2" :size="isMobile ? 18 : undefined"/>
+                        <IconPhotoSearch class="text-gray-400 mb-2" :size="!isDesktop ? 18 : undefined"/>
                         <p class="text-sm text-gray-600 text-center">
                           {{ isEditMode ? 'Pilih gambar baru untuk mengganti' : 'Drag & drop atau klik untuk memilih gambar' }}
                         </p>
@@ -397,14 +398,14 @@ function triggerFileInput() {
             </div>
 
             <!-- Categories & Tags Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
-                  <IconBookmarks class="text-orange-600" :size="isMobile ? 18 : undefined"/>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 lg:p-6">
+              <div class="flex items-center mb-4 lg:mb-6">
+                <div class="w-10 h-10 lg:w-12 lg:h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
+                  <IconBookmarks class="text-orange-600" :size="!isDesktop ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
-                  <h3 class="font-semibold text-slate-900">Kategori & Tag</h3>
-                  <p class="text-xs sm:text-base text-slate-600">Tentukan kategori dan tag untuk artikel ini</p>
+                  <h3 class="text-xl/6 font-semibold text-slate-900">Kategori & Tag</h3>
+                  <p class="text-xs lg:text-sm text-slate-600">Tentukan kategori dan tag untuk artikel ini</p>
                 </div>
               </div>
 
@@ -451,7 +452,7 @@ function triggerFileInput() {
             </div>
 
             <!-- Button Submit (Mobile Only) -->
-            <div class="block sm:hidden">
+            <div v-if="isMobile">
               <button
                 type="submit"
                 :disabled="form.processing"

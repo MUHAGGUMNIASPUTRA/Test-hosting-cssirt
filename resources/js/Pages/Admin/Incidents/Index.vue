@@ -10,7 +10,7 @@ const props = defineProps({
   filters: Object
 })
 
-const { isMobile, dtConfig } = useResponsive();
+const { isMobile, isDesktop, dtConfig } = useResponsive();
 
 const searchQuery = ref(props.filters?.search || '')
 const selectedCategory = ref(props.filters?.category || '')
@@ -172,18 +172,19 @@ const serverSideConfig = computed(() => {
       v-model:visible="showDeleteDialog"
       :modal="true"
       :closable="false"
-      class="w-full max-w-md"
+      class="w-full max-w-lg"
+      :style="{ width: isMobile ? '95vw' : undefined }"
     >
       <template #container="{ closeCallback }">
         <div class="bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
           <!-- Header -->
-          <div class="bg-gradient-to-r from-red-500 to-red-600 px-6 py-4">
+          <div class="bg-gradient-to-r from-red-500 to-red-600 p-6">
             <div class="flex items-center">
               <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
                 <IconAlertTriangle class="text-white" />
               </div>
               <div class="ml-3">
-                <h3 class="text-lg font-semibold text-white">Konfirmasi Penghapusan</h3>
+                <h3 class="text-lg/6 font-semibold text-white">Konfirmasi Penghapusan</h3>
                 <p class="text-red-100 text-sm">Tindakan ini tidak dapat dibatalkan</p>
               </div>
             </div>
@@ -192,17 +193,12 @@ const serverSideConfig = computed(() => {
           <!-- Content -->
           <div class="p-6">
             <div class="text-center mb-6">
-              <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <IconTrash class="text-red-500" />
-              </div>
-              <p class="text-slate-700 mb-2">
-                Apakah Anda yakin ingin menghapus insiden berikut?
-              </p>
-              <div class="bg-slate-50 border border-slate-100 rounded-lg p-3 text-left">
+              <p class="text-slate-700 mb-6">Apakah Anda yakin ingin menghapus insiden berikut?</p>
+              <div class="bg-slate-100 border border-slate-200 rounded-lg p-4 text-left">
                 <div class="">
                   <div class="flex justify-between items-center mb-1">
                     <span class="font-medium text-slate-600">ID Insiden:</span>
-                    <span class="font-mono text-slate-900 bg-slate-200 px-2 py-1 rounded text-xs">
+                    <span class="font-mono text-slate-900 bg-slate-300 px-2 py-1 rounded text-xs">
                       {{ incidentToDelete?.case_id }}
                     </span>
                   </div>
@@ -212,24 +208,25 @@ const serverSideConfig = computed(() => {
                   </div>
                 </div>
               </div>
-              <p class="text-sm text-red-600 mt-3">
+              <p class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg py-4 mt-3">
                 <strong>Peringatan:</strong> Data yang dihapus tidak dapat dikembalikan
               </p>
             </div>
 
             <!-- Actions -->
-            <div class="flex items-center justify-end space-x-3">
+            <div class="flex items-center justify-between space-x-3">
               <Button
                 @click="closeCallback"
+                icon="pi pi-times"
                 label="Batal"
-                severity="secondary"
-                size="small"
+                severity="info"
+                variant="outlined"
               />
               <Button
                 @click="deleteIncident"
-                label="Ya, Hapus Insiden"
+                icon="pi pi-trash"
+                label="Hapus"
                 severity="danger"
-                size="small"
               />
             </div>
           </div>
@@ -237,17 +234,17 @@ const serverSideConfig = computed(() => {
       </template>
     </Dialog>
 
-    <div class="space-y-4 sm:space-y-6">
+    <div class="space-y-4 lg:space-y-6">
       <!-- Header Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Daftar Laporan Insiden</h2>
+            <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Daftar Laporan Insiden</h2>
             <p class="text-slate-600">Kelola dan monitor laporan insiden keamanan siber</p>
           </div>
           <Link
             :href="route('admin.incidents.create')"
-            class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+            class="bg-blue-600 hover:bg-blue-800 text-white w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
           >
             <IconBellPlus :size="16"/>
               Lapor Insiden Baru
@@ -256,55 +253,55 @@ const serverSideConfig = computed(() => {
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+      <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <IconMailExclamation class="text-blue-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+              <IconMailExclamation class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Total Insiden</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ incidents.total || 0 }}</p>
+              <p class="text-sm lg:text-base font-medium text-slate-600">Total Insiden</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ incidents.total || 0 }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center justify-center">
-              <IconRefresh class="text-yellow-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center justify-center">
+              <IconRefresh class="text-yellow-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Dalam Proses</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">
+              <p class="text-sm lg:text-base font-medium text-slate-600">Dalam Proses</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">
                 {{ incidents.data?.filter(i => ['Baru', 'Diverifikasi', 'Dalam Penyelidikan'].includes(i.status)).length || 0 }}
               </p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
-              <IconAlertHexagon class="text-red-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
+              <IconAlertHexagon class="text-red-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Kritikal</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">
+              <p class="text-sm lg:text-base font-medium text-slate-600">Kritikal</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">
                 {{ incidents.data?.filter(i => i.priority === 'Kritikal').length || 0 }}
               </p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-              <IconCircleCheck class="text-green-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+              <IconCircleCheck class="text-green-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Selesai</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">
+              <p class="text-sm lg:text-base font-medium text-slate-600">Selesai</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">
                 {{ incidents.data?.filter(i => i.status === 'Selesai').length || 0 }}
               </p>
             </div>
@@ -313,7 +310,7 @@ const serverSideConfig = computed(() => {
       </div>
 
       <!-- Filters Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-xl font-semibold text-slate-900">Filter & Pencarian</h3>
           <button
@@ -325,11 +322,11 @@ const serverSideConfig = computed(() => {
           </button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label class="block font-medium text-slate-700 mb-2">Cari Insiden</label>
             <div class="relative">
-              <IconField class="w-full sm:w-auto">
+              <IconField class="w-full lg:w-auto">
                 <InputIcon>
                   <i class="pi pi-search" />
                 </InputIcon>
@@ -419,10 +416,10 @@ const serverSideConfig = computed(() => {
                   class="font-mono !text-slate-500"
                 />
               </Link>
-              <div class="sm:hidden text-xs text-slate-500 space-x-1 mt-1">
+              <div class="lg:hidden text-xs text-slate-500 space-x-1 mt-1">
                 <span>{{ data.reporter_name }}</span>
                 <span>•</span>
-                <span>{{ data.incident_type?.name || 'N/A' }}</span>
+                <span class="text-slate-400">{{ data.incident_type?.name || 'N/A' }}</span>
               </div>
             </template>
           </Column>
@@ -436,13 +433,13 @@ const serverSideConfig = computed(() => {
             </template>
           </Column>
 
-          <Column field="incident_type" header="Kategori" class="hidden sm:table-cell">
+          <Column field="incident_type" header="Kategori" class="hidden lg:table-cell">
             <template #body="{ data }">
               <span class="text-sm text-slate-700">{{ data.incident_type?.name || 'N/A' }}</span>
             </template>
           </Column>
 
-          <Column field="status" header="Status" class="hidden sm:table-cell">
+          <Column field="status" header="Status" class="hidden lg:table-cell">
             <template #body="{ data }">
               <Tag
                 :value="data.status"
@@ -452,7 +449,7 @@ const serverSideConfig = computed(() => {
             </template>
           </Column>
 
-          <Column field="priority" header="Prioritas" class="hidden sm:table-cell">
+          <Column field="priority" header="Prioritas" class="hidden lg:table-cell">
             <template #body="{ data }">
               <Tag
                 :value="data.priority"

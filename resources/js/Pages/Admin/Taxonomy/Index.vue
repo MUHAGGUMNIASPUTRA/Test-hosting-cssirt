@@ -11,7 +11,7 @@ const props = defineProps({
   tags: Array,
 })
 
-const { isMobile } = useResponsive()
+const { isMobile, isDesktop } = useResponsive()
 const confirm = useConfirm()
 
 // State for Dialog
@@ -64,16 +64,16 @@ const deleteItem = (type, item) => {
     message: `Apakah Anda yakin ingin menghapus "${item.name}"?`,
     header: `Hapus ${type}`,
     rejectProps: {
+      icon: 'pi pi-times',
       label: 'Batal',
       severity: 'secondary',
-      size: 'small',
       outlined: true,
       class: 'mr-2'
     },
     acceptProps: {
-      label: 'Ya, Hapus',
+      icon: 'pi pi-trash',
+      label: 'Hapus',
       severity: 'danger',
-      size: 'small'
     },
     accept: () => {
       useForm({}).delete(route(routeName, item.id))
@@ -108,88 +108,88 @@ const formatDate = (dateString) => {
 
 <template>
   <AdminLayout title="Kategori & Tag">
-    <ConfirmDialog />
+    <ConfirmDialog :style="{ width: isMobile ? '95vw' : undefined }" />
 
-    <div class="space-y-4 sm:space-y-6">
+    <div class="space-y-4 lg:space-y-6">
       <!-- Header Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Kategori & Tag</h2>
+            <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Kategori & Tag</h2>
             <p class="text-slate-600">Kelola kategori dan tag untuk artikel</p>
           </div>
         </div>
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+      <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <IconCategory class="text-blue-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+              <IconCategory class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Total Kategori</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.totalCategories }}</p>
+              <p class="text-sm lg:text-base font-medium text-slate-600">Total Kategori</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats.totalCategories }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-              <IconTags class="text-green-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+              <IconTags class="text-green-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Total Tag</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.totalTags }}</p>
+              <p class="text-sm lg:text-base font-medium text-slate-600">Total Tag</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats.totalTags }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
-              <IconBookmark class="text-orange-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
+              <IconBookmark class="text-orange-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Artikel Kategori</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.totalCategoryPosts }}</p>
+              <p class="text-sm lg:text-base font-medium text-slate-600">Artikel Kategori</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats.totalCategoryPosts }}</p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
-              <IconTag class="text-purple-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
+              <IconTag class="text-purple-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
             <div class="ml-3">
-              <p class="text-sm sm:text-base font-medium text-slate-600">Artikel Tag</p>
-              <p class="text-lg/5 sm:text-xl font-bold text-slate-900">{{ stats.totalTagPosts }}</p>
+              <p class="text-sm lg:text-base font-medium text-slate-600">Artikel Tag</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats.totalTagPosts }}</p>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Main Content Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
         <!-- Categories Section -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          <div class="p-4 sm:p-6 border-b border-slate-200">
+          <div class="p-4 lg:p-6 border-b border-slate-200">
             <div class="flex items-center justify-between">
-              <div class="flex items-center">
-                <div class="w-10 h-10 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-                  <IconCategory class="text-blue-600" size="18"/>
+              <div class="flex items-center gap-3 lg:gap-4">
+                <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+                  <IconCategory class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
                 </div>
-                <h3 class="ml-3 font-bold text-slate-900">
+                <h3 class="text-lg lg:text-xl font-bold text-slate-900">
                   Kategori ({{ stats.totalCategories }})
                 </h3>
               </div>
               <Button
                 @click="openDialog('Kategori')"
                 severity="primary"
-                size="small"
+                :size="!isDesktop ? 'small' : undefined"
                 class="px-4 py-2"
               >
                 <template #default>
@@ -225,7 +225,7 @@ const formatDate = (dateString) => {
                 </template>
               </Column>
 
-              <Column field="created_at" header="Dibuat" class="hidden sm:table-cell">
+              <Column field="created_at" header="Dibuat" class="hidden lg:table-cell">
                 <template #body="{ data }">
                   <span class="text-sm text-slate-500">{{ formatDate(data.created_at) }}</span>
                 </template>
@@ -267,20 +267,20 @@ const formatDate = (dateString) => {
 
         <!-- Tags Section -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          <div class="p-4 sm:p-6 border-b border-slate-200">
+          <div class="p-4 lg:p-6 border-b border-slate-200">
             <div class="flex items-center justify-between">
-              <div class="flex items-center">
+              <div class="flex items-center gap-3 lg:gap-4">
                 <div class="w-10 h-10 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-                  <IconTags class="text-green-600" size="18"/>
+                  <IconTags class="text-green-600" :size="!isDesktop ? 18 : undefined"/>
                 </div>
-                <h3 class="ml-3 font-bold text-slate-900">
+                <h3 class="text-lg lg:text-xl font-bold text-slate-900">
                   Tag ({{ stats.totalTags }})
                 </h3>
               </div>
               <Button
                 @click="openDialog('Tag')"
                 severity="success"
-                size="small"
+                :size="!isDesktop ? 'small' : undefined"
                 class="px-4 py-2"
               >
                 <template #default>
@@ -316,7 +316,7 @@ const formatDate = (dateString) => {
                 </template>
               </Column>
 
-              <Column field="created_at" header="Dibuat" class="hidden sm:table-cell">
+              <Column field="created_at" header="Dibuat" class="hidden lg:table-cell">
                 <template #body="{ data }">
                   <span class="text-sm text-slate-500">{{ formatDate(data.created_at) }}</span>
                 </template>
@@ -368,17 +368,17 @@ const formatDate = (dateString) => {
       <template #container="{ closeCallback }">
         <div class="bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
           <!-- Header -->
-          <div class="p-6 border-b border-slate-200">
+          <div class="p-4 lg:p-6 border-b border-slate-200">
             <div class="flex items-center">
-              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center"
+              <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-lg flex items-center justify-center"
                    :class="currentType === 'Kategori' ? 'bg-blue-50 border border-blue-200' : 'bg-green-50 border border-green-200'">
                 <span :class="currentType === 'Kategori' ? 'text-blue-600' : 'text-green-600'">
-                  <IconCategory v-if="currentType === 'Kategori'" :size="isMobile ? 18 : undefined" />
-                  <IconTags v-else :size="isMobile ? 18 : undefined" />
+                  <IconCategory v-if="currentType === 'Kategori'" :size="!isDesktop ? 18 : undefined" />
+                  <IconTags v-else :size="!isDesktop ? 18 : undefined" />
                 </span>
               </div>
               <div class="ml-3">
-                <h3 class="sm:text-lg font-semibold text-slate-900">
+                <h3 class="lg:text-lg font-semibold text-slate-900">
                   {{ isEditing ? 'Edit' : 'Tambah' }} {{ currentType }}
                 </h3>
                 <p class="text-sm text-slate-500">
@@ -389,7 +389,7 @@ const formatDate = (dateString) => {
           </div>
 
           <!-- Content -->
-          <form @submit.prevent="submitForm" class="p-6">
+          <form @submit.prevent="submitForm" class="p-4 lg:p-6">
             <div class="space-y-4">
               <div>
                 <label for="name" class="block font-medium text-slate-700 mb-2">
@@ -411,28 +411,22 @@ const formatDate = (dateString) => {
             </div>
 
             <!-- Actions -->
-            <div class="flex items-center justify-end space-x-3 mt-6 pt-6 border-t border-slate-200">
+            <div class="flex items-center justify-between space-x-3 mt-6 pt-6 border-t border-slate-200">
               <Button
-                type="button"
                 @click="closeCallback"
+                icon="pi pi-times"
+                label="Batal"
                 severity="secondary"
-                size="small"
+                variant="outlined"
                 :disabled="form.processing"
-              >
-                Batal
-              </Button>
+              />
               <Button
                 type="submit"
+                icon="pi pi-save"
+                :label="form.processing ? 'Menyimpan...' : (isEditing ? 'Update' : 'Simpan')"
                 :severity="currentType === 'Kategori' ? 'primary' : 'success'"
-                size="small"
                 :loading="form.processing"
-              >
-                <template #default>
-                  <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
-                  <IconDeviceFloppy v-else size="16"/>
-                  {{ form.processing ? 'Menyimpan...' : (isEditing ? 'Update' : 'Simpan') }}
-                </template>
-              </Button>
+              />
             </div>
           </form>
         </div>

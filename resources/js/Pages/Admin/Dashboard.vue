@@ -49,7 +49,7 @@ const props = defineProps({
   }
 })
 
-const { isMobile } = useResponsive()
+const { isDesktop } = useResponsive()
 
 const getPrioritySeverity = (priority) => {
   const severities = {
@@ -102,19 +102,19 @@ const truncateText = (text, length = 50) => {
 
 <template>
   <AdminLayout title="Dashboard">
-    <div class="space-y-4 sm:space-y-6">
+    <div class="space-y-4 lg:space-y-6">
       <!-- Welcome Section -->
-      <div class="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl p-4 sm:p-6 text-white">
+      <div class="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl p-4 lg:p-6 text-white">
         <div class="flex items-center justify-between">
           <div>
-            <h2 class="text-xl sm:text-2xl font-bold mb-1">
+            <h2 class="text-xl lg:text-2xl font-bold">
               Selamat Datang, {{ $page.props.auth.user?.name || 'Admin' }}! 👋
             </h2>
             <p class="text-blue-100">
               Ringkasan sistem keamanan hari ini. Monitor dan kelola insiden keamanan siber dengan mudah.
             </p>
           </div>
-          <div class="hidden sm:block">
+          <div class="hidden lg:block">
             <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center">
               <svg class="w-8 h-8 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -125,93 +125,93 @@ const truncateText = (text, length = 50) => {
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
         <!-- Total Incidents -->
-        <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm sm:text-base font-medium text-slate-600">Total Insiden</p>
-              <p class="text-xl sm:text-3xl font-bold text-slate-900">{{ stats.incidents.total }}</p>
-              <p class="text-xs sm:text-sm text-green-600">
+              <p class="text-sm lg:text-base font-medium text-slate-600">Total Insiden</p>
+              <p class="text-xl lg:text-3xl font-bold text-slate-900">{{ stats.incidents.total }}</p>
+              <p class="text-xs lg:text-sm text-green-600">
                 <span class="font-medium">+{{ stats.incidents.thisMonth }}</span> bulan ini
               </p>
             </div>
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
-              <IconUrgent class="text-red-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
+              <IconUrgent class="text-red-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
           </div>
         </div>
 
         <!-- Open Incidents -->
-        <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm sm:text-base font-medium text-slate-600">Insiden Terbuka</p>
-              <p class="text-xl sm:text-3xl font-bold text-slate-900">{{ stats.incidents.open }}</p>
-              <p class="text-xs sm:text-sm text-red-600">
+              <p class="text-sm lg:text-base font-medium text-slate-600">Insiden Terbuka</p>
+              <p class="text-xl lg:text-3xl font-bold text-slate-900">{{ stats.incidents.open }}</p>
+              <p class="text-xs lg:text-sm text-red-600">
                 <span class="font-medium">{{ stats.incidents.critical }}</span> kritikal
               </p>
             </div>
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
-              <IconFileAlert class="text-orange-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
+              <IconFileAlert class="text-orange-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
           </div>
         </div>
 
         <!-- Published Posts -->
-        <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm sm:text-base font-medium text-slate-600">Artikel Diterbitkan</p>
-              <p class="text-xl sm:text-3xl font-bold text-slate-900">{{ stats.posts.published }}</p>
-              <p class="text-xs sm:text-sm text-slate-500">
+              <p class="text-sm lg:text-base font-medium text-slate-600">Artikel Diterbitkan</p>
+              <p class="text-xl lg:text-3xl font-bold text-slate-900">{{ stats.posts.published }}</p>
+              <p class="text-xs lg:text-sm text-slate-500">
                 <span class="font-medium">{{ stats.posts.draft }}</span> draft
               </p>
             </div>
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <IconArticle class="text-blue-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+              <IconArticle class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
           </div>
         </div>
 
         <!-- Total Users -->
-        <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm sm:text-base font-medium text-slate-600">Total Pengguna</p>
-              <p class="text-xl sm:text-3xl font-bold text-slate-900">{{ stats.users.total }}</p>
-              <p class="text-xs sm:text-sm text-slate-500">
+              <p class="text-sm lg:text-base font-medium text-slate-600">Total Pengguna</p>
+              <p class="text-xl lg:text-3xl font-bold text-slate-900">{{ stats.users.total }}</p>
+              <p class="text-xs lg:text-sm text-slate-500">
                 <span class="font-medium">{{ stats.faqs.published }}</span> FAQ aktif
               </p>
             </div>
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-              <IconUsers class="text-green-600" :size="isMobile ? 18 : undefined"/>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+              <IconUsers class="text-green-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         <!-- Recent Incidents -->
         <div class="lg:col-span-2">
           <div class="bg-white rounded-xl shadow-sm border border-slate-200">
-            <div class="p-4 sm:p-6 border-b border-slate-200">
+            <div class="p-4 lg:p-6 border-b border-slate-200">
               <div class="flex items-center justify-between">
                 <h3 class="text-xl font-semibold text-slate-900">Insiden Terbaru</h3>
-                <Link :href="route('admin.incidents.index')" class="text-sm sm:text-base text-blue-500 hover:text-blue-700 font-medium">Lihat Semua →</Link>
+                <Link :href="route('admin.incidents.index')" class="text-sm lg:text-base text-blue-500 hover:text-blue-700 font-medium">Lihat Semua →</Link>
               </div>
             </div>
             <div class="divide-y divide-slate-100">
-              <div v-if="recentIncidents.length === 0" class="text-center py-8 sm:py-12">
+              <div v-if="recentIncidents.length === 0" class="text-center py-8 lg:py-12">
                 <IconUrgent class="text-slate-300 mx-auto mb-2" size="30"/>
                 <p class="text-slate-400">Belum ada insiden yang dilaporkan</p>
               </div>
               <div
                 v-for="incident in recentIncidents"
                 :key="incident.id"
-                class="p-4 sm:p-6 hover:bg-slate-50 transition-colors"
+                class="p-4 lg:p-6 hover:bg-slate-50 transition-colors"
               >
-                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
                   <div class="flex-1 min-w-0">
                     <div class="flex items-center justify-between gap-2 mb-2">
                       <div class="flex items-center gap-2">
@@ -252,17 +252,17 @@ const truncateText = (text, length = 50) => {
         </div>
 
         <!-- System Alerts & Recent Posts -->
-        <div class="space-y-4 sm:space-y-6">
+        <div class="space-y-4 lg:space-y-6">
           <!-- System Alerts -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200">
-            <div class="p-4 sm:p-6 border-b border-slate-200">
+            <div class="p-4 lg:p-6 border-b border-slate-200">
               <div class="flex items-center justify-between">
                 <h3 class="text-xl font-semibold text-slate-900">Pengumuman Sistem</h3>
-                <Link :href="route('admin.announcements.index')" class="text-sm sm:text-base text-blue-500 hover:text-blue-700 font-medium">Lihat Semua →</Link>
+                <Link :href="route('admin.announcements.index')" class="text-sm lg:text-base text-blue-500 hover:text-blue-700 font-medium">Lihat Semua →</Link>
               </div>
             </div>
-            <div class="p-4 sm:p-6 space-y-4">
-              <div v-if="systemAlerts.length === 0" class="text-center py-4 sm:py-8">
+            <div class="p-4 lg:p-6 space-y-4">
+              <div v-if="systemAlerts.length === 0" class="text-center py-4 lg:py-8">
                 <IconSpeakerphone class="text-slate-300 mx-auto mb-2" size="30"/>
                 <p class="text-slate-400">Tidak ada pengumuman aktif</p>
               </div>
@@ -287,21 +287,21 @@ const truncateText = (text, length = 50) => {
 
           <!-- Recent Posts -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200">
-            <div class="p-4 sm:p-6 border-b border-slate-200">
+            <div class="p-4 lg:p-6 border-b border-slate-200">
               <div class="flex items-center justify-between">
                 <h3 class="text-xl font-semibold text-slate-900">Artikel Terbaru</h3>
-                <Link :href="route('admin.posts.index')" class="text-sm sm:text-base text-blue-500 hover:text-blue-700 font-medium">Lihat Semua →</Link>
+                <Link :href="route('admin.posts.index')" class="text-sm lg:text-base text-blue-500 hover:text-blue-700 font-medium">Lihat Semua →</Link>
               </div>
             </div>
             <div class="divide-y divide-slate-100">
-              <div v-if="recentPosts.length === 0" class="text-center py-8 sm:py-12">
+              <div v-if="recentPosts.length === 0" class="text-center py-8 lg:py-12">
                 <IconArticle class="text-slate-300 mx-auto mb-2" size="30"/>
                 <p class="text-slate-400">Belum ada artikel</p>
               </div>
               <div
                 v-for="post in recentPosts"
                 :key="post.id"
-                class="p-4 hover:bg-slate-50 transition-colors"
+                class="p-4 lg:p-6 lg:py-4 hover:bg-slate-50 transition-colors"
               >
                 <div class="flex justify-between items-start gap-3">
                   <div class="flex-1 min-w-0">

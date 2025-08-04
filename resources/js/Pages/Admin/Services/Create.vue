@@ -12,7 +12,7 @@ const props = defineProps({
   }
 })
 
-const { isMobile } = useResponsive()
+const { isMobile, isDesktop } = useResponsive()
 
 // Determine if we're editing or creating
 const isEditing = computed(() => !!props.service)
@@ -117,12 +117,12 @@ watch(() => form.icon, filterIconSuggestions)
 <template>
   <AdminLayout :title="pageTitle">
     <form @submit.prevent="submit">
-      <div class="space-y-4 sm:space-y-6">
+      <div class="space-y-4 lg:space-y-6">
         <!-- Header Section -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <h2 class="text-xl sm:text-2xl font-bold text-slate-900">{{ headerTitle }}{{ isEditing ? `: ${service.name}` : '' }}</h2>
+              <h2 class="text-xl lg:text-2xl font-bold text-slate-900">{{ headerTitle }}{{ isEditing ? `: ${service.name}` : '' }}</h2>
               <p v-if="!isEditing" class="text-slate-600">{{ headerDescription }}</p>
               <!-- Show service status when editing -->
               <div v-if="isEditing" class="flex items-center gap-3 mt-2">
@@ -137,7 +137,7 @@ watch(() => form.icon, filterIconSuggestions)
             <div class="flex items-center space-x-3">
               <Link
                 :href="route('admin.services.index')"
-                class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+                class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
               >
                 <IconArrowLeft size="16" />
                   Kembali
@@ -146,7 +146,7 @@ watch(() => form.icon, filterIconSuggestions)
                 v-if="!isMobile"
                 type="submit"
                 :disabled="form.processing"
-                class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
+                class="bg-blue-600 hover:bg-blue-800 text-white w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
               >
                 <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
                 <IconDeviceFloppy v-else size="16"/>
@@ -156,22 +156,22 @@ watch(() => form.icon, filterIconSuggestions)
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
           <!-- Main Content -->
-          <div class="lg:col-span-2 space-y-4 sm:space-y-6">
+          <div class="lg:col-span-2 space-y-4 lg:space-y-6">
             <!-- Service Information -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-              <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-                  <IconHeart class="text-blue-600" :size="isMobile ? 18 : undefined"/>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+              <div class="flex items-center mb-4 lg:mb-6">
+                <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+                  <IconHeart class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
-                  <h3 class="font-semibold text-slate-900">Informasi Layanan</h3>
-                  <p class="text-xs sm:text-base text-slate-600">Data dasar layanan yang akan ditampilkan</p>
+                  <h3 class="text-xl/6 font-semibold text-slate-900">Informasi Layanan</h3>
+                  <p class="text-xs lg:text-sm text-slate-600">Data dasar layanan yang akan ditampilkan</p>
                 </div>
               </div>
 
-              <div class="space-y-4 sm:space-y-6">
+              <div class="space-y-4 lg:space-y-6">
                 <div>
                   <label for="name" class="block font-medium text-slate-700 mb-2">
                     Nama Layanan <span class="text-red-500">*</span>
@@ -296,16 +296,16 @@ watch(() => form.icon, filterIconSuggestions)
           </div>
 
           <!-- Sidebar -->
-          <div class="space-y-4 sm:space-y-6">
+          <div class="space-y-4 lg:space-y-6">
             <!-- Status Management -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-              <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-                  <IconToggleRight class="text-green-600" :size="isMobile ? 18 : undefined"/>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+              <div class="flex items-center mb-4 lg:mb-6">
+                <div class="w-10 h-10 lg:w-12 lg:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
+                  <IconToggleRight class="text-green-600" :size="!isDesktop ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
-                  <h3 class="font-semibold text-slate-900">Status Layanan</h3>
-                  <p class="text-xs sm:text-base text-slate-600">Kontrol visibilitas layanan</p>
+                  <h3 class="text-xl/6 font-semibold text-slate-900">Status Layanan</h3>
+                  <p class="text-xs lg:text-sm text-slate-600">Kontrol visibilitas layanan</p>
                 </div>
               </div>
 
@@ -326,8 +326,8 @@ watch(() => form.icon, filterIconSuggestions)
             </div>
 
             <!-- Preview Card -->
-            <div class="bg-slate-50 rounded-xl border border-slate-200 p-6">
-              <h3 class="font-semibold text-slate-700 mb-4">
+            <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 lg:p-6">
+              <h3 class="text-xl/6 font-semibold text-slate-700 mb-4">
                 {{ isEditing ? 'Ringkasan Perubahan' : 'Preview Layanan' }}
               </h3>
               <div class="space-y-4">
@@ -358,7 +358,7 @@ watch(() => form.icon, filterIconSuggestions)
             </div>
 
             <!-- Button Submit (Mobile Only) -->
-            <div class="block sm:hidden">
+            <div v-if="isMobile">
               <button
                 type="submit"
                 :disabled="form.processing"

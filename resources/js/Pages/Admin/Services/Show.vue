@@ -8,7 +8,7 @@ const props = defineProps({
   service: Object
 })
 
-const { isMobile } = useResponsive()
+const { isDesktop } = useResponsive()
 
 const formatDate = (dateString) => {
   if (!dateString) return '-'
@@ -30,10 +30,10 @@ const getStatusSeverity = (isActive) => {
   <AdminLayout :title="`Detail Layanan: ${service.name}`">
     <div class="space-y-6">
       <!-- Header Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Detail Layanan: {{ service.name }}</h2>
+            <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Detail Layanan: {{ service.name }}</h2>
             <div class="flex items-center gap-3 mt-2">
               <Tag
                 :value="service.is_active ? 'Aktif' : 'Tidak Aktif'"
@@ -46,14 +46,14 @@ const getStatusSeverity = (isActive) => {
           <div class="flex items-center space-x-3">
             <Link
               :href="route('admin.services.index')"
-              class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+              class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
             >
               <IconArrowLeft size="16" />
                 Kembali
             </Link>
             <Link
               :href="route('admin.services.edit', service.id)"
-              class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+              class="bg-blue-600 hover:bg-blue-800 text-white w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
             >
               <IconEdit size="16" />
               Edit Layanan
@@ -62,18 +62,18 @@ const getStatusSeverity = (isActive) => {
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         <!-- Main Content -->
-        <div class="lg:col-span-2 space-y-6">
+        <div class="lg:col-span-2 space-y-4 lg:space-y-6">
           <!-- Full Description -->
-          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <div class="flex items-center mb-6">
-              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-50 border border-indigo-200 rounded-lg flex items-center justify-center">
-                <IconFileDescription class="text-indigo-600" :size="isMobile ? 18 : undefined"/>
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+            <div class="flex items-center mb-4 lg:mb-6">
+              <div class="w-10 h-10 lg:w-12 lg:h-12 bg-indigo-50 border border-indigo-200 rounded-lg flex items-center justify-center">
+                <IconFileDescription class="text-indigo-600" :size="!isDesktop ? 18 : undefined"/>
               </div>
               <div class="ml-3">
-                <h3 class="font-semibold text-slate-900">Deskripsi Layanan</h3>
-                <p class="text-xs sm:text-base text-slate-600">Detail informasi tentang layanan ini</p>
+                <h3 class="text-xl/6 font-semibold text-slate-900">Deskripsi Layanan</h3>
+                <p class="text-xs lg:text-sm text-slate-600">Detail informasi tentang layanan ini</p>
               </div>
             </div>
 
@@ -87,8 +87,8 @@ const getStatusSeverity = (isActive) => {
               <p class="text-slate-500">{{ service.full_description }}</p>
             </div>
             <div v-else class="text-center py-8">
-              <div class="w-14 h-14 sm:w-16 sm:h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <IconFileDescription class="text-slate-400" :size="isMobile ? 18 : undefined"/>
+              <div class="w-14 h-14 lg:w-16 lg:h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <IconFileDescription class="text-slate-400" :size="!isDesktop ? 18 : undefined"/>
               </div>
               <p class="text-slate-400">Deskripsi lengkap belum tersedia</p>
             </div>
@@ -96,16 +96,16 @@ const getStatusSeverity = (isActive) => {
         </div>
 
         <!-- Sidebar -->
-        <div class="space-y-6">
+        <div class="space-y-4 lg:space-y-6">
           <!-- Service Information -->
-          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
             <div class="flex items-center mb-6">
-              <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-                <IconMoodHeart class="text-blue-600" :size="isMobile ? 18 : undefined"/>
+              <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
+                <IconMoodHeart class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
               </div>
               <div class="ml-3">
-                <h3 class="font-semibold text-slate-900">Informasi Layanan</h3>
-                <p class="text-xs sm:text-base text-slate-600">Detail teknis layanan</p>
+                <h3 class="text-xl/6 font-semibold text-slate-900">Informasi Layanan</h3>
+                <p class="text-xs lg:text-sm text-slate-600">Detail teknis layanan</p>
               </div>
             </div>
 
