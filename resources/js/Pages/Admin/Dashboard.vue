@@ -104,7 +104,7 @@ const truncateText = (text, length = 50) => {
   <AdminLayout title="Dashboard">
     <div class="space-y-4 sm:space-y-6">
       <!-- Welcome Section -->
-      <div class="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl p-6 text-white">
+      <div class="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl p-4 sm:p-6 text-white">
         <div class="flex items-center justify-between">
           <div>
             <h2 class="text-xl sm:text-2xl font-bold mb-1">
@@ -125,14 +125,14 @@ const truncateText = (text, length = 50) => {
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <!-- Total Incidents -->
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm sm:text-base font-medium text-slate-600">Total Insiden</p>
               <p class="text-xl sm:text-3xl font-bold text-slate-900">{{ stats.incidents.total }}</p>
-              <p class="text-xs sm:text-sm text-green-600 mt-1">
+              <p class="text-xs sm:text-sm text-green-600">
                 <span class="font-medium">+{{ stats.incidents.thisMonth }}</span> bulan ini
               </p>
             </div>
@@ -143,12 +143,12 @@ const truncateText = (text, length = 50) => {
         </div>
 
         <!-- Open Incidents -->
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm sm:text-base font-medium text-slate-600">Insiden Terbuka</p>
               <p class="text-xl sm:text-3xl font-bold text-slate-900">{{ stats.incidents.open }}</p>
-              <p class="text-xs sm:text-sm text-red-600 mt-1">
+              <p class="text-xs sm:text-sm text-red-600">
                 <span class="font-medium">{{ stats.incidents.critical }}</span> kritikal
               </p>
             </div>
@@ -159,12 +159,12 @@ const truncateText = (text, length = 50) => {
         </div>
 
         <!-- Published Posts -->
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm sm:text-base font-medium text-slate-600">Artikel Diterbitkan</p>
               <p class="text-xl sm:text-3xl font-bold text-slate-900">{{ stats.posts.published }}</p>
-              <p class="text-xs sm:text-sm text-slate-500 mt-1">
+              <p class="text-xs sm:text-sm text-slate-500">
                 <span class="font-medium">{{ stats.posts.draft }}</span> draft
               </p>
             </div>
@@ -175,12 +175,12 @@ const truncateText = (text, length = 50) => {
         </div>
 
         <!-- Total Users -->
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm sm:text-base font-medium text-slate-600">Total Pengguna</p>
               <p class="text-xl sm:text-3xl font-bold text-slate-900">{{ stats.users.total }}</p>
-              <p class="text-xs sm:text-sm text-slate-500 mt-1">
+              <p class="text-xs sm:text-sm text-slate-500">
                 <span class="font-medium">{{ stats.faqs.published }}</span> FAQ aktif
               </p>
             </div>
@@ -195,23 +195,21 @@ const truncateText = (text, length = 50) => {
         <!-- Recent Incidents -->
         <div class="lg:col-span-2">
           <div class="bg-white rounded-xl shadow-sm border border-slate-200">
-            <div class="p-6 border-b border-slate-200">
+            <div class="p-4 sm:p-6 border-b border-slate-200">
               <div class="flex items-center justify-between">
                 <h3 class="text-xl font-semibold text-slate-900">Insiden Terbaru</h3>
-                <Link :href="route('admin.incidents.index')" class="text-blue-500 hover:text-blue-700 font-medium">Lihat Semua →</Link>
+                <Link :href="route('admin.incidents.index')" class="text-sm sm:text-base text-blue-500 hover:text-blue-700 font-medium">Lihat Semua →</Link>
               </div>
             </div>
             <div class="divide-y divide-slate-100">
-              <div v-if="recentIncidents.length === 0" class="p-6 text-center text-slate-500">
-                <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.996-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                </svg>
-                <p>Belum ada insiden yang dilaporkan</p>
+              <div v-if="recentIncidents.length === 0" class="text-center py-8 sm:py-12">
+                <IconUrgent class="text-slate-300 mx-auto mb-2" size="30"/>
+                <p class="text-slate-400">Belum ada insiden yang dilaporkan</p>
               </div>
               <div
                 v-for="incident in recentIncidents"
                 :key="incident.id"
-                class="p-4 hover:bg-slate-50 transition-colors"
+                class="p-4 sm:p-6 hover:bg-slate-50 transition-colors"
               >
                 <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                   <div class="flex-1 min-w-0">
@@ -238,10 +236,13 @@ const truncateText = (text, length = 50) => {
                     <h4 class="font-medium text-slate-700 text-sm mb-1 line-clamp-1">
                       {{ incident.description }}
                     </h4>
-                    <div class="flex items-center gap-3 text-sm text-slate-500">
-                      <span class="truncate">{{ incident.reporter_name }}</span>
+                    <div class="flex items-center gap-2 text-sm text-slate-500">
+                      <div class="flex items-center gap-1">
+                        <IconUserExclamation size="14" stroke-width="1.5"/>
+                        <span class="truncate">{{ incident.reporter_name }}</span>
+                      </div>
                       <span>•</span>
-                      <span>{{ formatDate(incident.created_at) }}</span>
+                      <span class="text-slate-400">{{ formatDate(incident.created_at) }}</span>
                     </div>
                   </div>
                 </div>
@@ -254,17 +255,16 @@ const truncateText = (text, length = 50) => {
         <div class="space-y-4 sm:space-y-6">
           <!-- System Alerts -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200">
-            <div class="p-6 border-b border-slate-200">
-              <div class="flex items-center gap-2">
+            <div class="p-4 sm:p-6 border-b border-slate-200">
+              <div class="flex items-center justify-between">
                 <h3 class="text-xl font-semibold text-slate-900">Pengumuman Sistem</h3>
+                <Link :href="route('admin.announcements.index')" class="text-sm sm:text-base text-blue-500 hover:text-blue-700 font-medium">Lihat Semua →</Link>
               </div>
             </div>
-            <div class="p-4 space-y-3">
-              <div v-if="systemAlerts.length === 0" class="text-center text-slate-500 py-6">
-                <svg class="w-8 h-8 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-                <p class="text-sm">Tidak ada pengumuman</p>
+            <div class="p-4 sm:p-6 space-y-4">
+              <div v-if="systemAlerts.length === 0" class="text-center py-4 sm:py-8">
+                <IconSpeakerphone class="text-slate-300 mx-auto mb-2" size="30"/>
+                <p class="text-slate-400">Tidak ada pengumuman aktif</p>
               </div>
               <div
                 v-for="alert in systemAlerts"
@@ -287,21 +287,16 @@ const truncateText = (text, length = 50) => {
 
           <!-- Recent Posts -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200">
-            <div class="p-6 border-b border-slate-200">
+            <div class="p-4 sm:p-6 border-b border-slate-200">
               <div class="flex items-center justify-between">
                 <h3 class="text-xl font-semibold text-slate-900">Artikel Terbaru</h3>
-                <Link :href="route('admin.posts.index')" class="text-blue-500 hover:text-blue-700 font-medium">Lihat Semua →</Link>
+                <Link :href="route('admin.posts.index')" class="text-sm sm:text-base text-blue-500 hover:text-blue-700 font-medium">Lihat Semua →</Link>
               </div>
             </div>
             <div class="divide-y divide-slate-100">
-              <div
-                v-if="recentPosts.length === 0"
-                class="p-6 text-center text-slate-500"
-              >
-                <svg class="w-8 h-8 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <p class="text-sm">Belum ada artikel</p>
+              <div v-if="recentPosts.length === 0" class="text-center py-8 sm:py-12">
+                <IconArticle class="text-slate-300 mx-auto mb-2" size="30"/>
+                <p class="text-slate-400">Belum ada artikel</p>
               </div>
               <div
                 v-for="post in recentPosts"
