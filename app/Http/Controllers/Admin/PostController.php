@@ -9,7 +9,6 @@ use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -120,7 +119,6 @@ class PostController extends Controller
    */
   public function update(Request $request, Post $post)
   {
-    Log::info($request);
     $validated = $request->validate([
       'title' => 'required|string|max:255',
       'body' => 'required|string',

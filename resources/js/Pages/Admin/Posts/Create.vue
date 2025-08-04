@@ -436,7 +436,7 @@ const submit = () => {
                         <p class="text-sm text-gray-600 text-center">
                           {{ isEditMode ? 'Pilih gambar baru untuk mengganti' : 'Drag & drop atau klik untuk memilih gambar' }}
                         </p>
-                        <p class="text-xs text-gray-400 mt-1">JPG, PNG, WEBP (max 2MB)</p>
+                        <p class="text-xs text-gray-400 mt-1">JPG, PNG, WEBP (Maks. 2MB)</p>
                       </div>
                     </template>
                   </FileUpload>

@@ -234,7 +234,7 @@ const submit = () => {
                   :showCancelButton="false"
                   :multiple="false"
                   accept=".pdf"
-                  :maxFileSize="10485760"
+                  :maxFileSize="8388608"
                   class="w-full"
                   :class="{ 'p-invalid': form.errors.file }"
                 >
@@ -268,7 +268,7 @@ const submit = () => {
                       <p class="text-sm text-gray-600 text-center">
                         {{ isEditMode ? 'Pilih file baru untuk mengganti' : 'Drag & drop atau klik untuk memilih file' }}
                       </p>
-                      <p class="text-xs text-gray-400 mt-1">PDF (max 8MB)</p>
+                      <p class="text-xs text-gray-400 mt-1">PDF (Maks. 8MB)</p>
                     </div>
                   </template>
                 </FileUpload>

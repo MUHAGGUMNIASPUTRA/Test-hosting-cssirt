@@ -23,6 +23,11 @@ const form = useForm({
 const uploader = ref(null);
 const attachmentPreview = ref(null);
 
+const triggerFileInput = () => {
+  const input = uploader.value?.$el.querySelector('input[type="file"]')
+  if (input) input.click()
+}
+
 const handleFileSelect = (event) => {
   const file = event.files[0];
   form.attachment = file;
@@ -265,7 +270,7 @@ onMounted(() => {
                         <!-- Reporter Name -->
                         <div>
                           <label for="reporter_name" class="block font-semibold text-slate-700 mb-2">
-                            Nama Lengkap *
+                            Nama Lengkap <span class="text-red-500">*</span>
                           </label>
                           <InputText
                             id="reporter_name"
@@ -286,7 +291,7 @@ onMounted(() => {
                         <!-- Reporter Email -->
                         <div>
                           <label for="reporter_email" class="block font-semibold text-slate-700 mb-2">
-                            Alamat Email *
+                            Alamat Email <span class="text-red-500">*</span>
                           </label>
                           <InputText
                             id="reporter_email"
@@ -334,9 +339,6 @@ onMounted(() => {
                     <div>
                       <div class="flex items-center mb-6">
                         <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mr-3">
-                          <!-- <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                          </svg> -->
                           <i class="pi pi-exclamation-triangle !text-sm text-red-600"></i>
                         </div>
                         <h3 class="text-xl font-semibold text-slate-900">Detail Insiden</h3>
@@ -346,7 +348,7 @@ onMounted(() => {
                         <!-- Incident Type -->
                         <div>
                           <label for="incident_type_id" class="block font-semibold text-slate-700 mb-2">
-                            Kategori Insiden *
+                            Kategori Insiden <span class="text-red-500">*</span>
                           </label>
                           <Select
                             id="incident_type_id"
@@ -370,7 +372,7 @@ onMounted(() => {
                         <!-- Incident Time -->
                         <div>
                           <label for="incident_at" class="block font-semibold text-slate-700 mb-2">
-                            Waktu Kejadian *
+                            Waktu Kejadian <span class="text-red-500">*</span>
                           </label>
                           <DatePicker
                             id="incident_at"
@@ -380,6 +382,8 @@ onMounted(() => {
                             class="w-full"
                             :class="{ 'p-invalid': form.errors.incident_at }"
                             placeholder="Pilih tanggal dan waktu"
+                            showIcon
+                            iconDisplay="input"
                             required
                           />
                           <div v-if="form.errors.incident_at" class="mt-2 text-red-600 flex items-center">
@@ -394,12 +398,12 @@ onMounted(() => {
                       <!-- Description -->
                       <div class="mt-6">
                         <label for="description" class="block font-semibold text-slate-700 mb-2">
-                          Deskripsi Detail Insiden *
+                          Deskripsi Detail Insiden <span class="text-red-500">*</span>
                         </label>
                         <Textarea
                           id="description"
                           v-model="form.description"
-                          rows="6"
+                          rows="7"
                           class="w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500"
                           :class="{ 'border-red-300 focus:border-red-500 focus:ring-red-500': form.errors.description }"
                           placeholder="Ceritakan secara detail kronologi insiden yang terjadi, termasuk:&#10;- Kapan insiden pertama kali terdeteksi&#10;- Apa yang terjadi sebelum insiden&#10;- Dampak yang dirasakan&#10;- Langkah yang sudah diambil&#10;- Informasi lain yang relevan"
@@ -418,55 +422,51 @@ onMounted(() => {
                         <label for="attachment" class="block font-semibold text-slate-700 mb-2">
                           Lampiran Bukti <span class="text-slate-500 font-normal">(Opsional, maksimal 5MB)</span>
                         </label>
-                        <div class="border-2 border-dashed border-slate-300 rounded-xl hover:border-indigo-400 transition-colors duration-200">
-                          <FileUpload
-                            ref="uploader"
-                            name="attachment"
-                            @select="handleFileSelect"
-                            :showUploadButton="false"
-                            :showCancelButton="false"
-                            :multiple="false"
-                            accept=".jpg,.jpeg,.png,.pdf,.zip,.doc,.docx"
-                            :maxFileSize="5000000"
-                          >
-                            <template #content="{ files }">
-                              <div v-if="files[0]" class="p-6 bg-slate-50">
-                                <div class="flex items-center justify-between">
-                                  <div class="flex items-center space-x-4">
-                                    <div class="w-16 h-16 bg-white rounded-xl shadow-sm flex items-center justify-center overflow-hidden">
-                                      <img v-if="attachmentPreview" :src="attachmentPreview" :alt="files[0].name" class="w-full h-full object-cover" />
-                                      <svg v-else class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                      </svg>
-                                    </div>
-                                    <div>
-                                      <p class="font-semibold text-slate-900">{{ files[0].name }}</p>
-                                      <p class="text-slate-500">{{ (files[0].size / 1024 / 1024).toFixed(2) }} MB</p>
-                                    </div>
+                        <FileUpload
+                          ref="uploader"
+                          name="attachment"
+                          @select="handleFileSelect"
+                          :auto="true"
+                          :customUpload="true"
+                          :showUploadButton="false"
+                          :showCancelButton="false"
+                          :multiple="false"
+                          accept=".jpg,.jpeg,.png,.pdf,.zip,.doc,.docx"
+                          :maxFileSize="5242880"
+                        >
+                          <template #content="{ files }">
+                            <div v-if="files[0]" class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                              <div class="flex items-start justify-between gap-4">
+                                <div class="flex items-start">
+                                  <div class="mr-3">
+                                    <img v-if="attachmentPreview" :src="attachmentPreview" :alt="files[0].name" width="64" height="64" class="rounded-lg"/>
+                                    <IconFileText v-else class="w-8 h-8 text-slate-400 mt-1" />
                                   </div>
-                                  <button
-                                    type="button"
-                                    @click="clearAttachment"
-                                    class="w-8 h-8 bg-red-100 hover:bg-red-200 rounded-lg flex items-center justify-center transition-colors duration-200"
-                                  >
-                                    <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                  </button>
+                                  <div>
+                                    <p class="font-semibold text-slate-900 break-all">{{ files[0].name }}</p>
+                                    <p class="text-slate-500">{{ (files[0].size / 1024 / 1024).toFixed(2) }} MB</p>
+                                  </div>
                                 </div>
+                                <button
+                                  type="button"
+                                  @click="clearAttachment"
+                                  class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                >
+                                  <IconX size="16" />
+                                </button>
                               </div>
-                            </template>
-                            <template #empty>
-                              <div class="p-8 text-center">
-                                <svg class="w-12 h-12 text-slate-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                </svg>
-                                <p class="text-slate-600 font-medium mb-2">Seret file ke sini atau klik untuk memilih</p>
-                                <p class="text-slate-500">Format: JPG, PNG, PDF, ZIP, DOC (Maks. 5MB)</p>
-                              </div>
-                            </template>
-                          </FileUpload>
-                        </div>
+                            </div>
+                          </template>
+
+                          <template #empty>
+                            <div class="flex flex-col items-center justify-center py-6 px-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-600 transition-colors cursor-pointer"
+                              @click="triggerFileInput">
+                              <IconCloudUp class="text-gray-400 mb-2" size="30"/>
+                              <p class="text-slate-600 font-medium mb-2">Drag & drop atau klik untuk memilih</p>
+                              <p class="text-sm sm:text-base text-slate-500">Format: JPG, PNG, PDF, ZIP, DOC (Maks. 5MB)</p>
+                            </div>
+                          </template>
+                        </FileUpload>
                         <div v-if="form.errors.attachment" class="mt-2 text-red-600 flex items-center">
                           <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
