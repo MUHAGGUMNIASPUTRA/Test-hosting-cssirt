@@ -36,6 +36,13 @@ class DashboardController extends Controller
         'published' => DB::table('posts')->where('status', 'Published')->count(),
         'draft' => DB::table('posts')->where('status', 'Draft')->count(),
       ],
+      'services' => [
+        'total' => DB::table('services')->count(),
+        'active' => DB::table('services')->where('is_active', true)->count(),
+      ],
+      'documents' => [
+        'total' => DB::table('documents')->count(),
+      ],
       'users' => [
         'total' => DB::table('users')->count(),
         'active' => DB::table('users')->whereNotNull('created_at')->count(),

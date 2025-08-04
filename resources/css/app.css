@@ -12,6 +12,17 @@ html {
   font-size: 14px;
 }
 
+/* File Upload Input */
+.p-fileupload-header {
+  display: none !important;
+}
+.p-fileupload-content {
+  padding: 0 !important;
+}
+.p-fileupload-advanced {
+  border: none !important;
+}
+
 /* Google Icons */
 .material-symbols-outlined {
   font-size: 1.5rem;

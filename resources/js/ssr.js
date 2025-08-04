@@ -431,6 +431,7 @@ const server = createServer(async (request, response) => {
               'Posts/Show': 'SEOPostShow',
               'Categories/Show': 'SEOCategoryShow',
               'Contact/Index': 'SEOContact',
+              'Documents/Index': 'SEODocuments',
               'Faq/Index': 'SEOFAQ',
               'Incidents/Create': 'SEOIncident',
               'Profile/Index': 'SEOProfile',

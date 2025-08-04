@@ -10,8 +10,8 @@ import Toast from 'primevue/toast'
 import {
   IconWorldCheck, IconLayoutBoard, IconUrgent,
   IconMailExclamation, IconBellPlus, IconNews,
-  IconArticle, IconTextPlus, IconBookmarks,
-  IconHeartHandshake, IconHelp, IconSpeakerphone, IconUsers
+  IconArticle, IconTextPlus, IconBookmarks, IconFileTypePdf,
+  IconHeartHandshake, IconHelp, IconSpeakerphone, IconUsers,
 } from '@tabler/icons-vue';
 
 defineProps({
@@ -73,6 +73,11 @@ const sidebarItems = ref([
         route: 'admin.taxonomy.index'
       }
     ],
+  },
+  {
+    label: 'Panduan',
+    icon: IconFileTypePdf,
+    route: 'admin.documents.index',
   },
   {
     label: 'Layanan',

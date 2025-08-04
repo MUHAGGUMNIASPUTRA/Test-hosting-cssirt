@@ -191,6 +191,14 @@ watch(
                   <div class="absolute inset-0 rounded-lg bg-gradient-to-r from-indigo-500 to-blue-600 opacity-0 group-hover:opacity-10 transition-opacity duration-200"></div>
                 </Link>
                 <Link
+                  :href="route('documents.index')"
+                  class="relative px-4 py-2 font-medium rounded-lg transition-all duration-200 group"
+                  :class="navTextClasses.link"
+                >
+                  <span class="relative z-10">Panduan</span>
+                  <div class="absolute inset-0 rounded-lg bg-gradient-to-r from-indigo-500 to-blue-600 opacity-0 group-hover:opacity-10 transition-opacity duration-200"></div>
+                </Link>
+                <Link
                   :href="route('faq.index')"
                   class="relative px-4 py-2 font-medium rounded-lg transition-all duration-200 group"
                   :class="navTextClasses.link"
@@ -304,6 +312,13 @@ watch(
               @click="isMenuOpen = false"
             >
               Artikel
+            </Link>
+            <Link
+              :href="route('documents.index')"
+              class="block px-4 py-3 text-lg font-medium text-slate-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
+              @click="isMenuOpen = false"
+            >
+              Panduan
             </Link>
             <Link
               :href="route('faq.index')"

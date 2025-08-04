@@ -200,7 +200,7 @@ const serverSideConfig = computed(() => {
                 @click="closeCallback"
                 icon="pi pi-times"
                 label="Batal"
-                severity="info"
+                severity="secondary"
                 variant="outlined"
               />
               <Button
@@ -218,14 +218,14 @@ const serverSideConfig = computed(() => {
     <div class="space-y-4 lg:space-y-6">
       <!-- Header Section -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-4">
           <div>
             <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Kelola Layanan</h2>
             <p class="text-slate-600">Kelola layanan yang disediakan organisasi</p>
           </div>
           <Link
             :href="route('admin.services.create')"
-            class="bg-blue-600 hover:bg-blue-800 text-white w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+            class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
           >
             <IconHeartPlus size="16" />
               Tambah Layanan

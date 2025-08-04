@@ -26,6 +26,7 @@ const form = useForm({
   body: props.post?.body || '',
   excerpt: props.post?.excerpt || '',
   image: null,
+  removeImage: false,
   status: props.post?.status || 'Draft',
   categories: props.post?.categories?.map(c => c.id) || [],
   tags: props.post?.tags?.map(t => t.id) || [],
@@ -33,6 +34,7 @@ const form = useForm({
 
 const statusOptions = ref(['Draft', 'Published']);
 const imagePreview = ref(null);
+const fileUploader = ref(null)
 const excerptWords = ref(0);
 
 // AI excerpt generation
@@ -72,10 +74,40 @@ const onImageSelect = (event) => {
   }
 };
 
-const removeImage = () => {
+const clearFile = () => {
+  form.file = null
   form.image = null;
   imagePreview.value = null;
+  if (fileUploader.value) {
+    fileUploader.value.clear()
+  }
+}
+
+const removeImage = () => {
+  // Clear the file uploader
+  console.log(fileUploader.value);
+  form.file = null
+  if (fileUploader.value) {
+    fileUploader.value.clear();
+  }
+
+  // Reset post image in edit mode
+  if (!isEditMode.value) return;
+
+  // Set form image to null and add a flag to indicate removal
+  form.image = null;
+  form.removeImage = true; // Add this flag to indicate image should be removed
+  imagePreview.value = null;
+
+  // Hide the current image preview by setting it to null
+  props.post.image = null;
 };
+
+
+function triggerFileInput() {
+  const input = fileUploader.value?.$el.querySelector('input[type="file"]')
+  if (input) input.click()
+}
 
 // Generate excerpt using AI
 const generateExcerpt = async () => {
@@ -142,14 +174,6 @@ const submit = () => {
     form.post(route('admin.posts.store'));
   }
 };
-
-const fileUploader = ref(null)
-
-function triggerFileInput() {
-  const input = fileUploader.value?.$el.querySelector('input[type="file"]')
-  if (input) input.click()
-}
-
 </script>
 
 <template>
@@ -341,6 +365,13 @@ function triggerFileInput() {
                         :pt="{ image: { class: 'w-full h-full object-cover' } }"
                         preview
                       />
+                      <button
+                        v-if="isEditMode"
+                        type="button"
+                        @click="removeImage"
+                        class="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-500 transition-colors">
+                        <IconX class="text-white" size="10"/>
+                      </button>
                     </div>
                     <p class="text-xs text-gray-500 mt-1">Gambar saat ini</p>
                   </div>
@@ -355,12 +386,6 @@ function triggerFileInput() {
                         :pt="{ image: { class: 'w-full h-full object-cover' } }"
                         preview
                       />
-                      <button
-                        type="button"
-                        @click="removeImage"
-                        class="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-500 transition-colors">
-                        <IconX class="text-white" size="10"/>
-                      </button>
                     </div>
                     <p class="text-xs text-gray-500 mt-1">
                       {{ isEditMode ? 'Gambar baru (akan mengganti gambar lama)' : 'Preview gambar' }}
@@ -378,8 +403,30 @@ function triggerFileInput() {
                     :showCancelButton="false"
                     :multiple="false"
                     accept="image/*"
+                    :maxFileSize="2097152"
                     class="w-full"
                   >
+                    <template #content="{ files }">
+                      <div v-if="files[0]" class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                        <div class="flex items-start justify-between gap-4">
+                          <div class="flex items-start">
+                            <div class="mt-1"><IconPhoto class="text-blue-600 mr-3" size="18"/></div>
+                            <div>
+                              <p class="font-medium text-slate-900 break-all">{{ files[0].name }}</p>
+                              <p class="text-sm text-slate-500">{{ (files[0].size / 1024 / 1024).toFixed(2) }} MB</p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            @click="clearFile"
+                            class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          >
+                            <IconX size="16" />
+                          </button>
+                        </div>
+                      </div>
+                    </template>
+
                     <template #empty>
                       <div
                         class="flex flex-col items-center justify-center py-6 px-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-600 transition-colors cursor-pointer"
@@ -470,12 +517,3 @@ function triggerFileInput() {
     </div>
   </AdminLayout>
 </template>
-
-<style>
-.p-fileupload-header {
-  display: none !important;
-}
-.p-fileupload-content {
-  padding: 1.125rem !important;
-}
-</style>

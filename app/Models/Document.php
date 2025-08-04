@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Document extends Model
 {
@@ -32,4 +33,55 @@ class Document extends Model
   protected $casts = [
     'published_at' => 'datetime',
   ];
+
+  /**
+   * Get only published documents
+   */
+  public function scopePublished($query)
+  {
+    return $query->whereNotNull('published_at')
+                 ->where('published_at', '<=', now());
+  }
+
+  /**
+   * Get the file size in human readable format
+   */
+  public function getFileSizeAttribute()
+  {
+    if (Storage::disk('public')->exists($this->file_path)) {
+      $bytes = Storage::disk('public')->size($this->file_path);
+      return $this->formatBytes($bytes);
+    }
+    return 'Unknown';
+  }
+
+  /**
+   * Get the download URL
+   */
+  public function getDownloadUrlAttribute()
+  {
+    return Storage::disk('public')->url($this->file_path);
+  }
+
+  /**
+   * Check if file exists
+   */
+  public function getFileExistsAttribute()
+  {
+    return Storage::disk('public')->exists($this->file_path);
+  }
+
+  /**
+   * Format bytes to human readable format
+   */
+  private function formatBytes($bytes, $precision = 2)
+  {
+    $units = array('B', 'KB', 'MB', 'GB', 'TB');
+
+    for ($i = 0; $bytes > 1024; $i++) {
+      $bytes /= 1024;
+    }
+
+    return round($bytes, $precision) . ' ' . $units[$i];
+  }
 }

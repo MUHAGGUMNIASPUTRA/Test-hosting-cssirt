@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DocumentController as AdminDocumentController;
 use App\Http\Controllers\Admin\ExcerptController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\ImageUploadController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\LandingController;
@@ -29,6 +31,9 @@ Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('posts.show');
 Route::get('/posts/categories/{category:slug}', [CategoryController::class, 'show'])->name('categories.show');
 Route::post('/posts/{post}/ratings', [RatingController::class, 'store'])->name('posts.ratings.store');
+Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
+Route::get('/documents/{document:slug}/view', [DocumentController::class, 'view'])->name('documents.view');
+Route::get('/documents/{document:slug}/download', [DocumentController::class, 'download'])->name('documents.download');
 Route::get('/faq', [FaqController::class, 'index'])->name('faq.index');
 Route::get('/faq/search', [FaqController::class, 'search'])->name('faq.search');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
@@ -55,6 +60,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
   Route::put('/tags/{tag}', [TaxonomyController::class, 'updateTag'])->name('tags.update');
   Route::delete('/tags/{tag}', [TaxonomyController::class, 'destroyTag'])->name('tags.destroy');
 
+  Route::resource('documents', AdminDocumentController::class);
   Route::resource('services', AdminServiceController::class);
   Route::resource('faqs', AdminFaqController::class)->except(['show', 'create', 'edit']);
   Route::resource('announcements', AnnouncementController::class)->except(['show', 'create', 'edit']);

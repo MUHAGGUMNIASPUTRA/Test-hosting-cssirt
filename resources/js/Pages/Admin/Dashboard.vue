@@ -125,7 +125,7 @@ const truncateText = (text, length = 50) => {
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+      <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6">
         <!-- Total Incidents -->
         <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
@@ -169,7 +169,23 @@ const truncateText = (text, length = 50) => {
               </p>
             </div>
             <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <IconArticle class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
+              <IconNews class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Documents -->
+        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm lg:text-base font-medium text-slate-600">Dokumen Panduan</p>
+              <p class="text-xl lg:text-3xl font-bold text-slate-900">{{ stats.documents?.total || 0 }}</p>
+              <p class="text-xs lg:text-sm text-slate-500">
+                <span class="font-medium">{{ stats.services?.total || 0 }}</span> layanan aktif
+              </p>
+            </div>
+            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
+              <IconFileTypePdf class="text-purple-600" :size="!isDesktop ? 18 : undefined"/>
             </div>
           </div>
         </div>
