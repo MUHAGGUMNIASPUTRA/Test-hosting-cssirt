@@ -102,9 +102,9 @@ const totalFileSize = computed(() => {
     <section class="py-8 sm:py-16 lg:py-20 bg-slate-50">
       <div class="container max-w-7xl">
 
-        <!-- Search Filter -->
-        <div class="flex flex-row gap-2 mb-8">
-          <div class="flex-1">
+        <!-- Search Section -->
+        <div class="mb-8 sm:mb-12">
+          <div class="max-w-2xl mx-auto">
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,23 +112,24 @@ const totalFileSize = computed(() => {
                 </svg>
               </div>
               <input
-                id="search"
                 v-model="searchQuery"
-                type="text"
-                class="block w-full pl-12 pr-4 py-4 text-lg border border-slate-300 rounded-2xl focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Cari berdasarkan judul, deskripsi, atau versi..."
                 @keyup.enter="applyFilters"
+                type="text"
+                class="block w-full pl-12 pr-12 py-4 text-lg border border-slate-300 rounded-2xl leading-5 bg-white placeholder-slate-500 focus:outline-none focus:placeholder-slate-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Cari panduan berdasarkan judul, deskripsi, atau versi..."
               />
+              <div v-if="searchQuery" class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                <button
+                  @click="clearFilters"
+                  class="p-1 rounded-full hover:bg-slate-100 transition-colors duration-200"
+                >
+                  <svg class="h-5 w-5 text-slate-400 hover:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
-          <Button
-            v-if="searchQuery"
-            @click="clearFilters"
-            icon="pi pi-times"
-            variant="text"
-            severity="secondary"
-            class="!text-red-600"
-          />
         </div>
 
         <!-- Documents DataTable -->

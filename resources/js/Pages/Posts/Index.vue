@@ -1,16 +1,23 @@
 <script setup>
+// filepath: resources/js/Pages/Posts/Index.vue
+
 import { computed, onMounted, ref } from 'vue'
-import { Link } from '@inertiajs/vue3'
+import { Link, router } from '@inertiajs/vue3'
 import { useResponsive } from '@/Composables/useResponsive'
 
 const props = defineProps({
   posts: Object,
   isFirstPage: Boolean,
+  filters: Object,
 })
 
 // Animation refs
 const heroRef = ref(null)
 const postsRef = ref(null)
+
+// Search functionality - separate input value from applied search
+const searchInput = ref(props.filters?.search || '') // What user is typing
+const appliedSearch = ref(props.filters?.search || '') // What search is actually applied
 
 // Responsive composable
 const { isMobile } = useResponsive()
@@ -30,10 +37,20 @@ const generateExcerpt = (post) => {
 
 // Get posts for grid display (exclude featured post on first page)
 const gridPosts = computed(() => {
-  if (props.isFirstPage && props.posts.data.length > 0) {
-    return props.posts.data.slice(1); // Skip first post (featured)
+  if (props.isFirstPage && props.posts.data.length > 0 && !appliedSearch.value) {
+    return props.posts.data.slice(1); // Skip first post (featured) only when not searching
   }
-  return props.posts.data; // Show all posts on other pages
+  return props.posts.data; // Show all posts on other pages or when searching
+});
+
+// Show featured post only on first page and when not searching
+const showFeaturedPost = computed(() => {
+  return props.isFirstPage && props.posts.data.length > 0 && !appliedSearch.value;
+});
+
+// Check if user is typing but hasn't searched yet
+const isTypingWithoutSearch = computed(() => {
+  return searchInput.value.trim() !== '' && searchInput.value.trim() !== appliedSearch.value;
 });
 
 const paginationLinks = computed(() => {
@@ -63,6 +80,39 @@ const paginationLinks = computed(() => {
 
   return [prevLink, ...pageLinks, nextLink];
 });
+
+// Search functionality
+const applySearch = () => {
+  const params = new URLSearchParams()
+  const searchTerm = searchInput.value.trim()
+
+  if (searchTerm) {
+    params.set('search', searchTerm)
+  }
+
+  // Update appliedSearch immediately when applying search
+  appliedSearch.value = searchTerm
+
+  const queryString = params.toString()
+  const url = route('posts.index') + (queryString ? '?' + queryString : '')
+
+  router.get(url, {}, {
+    preserveState: true,
+    preserveScroll: false,
+    replace: true
+  })
+}
+
+const clearSearch = () => {
+  searchInput.value = ''
+  appliedSearch.value = ''
+
+  router.get(route('posts.index'), {}, {
+    preserveState: true,
+    preserveScroll: false,
+    replace: true
+  })
+}
 
 // Scroll animations
 onMounted(() => {
@@ -113,8 +163,50 @@ onMounted(() => {
     <section ref="postsRef" class="py-8 sm:py-16 lg:py-20 bg-white opacity-0 translate-y-10">
       <div class="container">
 
-        <!-- Featured Post (Only on First Page) -->
-        <div v-if="isFirstPage && posts.data.length > 0" class="mb-8 sm:mb-16">
+        <!-- Search Section -->
+        <div class="mb-8 sm:mb-12">
+          <div class="max-w-2xl mx-auto">
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                v-model="searchInput"
+                @keyup.enter="applySearch"
+                type="text"
+                class="block w-full pl-12 pr-12 py-4 text-lg border border-slate-300 rounded-2xl leading-5 bg-white placeholder-slate-500 focus:outline-none focus:placeholder-slate-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Cari artikel berdasarkan judul, konten, atau kategori..."
+              />
+              <div v-if="searchInput" class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                <button
+                  @click="clearSearch"
+                  class="p-1 rounded-full hover:bg-slate-100 transition-colors duration-200"
+                >
+                  <svg class="h-5 w-5 text-slate-400 hover:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search Results Info (only when search is actually applied) -->
+        <div v-if="appliedSearch" class="mb-8 text-center">
+          <p class="text-slate-600">
+            <span v-if="posts.total > 0">
+              Menampilkan {{ posts.total }} hasil untuk "<strong>{{ appliedSearch }}</strong>"
+            </span>
+            <span v-else>
+              Tidak ditemukan artikel untuk "<strong>{{ appliedSearch }}</strong>"
+            </span>
+          </p>
+        </div>
+
+        <!-- Featured Post (Only on First Page and No Search) -->
+        <div v-if="showFeaturedPost" class="mb-8 sm:mb-16">
           <div class="text-center mb-8 sm:mb-12">
             <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
               Artikel Terbaru
@@ -186,7 +278,9 @@ onMounted(() => {
         <div v-if="gridPosts.length > 0">
           <div class="text-center mb-8 sm:mb-12">
             <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-600 mb-2">
-              {{ isFirstPage ? 'Artikel Lainnya' : 'Semua Artikel' }}
+              <span v-if="appliedSearch">Hasil Pencarian</span>
+              <span v-else-if="showFeaturedPost">Artikel Lainnya</span>
+              <span v-else>Semua Artikel</span>
             </h2>
           </div>
 
@@ -324,8 +418,20 @@ onMounted(() => {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
-          <h3 class="text-2xl font-semibold text-slate-900 mb-2">Belum Ada Artikel</h3>
-          <p class="text-slate-600">Artikel dan panduan akan segera tersedia di sini.</p>
+          <h3 class="text-2xl font-semibold text-slate-900 mb-2">
+            {{ appliedSearch ? 'Tidak Ditemukan Hasil' : 'Belum Ada Artikel' }}
+          </h3>
+          <p class="text-slate-600">
+            {{ appliedSearch ? `Coba gunakan kata kunci yang berbeda.` : 'Artikel dan panduan akan segera tersedia di sini.' }}
+          </p>
+          <button
+            v-if="appliedSearch"
+            @click="clearSearch"
+            class="mt-4 inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200"
+          >
+            <IconX size="14" class="mr-2"/>
+            Hapus Pencarian
+          </button>
         </div>
       </div>
     </section>

@@ -25,15 +25,34 @@ class PostController extends Controller
     // For other pages: get 6 posts (all regular)
     $perPage = $isFirstPage ? 7 : 6;
 
-    $posts = Post::with('categories')
-      ->where('status', 'Published')
-      ->latest('published_at')
+    $query = Post::with('categories')
+      ->where('status', 'Published');
+
+    // Apply search filter
+    if ($request->filled('search')) {
+      $searchTerm = $request->search;
+      $query->where(function($q) use ($searchTerm) {
+        $q->where('title', 'ilike', '%' . $searchTerm . '%')
+          ->orWhere('excerpt', 'ilike', '%' . $searchTerm . '%')
+          ->orWhere('body', 'ilike', '%' . $searchTerm . '%')
+          ->orWhereHas('categories', function($categoryQuery) use ($searchTerm) {
+            $categoryQuery->where('name', 'ilike', '%' . $searchTerm . '%');
+          })
+          ->orWhereHas('tags', function($tagQuery) use ($searchTerm) {
+            $tagQuery->where('name', 'ilike', '%' . $searchTerm . '%');
+          });
+      });
+      $perPage = 6;
+    }
+
+    $posts = $query->latest('published_at')
       ->paginate($perPage)
       ->withQueryString();
 
     return $this->handleSeoRequest('Posts/Index', [
       'posts' => $posts,
       'isFirstPage' => $isFirstPage,
+      'filters' => $request->only(['search']),
     ]);
   }
 
