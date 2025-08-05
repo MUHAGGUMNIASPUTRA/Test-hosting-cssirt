@@ -545,12 +545,14 @@ const answerWordCount = computed(() => {
             <div class="flex items-center justify-end space-x-3 mt-6 pt-6 border-t border-slate-200">
               <Button
                 @click="closeCallback"
-                icon="pi pi-times"
-                label="Batal"
                 severity="secondary"
                 variant="outlined"
                 :disabled="form.processing"
-              />
+              >
+                <template #default>
+                  <IconX size="16"/>Batal
+                </template>
+              </Button>
               <Button
                 type="submit"
                 severity="primary"

@@ -202,17 +202,21 @@ const serverSideConfig = computed(() => {
             <div class="flex items-center justify-between space-x-3">
               <Button
                 @click="closeCallback"
-                icon="pi pi-times"
-                label="Batal"
                 severity="secondary"
                 variant="outlined"
-              />
+              >
+                <template #default>
+                  <IconX size="16"/>Batal
+                </template>
+              </Button>
               <Button
                 @click="deletePost"
-                icon="pi pi-trash"
-                label="Hapus"
                 severity="danger"
-              />
+              >
+                <template #default>
+                  <IconTrash size="16"/>Hapus
+                </template>
+              </Button>
             </div>
           </div>
         </div>

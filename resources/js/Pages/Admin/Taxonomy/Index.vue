@@ -414,19 +414,24 @@ const formatDate = (dateString) => {
             <div class="flex items-center justify-between space-x-3 mt-6 pt-6 border-t border-slate-200">
               <Button
                 @click="closeCallback"
-                icon="pi pi-times"
-                label="Batal"
                 severity="secondary"
                 variant="outlined"
                 :disabled="form.processing"
-              />
+              >
+                <template #default>
+                  <IconX size="16"/>Batal
+                </template>
+              </Button>
               <Button
                 type="submit"
-                icon="pi pi-save"
-                :label="form.processing ? 'Menyimpan...' : (isEditing ? 'Update' : 'Simpan')"
                 :severity="currentType === 'Kategori' ? 'primary' : 'success'"
-                :loading="form.processing"
-              />
+              >
+                <template #default>
+                  <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
+                  <IconDeviceFloppy v-else size="16"/>
+                  {{ form.processing ? 'Menyimpan...' : (isEditing ? 'Update' : 'Simpan') }}
+                </template>
+              </Button>
             </div>
           </form>
         </div>

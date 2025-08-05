@@ -105,19 +105,6 @@ const sidebarItems = ref([
 // User menu items
 const userMenuItems = ref([
   {
-    label: 'Profil Saya',
-    icon: 'pi pi-user',
-    command: () => console.log('Profile clicked')
-  },
-  {
-    label: 'Pengaturan',
-    icon: 'pi pi-cog',
-    command: () => console.log('Settings clicked')
-  },
-  {
-    separator: true
-  },
-  {
     label: 'Logout',
     icon: 'pi pi-power-off',
     command: () => logout(),
@@ -369,7 +356,10 @@ watch(
 
     <!-- Footer -->
     <div class="text-sm py-5 mx-6 border-t border-slate-200 text-center lg:text-right mb-0.5">
-      <span>© 2025 CSIRT Kabupaten Bojonegoro. Seluruh hak cipta dilindungi.</span>
+      <p class="text-slate-400">
+        &copy; {{ new Date().getFullYear() }}
+        <a href="https://bojonegorokab.go.id/" target="_blank" class="hover:text-blue-600 transition-colors duration-200">Pemerintah Kabupaten Bojonegoro</a>. All rights reserved.
+      </p>
     </div>
 
     <!-- Toast notifications -->

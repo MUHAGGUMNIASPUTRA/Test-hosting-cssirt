@@ -636,13 +636,15 @@ const contentWordCount = computed(() => {
             <!-- Actions -->
             <div class="flex items-center justify-end space-x-3 mt-6 pt-6 border-t border-slate-200">
               <Button
-                icon="pi pi-times"
-                label="Batal"
                 @click="closeCallback"
                 severity="secondary"
                 variant="outlined"
                 :disabled="form.processing"
-              />
+              >
+                <template #default>
+                  <IconX size="16"/>Batal
+                </template>
+              </Button>
               <Button
                 type="submit"
                 severity="primary"
