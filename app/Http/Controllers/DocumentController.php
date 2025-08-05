@@ -16,7 +16,7 @@ class DocumentController extends Controller
    */
   public function index(Request $request)
   {
-    $query = Document::published();
+    $query = Document::published()->where('version', '!=', 'RFC2350');
 
     // Apply search filter
     if ($request->filled('search')) {

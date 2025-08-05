@@ -86,7 +86,7 @@ const totalFileSize = computed(() => {
       </div>
 
       <div class="relative z-10 px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
-        <div class="container mx-auto text-center">
+        <div class="container text-center">
           <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl">
             Panduan & <span class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">Dokumentasi</span>
           </h1>
@@ -100,7 +100,7 @@ const totalFileSize = computed(() => {
 
     <!-- Documents List -->
     <section class="py-8 sm:py-16 lg:py-20 bg-slate-50">
-      <div class="container mx-auto max-w-7xl">
+      <div class="container max-w-7xl">
 
         <!-- Search Filter -->
         <div class="flex flex-row gap-2 mb-8">

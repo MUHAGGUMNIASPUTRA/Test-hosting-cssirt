@@ -21,6 +21,7 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RatingController;
+use App\Http\Controllers\RFC2350Controller;
 use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,9 @@ Route::post('/posts/{post}/ratings', [RatingController::class, 'store'])->name('
 Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
 Route::get('/documents/{document:slug}/view', [DocumentController::class, 'view'])->name('documents.view');
 Route::get('/documents/{document:slug}/download', [DocumentController::class, 'download'])->name('documents.download');
+Route::get('/rfc2350', [RFC2350Controller::class, 'index'])->name('rfc2350.index');
+Route::get('/rfc2350/view', [RFC2350Controller::class, 'view'])->name('rfc2350.view');
+Route::get('/rfc2350/download', [RFC2350Controller::class, 'download'])->name('rfc2350.download');
 Route::get('/faq', [FaqController::class, 'index'])->name('faq.index');
 Route::get('/faq/search', [FaqController::class, 'search'])->name('faq.search');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
