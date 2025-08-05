@@ -76,7 +76,7 @@ class Incident extends Model
    */
   public function fileSize()
   {
-    if (Storage::disk('public')->exists($this->attachment)) {
+    if ($this->attachment !== null && Storage::disk('public')->exists($this->attachment)) {
       $bytes = Storage::disk('public')->size($this->attachment);
       return $this->formatBytes($bytes);
     }

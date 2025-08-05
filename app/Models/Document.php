@@ -47,7 +47,7 @@ class Document extends Model
    */
   public function fileSize()
   {
-    if (Storage::disk('public')->exists($this->file_path)) {
+    if ($this->file_path && Storage::disk('public')->exists($this->file_path)) {
       $bytes = Storage::disk('public')->size($this->file_path);
       return $this->formatBytes($bytes);
     }
