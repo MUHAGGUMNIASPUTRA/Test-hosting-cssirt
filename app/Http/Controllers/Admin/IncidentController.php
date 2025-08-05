@@ -10,6 +10,7 @@ use App\Models\IncidentType;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -73,16 +74,25 @@ class IncidentController extends Controller
     $validated = $request->validate([
       'reporter_name' => 'required|string|max:255',
       'reporter_email' => 'required|email|max:255',
+      'reporter_phone' => 'nullable|string|max:20',
       'incident_type_id' => 'required|exists:incident_types,id',
       'incident_at' => 'required|date',
       'description' => 'required|string',
       'status' => 'required|in:Baru,Diverifikasi,Dalam Penyelidikan,Selesai,Ditutup',
       'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritikal',
       'assigned_to' => 'nullable|exists:users,id',
+      'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,zip,doc,docx|max:5120', // Max 5MB
     ]);
+
+    // Handle file upload
+    $path = null;
+    if ($request->hasFile('attachment')) {
+      $path = $request->file('attachment')->store('incidents', 'public');
+    }
 
     Incident::create(array_merge($validated, [
       'case_id' => 'CSIRT-BJN-' . now()->year . '-' . str_pad(Incident::count() + 1, 4, '0', STR_PAD_LEFT),
+      'attachment' => $path,
       'reported_at' => now(),
     ]));
 
@@ -110,6 +120,8 @@ class IncidentController extends Controller
    */
   public function edit(Incident $incident): Response
   {
+    $incident->file_size = $incident->fileSize();
+
     return Inertia::render('Admin/Incidents/Create', [
       'incident' => $incident,
       'incidentTypes' => IncidentType::all(['id', 'name']),
@@ -125,17 +137,27 @@ class IncidentController extends Controller
     $validated = $request->validate([
       'reporter_name' => 'required|string|max:255',
       'reporter_email' => 'required|email|max:255',
+      'reporter_phone' => 'nullable|string|max:20',
       'incident_type_id' => 'required|exists:incident_types,id',
       'incident_at' => 'required|date',
       'description' => 'required|string',
       'status' => 'required|in:Baru,Diverifikasi,Dalam Penyelidikan,Selesai,Ditutup',
       'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritikal',
       'assigned_to' => 'nullable|exists:users,id',
+      'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,zip,doc,docx|max:5120', // Max 5MB
     ]);
 
-    // Panggil helper untuk mencatat perubahan sebelum di-update
-    $this->logChanges($incident, $validated);
+    // Handle file upload
+    if ($request->hasFile('attachment')) {
+      // Delete old attachment if exists
+      if ($incident->attachment && Storage::disk('public')->exists($incident->attachment)) {
+        Storage::disk('public')->delete($incident->attachment);
+      }
 
+      $validated['attachment'] = $request->file('attachment')->store('incidents', 'public');
+    }
+
+    $this->logChanges($incident, $validated);
     $incident->update($validated);
 
     return redirect()->route('admin.incidents.show', $incident)->with('success', 'Insiden berhasil diperbarui.');

@@ -18,11 +18,11 @@ class ImageUploadController extends Controller
   public function store(Request $request)
   {
     $request->validate([
-      'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Max 2MB
+      'image' => 'required|image|mimes:jpg,jpeg,png,webp,gif|max:2048', // Max 2MB
     ]);
 
     if ($request->hasFile('image')) {
-      $path = $request->file('image')->store('editor-images', 'public');
+      $path = $request->file('image')->store('posts-editor', 'public');
 
       // Return the public URL of the uploaded image
       return response()->json(['url' => Storage::url($path)]);

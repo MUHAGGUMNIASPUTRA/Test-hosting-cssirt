@@ -385,7 +385,11 @@ const submit = () => {
                         class="w-full h-full object-cover"
                         :pt="{ image: { class: 'w-full h-full object-cover' } }"
                         preview
-                      />
+                      >
+                        <template #previewicon>
+                          <IconSearch/>
+                        </template>
+                      </Image>
                     </div>
                     <p class="text-xs text-gray-500 mt-1">
                       {{ isEditMode ? 'Gambar baru (akan mengganti gambar lama)' : 'Preview gambar' }}
@@ -402,7 +406,7 @@ const submit = () => {
                     :showUploadButton="false"
                     :showCancelButton="false"
                     :multiple="false"
-                    accept="image/*"
+                    accept=".jpg,.jpeg,.png,.webp"
                     :maxFileSize="2097152"
                     class="w-full"
                   >
@@ -410,7 +414,7 @@ const submit = () => {
                       <div v-if="files[0]" class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
                         <div class="flex items-start justify-between gap-4">
                           <div class="flex items-start">
-                            <div class="mt-1"><IconPhoto class="text-blue-600 mr-3" size="18"/></div>
+                            <div class="mt-1"><IconPhoto class="text-green-600 mr-3" size="18"/></div>
                             <div>
                               <p class="font-medium text-slate-900 break-all">{{ files[0].name }}</p>
                               <p class="text-sm text-slate-500">{{ (files[0].size / 1024 / 1024).toFixed(2) }} MB</p>

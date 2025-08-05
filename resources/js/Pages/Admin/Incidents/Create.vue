@@ -1,9 +1,13 @@
 <script setup>
 // filepath: resources/js/Pages/Admin/Incidents/Create.vue
 
-import { Link, useForm } from '@inertiajs/vue3'
-import { computed } from 'vue'
+import { Link, router, useForm } from '@inertiajs/vue3'
+import { computed, onMounted, ref } from 'vue'
 import { useResponsive } from '@/Composables/useResponsive';
+
+import {
+  IconFileText, IconFileTypePdf, IconFileTypeDoc, IconFileTypeZip, IconPhoto,
+} from '@tabler/icons-vue';
 
 const props = defineProps({
   incident: {
@@ -15,6 +19,9 @@ const props = defineProps({
 })
 
 const { isMobile, isDesktop } = useResponsive();
+
+// File upload ref
+const fileUploader = ref(null)
 
 // Determine if editing or creating
 const isEditing = computed(() => !!props.incident)
@@ -50,7 +57,64 @@ const form = useForm({
   status: props.incident?.status || 'Baru',
   priority: props.incident?.priority || 'Sedang',
   assigned_to: props.incident?.assigned_to || null,
+  attachment: null, // File attachment
 })
+
+// Watch for changes in props.incident and update form accordingly
+onMounted(() => {
+  if (props.incident) {
+    form.reporter_name = props.incident.reporter_name || ''
+    form.reporter_email = props.incident.reporter_email || ''
+    form.reporter_phone = props.incident.reporter_phone || ''
+    form.incident_type_id = props.incident.incident_type_id || null
+    form.incident_at = props.incident.incident_at ? new Date(props.incident.incident_at) : new Date()
+    form.description = props.incident.description || ''
+    form.status = props.incident.status || 'Baru'
+    form.priority = props.incident.priority || 'Sedang'
+    form.assigned_to = props.incident.assigned_to || null
+  }
+})
+
+// File upload functions
+const onFileSelect = (event) => {
+  const file = event.files[0]
+  form.attachment = file
+}
+
+const clearFile = () => {
+  form.attachment = null
+  if (fileUploader.value) {
+    fileUploader.value.clear()
+  }
+}
+
+const triggerFileInput = () => {
+  const input = fileUploader.value?.$el.querySelector('input[type="file"]')
+  if (input) input.click()
+}
+
+// Get file icon color based on file type
+const getFileIcon = (fileName) => {
+  if (!fileName) return 'text-slate-600'
+
+  const extension = fileName.split('.').pop()?.toLowerCase()
+
+  switch (extension) {
+    case 'pdf':
+      return [IconFileTypePdf, 'text-red-600', 'bg-red-50', 'border-red-200']
+    case 'doc':
+    case 'docx':
+      return [IconFileTypeDoc, 'text-blue-600', 'bg-blue-50', 'border-blue-200']
+    case 'zip':
+      return [IconFileTypeZip, 'text-purple-600', 'bg-purple-50', 'border-purple-200']
+    case 'jpg':
+    case 'jpeg':
+    case 'png':
+      return [IconPhoto, 'text-green-600', 'bg-green-50', 'border-green-200']
+    default:
+      return [IconFileText, 'text-slate-600', 'bg-slate-50', 'border-slate-200']
+  }
+}
 
 const statusOptions = [
   { label: 'Baru', value: 'Baru' },
@@ -94,11 +158,50 @@ const submit = () => {
   }
 
   if (isEditing.value) {
-    // Update existing incident
-    form.transform(() => formData).put(route('admin.incidents.update', props.incident.id))
+    // For updates, we need to use POST with _method override due to file uploads
+    // because browsers don't support file uploads with PUT method
+    const formData = new FormData()
+
+    // Add all form fields
+    formData.append('reporter_name', form.reporter_name || '')
+    formData.append('reporter_email', form.reporter_email || '')
+    formData.append('reporter_phone', form.reporter_phone || '')
+    formData.append('incident_type_id', form.incident_type_id || '')
+    formData.append('description', form.description || '')
+    formData.append('status', form.status || '')
+    formData.append('priority', form.priority || '')
+    formData.append('assigned_to', form.assigned_to || '')
+
+    // Handle date formatting
+    if (form.incident_at) {
+      formData.append('incident_at', formatDateForInput(form.incident_at))
+    }
+
+    // Handle file attachment
+    if (form.attachment) {
+      formData.append('attachment', form.attachment)
+    }
+
+    // Add method override for Laravel
+    formData.append('_method', 'PUT')
+
+    // Use Inertia's router.post with FormData
+    router.post(route('admin.incidents.update', props.incident.id), formData, {
+      forceFormData: true,
+      preserveState: false,
+      onSuccess: () => {
+        // Optional: handle success
+      },
+      onError: (errors) => {
+        // Optional: handle errors
+        console.error('Update failed:', errors)
+      }
+    })
   } else {
     // Create new incident
-    form.transform(() => formData).post(route('admin.incidents.store'))
+    form.transform(() => formData).post(route('admin.incidents.store'), {
+      forceFormData: true
+    })
   }
 }
 
@@ -351,6 +454,118 @@ const formatDateTime = (date) => {
 
           <!-- Sidebar -->
           <div class="space-y-4 lg:space-y-6">
+            <!-- File Attachment -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
+              <div class="flex items-center mb-4 lg:mb-6">
+                <div class="w-10 h-10 lg:w-12 lg:h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
+                  <IconCloudUp class="text-purple-600" :size="!isDesktop ? 18 : undefined"/>
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-xl/6 font-semibold text-slate-900">Lampiran Bukti</h3>
+                  <p class="text-xs lg:text-sm text-slate-600">Upload bukti pendukung insiden</p>
+                </div>
+              </div>
+
+              <!-- Current File Info (Edit Mode) -->
+              <div v-if="isEditing && incident?.attachment" class="mb-4">
+                <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center" :class="getFileIcon(incident.attachment)[2] + ' border ' + getFileIcon(incident.attachment)[3]">
+                      <component
+                        :is="getFileIcon(incident.attachment)[0]"
+                        :class="getFileIcon(incident.attachment)[1]"
+                        size="18"
+                      />
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-medium text-slate-900">File Saat Ini</p>
+                      <!-- <p class="text-sm text-slate-500 break-all">{{ incident.attachment.split('/').pop() }}</p> -->
+                      <p class="text-sm text-slate-500">{{ incident.file_size }}</p>
+                    </div>
+                    <div class="flex gap-2">
+                      <a
+                        :href="`/storage/${incident.attachment}`"
+                        target="_blank"
+                        class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        title="Lihat File"
+                      >
+                        <IconEye size="16" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-500 mt-2">
+                  Upload file baru untuk mengganti file lama
+                </p>
+              </div>
+
+              <!-- File Upload -->
+              <div>
+                <label class="block font-medium text-slate-700 mb-2">
+                  Lampiran Bukti
+                  <span class="text-slate-500 text-xs">(Opsional, maksimal 5MB)</span>
+                </label>
+
+                <FileUpload
+                  ref="fileUploader"
+                  name="attachment"
+                  @select="onFileSelect"
+                  :auto="true"
+                  :customUpload="true"
+                  :showUploadButton="false"
+                  :showCancelButton="false"
+                  :multiple="false"
+                  accept=".jpg,.jpeg,.png,.pdf,.zip,.doc,.docx"
+                  :maxFileSize="5242880"
+                  class="w-full"
+                  :class="{ 'p-invalid': form.errors.attachment }"
+                >
+                  <template #content="{ files }">
+                    <div v-if="files[0]" class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                      <div class="flex items-start justify-between gap-4">
+                        <div class="flex items-start">
+                          <div class="mt-1">
+                            <component
+                              :is="getFileIcon(files[0].name)[0]"
+                              :class="getFileIcon(files[0].name)[1]"
+                              class="mr-3"
+                              size="18"
+                            />
+                          </div>
+                          <div>
+                            <p class="font-medium text-slate-900 break-all">{{ files[0].name }}</p>
+                            <p class="text-sm text-slate-500">{{ (files[0].size / 1024 / 1024).toFixed(2) }} MB</p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          @click="clearFile"
+                          class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <IconX size="16" />
+                        </button>
+                      </div>
+                    </div>
+                  </template>
+
+                  <template #empty>
+                    <div
+                      class="flex flex-col items-center justify-center py-6 px-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-600 transition-colors cursor-pointer"
+                      @click="triggerFileInput"
+                    >
+                      <IconFileSearch class="text-gray-400 mb-2" :size="!isDesktop ? 18 : undefined"/>
+                      <p class="text-sm text-gray-600 text-center">
+                        Drag & drop atau klik untuk memilih file
+                      </p>
+                      <p class="text-xs text-gray-400 mt-1">JPG, PNG, PDF, ZIP, DOC (Maks. 5MB)</p>
+                    </div>
+                  </template>
+                </FileUpload>
+
+                <small v-if="form.errors.attachment" class="p-error block mt-1">{{ form.errors.attachment }}</small>
+              </div>
+            </div>
+
             <!-- Status Management -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
               <div class="flex items-center mb-4 lg:mb-6">
@@ -364,29 +579,39 @@ const formatDateTime = (date) => {
               </div>
 
               <div class="space-y-4 lg:space-y-6">
-                <div>
-                  <label for="status" class="block font-medium text-slate-700 mb-2">Status</label>
-                  <Select
-                    v-model="form.status"
-                    :options="statusOptions"
-                    optionLabel="label"
-                    optionValue="value"
-                    class="w-full"
-                  />
-                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+                  <div>
+                    <label for="status" class="block font-medium text-slate-700 mb-2">Status <span class="text-red-500">*</span></label>
+                    <Select
+                      v-model="form.status"
+                      :options="statusOptions"
+                      optionLabel="label"
+                      optionValue="value"
+                      class="w-full"
+                    />
+                  </div>
 
-                <div>
-                  <label class="block font-medium text-slate-700 mb-3">Prioritas</label>
-                  <div class="grid grid-cols-2 gap-2">
-                    <button
-                      v-for="option in priorityOptions"
-                      :key="option.value"
-                      type="button"
-                      @click="form.priority = option.value"
-                      :class="getPriorityButtonClasses(option.value, form.priority === option.value)"
-                    >
-                      {{ option.label }}
-                    </button>
+                  <div>
+                    <label for="priority" class="block font-medium text-slate-700 mb-2">Prioritas <span class="text-red-500">*</span></label>
+                    <Select
+                      v-model="form.priority"
+                      :options="priorityOptions"
+                      optionLabel="label"
+                      optionValue="value"
+                      class="w-full"
+                    />
+                    <!-- <label class="block font-medium text-slate-700 mb-3">Prioritas</label>
+                    <div class="grid grid-cols-2 gap-2">
+                      <button
+                        v-for="option in priorityOptions"
+                        :key="option.value"
+                        type="button"
+                        @click="form.priority = option.value"
+                        :class="getPriorityButtonClasses(option.value, form.priority === option.value)"
+                      >
+                        {{ option.label }}
+                      </button>
+                    </div> -->
                   </div>
                 </div>
 
@@ -445,6 +670,10 @@ const formatDateTime = (date) => {
                 <div v-if="form.incident_at" class="flex justify-between items-start">
                   <span class="text-slate-500">Waktu:</span>
                   <span class="text-slate-700 text-right">{{ formatDateTime(form.incident_at) }}</span>
+                </div>
+                <div v-if="form.attachment || (isEditing && incident?.attachment)" class="flex justify-between items-center">
+                  <span class="text-slate-500">Lampiran:</span>
+                  <span class="text-green-600 text-xs">✓ Ada file</span>
                 </div>
               </div>
             </div>

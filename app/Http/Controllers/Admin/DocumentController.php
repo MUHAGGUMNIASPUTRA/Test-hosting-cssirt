@@ -44,8 +44,8 @@ class DocumentController extends Controller
 
     // Add file size and status to each document
     $documents->getCollection()->transform(function ($document) {
-      $document->file_size = $this->getFileSize($document->file_path);
-      $document->file_exists = Storage::disk('public')->exists($document->file_path);
+      $document->file_size = $document->fileSize();
+      $document->file_exists = $document->fileExists();
       $document->status = $this->getDocumentStatus($document);
       return $document;
     });
@@ -97,8 +97,8 @@ class DocumentController extends Controller
    */
   public function edit(Document $document): Response
   {
-    $document->file_size = $this->getFileSize($document->file_path);
-    $document->file_exists = Storage::disk('public')->exists($document->file_path);
+    $document->file_size = $document->fileSize();
+    $document->file_exists = $document->fileExists();
 
     return Inertia::render('Admin/Documents/Create', [
       'document' => $document,
@@ -121,7 +121,7 @@ class DocumentController extends Controller
     $path = $document->file_path;
     if ($request->hasFile('file')) {
       // Delete old file if it exists
-      if (Storage::disk('public')->exists($document->file_path)) {
+      if ($document->fileExists()) {
         Storage::disk('public')->delete($document->file_path);
       }
       $path = $request->file('file')->store('documents', 'public');
@@ -145,39 +145,13 @@ class DocumentController extends Controller
   public function destroy(Document $document)
   {
     // Delete the file
-    if (Storage::disk('public')->exists($document->file_path)) {
+    if ($document->fileExists()) {
       Storage::disk('public')->delete($document->file_path);
     }
 
     $document->delete();
 
     return redirect()->route('admin.documents.index')->with('success', 'Dokumen berhasil dihapus.');
-  }
-
-  /**
-   * Get file size in human readable format
-   */
-  private function getFileSize($filePath)
-  {
-    if (Storage::disk('public')->exists($filePath)) {
-      $bytes = Storage::disk('public')->size($filePath);
-      return $this->formatBytes($bytes);
-    }
-    return 'Unknown';
-  }
-
-  /**
-   * Format bytes to human readable format
-   */
-  private function formatBytes($bytes, $precision = 2)
-  {
-    $units = array('B', 'KB', 'MB', 'GB', 'TB');
-
-    for ($i = 0; $bytes > 1024; $i++) {
-      $bytes /= 1024;
-    }
-
-    return round($bytes, $precision) . ' ' . $units[$i];
   }
 
   /**

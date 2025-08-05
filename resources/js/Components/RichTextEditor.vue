@@ -336,7 +336,7 @@ const handleImageUpload = (event) => {
     <EditorContent :editor="editor" />
 
     <!-- Input image -->
-    <input type="file" ref="fileInput" @change="handleImageUpload" class="hidden" accept="image/*" />
+    <input type="file" ref="fileInput" @change="handleImageUpload" class="hidden" accept=".jpg,.jpeg,.png,.webp,.gif" />
 
     <!-- Character Count -->
     <div class="p-2 border-t border-gray-300 text-xs text-gray-500 flex justify-end gap-4">

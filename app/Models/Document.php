@@ -76,11 +76,9 @@ class Document extends Model
   private function formatBytes($bytes, $precision = 2)
   {
     $units = array('B', 'KB', 'MB', 'GB', 'TB');
-
     for ($i = 0; $bytes > 1024; $i++) {
       $bytes /= 1024;
     }
-
     return round($bytes, $precision) . ' ' . $units[$i];
   }
 }

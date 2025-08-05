@@ -40,7 +40,7 @@ class IncidentController extends Controller
 
     $path = null;
     if ($request->hasFile('attachment')) {
-      $path = $request->file('attachment')->store('attachments', 'public');
+      $path = $request->file('attachment')->store('incidents', 'public');
     }
 
     Incident::create([

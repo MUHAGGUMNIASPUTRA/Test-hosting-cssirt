@@ -10,7 +10,8 @@ import Toast from 'primevue/toast'
 import {
   IconWorldCheck, IconLayoutBoard, IconUrgent,
   IconMailExclamation, IconBellPlus, IconNews,
-  IconArticle, IconTextPlus, IconBookmarks, IconFileTypePdf,
+  IconArticle, IconTextPlus, IconBookmarks,
+  IconFiles, IconFileTypePdf, IconFilePlus,
   IconHeartHandshake, IconHelp, IconSpeakerphone, IconUsers,
 } from '@tabler/icons-vue';
 
@@ -76,8 +77,19 @@ const sidebarItems = ref([
   },
   {
     label: 'Panduan',
-    icon: IconFileTypePdf,
-    route: 'admin.documents.index',
+    icon: IconFiles,
+    items: [
+      {
+        label: 'Daftar Panduan',
+        icon: IconFileTypePdf,
+        route: 'admin.documents.index'
+      },
+      {
+        label: 'Tambah Panduan',
+        icon: IconFilePlus,
+        route: 'admin.documents.create'
+      },
+    ],
   },
   {
     label: 'Layanan',

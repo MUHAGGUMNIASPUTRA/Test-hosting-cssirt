@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Incident extends Model
 {
@@ -68,5 +69,29 @@ class Incident extends Model
   {
     // An incident has many logs. Order by the latest first.
     return $this->hasMany(IncidentLog::class)->latest();
+  }
+
+  /**
+   * Get the file size in human readable format
+   */
+  public function fileSize()
+  {
+    if (Storage::disk('public')->exists($this->attachment)) {
+      $bytes = Storage::disk('public')->size($this->attachment);
+      return $this->formatBytes($bytes);
+    }
+    return 'N/A';
+  }
+
+  /**
+   * Format bytes to human readable format
+   */
+  private function formatBytes($bytes, $precision = 2)
+  {
+    $units = array('B', 'KB', 'MB', 'GB', 'TB');
+    for ($i = 0; $bytes > 1024; $i++) {
+      $bytes /= 1024;
+    }
+    return round($bytes, $precision) . ' ' . $units[$i];
   }
 }

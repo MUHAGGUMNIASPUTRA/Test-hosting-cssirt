@@ -178,7 +178,7 @@ const submit = () => {
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 lg:p-6">
               <div class="flex items-center mb-4 lg:mb-6">
                 <div class="w-10 h-10 lg:w-12 lg:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-                  <IconUpload class="text-green-600" :size="!isDesktop ? 18 : undefined"/>
+                  <IconFileUpload class="text-green-600" :size="!isDesktop ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
                   <h3 class="text-xl/6 font-semibold text-slate-900">File Dokumen</h3>
@@ -190,8 +190,8 @@ const submit = () => {
               <div v-if="isEditMode && props.document?.file_path" class="mb-4">
                 <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                      <IconFileText class="text-red-600" size="18" />
+                    <div class="w-10 h-10 bg-red-100 border border-red-200 rounded-lg flex items-center justify-center">
+                      <IconFileTypePdf class="text-red-600" size="18" />
                     </div>
                     <div class="flex-1">
                       <p class="font-medium text-slate-900">File Saat Ini</p>
@@ -242,7 +242,7 @@ const submit = () => {
                     <div v-if="files[0]" class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
                       <div class="flex items-start justify-between gap-4">
                         <div class="flex items-start">
-                          <div class="mt-1"><IconFileTypePdf class="text-blue-600 mr-3" size="18"/></div>
+                          <div class="mt-1"><IconFileTypePdf class="text-red-600 mr-3" size="18"/></div>
                           <div>
                             <p class="font-medium text-slate-900 break-all">{{ files[0].name }}</p>
                             <p class="text-sm text-slate-500">{{ (files[0].size / 1024 / 1024).toFixed(2) }} MB</p>
