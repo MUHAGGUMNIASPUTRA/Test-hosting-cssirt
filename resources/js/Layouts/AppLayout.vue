@@ -222,14 +222,6 @@ watch(
                   <span class="relative z-10">Kontak</span>
                   <div class="absolute inset-0 rounded-lg bg-gradient-to-r from-indigo-500 to-blue-600 opacity-0 group-hover:opacity-10 transition-opacity duration-200"></div>
                 </Link>
-                <Link
-                  :href="isLoggedIn ? route('admin.dashboard') : route('login')"
-                  class="relative px-3 py-2 font-medium rounded-lg transition-all duration-200 group"
-                  :class="navTextClasses.link"
-                >
-                  <span class="relative z-10">{{ isLoggedIn ? 'Dashboard' : 'Login' }}</span>
-                  <div class="absolute inset-0 rounded-lg bg-gradient-to-r from-indigo-500 to-blue-600 opacity-0 group-hover:opacity-10 transition-opacity duration-200"></div>
-                </Link>
               </div>
 
               <!-- Report Incident Button -->
@@ -345,13 +337,6 @@ watch(
             >
               Kontak
             </Link>
-            <Link
-              :href="isLoggedIn ? route('admin.dashboard') : route('login')"
-              class="block px-4 py-3 text-lg font-medium text-slate-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
-              @click="isMenuOpen = false"
-            >
-              <span class="relative z-10">{{ isLoggedIn ? 'Dashboard' : 'Login' }}</span>
-            </Link>
 
             <!-- Mobile Report Incident Button -->
             <div class="pt-4 mt-4 border-t border-slate-200">
@@ -391,9 +376,17 @@ watch(
                   <!-- <p class="text-sm text-slate-400">Bojonegoro</p> -->
                 </div>
               </div>
-              <p class="text-slate-400 leading-relaxed">
+              <p class="text-slate-400 leading-relaxed mb-4">
                 Tim Respons Insiden Keamanan Siber Pemerintah Kabupaten Bojonegoro yang berkomitmen melindungi aset digital pemerintahan.
               </p>
+              <Link
+                :href="isLoggedIn ? route('admin.dashboard') : route('login')"
+                class="flex items-center group"
+              >
+                <IconLayoutBoard v-if="isLoggedIn" size="14" class="mr-2 text-slate-400 group-hover:text-blue-400 transition-colors duration-200" />
+                <IconLogin v-else size="14" class="mr-2 text-slate-400 group-hover:text-blue-400 transition-colors duration-200" />
+                <span class="text-slate-400 hover:text-white transition-colors duration-200">{{ isLoggedIn ? 'Dashboard' : 'Login' }}</span>
+              </Link>
             </div>
 
             <!-- Quick Links -->
@@ -404,36 +397,36 @@ watch(
                   <li>
                     <Link
                       :href="route('landing')"
-                      class="hover:text-white transition-colors duration-200 flex items-center group"
+                      class="text-slate-400 hover:text-white transition-colors duration-200 flex items-center group"
                     >
-                      <IconHome size="14" class="mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" />
+                      <IconHome size="14" class="mr-2 text-slate-400 group-hover:text-indigo-400 transition-colors duration-200" />
                       Beranda
                     </Link>
                   </li>
                   <li>
                     <Link
                       :href="route('profile.show')"
-                      class="hover:text-white transition-colors duration-200 flex items-center group"
+                      class="text-slate-400 hover:text-white transition-colors duration-200 flex items-center group"
                     >
-                      <IconUserCircle size="14" class="mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" />
+                      <IconUserCircle size="14" class="mr-2 text-slate-400 group-hover:text-indigo-400 transition-colors duration-200" />
                       Profil
                     </Link>
                   </li>
                   <li>
                     <Link
                       :href="route('services.index')"
-                      class="hover:text-white transition-colors duration-200 flex items-center group"
+                      class="text-slate-400 hover:text-white transition-colors duration-200 flex items-center group"
                     >
-                      <IconShieldCheck size="14" class="mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" />
+                      <IconHeartHandshake size="14" class="mr-2 text-slate-400 group-hover:text-indigo-400 transition-colors duration-200" />
                       Layanan
                     </Link>
                   </li>
                   <li>
                     <Link
                       :href="route('posts.index')"
-                      class="hover:text-white transition-colors duration-200 flex items-center group"
+                      class="text-slate-400 hover:text-white transition-colors duration-200 flex items-center group"
                     >
-                      <IconNews size="14" class="mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" />
+                      <IconNews size="14" class="mr-2 text-slate-400 group-hover:text-indigo-400 transition-colors duration-200" />
                       Artikel
                     </Link>
                   </li>
@@ -442,36 +435,36 @@ watch(
                   <li>
                     <Link
                       :href="route('documents.index')"
-                      class="hover:text-white transition-colors duration-200 flex items-center group"
+                      class="text-slate-400 hover:text-white transition-colors duration-200 flex items-center group"
                     >
-                      <IconFile size="14" class="mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" />
+                      <IconFile size="14" class="mr-2 text-slate-400 group-hover:text-indigo-400 transition-colors duration-200" />
                       Panduan
                     </Link>
                   </li>
                   <li>
                     <Link
                       :href="route('rfc2350.index')"
-                      class="hover:text-white transition-colors duration-200 flex items-center group"
+                      class="text-slate-400 hover:text-white transition-colors duration-200 flex items-center group"
                     >
-                      <IconFileTypePdf size="14" class="mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" />
+                      <IconFileTypePdf size="14" class="mr-2 text-slate-400 group-hover:text-indigo-400 transition-colors duration-200" />
                       RFC2350
                     </Link>
                   </li>
                   <li>
                     <Link
                       :href="route('faq.index')"
-                      class="hover:text-white transition-colors duration-200 flex items-center group"
+                      class="text-slate-400 hover:text-white transition-colors duration-200 flex items-center group"
                     >
-                      <IconHelp size="14" class="mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" />
+                      <IconHelp size="14" class="mr-2 text-slate-400 group-hover:text-indigo-400 transition-colors duration-200" />
                       FAQ
                     </Link>
                   </li>
                   <li>
                     <Link
                       :href="route('contact.index')"
-                      class="hover:text-white transition-colors duration-200 flex items-center group"
+                      class="text-slate-400 hover:text-white transition-colors duration-200 flex items-center group"
                     >
-                      <IconMail size="14" class="mr-2 text-slate-500 group-hover:text-indigo-400 transition-colors duration-200" />
+                      <IconMail size="14" class="mr-2 text-slate-400 group-hover:text-indigo-400 transition-colors duration-200" />
                       Kontak
                     </Link>
                   </li>
@@ -522,10 +515,11 @@ watch(
           <div class="mt-8 sm:mt-12 pt-8 border-t border-slate-800">
             <div class="flex flex-col md:flex-row justify-between items-center">
               <p class="text-slate-400">
-                &copy; {{ new Date().getFullYear() }} CSIRT Kabupaten Bojonegoro. Seluruh hak cipta dilindungi.
+                &copy; {{ new Date().getFullYear() }}
+                <a href="https://bojonegorokab.go.id/" target="_blank" class="hover:text-blue-600 transition-colors duration-200">Pemerintah Kabupaten Bojonegoro</a>. All rights reserved.
               </p>
               <p class="text-slate-500 mt-2 md:mt-0">
-                Dikelola oleh Diskominfo Bojonegoro
+                Dikelola oleh <a href="https://dinkominfo.bojonegorokab.go.id/" target="_blank" class="hover:text-blue-600 transition-colors duration-200">Diskominfo Bojonegoro</a>
               </p>
             </div>
           </div>

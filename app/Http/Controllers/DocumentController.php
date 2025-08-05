@@ -16,7 +16,11 @@ class DocumentController extends Controller
    */
   public function index(Request $request)
   {
-    $query = Document::published()->where('version', '!=', 'RFC2350');
+    $query = Document::published()
+      ->where(function($q) {
+      $q->where('version', '!=', 'RFC2350')
+        ->orWhereNull('version');
+    });
 
     // Apply search filter
     if ($request->filled('search')) {
@@ -31,14 +35,14 @@ class DocumentController extends Controller
 
     // Add file size to each document
     $documents->getCollection()->transform(function ($document) {
-      $document->file_size = $this->getFileSize($document->file_path);
-      $document->file_exists = Storage::disk('public')->exists($document->file_path);
+      $document->file_size = $document->fileSize();
+      $document->file_exists = $document->fileExists();
       return $document;
     });
 
     return $this->handleSeoRequest('Documents/Index', [
       'documents' => $documents,
-      'filters' => $request->only(['search', 'sortField', 'sortOrder']),
+      'filters' => $request->only(['search']),
     ]);
   }
 
@@ -47,19 +51,11 @@ class DocumentController extends Controller
    */
   public function download(Request $request, Document $document)
   {
-    // Check if document is published
-    if (!$document->published_at || $document->published_at > now()) {
-      abort(404);
-    }
-
-    // Check if file exists
-    if (!Storage::disk('public')->exists($document->file_path)) {
+    if (!$document->fileExists()) {
       abort(404, 'File tidak ditemukan');
     }
 
-    $filePath = Storage::disk('public')->path($document->file_path);
-
-    return response()->download($filePath, $document->title . '.pdf', [
+    return response()->download($document->downloadUrl(), $document->title . '.pdf', [
       'Content-Type' => 'application/pdf',
     ]);
   }
@@ -69,47 +65,13 @@ class DocumentController extends Controller
    */
   public function view(Request $request, Document $document)
   {
-    // Check if document is published
-    if (!$document->published_at || $document->published_at > now()) {
-      abort(404);
-    }
-
-    // Check if file exists
-    if (!Storage::disk('public')->exists($document->file_path)) {
+    if (!$document->fileExists()) {
       abort(404, 'File tidak ditemukan');
     }
 
-    $filePath = Storage::disk('public')->path($document->file_path);
-
-    return response()->file($filePath, [
+    return response()->file($document->downloadUrl(), [
       'Content-Type' => 'application/pdf',
       'Content-Disposition' => 'inline; filename="' . $document->title . '.pdf"'
     ]);
-  }
-
-  /**
-   * Get file size in human readable format
-   */
-  private function getFileSize($filePath)
-  {
-    if (Storage::disk('public')->exists($filePath)) {
-      $bytes = Storage::disk('public')->size($filePath);
-      return $this->formatBytes($bytes);
-    }
-    return 'File not found';
-  }
-
-  /**
-   * Format bytes to human readable format
-   */
-  private function formatBytes($bytes, $precision = 2)
-  {
-    $units = array('B', 'KB', 'MB', 'GB', 'TB');
-
-    for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
-      $bytes /= 1024;
-    }
-
-    return round($bytes, $precision) . ' ' . $units[$i];
   }
 }

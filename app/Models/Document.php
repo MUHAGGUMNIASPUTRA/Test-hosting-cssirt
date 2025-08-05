@@ -39,34 +39,33 @@ class Document extends Model
    */
   public function scopePublished($query)
   {
-    return $query->whereNotNull('published_at')
-                 ->where('published_at', '<=', now());
+    return $query->whereNotNull('published_at');
   }
 
   /**
    * Get the file size in human readable format
    */
-  public function getFileSizeAttribute()
+  public function fileSize()
   {
     if (Storage::disk('public')->exists($this->file_path)) {
       $bytes = Storage::disk('public')->size($this->file_path);
       return $this->formatBytes($bytes);
     }
-    return 'Unknown';
+    return 'N/A';
   }
 
   /**
    * Get the download URL
    */
-  public function getDownloadUrlAttribute()
+  public function downloadUrl()
   {
-    return Storage::disk('public')->url($this->file_path);
+    return Storage::disk('public')->path($this->file_path);
   }
 
   /**
    * Check if file exists
    */
-  public function getFileExistsAttribute()
+  public function fileExists()
   {
     return Storage::disk('public')->exists($this->file_path);
   }

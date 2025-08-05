@@ -22,8 +22,8 @@ class RFC2350Controller extends Controller
 
     // Add file size and existence check
     if ($rfc2350Document) {
-      $rfc2350Document->file_size = $this->getFileSize($rfc2350Document->file_path);
-      $rfc2350Document->file_exists = Storage::disk('public')->exists($rfc2350Document->file_path);
+      $rfc2350Document->file_size = $rfc2350Document->fileSize();
+      $rfc2350Document->file_exists = $rfc2350Document->fileExists();
     }
 
     return $this->handleSeoRequest('RFC2350/Index', [
@@ -38,14 +38,11 @@ class RFC2350Controller extends Controller
   {
     $document = Document::where('version', 'RFC2350')->firstOrFail();
 
-    // Check if file exists
-    if (!Storage::disk('public')->exists($document->file_path)) {
+    if (!$document->fileExists()) {
       abort(404, 'File tidak ditemukan');
     }
 
-    $filePath = Storage::disk('public')->path($document->file_path);
-
-    return response()->file($filePath, [
+    return response()->file($document->downloadUrl(), [
       'Content-Type' => 'application/pdf',
       'Content-Disposition' => 'inline; filename="RFC2350-CSIRT-Bojonegoro.pdf"'
     ]);
@@ -58,41 +55,12 @@ class RFC2350Controller extends Controller
   {
     $document = Document::where('version', 'RFC2350')->firstOrFail();
 
-    // Check if file exists
-    if (!Storage::disk('public')->exists($document->file_path)) {
+    if (!$document->fileExists()) {
       abort(404, 'File tidak ditemukan');
     }
 
-    $filePath = Storage::disk('public')->path($document->file_path);
-
-    return response()->download($filePath, 'RFC2350-CSIRT-Bojonegoro.pdf', [
+    return response()->download($document->downloadUrl(), 'RFC2350-CSIRT-Bojonegoro.pdf', [
         'Content-Type' => 'application/pdf',
     ]);
-  }
-
-  /**
-   * Get file size in human readable format
-   */
-  private function getFileSize($filePath)
-  {
-    if (Storage::disk('public')->exists($filePath)) {
-      $bytes = Storage::disk('public')->size($filePath);
-      return $this->formatBytes($bytes);
-    }
-    return 'File not found';
-  }
-
-  /**
-   * Format bytes to human readable format
-   */
-  private function formatBytes($bytes, $precision = 2)
-  {
-    $units = array('B', 'KB', 'MB', 'GB', 'TB');
-
-    for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
-      $bytes /= 1024;
-    }
-
-    return round($bytes, $precision) . ' ' . $units[$i];
   }
 }
