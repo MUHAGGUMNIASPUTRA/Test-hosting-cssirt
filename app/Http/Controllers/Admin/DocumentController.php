@@ -18,7 +18,7 @@ class DocumentController extends Controller
    */
   public function index(Request $request): Response
   {
-    $query = Document::query()->latest();
+    $query = Document::query()->orderBy('title');
 
     // Apply search filter
     if ($request->filled('search')) {
@@ -27,20 +27,7 @@ class DocumentController extends Controller
             ->orWhere('version', 'ilike', '%' . $request->search . '%');
     }
 
-    // Apply status filter
-    if ($request->filled('status')) {
-      if ($request->status === 'published') {
-        $query->whereNotNull('published_at')
-              ->where('published_at', '<=', now());
-      } else {
-        $query->where(function ($q) {
-            $q->whereNull('published_at')
-              ->orWhere('published_at', '>', now());
-        });
-      }
-    }
-
-    $documents = $query->orderBy('title')->paginate(10)->withQueryString();
+    $documents = $query->paginate(10)->withQueryString();
 
     // Add file size and status to each document
     $documents->getCollection()->transform(function ($document) {

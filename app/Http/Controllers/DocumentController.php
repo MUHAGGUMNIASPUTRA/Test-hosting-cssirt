@@ -18,9 +18,10 @@ class DocumentController extends Controller
   {
     $query = Document::published()
       ->where(function($q) {
-      $q->where('version', '!=', 'RFC2350')
-        ->orWhereNull('version');
-    });
+        $q->where('version', '!=', 'RFC2350')
+          ->orWhereNull('version');
+      })
+      ->orderBy('title');
 
     // Apply search filter
     if ($request->filled('search')) {
@@ -31,7 +32,7 @@ class DocumentController extends Controller
       });
     }
 
-    $documents = $query->orderBy('title')->paginate(10)->withQueryString();
+    $documents = $query->paginate(10)->withQueryString();
 
     // Add file size to each document
     $documents->getCollection()->transform(function ($document) {
