@@ -437,7 +437,7 @@ watch(
                       :href="route('documents.index')"
                       class="text-slate-400 hover:text-white transition-colors duration-200 flex items-center group"
                     >
-                      <IconFile size="14" class="mr-2 text-slate-400 group-hover:text-indigo-400 transition-colors duration-200" />
+                      <IconBook2 size="14" class="mr-2 text-slate-400 group-hover:text-indigo-400 transition-colors duration-200" />
                       Panduan
                     </Link>
                   </li>

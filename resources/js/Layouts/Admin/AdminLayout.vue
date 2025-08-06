@@ -11,7 +11,7 @@ import {
   IconWorldCheck, IconLayoutBoard, IconUrgent,
   IconMailExclamation, IconBellPlus, IconNews,
   IconArticle, IconTextPlus, IconBookmarks,
-  IconFiles, IconFileTypePdf, IconFilePlus,
+  IconBook2, IconNotebook, IconFilePlus,
   IconHeartHandshake, IconHelp, IconSpeakerphone, IconUsers,
 } from '@tabler/icons-vue';
 
@@ -77,11 +77,11 @@ const sidebarItems = ref([
   },
   {
     label: 'Panduan',
-    icon: IconFiles,
+    icon: IconBook2,
     items: [
       {
         label: 'Daftar Panduan',
-        icon: IconFileTypePdf,
+        icon: IconNotebook,
         route: 'admin.documents.index'
       },
       {
