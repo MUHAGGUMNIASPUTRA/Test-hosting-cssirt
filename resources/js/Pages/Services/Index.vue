@@ -119,10 +119,6 @@ const serviceGridClasses = computed(() => {
                 CSIRT Bojonegoro
               </span>
             </h1>
-            <p class="mx-auto mt-6 max-w-3xl text-xl sm:text-2xl text-slate-300">
-              Solusi komprehensif keamanan siber untuk melindungi aset digital
-              pemerintahan dengan standar internasional
-            </p>
           </div>
         </div>
       </div>
