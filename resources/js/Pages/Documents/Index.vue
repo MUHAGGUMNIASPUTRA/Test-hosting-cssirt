@@ -88,11 +88,11 @@ const totalFileSize = computed(() => {
       <div class="relative z-10 px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
         <div class="container text-center">
           <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl">
-            Panduan & <span class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">Dokumentasi</span>
+            Dokumen <span class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">Panduan</span>
           </h1>
           <p class="mx-auto mt-6 max-w-3xl text-xl sm:text-2xl text-slate-300">
-            Akses panduan, kebijakan, dan dokumentasi keamanan siber untuk meningkatkan
-            keamanan digital instansi pemerintah
+            Akses panduan dan kebijakan keamanan siber untuk melindungi
+            sistem digital instansi pemerintah dari berbagai ancaman
           </p>
         </div>
       </div>

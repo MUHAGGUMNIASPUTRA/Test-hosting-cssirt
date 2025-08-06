@@ -143,15 +143,15 @@ const serverSideConfig = computed(() => {
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
         <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Kelola Panduan & Dokumentasi</h2>
-            <p class="text-slate-600">Kelola dokumen panduan keamanan siber dan dokumentasi teknis</p>
+            <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Kelola Dokumen Panduan</h2>
+            <p class="text-slate-600">Kelola dokumen panduan untuk keamanan siber</p>
           </div>
           <Link
             :href="route('admin.documents.create')"
             class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
           >
             <IconFilePlus size="16" />
-            Tambah Dokumen
+            Tambah Panduan
           </Link>
         </div>
       </div>
@@ -192,17 +192,15 @@ const serverSideConfig = computed(() => {
         >
           <template #empty>
             <div class="text-center py-12">
-              <svg class="w-12 h-12 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <h3 class="text-lg font-medium text-slate-900 mb-2">Belum ada dokumen</h3>
-              <p class="text-slate-500 mb-4">Mulai dengan menambahkan dokumen pertama Anda.</p>
+              <IconNotebook size="48" class="mx-auto text-slate-300 mb-4" />
+              <h3 class="text-lg font-medium text-slate-900 mb-2">Belum ada panduan</h3>
+              <p class="text-slate-500 mb-4">Gunakan kata kunci lain atau tambahkan panduan baru.</p>
               <Link
                 :href="route('admin.documents.create')"
                 class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <IconFilePlus size="16" class="mr-2" />
-                Tambah Dokumen
+                Tambah Panduan
               </Link>
             </div>
           </template>

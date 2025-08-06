@@ -70,15 +70,15 @@ const submit = () => {
 </script>
 
 <template>
-  <AdminLayout :title="isEditMode ? 'Edit Dokumen' : 'Tambah Dokumen Baru'">
+  <AdminLayout :title="isEditMode ? 'Edit Panduan' : 'Tambah Panduan Baru'">
     <div class="min-h-screen bg-gray-50">
       <form @submit.prevent="submit" class="space-y-4 lg:space-y-6">
         <!-- Header Section -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
           <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <h2 class="text-xl lg:text-2xl font-bold text-slate-900">{{ isEditMode ? 'Edit Dokumen' : 'Tambah Dokumen Baru' }}</h2>
-              <p class="text-slate-600">{{ isEditMode ? 'Perbarui informasi dokumen' : 'Tambahkan dokumen panduan keamanan siber' }}</p>
+              <h2 class="text-xl lg:text-2xl font-bold text-slate-900">{{ isEditMode ? 'Edit Panduan' : 'Tambah Panduan Baru' }}</h2>
+              <p class="text-slate-600">{{ isEditMode ? 'Perbarui informasi dokumen panduan' : 'Tambahkan dokumen panduan keamanan siber' }}</p>
             </div>
             <div class="flex items-center space-x-3">
               <Link
@@ -96,7 +96,7 @@ const submit = () => {
               >
                 <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
                 <IconDeviceFloppy v-else size="16"/>
-                {{ form.processing ? 'Menyimpan...' : isEditMode ? 'Update Dokumen' : 'Simpan Dokumen' }}
+                {{ form.processing ? 'Menyimpan...' : isEditMode ? 'Update Panduan' : 'Simpan Panduan' }}
               </button>
             </div>
           </div>
@@ -117,8 +117,8 @@ const submit = () => {
                   <IconFileText class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
                 </div>
                 <div class="ml-3">
-                  <h3 class="text-xl/6 font-semibold text-slate-900">Informasi Dokumen</h3>
-                  <p class="text-xs lg:text-sm text-slate-600">Data dasar dokumen yang akan ditampilkan</p>
+                  <h3 class="text-xl/6 font-semibold text-slate-900">Informasi Panduan</h3>
+                  <p class="text-xs lg:text-sm text-slate-600">Data dasar panduan yang akan ditampilkan</p>
                 </div>
               </div>
 
@@ -126,14 +126,14 @@ const submit = () => {
                 <!-- Title -->
                 <div>
                   <label for="title" class="block font-medium text-gray-700 mb-2">
-                    Judul Dokumen <span class="text-red-500">*</span>
+                    Judul Panduan <span class="text-red-500">*</span>
                   </label>
                   <InputText
                     id="title"
                     v-model="form.title"
                     class="w-full"
                     :class="{ 'p-invalid': form.errors.title }"
-                    placeholder="Masukkan judul dokumen..."
+                    placeholder="Masukkan judul panduan..."
                     required />
                   <small v-if="form.errors.title" class="p-error block mt-1">{{ form.errors.title }}</small>
                 </div>
@@ -149,7 +149,7 @@ const submit = () => {
                     rows="4"
                     class="w-full"
                     :class="{ 'p-invalid': form.errors.description }"
-                    placeholder="Jelaskan isi dokumen ini..."
+                    placeholder="Jelaskan isi dokumen panduan ini..."
                   />
                   <small v-if="form.errors.description" class="p-error block mt-1">{{ form.errors.description }}</small>
                 </div>
