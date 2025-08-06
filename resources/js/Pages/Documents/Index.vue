@@ -163,10 +163,10 @@ const totalFileSize = computed(() => {
                         target="_blank"
                         class="hover:text-blue-600 cursor-pointer transition-colors duration-200"
                       >
-                        {{ data.title }}.pdf
+                        {{ data.title }}
                       </a>
                       <span v-if="data.version" class="hidden sm:flex inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-orange-100 text-orange-700">
-                        v{{ data.version }}
+                        {{ data.version }}
                       </span>
                       <span v-if="!data.file_exists" class="hidden sm:flex inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-red-100 text-red-700">
                         File Hilang
@@ -177,7 +177,7 @@ const totalFileSize = computed(() => {
                     </p>
                     <div class="sm:hidden flex items-center gap-2">
                       <span v-if="data.version" class="inline-flex items-center text-xs font-medium text-orange-600">
-                        v{{ data.version }}
+                        {{ data.version }}
                       </span>
                       <span class="text-xs text-slate-500">{{ data.file_size }}</span>
                       <span v-if="!data.file_exists" class="inline-flex items-center text-xs font-medium text-red-600">

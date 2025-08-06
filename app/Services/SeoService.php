@@ -11,7 +11,7 @@ class SeoService
   private string $ssrServerUrl;
   private array $seoComponentMapping;
 
-  public function __construct(string $ssrUrl = null)
+  public function __construct(?string $ssrUrl = null)
   {
     $this->ssrServerUrl = $ssrUrl ?? config('app.ssr_url', 'http://localhost:13714');
     $this->seoComponentMapping = [

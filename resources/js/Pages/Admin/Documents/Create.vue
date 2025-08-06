@@ -164,9 +164,15 @@ const submit = () => {
                     v-model="form.version"
                     class="w-full"
                     :class="{ 'p-invalid': form.errors.version }"
-                    placeholder="contoh: 1.0, 2.1, dll"
+                    placeholder="contoh: v1.0, v2.1, dll"
                   />
                   <small v-if="form.errors.version" class="p-error block mt-1">{{ form.errors.version }}</small>
+                  <p v-if="form.version === 'RFC2350'" class="text-xs text-blue-500 mt-1">
+                    Versi ini akan ditampilkan pada halaman publik <strong>RFC2350</strong> dan tidak ditampilkan pada halaman <strong>Panduan</strong>.
+                  </p>
+                  <p v-else class="text-xs text-slate-400 mt-1">
+                    Gunakan format seperti <code>v1.0</code> atau <code>v2.1</code>. Jika ini adalah dokumen RFC 2350, masukkan <code>RFC2350</code>.
+                  </p>
                 </div>
               </div>
             </div>

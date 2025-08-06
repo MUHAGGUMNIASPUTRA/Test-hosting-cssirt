@@ -12,7 +12,8 @@ import {
   IconMailExclamation, IconBellPlus, IconNews,
   IconArticle, IconTextPlus, IconBookmarks,
   IconBook2, IconNotebook, IconFilePlus,
-  IconHeartHandshake, IconHelp, IconSpeakerphone, IconUsers,
+  IconHeartHandshake, IconHelp, IconSpeakerphone,
+  IconUsers, IconLogout,
 } from '@tabler/icons-vue';
 
 defineProps({
@@ -105,20 +106,24 @@ const sidebarItems = ref([
     label: 'Pengumuman',
     icon: IconSpeakerphone,
     route: 'admin.announcements.index',
-  },
-  {
-    label: 'Pengguna',
-    icon: IconUsers,
-    route: 'admin.users.index',
-    visible: () => page.props.auth.user?.role === 'admin'
-  },
+  }
 ])
 
 // User menu items
 const userMenuItems = ref([
   {
+    label: 'Pengguna',
+    icon: IconUsers,
+    command: () => router.get(route('admin.users.index')),
+    visible: () => page.props.auth.user?.role === 'admin'
+  },
+  {
+    separator: true,
+    visible: () => page.props.auth.user?.role === 'admin'
+  },
+  {
     label: 'Logout',
-    icon: 'pi pi-power-off',
+    icon: IconLogout,
     command: () => logout(),
     class: 'text-red-600 hover:bg-red-50'
   }
@@ -254,15 +259,15 @@ watch(
                 v-if="item.route && !item.items"
                 :href="route(item.route)"
                 @click="closeSidebarOnMobile"
-                class="flex items-center px-3 py-2 font-medium rounded-lg transition-colors group"
-                :class="isCurrentRoute(item.route) ? 'bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
+                class="flex items-center px-3 py-2 font-normal rounded-lg transition-colors group"
+                :class="isCurrentRoute(item.route) ? 'bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'"
               >
                 <component :is="item.icon" size="18" stroke-width="1.75" class="mr-3" :class="[isCurrentRoute(item.route) ? 'text-indigo-500' : 'text-slate-400']" />{{ item.label }}
               </Link>
 
               <!-- Menu with subitems -->
               <div v-else-if="item.items && item.items.length > 0" class="space-y-1">
-                <div class="flex items-center px-3 py-2 font-medium text-slate-600">
+                <div class="flex items-center px-3 py-2 font-normal text-slate-500">
                   <component :is="item.icon" size="18" stroke-width="1.75" class="mr-3 text-slate-400" />{{ item.label }}
                 </div>
                 <div class="ml-6 space-y-1">
@@ -271,8 +276,8 @@ watch(
                     :key="subItem.label"
                     :href="route(subItem.route)"
                     @click="closeSidebarOnMobile"
-                    class="flex items-center px-3 py-2 rounded-md transition-colors"
-                    :class="isCurrentRoute(subItem.route) ? 'bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500 font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
+                    class="flex items-center px-3 py-2 font-normal rounded-md transition-colors"
+                    :class="isCurrentRoute(subItem.route) ? 'bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'"
                   >
                     <component :is="subItem.icon" size="18" stroke-width="1.75" class="mr-3" :class="[isCurrentRoute(subItem.route) ? 'text-indigo-500' : 'text-slate-400']" />{{ subItem.label }}
                   </Link>
@@ -280,7 +285,7 @@ watch(
               </div>
 
               <!-- Single menu item without route (disabled) -->
-              <div v-else-if="!item.route" class="flex items-center px-3 py-2 font-medium text-slate-400 cursor-not-allowed">
+              <div v-else-if="!item.route" class="flex items-center px-3 py-2 font-normal text-slate-400 cursor-not-allowed">
                 <component :is="item.icon" size="18" stroke-width="1.75" class="mr-3" />{{ item.label }}
                 <span class="ml-auto text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded">Soon</span>
               </div>
@@ -344,15 +349,17 @@ watch(
               <!-- User dropdown menu -->
               <div v-if="userMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-50">
                 <template v-for="item in userMenuItems" :key="item.label">
-                  <div v-if="item.separator" class="border-t border-slate-200 my-1"></div>
-                  <button
-                    v-else
-                    @click="item.command"
-                    class="flex items-center w-full px-4 py-2 text-sm hover:bg-slate-50 transition-colors"
-                    :class="item.class || 'text-slate-700'"
-                  >
-                    <i :class="[item.icon, item.class ? 'text-red-500' : 'text-slate-400']" class="w-4 h-4 mr-3"></i>{{ item.label }}
-                  </button>
+                  <div v-if="!item.visible || item.visible()">
+                    <div v-if="item.separator" class="border-t border-slate-200 my-1"></div>
+                    <button
+                      v-else
+                      @click="item.command"
+                      class="flex items-center w-full px-4 py-2 hover:bg-slate-50 transition-colors"
+                      :class="item.class || 'text-slate-500'"
+                    >
+                      <component v-if="item.icon" :is="item.icon" size="16" class="mr-3" :class="item.class ? item.class : 'text-slate-400'" />{{ item.label }}
+                    </button>
+                  </div>
                 </template>
               </div>
             </div>

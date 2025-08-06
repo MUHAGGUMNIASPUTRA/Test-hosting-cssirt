@@ -1,7 +1,7 @@
 <script setup>
 // filepath: resources/js/Pages/RFC2350/Index.vue
 
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import { useResponsive } from '@/Composables/useResponsive'
 
@@ -11,12 +11,18 @@ const props = defineProps({
 
 const { isMobile } = useResponsive()
 const pdfViewer = ref(null)
+const pdfUrl = route('rfc2350.view')
+const isPdfAvailable = ref(false)
 
-const viewPDF = () => {
-  if (pdfViewer.value) {
-    pdfViewer.value.scrollIntoView({ behavior: 'smooth' })
+onMounted(async () => {
+  try {
+    const res = await fetch(pdfUrl, { method: 'HEAD' })
+    isPdfAvailable.value = res.ok
+  } catch (e) {
+    isPdfAvailable.value = false
   }
-}
+})
+
 </script>
 
 <template>
@@ -65,7 +71,7 @@ const viewPDF = () => {
           <div class="p-4 bg-slate-50 border-b border-slate-200">
             <div class="flex items-center justify-between">
               <h3 class="text-xl font-semibold text-slate-900">{{ document.title }}</h3>
-              <div class="hidden sm:flex items-center gap-3">
+              <div v-if="isPdfAvailable" class="hidden sm:flex items-center gap-3">
                 <span class="text-sm text-slate-500">Format: PDF | Ukuran: {{ document.file_size }}</span>
                 <a
                   :href="route('rfc2350.download')"
@@ -79,33 +85,35 @@ const viewPDF = () => {
           </div>
 
           <!-- PDF Embed -->
-          <div class="relative" style="height: 800px;">
+          <div class="relative" :class="!isMobile ? isPdfAvailable ? 'h-[800px]' : 'h-[400px]' : 'h-[450px]'">
             <iframe
+              v-if="isPdfAvailable"
               ref="pdfViewer"
-              :src="route('rfc2350.view') + '#toolbar=1&navpanes=1&scrollbar=1'"
+              :src="pdfUrl + '#toolbar=1&navpanes=1&scrollbar=1'"
               class="w-full h-full border-0"
               :title="document.title"
+              @error="onIframeError"
             >
-              <!-- Fallback for browsers that don't support PDF embedding -->
-              <div class="flex flex-col items-center justify-center h-full bg-slate-50">
-                <div class="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mb-6">
-                  <svg class="w-12 h-12 text-red-600" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-                  </svg>
-                </div>
-                <h3 class="text-xl font-semibold text-slate-900 mb-2">Browser tidak mendukung tampilan PDF</h3>
-                <p class="text-slate-600 mb-4 text-center max-w-md">
-                  Browser Anda tidak mendukung tampilan PDF secara langsung. Silakan download dokumen untuk membacanya.
-                </p>
-                <a
-                  :href="route('rfc2350.download')"
-                  class="inline-flex items-center px-6 py-3 text-lg font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                >
-                  <IconFileDownload size="14" class="mr-2"/>
-                  Download RFC 2350
-                </a>
-              </div>
             </iframe>
+
+            <!-- Fallback for browsers that don't support PDF embedding -->
+            <div v-else class="flex flex-col items-center justify-center h-full bg-slate-50 p-4">
+              <div class="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mb-6">
+                <IconFileTypePdf size="40" class="text-red-600" />
+              </div>
+              <h3 class="text-xl font-semibold text-slate-900 mb-1">Browser tidak mendukung tampilan PDF</h3>
+              <p class="text-slate-600 mb-4 text-center">
+                Browser Anda tidak mendukung tampilan PDF secara langsung. Silakan download dokumen untuk membacanya.
+              </p>
+              <p class="mb-4 text-sm text-slate-400">Ukuran: {{ document.file_size }}</p>
+              <a
+                :href="route('rfc2350.download')"
+                class="inline-flex items-center px-4 py-2 font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                <IconFileDownload size="16" class="mr-2"/>
+                Download RFC 2350
+              </a>
+            </div>
           </div>
         </div>
       </div>
