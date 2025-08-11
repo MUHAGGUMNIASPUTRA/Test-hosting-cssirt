@@ -238,7 +238,7 @@ const getLogIconColor = (index, total) => {
             <div class="space-y-6">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
                 <div>
-                  <label class="block font-medium text-slate-700 mb-2">Jenis Insiden</label>
+                  <label class="block font-medium text-slate-700 mb-2">Kategori Insiden</label>
                   <div class="p-2 bg-slate-50 border border-slate-200 rounded-lg">
                     <p class="text-slate-900">{{ incident.incident_type.name }}</p>
                   </div>
@@ -292,43 +292,6 @@ const getLogIconColor = (index, total) => {
 
         <!-- Sidebar -->
         <div class="space-y-4 lg:space-y-6">
-          <!-- Summary Card -->
-          <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 lg:p-6">
-            <h3 class="text-xl/6 font-semibold text-slate-900 mb-4">Ringkasan Insiden</h3>
-            <div class="space-y-3">
-              <div class="flex justify-between items-center">
-                <span class="text-slate-500">ID Insiden:</span>
-                <span class="font-mono text-slate-700 bg-slate-200 px-2 py-1 rounded text-xs">
-                  {{ incident.case_id }}
-                </span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-slate-500">Status:</span>
-                <Tag
-                  :value="incident.status"
-                  :severity="getStatusSeverity(incident.status)"
-                  size="small"
-                />
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-slate-500">Prioritas:</span>
-                <Tag
-                  :value="incident.priority"
-                  :severity="getPrioritySeverity(incident.priority)"
-                  size="small"
-                />
-              </div>
-              <div class="flex justify-between items-start">
-                <span class="text-slate-500">Dilaporkan:</span>
-                <span class="text-slate-700 text-right">{{ formatDate(incident.reported_at) }}</span>
-              </div>
-              <div v-if="incident.resolved_at" class="flex justify-between items-start">
-                <span class="text-slate-500">Diselesaikan:</span>
-                <span class="text-slate-700 text-right">{{ formatDate(incident.resolved_at) }}</span>
-              </div>
-            </div>
-          </div>
-
           <!-- Timeline/Logs -->
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
             <div class="flex items-center mb-6">

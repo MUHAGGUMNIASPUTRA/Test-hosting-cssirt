@@ -8,8 +8,10 @@ use App\Models\Incident;
 use App\Models\IncidentLog;
 use App\Models\IncidentType;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -169,9 +171,9 @@ class IncidentController extends Controller
   public function updateManagement(Request $request, Incident $incident)
   {
     $validated = $request->validate([
-        'status' => 'required|in:Baru,Diverifikasi,Dalam Penyelidikan,Selesai,Ditutup',
-        'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritikal',
-        'assigned_to' => 'nullable|exists:users,id',
+      'status' => 'required|in:Baru,Diverifikasi,Dalam Penyelidikan,Selesai,Ditutup',
+      'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritikal',
+      'assigned_to' => 'nullable|exists:users,id',
     ]);
 
     // Panggil helper untuk mencatat perubahan sebelum di-update
@@ -183,6 +185,32 @@ class IncidentController extends Controller
   }
 
   /**
+   * Helper method to normalize data for comparison
+   */
+  private function normalizeDataForComparison($originalData, $newData)
+  {
+    $normalized = [];
+
+    foreach ($newData as $key => $value) {
+      if ($key === 'incident_at') {
+        // Normalize datetime to Y-m-d H:i:s format
+        $normalized['original'][$key] = $originalData[$key] ? Carbon::parse($originalData[$key])->format('Y-m-d H:i:s') : null;
+        $normalized['new'][$key] = $value ? Carbon::parse($value)->format('Y-m-d H:i:s') : null;
+      } elseif ($key === 'incident_type_id' || $key === 'assigned_to') {
+        // Normalize IDs to string
+        $normalized['original'][$key] = (string)($originalData[$key] ?? '');
+        $normalized['new'][$key] = (string)($value ?? '');
+      } else {
+        // Regular comparison
+        $normalized['original'][$key] = $originalData[$key] ?? null;
+        $normalized['new'][$key] = $value;
+      }
+    }
+
+    return $normalized;
+  }
+
+  /**
    * Helper method to log changes to an incident.
    */
   private function logChanges(Incident $incident, array $newData)
@@ -190,36 +218,71 @@ class IncidentController extends Controller
     $changes = [];
     $originalData = $incident->getOriginal();
 
-    // Cek perubahan status
-    if ($originalData['status'] !== $newData['status']) {
-        $changes[] = "Status diubah dari '{$originalData['status']}' menjadi '{$newData['status']}'.";
+    // Normalize data for proper comparison
+    $normalized = $this->normalizeDataForComparison($originalData, $newData);
+
+    // Now use normalized data for comparison
+    foreach ($newData as $key => $value) {
+      if ($normalized['original'][$key] !== $normalized['new'][$key]) {
+        // Handle each field's change message
+        switch ($key) {
+          case 'reporter_name':
+            $changes[] = "Nama pelapor diubah dari '{$originalData[$key]}' menjadi '{$value}'.";
+            break;
+          case 'reporter_email':
+            $changes[] = "Email pelapor diubah dari '{$originalData[$key]}' menjadi '{$value}'.";
+            break;
+          case 'reporter_phone':
+            $oldPhone = $originalData[$key] ?: 'Tidak ada';
+            $newPhone = $value ?: 'Tidak ada';
+            $changes[] = "Nomor telepon pelapor diubah dari '{$oldPhone}' menjadi '{$newPhone}'.";
+            break;
+          case 'incident_type_id':
+            $oldType = $originalData[$key] ? IncidentType::find($originalData[$key])->name : 'Tidak ada';
+            $newType = $value ? IncidentType::find($value)->name : 'Tidak ada';
+            $changes[] = "Kategori insiden diubah dari '{$oldType}' menjadi '{$newType}'.";
+            break;
+          case 'incident_at':
+            $oldDate = $originalData[$key] ? Carbon::parse($originalData[$key])->format('d/m/Y H:i') : 'Tidak ada';
+            $newDate = $value ? Carbon::parse($value)->format('d/m/Y H:i') : 'Tidak ada';
+            $changes[] = "Waktu kejadian diubah dari '{$oldDate}' menjadi '{$newDate}'.";
+            break;
+          case 'description':
+            $changes[] = "Deskripsi insiden diperbarui.";
+            break;
+          case 'status':
+            $changes[] = "Status diubah dari '{$originalData[$key]}' menjadi '{$value}'.";
+            break;
+          case 'priority':
+            $changes[] = "Prioritas diubah dari '{$originalData[$key]}' menjadi '{$value}'.";
+            break;
+          case 'assigned_to':
+            $oldAssignee = $originalData[$key] ? User::find($originalData[$key]) : null;
+            $newAssignee = $value ? User::find($value) : null;
+            $oldAssigneeName = $oldAssignee ? $oldAssignee->name : 'Belum Ditugaskan';
+            $newAssigneeName = $newAssignee ? $newAssignee->name : 'Belum Ditugaskan';
+            $changes[] = "Insiden ditugaskan dari '{$oldAssigneeName}' ke '{$newAssigneeName}'.";
+            break;
+          case 'attachment':
+            if ($value) {
+              $changes[] = "Lampiran insiden diperbarui.";
+            } else {
+              $changes[] = "Lampiran insiden dihapus.";
+              // Delete old attachment if exists
+              if ($incident->attachment && Storage::disk('public')->exists($incident->attachment)) {
+                Storage::disk('public')->delete($incident->attachment);
+              }
+            }
+        }
+      }
     }
 
-    // Cek perubahan prioritas
-    if ($originalData['priority'] !== $newData['priority']) {
-        $changes[] = "Prioritas diubah dari '{$originalData['priority']}' menjadi '{$newData['priority']}'.";
-    }
-
-    // Cek perubahan penugasan
-    if ($originalData['assigned_to'] != $newData['assigned_to']) {
-        $oldAssignee = User::find($originalData['assigned_to']);
-        $newAssignee = User::find($newData['assigned_to']);
-        $oldAssigneeName = $oldAssignee ? $oldAssignee->name : 'Belum Ditugaskan';
-        $newAssigneeName = $newAssignee ? $newAssignee->name : 'Belum Ditugaskan';
-        $changes[] = "Insiden ditugaskan dari '{$oldAssigneeName}' ke '{$newAssigneeName}'.";
-    }
-
-    // Cek perubahan deskripsi (hanya jika ada di data baru)
-    if (isset($newData['description']) && $originalData['description'] !== $newData['description']) {
-        $changes[] = "Deskripsi insiden diperbarui.";
-    }
-
-    // Simpan semua perubahan ke log
+    // Create incident log entries for each change
     foreach ($changes as $message) {
-        $incident->incidentLogs()->create([
-            'log_message' => $message,
-            'user_id' => Auth::id(),
-        ]);
+      $incident->incidentLogs()->create([
+        'log_message' => $message,
+        'user_id' => Auth::id(),
+      ]);
     }
   }
 

@@ -388,14 +388,14 @@ const formatDateTime = (date) => {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
                   <div>
                     <label for="incident_type_id" class="block font-medium text-slate-700 mb-2">
-                      Jenis Insiden <span class="text-red-500">*</span>
+                      Kategori Insiden <span class="text-red-500">*</span>
                     </label>
                     <Select
                       v-model="form.incident_type_id"
                       :options="incidentTypeOptions"
                       optionLabel="label"
                       optionValue="value"
-                      placeholder="Pilih jenis insiden"
+                      placeholder="Pilih kategori insiden"
                       class="w-full"
                       :class="{ 'border-red-300': form.errors.incident_type_id }"
                     />
@@ -662,13 +662,17 @@ const formatDateTime = (date) => {
                     size="small"
                   />
                 </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-slate-500">Kategori:</span>
+                  <span class="text-slate-700 truncate ml-2">{{ form.incident_type_id ? incidentTypeOptions.find(type => type.value === form.incident_type_id)?.label || 'Belum diisi' : 'Belum diisi' }}</span>
+                </div>
                 <div v-if="form.incident_at" class="flex justify-between items-start">
                   <span class="text-slate-500">Waktu:</span>
                   <span class="text-slate-700 text-right">{{ formatDateTime(form.incident_at) }}</span>
                 </div>
                 <div v-if="form.attachment || (isEditing && incident?.attachment)" class="flex justify-between items-center">
                   <span class="text-slate-500">Lampiran:</span>
-                  <span class="text-green-600 text-xs">✓ Ada file</span>
+                  <span class="text-green-600">✓ Ada file</span>
                 </div>
               </div>
             </div>

@@ -40,7 +40,7 @@ const sidebarItems = ref([
     route: 'admin.dashboard',
   },
   {
-    label: 'Insiden',
+    label: 'Insiden (Tiket)',
     icon: IconUrgent,
     items: [
       {
