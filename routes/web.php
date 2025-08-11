@@ -44,6 +44,7 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact.index
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/incident', [IncidentController::class, 'create'])->name('incident.create');
 Route::post('/incident', [IncidentController::class, 'store'])->name('incident.store');
+Route::post('/incidents/search', [IncidentController::class, 'search'])->name('incident.search');
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
   Route::get('/', [DashboardController::class, 'index'])->name('dashboard');

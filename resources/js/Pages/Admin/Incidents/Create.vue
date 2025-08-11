@@ -100,19 +100,14 @@ const getFileIcon = (fileName) => {
   const extension = fileName.split('.').pop()?.toLowerCase()
 
   switch (extension) {
-    case 'pdf':
-      return [IconFileTypePdf, 'text-red-600', 'bg-red-50', 'border-red-200']
+    case 'pdf': return [IconFileTypePdf, 'text-red-600', 'bg-red-50', 'border-red-200']
     case 'doc':
-    case 'docx':
-      return [IconFileTypeDoc, 'text-blue-600', 'bg-blue-50', 'border-blue-200']
-    case 'zip':
-      return [IconFileTypeZip, 'text-purple-600', 'bg-purple-50', 'border-purple-200']
+    case 'docx': return [IconFileTypeDoc, 'text-blue-600', 'bg-blue-50', 'border-blue-200']
+    case 'zip': return [IconFileTypeZip, 'text-yellow-600', 'bg-yellow-50', 'border-yellow-200']
     case 'jpg':
     case 'jpeg':
-    case 'png':
-      return [IconPhoto, 'text-green-600', 'bg-green-50', 'border-green-200']
-    default:
-      return [IconFileText, 'text-slate-600', 'bg-slate-50', 'border-slate-200']
+    case 'png': return [IconPhoto, 'text-green-600', 'bg-green-50', 'border-green-200']
+    default: return [IconFileText, 'text-slate-600', 'bg-slate-50', 'border-slate-200']
   }
 }
 
@@ -503,7 +498,7 @@ const formatDateTime = (date) => {
               <div>
                 <label class="block font-medium text-slate-700 mb-2">
                   Lampiran Bukti
-                  <span class="text-slate-500 text-xs">(Opsional, maksimal 5MB)</span>
+                  <span class="text-slate-500 text-xs">(Opsional, maksimal 2MB)</span>
                 </label>
 
                 <FileUpload
@@ -516,7 +511,7 @@ const formatDateTime = (date) => {
                   :showCancelButton="false"
                   :multiple="false"
                   accept=".jpg,.jpeg,.png,.pdf,.zip,.doc,.docx"
-                  :maxFileSize="5242880"
+                  :maxFileSize="2097152"
                   class="w-full"
                   :class="{ 'p-invalid': form.errors.attachment }"
                 >
@@ -557,7 +552,7 @@ const formatDateTime = (date) => {
                       <p class="text-sm text-gray-600 text-center">
                         Drag & drop atau klik untuk memilih file
                       </p>
-                      <p class="text-xs text-gray-400 mt-1">JPG, PNG, PDF, ZIP, DOC (Maks. 5MB)</p>
+                      <p class="text-xs text-gray-400 mt-1">JPG, PNG, PDF, ZIP, DOC (Maks. 2MB)</p>
                     </div>
                   </template>
                 </FileUpload>

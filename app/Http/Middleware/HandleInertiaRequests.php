@@ -39,6 +39,7 @@ class HandleInertiaRequests extends Middleware
         'info' => session('info'),
         'warning' => session('warning'),
         'error' => session('error'),
+        'incident_found' => session('incident_found'),
       ],
     ];
   }

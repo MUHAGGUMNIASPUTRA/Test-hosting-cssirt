@@ -81,7 +81,7 @@ class IncidentController extends Controller
       'status' => 'required|in:Baru,Diverifikasi,Dalam Penyelidikan,Selesai,Ditutup',
       'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritikal',
       'assigned_to' => 'nullable|exists:users,id',
-      'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,zip,doc,docx|max:5120', // Max 5MB
+      'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,zip,doc,docx|max:2048', // Max 2MB
     ]);
 
     // Handle file upload
@@ -144,7 +144,7 @@ class IncidentController extends Controller
       'status' => 'required|in:Baru,Diverifikasi,Dalam Penyelidikan,Selesai,Ditutup',
       'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritikal',
       'assigned_to' => 'nullable|exists:users,id',
-      'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,zip,doc,docx|max:5120', // Max 5MB
+      'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,zip,doc,docx|max:2048', // Max 2MB
     ]);
 
     // Handle file upload

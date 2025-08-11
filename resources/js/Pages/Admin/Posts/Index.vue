@@ -159,7 +159,7 @@ const serverSideConfig = computed(() => {
       <template #container="{ closeCallback }">
         <div class="bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
           <!-- Header -->
-          <div class="bg-gradient-to-r from-red-500 to-red-600 p-6">
+          <div class="bg-gradient-to-r from-red-500 to-red-600 p-4 sm:p-6">
             <div class="flex items-center">
               <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
                 <IconAlertTriangle class="text-white" />
@@ -172,9 +172,9 @@ const serverSideConfig = computed(() => {
           </div>
 
           <!-- Content -->
-          <div class="p-6">
-            <div class="text-center mb-6">
-              <p class="text-slate-700 mb-6">Apakah Anda yakin ingin menghapus artikel berikut?</p>
+          <div class="p-4 sm:p-6">
+            <div class="text-center mb-4 sm:mb-6">
+              <p class="text-slate-700 mb-4 sm:mb-6">Apakah Anda yakin ingin menghapus artikel berikut?</p>
               <div class="bg-slate-50 border border-slate-100 rounded-lg p-3 text-left">
                 <div class="">
                   <div class="flex justify-between items-center mb-1">
