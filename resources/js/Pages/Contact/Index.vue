@@ -11,20 +11,20 @@ const contactRef = ref(null)
 // Contact details data
 const contactDetails = [
   {
+    name: 'Telepon',
+    value: '(0353) 881826',
+    icon: 'pi-phone',
+    color: 'text-green-600',
+    bgColor: 'bg-green-100',
+    type: 'phone'
+  },
+  {
     name: 'Email',
     value: 'ttis@bojonegorokab.go.id',
     icon: 'pi-envelope',
     color: 'text-blue-600',
     bgColor: 'bg-blue-100',
     type: 'email'
-  },
-  {
-    name: 'Telepon',
-    value: '0353-881826',
-    icon: 'pi-phone',
-    color: 'text-green-600',
-    bgColor: 'bg-green-100',
-    type: 'phone'
   }
 ]
 
