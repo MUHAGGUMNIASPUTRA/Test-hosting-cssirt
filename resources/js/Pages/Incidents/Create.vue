@@ -478,7 +478,7 @@ onMounted(() => {
                   <form @submit.prevent="nextStep" class="space-y-6 sm:space-y-8">
 
                     <!-- Reporter Information -->
-                    <div class="sm:bg-slate-50 rounded-xl p-6">
+                    <div class="sm:bg-slate-50 sm:border border-slate-200 rounded-xl p-6">
                       <h3 class="text-lg font-semibold text-slate-900 mb-4 flex items-center">
                         <IconUserExclamation size="18" class="text-blue-600 mr-2" />
                         Informasi Pelapor
@@ -532,7 +532,7 @@ onMounted(() => {
                     <hr class="sm:hidden !mt-0 mx-6"/>
 
                     <!-- Incident Information -->
-                    <div class="sm:bg-slate-50 rounded-xl py-0 px-6 sm:p-6">
+                    <div class="sm:bg-slate-50 sm:border border-slate-200 rounded-xl py-0 px-6 sm:p-6">
                       <h3 class="text-lg font-semibold text-slate-900 mb-4 flex items-center">
                         <IconUrgent size="18" class="text-red-600 mr-2" />
                         Detail Tiket
@@ -715,7 +715,7 @@ onMounted(() => {
 
                   <!-- Search Form -->
                   <form @submit.prevent="submitForm" class="space-y-6">
-                    <div v-if="!page.props.flash?.incident_found" class="sm:bg-slate-50 rounded-xl p-6">
+                    <div v-if="!page.props.flash?.incident_found" class="sm:bg-slate-50 sm:border border-slate-200 rounded-xl p-6">
                       <div class="space-y-4">
                         <div>
                           <label class="block font-medium text-slate-700 mb-2">
@@ -764,43 +764,47 @@ onMounted(() => {
 
                       <div class="space-y-6">
                         <!-- Basic Information -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <p class="text-slate-600">ID Tiket</p>
-                            <p class="font-mono font-semibold">{{ page.props.flash.incident_found.case_id }}</p>
+                        <div class="space-y-4">
+                          <div class="grid grid-cols-1 gap-4">
+                            <div>
+                              <p class="text-slate-600">ID Tiket</p>
+                              <p class="font-mono font-semibold">{{ page.props.flash.incident_found.case_id }}</p>
+                            </div>
                           </div>
-                          <div>
-                            <p class="text-slate-600">Status</p>
-                            <Tag
-                              :value="page.props.flash.incident_found.status"
-                              :severity="getStatusSeverity(page.props.flash.incident_found.status)"
-                            />
-                          </div>
-                          <div>
-                            <p class="text-slate-600">Prioritas</p>
-                            <Tag
-                              :value="page.props.flash.incident_found.priority"
-                              :severity="getPrioritySeverity(page.props.flash.incident_found.priority)"
-                            />
-                          </div>
-                          <div>
-                            <p class="text-slate-600">Kategori</p>
-                            <p class="font-medium">{{ page.props.flash.incident_found.incident_type?.name }}</p>
-                          </div>
-                          <div>
-                            <p class="text-slate-600">Dilaporkan</p>
-                            <p class="font-medium">{{ formatDateTime(page.props.flash.incident_found.reported_at) }}</p>
-                          </div>
-                          <div v-if="page.props.flash.incident_found.assigned_user">
-                            <p class="text-slate-600">Ditangani Oleh</p>
-                            <p class="font-medium">{{ page.props.flash.incident_found.assigned_user.name }}</p>
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <p class="text-slate-600">Status</p>
+                              <Tag
+                                :value="page.props.flash.incident_found.status"
+                                :severity="getStatusSeverity(page.props.flash.incident_found.status)"
+                              />
+                            </div>
+                            <div>
+                              <p class="text-slate-600">Prioritas</p>
+                              <Tag
+                                :value="page.props.flash.incident_found.priority"
+                                :severity="getPrioritySeverity(page.props.flash.incident_found.priority)"
+                              />
+                            </div>
+                            <div>
+                              <p class="text-slate-600">Kategori</p>
+                              <p class="font-medium">{{ page.props.flash.incident_found.incident_type?.name }}</p>
+                            </div>
+                            <div>
+                              <p class="text-slate-600">Dilaporkan</p>
+                              <p class="font-medium">{{ formatDateTime(page.props.flash.incident_found.reported_at) }}</p>
+                            </div>
+                            <div v-if="page.props.flash.incident_found.assigned_user">
+                              <p class="text-slate-600">Ditangani Oleh</p>
+                              <p class="font-medium">{{ page.props.flash.incident_found.assigned_user.name }}</p>
+                            </div>
                           </div>
                         </div>
 
                         <!-- Description -->
                         <div>
                           <p class="text-slate-600 mb-1">Deskripsi</p>
-                          <div class="bg-slate-50 rounded-lg p-3">
+                          <div class="bg-slate-50 sm:border border-slate-200 rounded-lg p-3">
                             <p class="text-slate-700 whitespace-pre-wrap">{{ page.props.flash.incident_found.description }}</p>
                           </div>
                         </div>
@@ -926,7 +930,7 @@ onMounted(() => {
                 <hr class="sm:hidden my-6"/>
 
                 <!-- Confirmation Details -->
-                <div class="sm:bg-slate-50 rounded-xl sm:p-6 mb-6">
+                <div class="sm:bg-slate-50 sm:border border-slate-200 rounded-xl sm:p-6 mb-6">
                   <h3 class="text-lg font-semibold text-slate-900 mb-4 flex items-center">
                     <IconTicket size="18" class="text-blue-600 mr-2" />
                     Ringkasan Tiket
@@ -1012,7 +1016,7 @@ onMounted(() => {
                     <li>• Pastikan informasi yang diberikan akurat</li>
                     <li>• Informasi tiket akan dijaga kerahasiaannya</li>
                     <li>• Anda akan dihubungi jika diperlukan informasi tambahan</li>
-                    <li>• Cek perkembangan tiket melalui halaman ini secara berkala</li>
+                    <li>• Lacak perkembangan tiket melalui halaman ini secara berkala</li>
                   </ul>
                 </div>
 

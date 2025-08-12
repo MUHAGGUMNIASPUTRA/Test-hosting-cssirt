@@ -63,7 +63,7 @@ class IncidentController extends Controller
   public function create(): Response
   {
     return Inertia::render('Admin/Incidents/Create', [
-      'incidentTypes' => IncidentType::all(['id', 'name']),
+      'incidentTypes' => IncidentType::orderBy('name')->get(['id', 'name']),
       'staffUsers' => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
     ]);
   }

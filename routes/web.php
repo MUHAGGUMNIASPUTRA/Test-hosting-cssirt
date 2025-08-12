@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ExcerptController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\ImageUploadController;
 use App\Http\Controllers\Admin\IncidentController as AdminIncidentController;
+use App\Http\Controllers\Admin\IncidentTypeController;
 use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\TaxonomyController;
@@ -52,6 +53,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
   Route::resource('incidents', AdminIncidentController::class);
   Route::put('/incidents/{incident}/management', [AdminIncidentController::class, 'updateManagement'])->name('incidents.management.update');
   Route::post('/incidents/{incident}/logs', [AdminIncidentController::class, 'addLog'])->name('incidents.logs.store');
+  Route::resource('incident-types', IncidentTypeController::class);
 
   Route::resource('posts', AdminPostController::class)->except(['show']);
   Route::post('/images/upload', [ImageUploadController::class, 'store'])->name('images.upload');

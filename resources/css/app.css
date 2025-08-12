@@ -65,6 +65,13 @@ html {
   margin: .25rem !important;
 }
 
+/* Form error message */
+.p-error {
+  color: #dc2626 !important;
+  font-size: 0.75rem !important;
+  line-height: 1rem !important;
+}
+
 /* Global Animation Keyframes */
 @keyframes fade-in-up {
   from {

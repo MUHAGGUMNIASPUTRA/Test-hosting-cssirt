@@ -23,7 +23,7 @@ class IncidentController extends Controller
   public function create()
   {
     return $this->handleSeoRequest('Incidents/Create', [
-      'incidentTypes' => IncidentType::all(['id', 'name']),
+      'incidentTypes' => IncidentType::orderBy('name')->get(['id', 'name']),
     ]);
   }
 

@@ -9,8 +9,8 @@ import Toast from 'primevue/toast'
 
 import {
   IconWorldCheck, IconLayoutBoard, IconUrgent,
-  IconMailExclamation, IconBellPlus, IconNews,
-  IconArticle, IconTextPlus, IconBookmarks,
+  IconMailExclamation, IconBellPlus, IconTicTac,
+  IconNews, IconArticle, IconTextPlus, IconBookmarks,
   IconBook2, IconNotebook, IconFilePlus,
   IconHeartHandshake, IconHelp, IconSpeakerphone,
   IconUsers, IconLogout,
@@ -52,6 +52,11 @@ const sidebarItems = ref([
         label: 'Lapor Insiden Baru',
         icon: IconBellPlus,
         route: 'admin.incidents.create'
+      },
+      {
+        label: 'Kategori Insiden',
+        icon: IconTicTac,
+        route: 'admin.incident-types.index'
       },
     ],
   },

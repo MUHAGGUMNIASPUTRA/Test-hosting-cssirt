@@ -193,7 +193,7 @@ const formatDate = (dateString) => {
                 class="px-4 py-2"
               >
                 <template #default>
-                  <IconPlus size="16" />
+                  <IconCategoryPlus size="16" />
                   Tambah Kategori
                 </template>
               </Button>
@@ -284,7 +284,7 @@ const formatDate = (dateString) => {
                 class="px-4 py-2"
               >
                 <template #default>
-                  <IconPlus size="16" />
+                  <IconTagPlus size="16" />
                   Tambah Tag
                 </template>
               </Button>
