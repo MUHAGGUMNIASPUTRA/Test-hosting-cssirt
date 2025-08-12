@@ -1,5 +1,6 @@
-<!-- filepath: resources/js/Pages/Incidents/Create.vue -->
 <script setup>
+// filepath: resources/js/Pages/Incidents/Create.vue
+
 import { router, useForm, usePage } from '@inertiajs/vue3';
 import { ref, onMounted, computed, watch } from 'vue';
 import { IconFile, IconFileTypeDoc, IconFileTypeDocx, IconFileTypeJpg, IconFileTypePdf, IconFileTypePng, IconFileTypeZip } from '@tabler/icons-vue';
@@ -64,11 +65,40 @@ const form = useForm({
 const searchForm = useForm({
   case_id: '',
   email: '',
+  captcha_answer: '',
+  captcha_expected: '',
 });
 
 // File upload
 const uploader = ref(null);
 const attachmentPreview = ref(null);
+
+// Search captcha reuses the same generator
+const searchCaptcha = ref({ question: '', answer: '', userAnswer: '' });
+const generateSearchCaptcha = () => {
+  generateCaptcha();
+  // Mirror the generated captcha into the search form UI/state
+  searchCaptcha.value = { ...captcha.value };
+  searchForm.captcha_expected = captcha.value.answer.toString();
+};
+
+watch(() => searchCaptcha.value.userAnswer, (newValue) => {
+  searchForm.captcha_answer = newValue;
+});
+
+const searchCaptchaRequired = computed(() => {
+  const f = page.props.flash || {};
+  // If an incident is found, do not require captcha on this view
+  if (f.incident_found) return false;
+  const e = searchForm.errors || {};
+  return Boolean(f.captcha_required || e.captcha || e.captcha_answer || e.captcha_expected);
+});
+
+watch(searchCaptchaRequired, (required) => {
+  if (required && !searchCaptcha.value.question) {
+    generateSearchCaptcha();
+  }
+});
 
 // Priority options
 const priorityOptions = [
@@ -208,11 +238,31 @@ const submitForm = () => {
       }
     });
   } else {
+    // Ensure captcha values are included correctly before submit
+    if (searchCaptchaRequired.value) {
+      searchForm.captcha_answer = (searchCaptcha.value.userAnswer ?? '').toString();
+      // Prefer the current generated answer if present
+      if (searchCaptcha.value.answer) {
+        searchForm.captcha_expected = searchCaptcha.value.answer.toString();
+      }
+    }
     searchForm.post(route('incident.search'), {
       onSuccess: () => {
-        // Handle search success
+        // Handle search success and clear captcha state
+        searchCaptcha.value = { question: '', answer: '', userAnswer: '' };
+        searchForm.captcha_answer = '';
+        searchForm.captcha_expected = '';
+        // Clear any lingering validation errors so computed doesn't keep captcha visible
+        searchForm.clearErrors();
+        // Proactively clear any stale captcha_required flash on the client
+        if (page.props.flash && 'captcha_required' in page.props.flash) {
+          delete page.props.flash.captcha_required;
+        }
       },
-      onError: () => {}
+      onError: () => {
+        if (searchCaptchaRequired.value && !searchCaptcha.value.question)
+          generateSearchCaptcha();
+      }
     });
   }
 };
@@ -234,7 +284,7 @@ const formatDateTime = (dateTime) => {
 const getStatusSeverity = (status) => {
   const severityMap = {
     'Baru': 'info',
-    'Diverifikasi': 'success',
+    'Diverifikasi': 'primary',
     'Dalam Penyelidikan': 'warn',
     'Selesai': 'success',
     'Ditutup': 'secondary'
@@ -270,11 +320,16 @@ const getFileIcon = (filename) => {
   return iconMap[extension] || [IconFile, 'bg-slate-100', 'text-slate-600'];
 };
 
-const downloadAttachment = (attachmentPath) => {
+const downloadAttachment = (attachment) => {
   const link = document.createElement('a');
-  link.href = `/storage/${attachmentPath}`;
+  const url = typeof attachment === 'string' ? attachment : attachment?.download_url;
+  if (!url) return;
+  link.href = url;
   link.target = '_blank';
+  link.rel = 'noopener';
+  document.body.appendChild(link);
   link.click();
+  document.body.removeChild(link);
 };
 
 // Initialize
@@ -294,12 +349,14 @@ onMounted(() => {
   }, observerOptions);
 
   if (formRef.value) observer.observe(formRef.value);
+
+  // If server requires captcha for search (after repeated failures), generate it immediately
+  if (searchCaptchaRequired.value && !searchCaptcha.value.question) generateSearchCaptcha();
 });
 </script>
 
 <template>
   <AppLayout title="Lapor Insiden Siber">
-    <Toast />
 
     <!-- Hero Section -->
     <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
@@ -745,6 +802,30 @@ onMounted(() => {
                           />
                           <small v-if="searchForm.errors.email" class="p-error">{{ searchForm.errors.email }}</small>
                         </div>
+
+                        <!-- Conditional Captcha after repeated failures -->
+                        <div v-if="searchCaptchaRequired" class="pt-2">
+                          <label class="block font-medium text-slate-700 mb-2">
+                            Verifikasi Keamanan
+                          </label>
+                          <div class="flex items-center space-x-4">
+                            <div class="bg-white border border-slate-300 rounded-lg px-4 py-2 font-mono">
+                              {{ searchCaptcha.question }}
+                            </div>
+                            <div>
+                              <InputNumber
+                                v-model="searchCaptcha.userAnswer"
+                                placeholder="Jawaban"
+                                class="w-auto"
+                                :inputClass="{ 'p-invalid': searchForm.errors.captcha || searchForm.errors.captcha_answer }"
+                                required
+                              />
+                            </div>
+                          </div>
+                          <small v-if="searchForm.errors.captcha || searchForm.errors.captcha_answer" class="p-error block text-red-600 mt-2">
+                            {{ searchForm.errors.captcha || searchForm.errors.captcha_answer }}
+                          </small>
+                        </div>
                       </div>
                     </div>
 
@@ -801,14 +882,6 @@ onMounted(() => {
                           </div>
                         </div>
 
-                        <!-- Description -->
-                        <div>
-                          <p class="text-slate-600 mb-1">Deskripsi</p>
-                          <div class="bg-slate-50 sm:border border-slate-200 rounded-lg p-3">
-                            <p class="text-slate-700 whitespace-pre-wrap">{{ page.props.flash.incident_found.description }}</p>
-                          </div>
-                        </div>
-
                         <!-- Attachment Section -->
                         <div v-if="page.props.flash.incident_found.attachment" class="border-t border-slate-200 pt-4">
                           <h4 class="text-lg font-semibold text-slate-900 mb-3 flex items-center">
@@ -818,16 +891,16 @@ onMounted(() => {
                           <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
                             <div class="flex items-center justify-between">
                               <div class="flex items-center">
-                                <div class="w-10 h-10 rounded-lg flex items-center justify-center mr-3" :class="getFileIcon(page.props.flash.incident_found.attachment)[1]">
-                                  <component :is="getFileIcon(page.props.flash.incident_found.attachment)[0]" :class="getFileIcon(page.props.flash.incident_found.attachment)[2]" size="18" />
+                                <div class="w-10 h-10 rounded-lg flex items-center justify-center mr-3" :class="getFileIcon(page.props.flash.incident_found.attachment.filename)[1]">
+                                  <component :is="getFileIcon(page.props.flash.incident_found.attachment.filename)[0]" :class="getFileIcon(page.props.flash.incident_found.attachment.filename)[2]" size="18" />
                                 </div>
                                 <div>
                                   <p class="font-medium text-slate-900">
                                     Lampiran bukti insiden
                                   </p>
                                   <p class="text-sm text-slate-500">
-                                    <strong>{{ page.props.flash.incident_found.attachment_extension }}</strong>
-                                    {{ page.props.flash.incident_found.attachment_file_size || 'N/A' }}
+                                    <strong>{{ page.props.flash.incident_found.attachment.extension }}</strong>
+                                    {{ page.props.flash.incident_found.attachment.file_size || 'N/A' }}
                                   </p>
                                 </div>
                               </div>
@@ -841,53 +914,7 @@ onMounted(() => {
                           </div>
                         </div>
 
-                        <!-- Incident Logs Timeline -->
-                        <div v-if="page.props.flash.incident_found.incident_logs && page.props.flash.incident_found.incident_logs.length > 0" class="border-t border-slate-200 pt-4">
-                          <h4 class="text-lg font-semibold text-slate-900 mb-4 flex items-center">
-                            <IconTimeline size="18" class="text-purple-600 mr-2" />
-                            Riwayat Penanganan
-                          </h4>
-
-                          <div class="space-y-4">
-                            <div
-                              v-for="(log, index) in page.props.flash.incident_found.incident_logs"
-                              :key="log.id"
-                              class="relative flex items-start gap-4"
-                            >
-                              <!-- Timeline connector -->
-                              <div v-if="index < page.props.flash.incident_found.incident_logs.length - 1" class="absolute left-3 top-6 h-full w-px bg-slate-200"></div>
-
-                              <!-- Timeline dot -->
-                              <div class="relative z-10 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-slate-300 bg-white">
-                                <div class="h-2 w-2 rounded-full bg-slate-500"></div>
-                              </div>
-
-                              <!-- Log content -->
-                              <div class="flex-1 min-w-0">
-                                <div class="flex flex-col sm:flex-row sm:items-center sm:gap-2">
-                                  <p class="font-medium text-slate-900">{{ log.user?.name || 'Sistem' }}</p>
-                                  <span class="text-xs text-slate-400">{{ formatDateTime(log.created_at) }}</span>
-                                </div>
-                                <p class="text-sm text-slate-500 leading-relaxed">{{ log.log_message }}</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <!-- No logs message -->
-                        <div v-else-if="page.props.flash.incident_found.incident_logs && page.props.flash.incident_found.incident_logs.length === 0" class="border-t border-slate-200 pt-4">
-                          <h4 class="text-lg font-semibold text-slate-900 mb-4 flex items-center">
-                            <IconTimeline size="18" class="text-purple-600 mr-2" />
-                            Riwayat Penanganan
-                          </h4>
-                          <div class="text-center py-6 bg-slate-50 rounded-lg">
-                            <div class="w-12 h-12 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-3">
-                              <IconHistory size="18" class="text-slate-400" />
-                            </div>
-                            <p class="text-slate-500">Belum ada riwayat penanganan</p>
-                            <p class="text-slate-400 text-sm mt-1">Log aktivitas akan muncul di sini setelah tiket ditangani</p>
-                          </div>
-                        </div>
+                        <!-- Logs are intentionally not shown in public search to protect privacy -->
                       </div>
                     </div>
 

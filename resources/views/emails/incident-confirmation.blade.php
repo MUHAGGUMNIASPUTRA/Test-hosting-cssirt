@@ -30,6 +30,17 @@
       </ul>
     </div>
 
+    <div style="background: #ecfeff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #06b6d4;">
+      <h3 style="margin-top: 0;">Akses Detail Lengkap Tiket</h3>
+      <p style="margin-bottom: 10px;">Gunakan tautan aman berikut untuk melihat deskripsi lengkap dan log perkembangan tiket Anda:</p>
+      <p style="margin: 0;">
+        <a href="{{ route('incident.show', ['caseId' => $incident->case_id, 'token' => $incident->access_token]) }}" style="color: #0e7490; text-decoration: underline;">
+          Lihat Detail Tiket
+        </a>
+      </p>
+      <p style="color:#334155; font-size: 12px; margin-top: 8px; margin-bottom: 0;">Jangan bagikan tautan ini kepada pihak lain.</p>
+    </div>
+
     <div style="background: #fef2f2; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #dc2626;">
       <h3 style="margin-top: 0;"><strong>Untuk insiden darurat:</strong></h3>
       <p style="margin: 5px 0 0 0;">Hubungi hotline 24/7: <strong>0353-881826</strong></p>

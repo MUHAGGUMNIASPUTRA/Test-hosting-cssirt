@@ -169,17 +169,17 @@ const serverSideConfig = computed(() => {
           </button>
         </div>
 
-        <div class="grid grid-cols-1 gap-4">
-          <div>
-            <InputText
-              id="search"
-              v-model="searchQuery"
-              placeholder="Cari berdasarkan judul, deskripsi, atau versi..."
-              class="w-full"
-              @keyup.enter="applyFilters"
-            />
-          </div>
-        </div>
+        <IconField class="w-full">
+          <InputIcon>
+            <i class="pi pi-search" />
+          </InputIcon>
+          <InputText
+            v-model="searchQuery"
+            placeholder="Cari berdasarkan judul, deskripsi, atau versi..."
+            class="w-full pl-10"
+            @keyup.enter="applyFilters"
+          />
+        </IconField>
       </div>
 
       <!-- DataTable -->

@@ -1,5 +1,5 @@
 <?php
-// File: app/Models/Incident.php
+// filepath: app/Models/Incident.php
 
 namespace App\Models;
 
@@ -20,6 +20,7 @@ class Incident extends Model
    */
   protected $fillable = [
     'case_id',
+    'access_token',
     'reporter_name',
     'reporter_email',
     'reporter_phone',
@@ -67,8 +68,8 @@ class Incident extends Model
    */
   public function incidentLogs(): HasMany
   {
-    // An incident has many logs. Order by the latest first.
-    return $this->hasMany(IncidentLog::class)->latest();
+    // An incident has many logs. Order by oldest first for timeline.
+    return $this->hasMany(IncidentLog::class)->orderBy('created_at', 'asc');
   }
 
   /**
@@ -76,8 +77,8 @@ class Incident extends Model
    */
   public function fileSize()
   {
-    if ($this->attachment !== null && Storage::disk('public')->exists($this->attachment)) {
-      $bytes = Storage::disk('public')->size($this->attachment);
+    if ($this->attachment !== null && Storage::disk('local')->exists($this->attachment)) {
+      $bytes = Storage::disk('local')->size($this->attachment);
       return $this->formatBytes($bytes);
     }
     return 'N/A';

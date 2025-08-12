@@ -1,9 +1,11 @@
 <?php
-// File: app/Http/Controllers/IncidentController.php
+// filepath: app/Http/Controllers/IncidentController.php
 
 namespace App\Http\Controllers;
 
 use App\Http\Traits\HandlesSeoRequests;
+use App\Http\Resources\PublicIncidentResource;
+use App\Http\Resources\FullIncidentResource;
 use App\Models\Incident;
 use App\Models\IncidentType;
 use Illuminate\Http\Request;
@@ -41,7 +43,7 @@ class IncidentController extends Controller
       'description' => 'required|string',
       'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritikal',
       'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,zip,doc,docx|max:2048', // Max 2MB
-      'captcha_answer' => 'required|string',
+      'captcha_answer' => 'required',
       'captcha_expected' => 'required|string',
     ], [
       'captcha_answer.required' => 'Jawaban captcha wajib diisi.',
@@ -63,12 +65,14 @@ class IncidentController extends Controller
     // Handle file upload
     $path = null;
     if ($request->hasFile('attachment')) {
-      $path = $request->file('attachment')->store('incidents', 'public');
+      // Store attachments privately
+      $path = $request->file('attachment')->store('incidents', 'local');
     }
 
-    // Create incident with auto-generated case ID
+    // Create incident with auto-generated case ID and access token for reporter
     $incident = Incident::create([
       'case_id' => 'CSIRT-BJN-' . now()->year . '-' . str_pad(Incident::count() + 1, 4, '0', STR_PAD_LEFT),
+      'access_token' => Str::random(64),
       'reporter_name' => $validated['reporter_name'],
       'reporter_email' => $validated['reporter_email'],
       'reporter_phone' => $validated['reporter_phone'],
@@ -107,40 +111,103 @@ class IncidentController extends Controller
    */
   public function search(Request $request)
   {
-    $validated = $request->validate([
+    $failCount = $request->session()->get('search_fail_count', 0);
+    $captchaRequired = $failCount >= 3;
+
+    $rules = [
       'case_id' => 'required|string',
       'email' => 'required|email',
-    ], [
+    ];
+    $messages = [
       'case_id.required' => 'ID Tiket wajib diisi.',
       'email.required' => 'Email wajib diisi.',
       'email.email' => 'Format email tidak valid.',
-    ]);
+    ];
 
-    $incident = Incident::with([
-      'incidentType',
-      'assignedUser',
-      'incidentLogs' => function($query) {
-        $query->with('user')->latest();
+    if ($captchaRequired) {
+      $rules['captcha_answer'] = 'required';
+      $rules['captcha_expected'] = 'required|string';
+      $messages['captcha_answer.required'] = 'Jawaban captcha wajib diisi.';
+    }
+    // Use validator so we can flash captcha_required on 422
+    $validator = \Illuminate\Support\Facades\Validator::make($request->all(), $rules, $messages);
+    if ($validator->fails()) {
+      if ($captchaRequired) {
+        return back()->withErrors($validator)->with('captcha_required', true)->withInput();
       }
-    ])
+      return back()->withErrors($validator)->withInput();
+    }
+    $validated = $validator->validated();
+
+    if ($captchaRequired) {
+      if (strtolower(trim($validated['captcha_answer'] ?? '')) !== strtolower(trim($validated['captcha_expected'] ?? ''))) {
+        $request->session()->put('search_fail_count', $failCount + 1);
+        return back()->withErrors([
+          'captcha' => 'Jawaban captcha tidak sesuai.'
+        ])->with('captcha_required', true)->withInput();
+      }
+    }
+
+    $incident = Incident::with(['incidentType'])
       ->where('case_id', $validated['case_id'])
       ->where('reporter_email', $validated['email'])
       ->first();
 
     if (!$incident) {
+      $newCount = $failCount + 1;
+      $request->session()->put('search_fail_count', $newCount);
       return back()->withErrors([
-        'search' => 'Tiket tidak ditemukan. Pastikan ID Tiket dan email yang Anda masukkan benar.'
-      ])->withInput();
+        'search' => 'Data tiket tidak ditemukan atau kombinasi tidak valid.'
+      ])->with('captcha_required', $newCount >= 3)->withInput();
     }
 
-    // Add file size to the incident data
-    $incidentData = $incident->toArray();
-    if ($incident->attachment) {
-      $incidentData['attachment_file_size'] = $incident->fileSize();
-      $incidentData['attachment_filename'] = basename($incident->attachment);
-      $incidentData['attachment_extension'] = strtoupper(pathinfo($incident->attachment, PATHINFO_EXTENSION));
+    // Centralized serialization for public response
+    // Reset fail counter on success
+    $request->session()->put('search_fail_count', 0);
+    $resource = new PublicIncidentResource($incident->load('incidentType'));
+
+    return back()->with('incident_found', $resource->toArray($request));
+  }
+
+  /**
+   * Download a private attachment via signed URL.
+   */
+  public function downloadAttachment(Request $request, string $caseId)
+  {
+    // Optional: verify email query param matches the incident reporter to add another check
+    $email = $request->query('email');
+    $incident = Incident::where('case_id', $caseId)
+      ->when($email, fn($q) => $q->where('reporter_email', $email))
+      ->firstOrFail();
+
+    if (!$incident->attachment) {
+      abort(404);
     }
 
-    return back()->with('incident_found', $incidentData);
+    // Stream the file from the private 'local' disk
+    return response()->streamDownload(function () use ($incident) {
+      echo \Illuminate\Support\Facades\Storage::disk('local')->get($incident->attachment);
+    }, basename($incident->attachment));
+  }
+
+  /**
+   * Show full incident details for a reporter using access token.
+   */
+  public function showWithToken(Request $request, string $caseId)
+  {
+    $token = $request->query('token');
+    if (!$token) {
+      abort(404);
+    }
+
+    $incident = Incident::with(['incidentType', 'incidentLogs'])
+      ->where('case_id', $caseId)
+      ->where('access_token', $token)
+      ->firstOrFail();
+
+    $resource = new FullIncidentResource($incident);
+    return $this->handleSeoRequest('Incidents/Show', [
+      'incident' => $resource->toArray($request),
+    ]);
   }
 }

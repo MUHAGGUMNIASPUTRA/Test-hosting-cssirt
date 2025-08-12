@@ -1,4 +1,5 @@
 <?php
+// filepath: app/Http/Middleware/HandleInertiaRequests.php
 
 namespace App\Http\Middleware;
 
@@ -34,13 +35,10 @@ class HandleInertiaRequests extends Middleware
       'auth' => [
         'user' => $request->user(),
       ],
-      'flash' => [
-        'success' => session('success'),
-        'info' => session('info'),
-        'warning' => session('warning'),
-        'error' => session('error'),
-        'incident_found' => session('incident_found'),
-      ],
+      // Expose all session keys (excluding reserved) under `flash`
+      'flash' => collect($request->session()->all())
+        ->except(['_token', '_previous', '_flash', 'errors', '_old_input'])
+        ->toArray(),
     ];
   }
 }

@@ -1,5 +1,5 @@
 <?php
-// File: app/Http/Controllers/Admin/IncidentController.php
+// filepath: app/Http/Controllers/Admin/IncidentController.php
 
 namespace App\Http\Controllers\Admin;
 
@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -89,11 +90,12 @@ class IncidentController extends Controller
     // Handle file upload
     $path = null;
     if ($request->hasFile('attachment')) {
-      $path = $request->file('attachment')->store('incidents', 'public');
+      $path = $request->file('attachment')->store('incidents', 'local');
     }
 
     Incident::create(array_merge($validated, [
       'case_id' => 'CSIRT-BJN-' . now()->year . '-' . str_pad(Incident::count() + 1, 4, '0', STR_PAD_LEFT),
+      'access_token' => Str::random(64),
       'attachment' => $path,
       'reported_at' => now(),
     ]));
@@ -156,7 +158,7 @@ class IncidentController extends Controller
         Storage::disk('public')->delete($incident->attachment);
       }
 
-      $validated['attachment'] = $request->file('attachment')->store('incidents', 'public');
+      $validated['attachment'] = $request->file('attachment')->store('incidents', 'local');
     }
 
     $this->logChanges($incident, $validated);
@@ -242,11 +244,11 @@ class IncidentController extends Controller
             $newType = $value ? IncidentType::find($value)->name : 'Tidak ada';
             $changes[] = "Kategori insiden diubah dari '{$oldType}' menjadi '{$newType}'.";
             break;
-          case 'incident_at':
-            $oldDate = $originalData[$key] ? Carbon::parse($originalData[$key])->format('d/m/Y H:i') : 'Tidak ada';
-            $newDate = $value ? Carbon::parse($value)->format('d/m/Y H:i') : 'Tidak ada';
-            $changes[] = "Waktu kejadian diubah dari '{$oldDate}' menjadi '{$newDate}'.";
-            break;
+          // case 'incident_at':
+          //   $oldDate = $originalData[$key] ? Carbon::parse($originalData[$key])->format('d/m/Y H:i') : 'Tidak ada';
+          //   $newDate = $value ? Carbon::parse($value)->format('d/m/Y H:i') : 'Tidak ada';
+          //   $changes[] = "Waktu kejadian diubah dari '{$oldDate}' menjadi '{$newDate}'.";
+          //   break;
           case 'description':
             $changes[] = "Deskripsi insiden diperbarui.";
             break;

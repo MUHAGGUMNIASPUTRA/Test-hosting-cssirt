@@ -44,8 +44,10 @@ Route::get('/faq/search', [FaqController::class, 'search'])->name('faq.search');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/incident', [IncidentController::class, 'create'])->name('incident.create');
-Route::post('/incident', [IncidentController::class, 'store'])->name('incident.store');
-Route::post('/incidents/search', [IncidentController::class, 'search'])->name('incident.search');
+Route::post('/incident', [IncidentController::class, 'store'])->middleware('throttle:incident-create')->name('incident.store');
+Route::post('/incidents/search', [IncidentController::class, 'search'])->middleware('throttle:incident-search')->name('incident.search');
+Route::get('/incidents/{caseId}/attachment', [IncidentController::class, 'downloadAttachment'])->middleware(['signed', 'throttle:incident-download'])->name('incident.attachment.download');
+Route::get('/incidents/{caseId}', [IncidentController::class, 'showWithToken'])->middleware('throttle:incident-search')->name('incident.show');
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
   Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
