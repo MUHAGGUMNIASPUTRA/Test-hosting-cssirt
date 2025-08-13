@@ -262,7 +262,7 @@ class IncidentSeeder extends Seeder
       }
 
       Incident::create([
-        'case_id' => 'CSIRT-BJN-2025-' . str_pad($index + 1, 3, '0', STR_PAD_LEFT),
+        'case_id' => 'CSIRT-2025-' . str_pad($index + 1, 3, '0', STR_PAD_LEFT),
         'reporter_name' => $incidentData['reporter_name'],
         'reporter_email' => $incidentData['reporter_email'],
         'reporter_phone' => $incidentData['reporter_phone'],

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class Incident extends Model
 {
@@ -69,7 +70,7 @@ class Incident extends Model
   public function incidentLogs(): HasMany
   {
     // An incident has many logs. Order by oldest first for timeline.
-    return $this->hasMany(IncidentLog::class)->orderBy('created_at', 'asc');
+    return $this->hasMany(IncidentLog::class)->orderBy('created_at', 'desc');
   }
 
   /**
@@ -94,5 +95,48 @@ class Incident extends Model
       $bytes /= 1024;
     }
     return round($bytes, $precision) . ' ' . $units[$i];
+  }
+
+  /**
+   * Generate a unique case ID with pattern CSIRT-YYYY-MM-XXX (monthly reset).
+   * Uses incident_sequences(period) table to avoid race conditions.
+   */
+  public static function generateCaseId(): string
+  {
+    $period = now()->format('Y-m');
+    $year = now()->format('Y');
+    $month = now()->format('m');
+
+    // Retry a few times on serialization conflicts
+    for ($attempt = 0; $attempt < 5; $attempt++) {
+      try {
+        return DB::transaction(function () use ($period, $year, $month) {
+          // Lock the row for this period
+          $row = DB::table('incident_sequences')->where('period', $period)->lockForUpdate()->first();
+          if (!$row) {
+            DB::table('incident_sequences')->insert([
+              'period' => $period,
+              'last_number' => 0,
+              'created_at' => now(),
+              'updated_at' => now(),
+            ]);
+            $row = DB::table('incident_sequences')->where('period', $period)->lockForUpdate()->first();
+          }
+          $next = ($row->last_number ?? 0) + 1;
+          DB::table('incident_sequences')->where('period', $period)->update([
+            'last_number' => $next,
+            'updated_at' => now(),
+          ]);
+
+          $seq = str_pad((string) $next, 3, '0', STR_PAD_LEFT);
+          return "CSIRT-{$year}-{$month}-{$seq}";
+        }, 3);
+      } catch (\Throwable $e) {
+        // backoff then retry
+        usleep(50000); // 50ms
+      }
+    }
+    // Fallback: include a random suffix to guarantee uniqueness
+    return 'CSIRT-' . $year . '-' . $month . '-' . str_pad((string) random_int(1, 999), 3, '0', STR_PAD_LEFT);
   }
 }

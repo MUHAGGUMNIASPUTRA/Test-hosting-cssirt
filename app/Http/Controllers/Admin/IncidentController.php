@@ -93,12 +93,18 @@ class IncidentController extends Controller
       $path = $request->file('attachment')->store('incidents', 'local');
     }
 
-    Incident::create(array_merge($validated, [
-      'case_id' => 'CSIRT-BJN-' . now()->year . '-' . str_pad(Incident::count() + 1, 4, '0', STR_PAD_LEFT),
+    $incident = Incident::create(array_merge($validated, [
+      'case_id' => Incident::generateCaseId(),
       'access_token' => Str::random(64),
       'attachment' => $path,
       'reported_at' => now(),
     ]));
+
+    // Log creation by the current admin/staff user
+    $incident->incidentLogs()->create([
+      'log_message' => 'Tiket insiden dibuat',
+      'user_id' => Auth::id(),
+    ]);
 
     return redirect()->route('admin.incidents.index')->with('success', 'Laporan insiden berhasil dibuat.');
   }
@@ -223,6 +229,13 @@ class IncidentController extends Controller
     // Normalize data for proper comparison
     $normalized = $this->normalizeDataForComparison($originalData, $newData);
 
+    // Prefetch reference names to avoid N+1
+    $typeIds = collect([$originalData['incident_type_id'] ?? null, $newData['incident_type_id'] ?? null])->filter()->unique()->values();
+    $typesById = $typeIds->isEmpty() ? collect() : IncidentType::whereIn('id', $typeIds)->get(['id', 'name'])->keyBy('id');
+
+    $userIds = collect([$originalData['assigned_to'] ?? null, $newData['assigned_to'] ?? null])->filter()->unique()->values();
+    $usersById = $userIds->isEmpty() ? collect() : User::whereIn('id', $userIds)->get(['id', 'name'])->keyBy('id');
+
     // Now use normalized data for comparison
     foreach ($newData as $key => $value) {
       if ($normalized['original'][$key] !== $normalized['new'][$key]) {
@@ -240,8 +253,8 @@ class IncidentController extends Controller
             $changes[] = "Nomor telepon pelapor diubah dari '{$oldPhone}' menjadi '{$newPhone}'.";
             break;
           case 'incident_type_id':
-            $oldType = $originalData[$key] ? IncidentType::find($originalData[$key])->name : 'Tidak ada';
-            $newType = $value ? IncidentType::find($value)->name : 'Tidak ada';
+            $oldType = $originalData[$key] ? optional($typesById->get((int)$originalData[$key]))->name : 'Tidak ada';
+            $newType = $value ? optional($typesById->get((int)$value))->name : 'Tidak ada';
             $changes[] = "Kategori insiden diubah dari '{$oldType}' menjadi '{$newType}'.";
             break;
           // case 'incident_at':
@@ -259,10 +272,8 @@ class IncidentController extends Controller
             $changes[] = "Prioritas diubah dari '{$originalData[$key]}' menjadi '{$value}'.";
             break;
           case 'assigned_to':
-            $oldAssignee = $originalData[$key] ? User::find($originalData[$key]) : null;
-            $newAssignee = $value ? User::find($value) : null;
-            $oldAssigneeName = $oldAssignee ? $oldAssignee->name : 'Belum Ditugaskan';
-            $newAssigneeName = $newAssignee ? $newAssignee->name : 'Belum Ditugaskan';
+            $oldAssigneeName = $originalData[$key] ? (optional($usersById->get((int)$originalData[$key]))->name ?? 'Belum Ditugaskan') : 'Belum Ditugaskan';
+            $newAssigneeName = $value ? (optional($usersById->get((int)$value))->name ?? 'Belum Ditugaskan') : 'Belum Ditugaskan';
             $changes[] = "Insiden ditugaskan dari '{$oldAssigneeName}' ke '{$newAssigneeName}'.";
             break;
           case 'attachment':

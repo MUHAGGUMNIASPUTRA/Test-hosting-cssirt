@@ -54,7 +54,7 @@ const priorityBadge = (priority) => {
   }
 }
 
-const hasAttachment = computed(() => Boolean(incident.value?.attachment))
+const hasAttachment = computed(() => Boolean(incident.value?.attachment?.filename))
 </script>
 
 <template>
@@ -126,8 +126,8 @@ const hasAttachment = computed(() => Boolean(incident.value?.attachment))
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-6">
             <div class="bg-slate-50 rounded-xl border border-slate-200 p-4">
               <div class="flex items-start">
-                <div class="w-10 h-10 rounded-lg bg-indigo-100 border border-indigo-200 flex items-center justify-center mr-3">
-                  <IconTicTac class="text-indigo-600" size="18" />
+                <div class="w-10 h-10 rounded-lg bg-blue-100 border border-blue-200 flex items-center justify-center mr-3">
+                  <IconTicTac class="text-blue-600" size="18" />
                 </div>
                 <div>
                   <p class="text-slate-500 text-sm">Kategori Insiden</p>
@@ -140,8 +140,8 @@ const hasAttachment = computed(() => Boolean(incident.value?.attachment))
 
             <div class="bg-slate-50 rounded-xl border border-slate-200 p-4">
               <div class="flex items-start">
-                <div class="w-10 h-10 rounded-lg bg-blue-100 border border-blue-200 flex items-center justify-center mr-3">
-                  <IconClock class="text-blue-600" size="18" />
+                <div class="w-10 h-10 rounded-lg bg-orange-100 border border-orange-200 flex items-center justify-center mr-3">
+                  <IconClock class="text-orange-600" size="18" />
                 </div>
                 <div>
                   <p class="text-slate-500 text-sm">Waktu Kejadian</p>
@@ -159,7 +159,7 @@ const hasAttachment = computed(() => Boolean(incident.value?.attachment))
                 </div>
                 <div>
                   <p class="text-slate-500 text-sm">ID Tiket</p>
-                  <p class="text-slate-900 text-base/5 font-medium font-mono">{{ incident.case_id }}</p>
+                  <p class="text-slate-900 text-sm/5 font-medium font-mono">{{ incident.case_id }}</p>
                 </div>
               </div>
             </div>
@@ -234,7 +234,7 @@ const hasAttachment = computed(() => Boolean(incident.value?.attachment))
                 ></div>
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
                   <p class="text-slate-800">{{ log.message }}</p>
-                  <p class="text-slate-500 text-sm mt-1">
+                  <p class="text-slate-500 text-sm">
                     {{ formatDateTime(log.created_at) }}
                   </p>
                 </div>
@@ -242,7 +242,7 @@ const hasAttachment = computed(() => Boolean(incident.value?.attachment))
             </div>
           </div>
 
-          <p v-else class="text-slate-600">Belum ada log.</p>
+          <p v-else class="text-slate-600">Belum ada riwayat.</p>
         </div>
       </div>
     </section>

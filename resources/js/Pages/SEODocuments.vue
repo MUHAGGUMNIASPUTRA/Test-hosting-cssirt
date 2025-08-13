@@ -88,12 +88,12 @@
               </div>
               <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
                 <div class="flex gap-3">
-                  <a href="/documents/rfc2350-csirt-bjn-v1.pdf" target="_blank"
+                  <a href="/documents/rfc2350-csirt-v1.pdf" target="_blank"
                      class="flex-1 inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 border border-indigo-200 rounded-lg hover:bg-indigo-100 transition-colors duration-200">
                     <span class="mr-2">👁️</span>
                     Lihat
                   </a>
-                  <a href="/documents/rfc2350-csirt-bjn-v1.pdf" download
+                  <a href="/documents/rfc2350-csirt-v1.pdf" download
                      class="flex-1 inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200">
                     <span class="mr-2">⬇️</span>
                     Download

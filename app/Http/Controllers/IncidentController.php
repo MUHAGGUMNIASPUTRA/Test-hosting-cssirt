@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use App\Mail\IncidentReportMail;
 use App\Mail\IncidentConfirmationMail;
 
@@ -69,9 +70,9 @@ class IncidentController extends Controller
       $path = $request->file('attachment')->store('incidents', 'local');
     }
 
-    // Create incident with auto-generated case ID and access token for reporter
+    // Create incident with auto-generated case ID (safe monthly sequence) and access token for reporter
     $incident = Incident::create([
-      'case_id' => 'CSIRT-BJN-' . now()->year . '-' . str_pad(Incident::count() + 1, 4, '0', STR_PAD_LEFT),
+      'case_id' => Incident::generateCaseId(),
       'access_token' => Str::random(64),
       'reporter_name' => $validated['reporter_name'],
       'reporter_email' => $validated['reporter_email'],
@@ -83,6 +84,12 @@ class IncidentController extends Controller
       'attachment' => $path,
       'incident_at' => $validated['incident_at'],
       'reported_at' => now(),
+    ]);
+
+    // Log creation
+    $incident->incidentLogs()->create([
+      'log_message' => 'Tiket insiden dibuat',
+      'user_id' => 1,
     ]);
 
     try {

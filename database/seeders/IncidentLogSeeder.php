@@ -11,7 +11,7 @@ class IncidentLogSeeder extends Seeder
 {
   public function run(): void
   {
-    $incident1 = Incident::where('case_id', 'CSIRT-BJN-2025-001')->first();
+    $incident1 = Incident::where('case_id', 'CSIRT-2025-08-001')->first();
     $adminUser = User::where('role', 'admin')->first();
     $staffUser = User::where('role', 'staff')->first();
 

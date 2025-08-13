@@ -780,7 +780,7 @@ onMounted(() => {
                           </label>
                           <InputText
                             v-model="searchForm.case_id"
-                            placeholder="CSIRT-BJN-2025-0001"
+                            placeholder="CSIRT-XXXX-XX-XXX"
                             class="w-full font-mono"
                             :class="{ 'p-invalid': searchForm.errors.case_id }"
                             required

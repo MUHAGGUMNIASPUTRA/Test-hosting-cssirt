@@ -281,11 +281,27 @@ const getLogIconColor = (index, total) => {
                     target="_blank"
                     class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
                   >
-                    <i class="pi pi-paperclip mr-2"></i>
+                    <IconPaperclip size="18" class="mr-2" />
                     Lihat Lampiran
                   </a>
                 </div>
               </div>
+
+              <div v-if="incident.access_token">
+                <label class="block font-medium text-slate-700 mb-2">Akses Token</label>
+                <div class="p-2 bg-slate-50 border border-slate-200 rounded-lg flex justify-between items-center">
+                  <p class="text-slate-900 whitespace-pre-wrap leading-relaxed break-all">{{ incident.access_token }}</p>
+                  <a
+                    :href="route('incident.show', { caseId: incident.case_id, token: incident.access_token })"
+                    target="_blank"
+                    class="text-blue-600 hover:text-blue-800 font-medium"
+                    title="Link Publik"
+                  >
+                    <IconTicket size="18"/>
+                  </a>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
