@@ -170,13 +170,12 @@ onMounted(() => {
         <div class="relative">
           <h4 class="text-2xl font-bold text-slate-900 mb-6">Alamat CSIRT Bojonegoro</h4>
           <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200">
-            <div class="h-80 w-full">
+            <div class="h-[300px] w-full">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3958.411656819588!2d111.878965!3d-7.1501326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7781a5963f7d6b%3A0x7c0d1b3e8e1f4b0!2sDinas%20Komunikasi%20dan%20Informatika%20Kabupaten%20Bojonegoro!5e0!3m2!1sen!2sid!4v1678886400000"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1377.5189600133622!2d111.88276332598195!3d-7.151168687398831!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e77810f51999bf5%3A0x33a31012c7b7bbfb!2sDinas%20Komunikasi%20dan%20Informatika%20Kabupaten%20Bojonegoro!5e0!3m2!1sen!2sid!4v1755065976481!5m2!1sen!2sid"
                 width="100%"
                 height="100%"
-                style="border: 0"
-                allowfullscreen=""
+                style="border:0;" allowfullscreen=""
                 loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"
               ></iframe>
