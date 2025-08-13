@@ -174,6 +174,7 @@ const getLogIconColor = (index, total) => {
                 Kembali
             </Link>
             <Link
+              v-if="incident.status !== 'Ditutup'"
               :href="route('admin.incidents.edit', incident.id)"
               class="bg-blue-600 hover:bg-blue-800 text-white w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
             >
@@ -358,7 +359,7 @@ const getLogIconColor = (index, total) => {
             </div>
 
             <!-- Add new log form -->
-            <form @submit.prevent="submitLog" class="space-y-4">
+            <form v-if="incident.status != 'Ditutup'" @submit.prevent="submitLog" class="space-y-4">
               <div>
                 <label for="log_message" class="block font-medium text-slate-700 mb-2">
                   Tambah Catatan Baru

@@ -9,6 +9,7 @@ use App\Models\IncidentLog;
 use App\Models\IncidentType;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -128,8 +129,13 @@ class IncidentController extends Controller
   /**
    * Show the form for editing the specified resource.
    */
-  public function edit(Incident $incident): Response
+  public function edit(Incident $incident): RedirectResponse|Response
   {
+    // Prevent editing a closed ticket
+    if ($incident->status === 'Ditutup') {
+      return back()->with('error', 'Insiden sudah ditutup dan tidak dapat diubah.');
+    }
+
     $incident->file_size = $incident->fileSize();
 
     return Inertia::render('Admin/Incidents/Create', [
@@ -144,6 +150,11 @@ class IncidentController extends Controller
    */
   public function update(Request $request, Incident $incident)
   {
+    // Prevent editing a closed ticket
+    if ($incident->status === 'Ditutup') {
+      return back()->with('error', 'Insiden sudah ditutup dan tidak dapat diubah.');
+    }
+
     $validated = $request->validate([
       'reporter_name' => 'required|string|max:255',
       'reporter_email' => 'required|email|max:255',
@@ -178,6 +189,11 @@ class IncidentController extends Controller
    */
   public function updateManagement(Request $request, Incident $incident)
   {
+    // Prevent management changes for a closed ticket
+    if ($incident->status === 'Ditutup') {
+      return back()->with('error', 'Insiden sudah ditutup dan tidak dapat diubah.');
+    }
+
     $validated = $request->validate([
       'status' => 'required|in:Baru,Diverifikasi,Dalam Penyelidikan,Selesai,Ditutup',
       'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritikal',
@@ -308,6 +324,11 @@ class IncidentController extends Controller
    */
   public function addLog(Request $request, Incident $incident)
   {
+    // Prevent adding logs to a closed ticket
+    if ($incident->status === 'Ditutup') {
+      return back()->with('error', 'Tidak dapat menambahkan log pada insiden yang sudah ditutup.');
+    }
+
     $validated = $request->validate([
       'log_message' => 'required|string',
     ]);

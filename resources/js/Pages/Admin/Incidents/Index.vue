@@ -479,13 +479,16 @@ const serverSideConfig = computed(() => {
                 >
                   <IconEye size="14" />
                 </Link>
-                <Link
+                <component
+                  :is="data.status === 'Ditutup' ? 'button' : Link"
                   :href="route('admin.incidents.edit', data.id)"
                   class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                   title="Edit"
+                  :disabled="data.status === 'Ditutup'"
+                  :class="{ 'opacity-50 cursor-not-allowed': data.status === 'Ditutup' }"
                 >
                   <IconEdit size="14" />
-                </Link>
+                </component>
                 <button
                   @click="confirmDeleteIncident(data)"
                   class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
