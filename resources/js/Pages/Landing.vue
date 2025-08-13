@@ -1,11 +1,14 @@
 <script setup>
-import { Link, router } from '@inertiajs/vue3'
+import { Link, router, usePage } from '@inertiajs/vue3'
 import { onMounted, ref, computed } from 'vue'
 
 const props = defineProps({
   services: Array,
   posts: Array,
 })
+
+const page = usePage()
+const contact = page.props.contact
 
 // Animation refs
 const heroRef = ref(null)
@@ -310,7 +313,7 @@ onMounted(() => {
             </div>
             <h4 class="text-2xl font-semibold mb-0 sm:mb-2">Darurat 24/7</h4>
             <p class="text-red-100 mb-0 sm:mb-2">Laporan insiden keamanan siber</p>
-            <p class="text-3xl font-bold">0353-881826</p>
+            <p class="text-3xl font-bold">{{ contact.phone }}</p>
           </div>
 
           <!-- General Contact -->
@@ -323,7 +326,7 @@ onMounted(() => {
             </div>
             <h4 class="text-2xl font-semibold text-slate-900 mb-0 sm:mb-2">Email</h4>
             <p class="text-slate-600 mb-0 sm:mb-2">Kontak umum dan konsultasi</p>
-            <p class="text-lg font-medium text-indigo-600">ttis@bojonegorokab.go.id</p>
+            <p class="text-lg font-medium text-indigo-600">{{ contact.email }}</p>
           </div>
 
           <!-- Office Address -->
@@ -334,7 +337,7 @@ onMounted(() => {
               </svg>
             </div>
             <h4 class="text-2xl font-semibold text-slate-900 mb-0 sm:mb-2">Alamat Kantor</h4>
-            <p class="text-slate-600 mb-0 sm:mb-2">Kantor Pemerintah Kabupaten</p>
+            <p class="text-slate-600 mb-0 sm:mb-2">Dinas Komunikasi dan Informatika</p>
             <p class="text-slate-700">Jl. P. Mas Tumapel No.1, Bojonegoro, Jawa Timur 62115</p>
           </div>
         </div>

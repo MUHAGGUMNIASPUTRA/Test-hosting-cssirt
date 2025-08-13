@@ -2,7 +2,10 @@
 // filepath: resources/js/Pages/Contact/Index.vue
 
 import { onMounted, ref } from 'vue'
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
+
+const page = usePage()
+const contact = page.props.contact
 
 // Animation refs
 const heroRef = ref(null)
@@ -12,7 +15,7 @@ const contactRef = ref(null)
 const contactDetails = [
   {
     name: 'Telepon',
-    value: '(0353) 881826',
+    value: contact.phone,
     icon: 'pi-phone',
     color: 'text-green-600',
     bgColor: 'bg-green-100',
@@ -20,7 +23,7 @@ const contactDetails = [
   },
   {
     name: 'Email',
-    value: 'ttis@bojonegorokab.go.id',
+    value: contact.email,
     icon: 'pi-envelope',
     color: 'text-blue-600',
     bgColor: 'bg-blue-100',

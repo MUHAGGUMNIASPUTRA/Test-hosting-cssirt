@@ -54,7 +54,7 @@ class IncidentController extends Controller
 
     return Inertia::render('Admin/Incidents/Index', [
       'incidents' => $query->latest('reported_at')->paginate(10)->withQueryString(),
-      'filters' => $request->only(['search', 'status', 'priority']),
+      'filters' => $request->only(['search', 'status', 'priority', 'category']),
     ]);
   }
 

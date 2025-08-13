@@ -35,6 +35,10 @@ class HandleInertiaRequests extends Middleware
       'auth' => [
         'user' => $request->user(),
       ],
+      'contact' => [
+        'phone' => config('app.phone'),
+        'email' => config('app.email'),
+      ],
       // Expose all session keys (excluding reserved) under `flash`
       'flash' => collect($request->session()->all())
         ->except(['_token', '_previous', '_flash', 'errors', '_old_input'])

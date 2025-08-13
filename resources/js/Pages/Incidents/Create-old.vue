@@ -1,10 +1,13 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3';
-import { ref, onMounted } from 'vue';
+import { useForm, usePage } from '@inertiajs/vue3';
+import { onMounted, ref } from 'vue';
 
 const props = defineProps({
   incidentTypes: Array,
 });
+
+const page = usePage()
+const contact = page.props.contact
 
 // Animation refs
 const heroRef = ref(null);
@@ -236,8 +239,8 @@ onMounted(() => {
                   </div>
                   <p class="text-slate-700 mb-4">Untuk insiden kritikal yang memerlukan penanganan segera:</p>
                   <div class="space-y-2">
-                    <p class="font-semibold text-slate-900"><i class="pi pi-phone !text-sm mr-2"></i> Hotline: 0353-881826</p>
-                    <p class="font-semibold text-slate-900"><i class="pi pi-envelope !text-sm mr-2"></i> Email: ttis@bojonegorokab.go.id</p>
+                    <p class="font-semibold text-slate-900"><i class="pi pi-phone !text-sm mr-2"></i> Hotline: {{ contact.phone }}</p>
+                    <p class="font-semibold text-slate-900"><i class="pi pi-envelope !text-sm mr-2"></i> Email: {{ contact.email }}</p>
                     <p class="text-sm text-slate-600 !mt-4">*Layanan 24/7 untuk insiden prioritas tinggi</p>
                   </div>
                 </div>

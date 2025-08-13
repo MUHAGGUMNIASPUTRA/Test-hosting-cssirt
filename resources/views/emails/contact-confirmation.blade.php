@@ -78,10 +78,10 @@
     </div>
 
     <div class="footer">
-      <p><strong>CSIRT Kabupaten Bojonegoro</strong></p>
+      <p><strong>CSIRT Bojonegoro</strong></p>
       <p>Dinas Komunikasi dan Informatika</p>
       <p>Jl. P. Mas Tumapel No. 1, Bojonegoro, Jawa Timur 62115</p>
-      <p>Email: ttis@bojonegorokab.go.id | Telp: (0353) 881-234</p>
+      <p>Email: ttis@bojonegorokab.go.id | Telp: (0353) 881826</p>
     </div>
   </div>
 </body>

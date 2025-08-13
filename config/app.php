@@ -135,4 +135,6 @@ return [
 
     'ssr_url' => env('SSR_URL', 'http://localhost:13714'),
 
+    'phone' => '(0353) 881826',
+    'email' => 'ttis@bojonegorokab.go.id',
 ];

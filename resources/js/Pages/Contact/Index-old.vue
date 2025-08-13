@@ -1,6 +1,9 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useForm, usePage } from '@inertiajs/vue3'
+
+const page = usePage()
+const contact = page.props.contact
 
 // Animation refs
 const heroRef = ref(null)
@@ -19,7 +22,7 @@ const contactDetails = [
   },
   {
     name: 'Email Resmi',
-    value: 'ttis@bojonegorokab.go.id',
+    value: contact.email,
     icon: 'pi-envelope',
     color: 'text-blue-600',
     bgColor: 'bg-blue-100',
@@ -35,7 +38,7 @@ const contactDetails = [
   },
   {
     name: 'Hotline Darurat',
-    value: '0353-881826',
+    value: contact.phone,
     subtitle: 'Laporan Insiden 24/7',
     icon: 'pi-exclamation-triangle',
     color: 'text-red-600',
