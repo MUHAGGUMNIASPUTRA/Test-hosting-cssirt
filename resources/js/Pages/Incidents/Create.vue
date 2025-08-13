@@ -768,7 +768,7 @@ onMounted(() => {
                     <p class="text-slate-600">Masukkan ID tiket dan email untuk melihat status</p>
                   </div>
 
-                  <hr class="sm:hidden !mt-0 mx-6"/>
+                  <hr v-if="!page.props.flash?.incident_found" class="sm:hidden !mt-0 mx-6"/>
 
                   <!-- Search Form -->
                   <form @submit.prevent="submitForm" class="space-y-6">
@@ -918,7 +918,14 @@ onMounted(() => {
                       </div>
                     </div>
 
-                    <hr class="sm:hidden !mt-0 mx-6"/>
+                    <div v-if="page.props.flash?.incident_found" class="bg-yellow-50 border border-yellow-200 rounded-xl mx-6 sm:mx-0 p-6 !mt-0 sm:!mt-6">
+                      <p class="text-slate-600">
+                        Untuk melihat detail lengkap tiket, gunakan tautan yang telah dikirimkan ke email Anda saat tiket dibuat.
+                        Jika Anda belum menerima email, periksa folder spam atau hubungi tim CSIRT Bojonegoro.
+                      </p>
+                    </div>
+
+                    <hr v-if="!page.props.flash?.incident_found && !searchForm.errors.search" class="sm:hidden !mt-0 mx-6"/>
 
                     <!-- Navigation -->
                     <div class="flex justify-between px-6 sm:px-0">
