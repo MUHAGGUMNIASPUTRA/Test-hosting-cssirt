@@ -142,6 +142,36 @@ const serverSideConfig = computed(() => {
     rows: props.posts.per_page,
   }
 })
+
+// Action menu handling
+const actionMenu = ref();
+const selectedMenu = ref(null);
+const toggleActionMenu = (event, item) => {
+  selectedMenu.value = item;
+  actionMenu.value.toggle(event);
+};
+
+const actionMenuItems = computed(() => {
+  if (!selectedMenu.value) return [];
+  const item = selectedMenu.value;
+  return [
+    {
+      label: 'Baca',
+      icon: 'pi pi-eye',
+      command: () => { router.get(route('posts.show', item.slug)); },
+    },
+    {
+      label: 'Edit',
+      icon: 'pi pi-pen-to-square',
+      command: () => { router.get(route('admin.posts.edit', item.id)); },
+    },
+    {
+      label: 'Hapus',
+      icon: 'pi pi-trash',
+      command: () => { confirmDeletePost(item); },
+    }
+  ];
+});
 </script>
 
 <template>
@@ -179,7 +209,7 @@ const serverSideConfig = computed(() => {
                 <div class="">
                   <div class="flex justify-between items-center mb-1">
                     <span class="font-medium text-slate-600">Judul:</span>
-                    <span class="text-slate-900 text-right max-w-48 truncate">
+                    <span class="text-slate-900 text-right line-clamp-1">
                       {{ postToDelete?.title }}
                     </span>
                   </div>
@@ -312,7 +342,7 @@ const serverSideConfig = computed(() => {
           <Column :header="`Artikel (${posts.total})`">
             <template #body="{ data }">
               <div class="flex items-center gap-3">
-                <div class="hidden lg:flex flex-shrink-0 relative w-16 h-16 overflow-hidden rounded-xl group">
+                <div class="hidden lg:flex flex-shrink-0 relative w-12 h-12 overflow-hidden rounded-xl group">
                   <PostImage
                     :post="data"
                     class="object-cover block h-full group-hover:scale-110 transition-transform duration-300"
@@ -366,29 +396,28 @@ const serverSideConfig = computed(() => {
           <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
             <template #body="{ data }">
               <div class="flex items-center justify-end">
-                <a
-                  :href="route('posts.show', data.slug)"
-                  class="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                  title="Baca Artikel"
-                  target="_blank"
-                  rel="noopener"
+                <Button
+                  variant="text"
+                  class="!p-0"
+                  @click="toggleActionMenu($event, data)"
                 >
-                  <IconEye size="14" />
-                </a>
-                <Link
-                  :href="route('admin.posts.edit', data.id)"
-                  class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                  title="Edit"
-                >
-                  <IconEdit size="14" />
-                </Link>
-                <button
-                  @click="confirmDeletePost(data)"
-                  class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  title="Hapus"
-                >
-                  <IconTrash size="14" />
-                </button>
+                  <template #default>
+                    <div class="flex items-center text-slate-400 hover:text-blue-600">
+                      <IconChevronDown size="22" stroke-width="1.5" />
+                    </div>
+                  </template>
+                </Button>
+
+                <Menu
+                  ref="actionMenu"
+                  :model="actionMenuItems"
+                  :popup="true"
+                  class="!min-w-28"
+                  :pt="{
+                    itemIcon: { class: '!text-sm mr-1' },
+                    itemLabel: { class: 'text-sm' }
+                  }"
+                />
               </div>
             </template>
           </Column>

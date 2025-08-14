@@ -1,7 +1,7 @@
 <script setup>
 // filepath: resources/js/Pages/Admin/Documents/Index.vue
 
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
 import { useConfirm } from 'primevue/useconfirm'
 import { useResponsive } from '@/Composables/useResponsive'
@@ -84,15 +84,6 @@ const deleteDocument = () => {
   })
 }
 
-const getStatusSeverity = (status) => {
-  const severities = {
-    'Published': 'success',
-    'Draft': 'warn',
-    'Scheduled': 'info'
-  }
-  return severities[status] || 'info'
-}
-
 const formatDate = (dateString) => {
   if (!dateString) return '-'
   return new Date(dateString).toLocaleDateString('id-ID', {
@@ -132,6 +123,44 @@ const serverSideConfig = computed(() => {
     rows: props.documents.per_page,
   }
 })
+
+// Action menu handling
+const actionMenu = ref();
+const selectedMenu = ref(null);
+const toggleActionMenu = (event, item) => {
+  selectedMenu.value = item;
+  actionMenu.value.toggle(event);
+};
+
+const actionMenuItems = computed(() => {
+  if (!selectedMenu.value) return [];
+  const item = selectedMenu.value;
+  return [
+    {
+      label: 'Lihat',
+      icon: 'pi pi-eye',
+      url: `/storage/${item.file_path}`,
+      target: '_blank',
+      visible: item.file_exists,
+    },
+    {
+      label: 'Download',
+      icon: 'pi pi-download',
+      url: route('documents.download', item.slug),
+      visible: item.file_exists,
+    },
+    {
+      label: 'Edit',
+      icon: 'pi pi-pen-to-square',
+      command: () => { router.get(route('admin.documents.edit', item.id)); },
+    },
+    {
+      label: 'Hapus',
+      icon: 'pi pi-trash',
+      command: () => { confirmDeleteDocument(item); },
+    }
+  ];
+});
 </script>
 
 <template>
@@ -250,37 +279,28 @@ const serverSideConfig = computed(() => {
           <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
             <template #body="{ data }">
               <div class="flex items-center justify-end">
-                <a
-                  v-if="data.file_exists"
-                  :href="`/storage/${data.file_path}`"
-                  target="_blank"
-                  class="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                  title="Lihat File"
+                <Button
+                  variant="text"
+                  class="!p-0"
+                  @click="toggleActionMenu($event, data)"
                 >
-                  <IconEye size="14" />
-                </a>
-                <a
-                  v-if="data.file_exists"
-                  :href="route('documents.download', data.slug)"
-                  class="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                  title="Download"
-                >
-                  <IconDownload size="14" />
-                </a>
-                <Link
-                  :href="route('admin.documents.edit', data.id)"
-                  class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                  title="Edit"
-                >
-                  <IconEdit size="14" />
-                </Link>
-                <button
-                  @click="confirmDeleteDocument(data)"
-                  class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  title="Hapus"
-                >
-                  <IconTrash size="14" />
-                </button>
+                  <template #default>
+                    <div class="flex items-center text-slate-400 hover:text-blue-600">
+                      <IconChevronDown size="22" stroke-width="1.5" />
+                    </div>
+                  </template>
+                </Button>
+
+                <Menu
+                  ref="actionMenu"
+                  :model="actionMenuItems"
+                  :popup="true"
+                  class="!min-w-32"
+                  :pt="{
+                    itemIcon: { class: '!text-sm mr-1' },
+                    itemLabel: { class: 'text-sm' }
+                  }"
+                />
               </div>
             </template>
           </Column>

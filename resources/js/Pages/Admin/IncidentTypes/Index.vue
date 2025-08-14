@@ -1,7 +1,7 @@
 <script setup>
 // filepath: resources/js/Pages/Admin/IncidentTypes/Index.vue
 
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
 import { useResponsive } from '@/Composables/useResponsive'
 
@@ -60,6 +60,32 @@ const formatDate = (dateString) => {
     day: 'numeric'
   })
 }
+
+// Action menu handling
+const actionMenu = ref();
+const selectedMenu = ref(null);
+const toggleActionMenu = (event, item) => {
+  selectedMenu.value = item;
+  actionMenu.value.toggle(event);
+};
+
+const actionMenuItems = computed(() => {
+  if (!selectedMenu.value) return [];
+  const item = selectedMenu.value;
+  return [
+    {
+      label: 'Edit',
+      icon: 'pi pi-pen-to-square',
+      command: () => { router.get(route('admin.incident-types.edit', item.id)); },
+    },
+    {
+      label: 'Hapus',
+      icon: 'pi pi-trash',
+      command: () => { confirmDelete(item); },
+      visible: item.incidents_count === 0,
+    }
+  ];
+});
 </script>
 
 <template>
@@ -238,20 +264,28 @@ const formatDate = (dateString) => {
           <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
             <template #body="{ data }">
               <div class="flex items-center justify-end">
-                <Link
-                  :href="route('admin.incident-types.edit', data.id)"
-                  class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                  title="Edit"
+                <Button
+                  variant="text"
+                  class="!p-0"
+                  @click="toggleActionMenu($event, data)"
                 >
-                  <IconEdit size="14" />
-                </Link>
-                <button
-                  @click="confirmDelete(data)"
-                  class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  title="Hapus"
-                >
-                  <IconTrash size="14" />
-                </button>
+                  <template #default>
+                    <div class="flex items-center text-slate-400 hover:text-blue-600">
+                      <IconChevronDown size="22" stroke-width="1.5" />
+                    </div>
+                  </template>
+                </Button>
+
+                <Menu
+                  ref="actionMenu"
+                  :model="actionMenuItems"
+                  :popup="true"
+                  class="!min-w-28"
+                  :pt="{
+                    itemIcon: { class: '!text-sm mr-1' },
+                    itemLabel: { class: 'text-sm' }
+                  }"
+                />
               </div>
             </template>
           </Column>

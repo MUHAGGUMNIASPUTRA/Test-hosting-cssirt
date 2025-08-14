@@ -2,7 +2,7 @@
 // filepath: resources/js/Pages/Admin/Taxonomy/Index.vue
 
 import { ref, computed } from 'vue'
-import { Link, useForm } from '@inertiajs/vue3'
+import { router, useForm } from '@inertiajs/vue3'
 import { useConfirm } from "primevue/useconfirm"
 import { useResponsive } from '@/Composables/useResponsive';
 
@@ -104,6 +104,55 @@ const formatDate = (dateString) => {
     day: 'numeric'
   })
 }
+
+// Action menu handling
+const catActionMenu = ref();
+const catSelectedMenu = ref(null);
+const toggleCatActionMenu = (event, item) => {
+  catSelectedMenu.value = item;
+  catActionMenu.value.toggle(event);
+};
+
+const catActionMenuItems = computed(() => {
+  if (!catSelectedMenu.value) return [];
+  const item = catSelectedMenu.value;
+  return [
+    {
+      label: 'Edit',
+      icon: 'pi pi-pen-to-square',
+      command: () => { openDialog('Kategori', item); },
+    },
+    {
+      label: 'Hapus',
+      icon: 'pi pi-trash',
+      command: () => { deleteItem('Kategori', item); },
+    }
+  ];
+});
+
+const tagActionMenu = ref();
+const tagSelectedMenu = ref(null);
+const toggleTagActionMenu = (event, item) => {
+  tagSelectedMenu.value = item;
+  tagActionMenu.value.toggle(event);
+};
+
+const tagActionMenuItems = computed(() => {
+  if (!tagSelectedMenu.value) return [];
+  const item = tagSelectedMenu.value;
+  return [
+    {
+      label: 'Edit',
+      icon: 'pi pi-pen-to-square',
+      command: () => { openDialog('Tag', item); },
+    },
+    {
+      label: 'Hapus',
+      icon: 'pi pi-trash',
+      command: () => { deleteItem('Tag', item); },
+    }
+  ];
+});
 </script>
 
 <template>
@@ -205,7 +254,6 @@ const formatDate = (dateString) => {
               :value="props.categories"
               :paginator="props.categories.length > 10"
               :rows="10"
-              class="p-datatable-sm"
             >
               <Column field="name" header="Nama Kategori" class="min-w-48">
                 <template #body="{ data }">
@@ -234,20 +282,28 @@ const formatDate = (dateString) => {
               <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
                 <template #body="{ data }">
                   <div class="flex items-center justify-end">
-                    <button
-                      @click="openDialog('Kategori', data)"
-                      class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="Edit"
+                    <Button
+                      variant="text"
+                      class="!p-0"
+                      @click="toggleCatActionMenu($event, data)"
                     >
-                      <IconEdit size="14" />
-                    </button>
-                    <button
-                      @click="deleteItem('Kategori', data)"
-                      class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Hapus"
-                    >
-                      <IconTrash size="14" />
-                    </button>
+                      <template #default>
+                        <div class="flex items-center text-slate-400 hover:text-blue-600">
+                          <IconChevronDown size="22" stroke-width="1.5" />
+                        </div>
+                      </template>
+                    </Button>
+
+                    <Menu
+                      ref="catActionMenu"
+                      :model="catActionMenuItems"
+                      :popup="true"
+                      class="!min-w-28"
+                      :pt="{
+                        itemIcon: { class: '!text-sm mr-1' },
+                        itemLabel: { class: 'text-sm' }
+                      }"
+                    />
                   </div>
                 </template>
               </Column>
@@ -296,7 +352,6 @@ const formatDate = (dateString) => {
               :value="props.tags"
               :paginator="props.tags.length > 10"
               :rows="10"
-              class="p-datatable-sm"
             >
               <Column field="name" header="Nama Tag" class="min-w-48">
                 <template #body="{ data }">
@@ -325,20 +380,28 @@ const formatDate = (dateString) => {
               <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
                 <template #body="{ data }">
                   <div class="flex items-center justify-end">
-                    <button
-                      @click="openDialog('Tag', data)"
-                      class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="Edit"
+                    <Button
+                      variant="text"
+                      class="!p-0"
+                      @click="toggleTagActionMenu($event, data)"
                     >
-                      <IconEdit size="14" />
-                    </button>
-                    <button
-                      @click="deleteItem('Tag', data)"
-                      class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Hapus"
-                    >
-                      <IconTrash size="14" />
-                    </button>
+                      <template #default>
+                        <div class="flex items-center text-slate-400 hover:text-blue-600">
+                          <IconChevronDown size="22" stroke-width="1.5" />
+                        </div>
+                      </template>
+                    </Button>
+
+                    <Menu
+                      ref="tagActionMenu"
+                      :model="tagActionMenuItems"
+                      :popup="true"
+                      class="!min-w-28"
+                      :pt="{
+                        itemIcon: { class: '!text-sm mr-1' },
+                        itemLabel: { class: 'text-sm' }
+                      }"
+                    />
                   </div>
                 </template>
               </Column>

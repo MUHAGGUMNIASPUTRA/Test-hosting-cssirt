@@ -5,7 +5,6 @@ import { ref, computed } from 'vue'
 import { router, useForm } from '@inertiajs/vue3'
 import { useConfirm } from "primevue/useconfirm"
 import { useResponsive } from '@/Composables/useResponsive'
-import { icons } from 'lucide-vue-next'
 
 const props = defineProps({
   announcements: Object,
@@ -262,6 +261,31 @@ const contentWordCount = computed(() => {
   if (!form.content) return 0
   return form.content.trim().split(/\s+/).filter(word => word.length > 0).length
 })
+
+// Action menu handling
+const actionMenu = ref();
+const selectedMenu = ref(null);
+const toggleActionMenu = (event, item) => {
+  selectedMenu.value = item;
+  actionMenu.value.toggle(event);
+};
+
+const actionMenuItems = computed(() => {
+  if (!selectedMenu.value) return [];
+  const item = selectedMenu.value;
+  return [
+    {
+      label: 'Edit',
+      icon: 'pi pi-pen-to-square',
+      command: () => { openEditDialog(item); },
+    },
+    {
+      label: 'Hapus',
+      icon: 'pi pi-trash',
+      command: () => { deleteAnnouncement(item); },
+    }
+  ];
+});
 </script>
 
 <template>
@@ -464,20 +488,28 @@ const contentWordCount = computed(() => {
           <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
             <template #body="{ data }">
               <div class="flex items-center justify-end">
-                <button
-                  @click="openEditDialog(data)"
-                  class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                  title="Edit"
+                <Button
+                  variant="text"
+                  class="!p-0"
+                  @click="toggleActionMenu($event, data)"
                 >
-                  <IconEdit size="14" />
-                </button>
-                <button
-                  @click="deleteAnnouncement(data)"
-                  class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  title="Hapus"
-                >
-                  <IconTrash size="14" />
-                </button>
+                  <template #default>
+                    <div class="flex items-center text-slate-400 hover:text-blue-600">
+                      <IconChevronDown size="22" stroke-width="1.5" />
+                    </div>
+                  </template>
+                </Button>
+
+                <Menu
+                  ref="actionMenu"
+                  :model="actionMenuItems"
+                  :popup="true"
+                  class="!min-w-28"
+                  :pt="{
+                    itemIcon: { class: '!text-sm mr-1' },
+                    itemLabel: { class: 'text-sm' }
+                  }"
+                />
               </div>
             </template>
           </Column>

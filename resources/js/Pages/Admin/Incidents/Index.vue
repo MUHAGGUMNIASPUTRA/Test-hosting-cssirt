@@ -163,6 +163,37 @@ const serverSideConfig = computed(() => {
     rows: props.incidents.per_page,
   }
 })
+
+// Action menu handling
+const actionMenu = ref();
+const selectedMenu = ref(null);
+const toggleActionMenu = (event, item) => {
+  selectedMenu.value = item;
+  actionMenu.value.toggle(event);
+};
+
+const actionMenuItems = computed(() => {
+  if (!selectedMenu.value) return [];
+  const item = selectedMenu.value;
+  return [
+    {
+      label: 'Detail',
+      icon: 'pi pi-eye',
+      command: () => { router.get(route('admin.incidents.show', item.id)); },
+    },
+    {
+      label: 'Edit',
+      icon: 'pi pi-pen-to-square',
+      command: () => { router.get(route('admin.incidents.edit', item.id)); },
+      visible: item.status !== 'Ditutup',
+    },
+    {
+      label: 'Hapus',
+      icon: 'pi pi-trash',
+      command: () => { confirmDeleteIncident(item); },
+    }
+  ];
+});
 </script>
 
 <template>
@@ -472,30 +503,28 @@ const serverSideConfig = computed(() => {
           <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
             <template #body="{ data }">
               <div class="flex items-center justify-end">
-                <Link
-                  :href="route('admin.incidents.show', data.id)"
-                  class="p-2 text-slate-400 hover:text-green-600 hover:bg-green-100 rounded-lg transition-colors"
-                  title="Lihat Detail"
+                <Button
+                  variant="text"
+                  class="!p-0"
+                  @click="toggleActionMenu($event, data)"
                 >
-                  <IconEye size="14" />
-                </Link>
-                <component
-                  :is="data.status === 'Ditutup' ? 'button' : Link"
-                  :href="route('admin.incidents.edit', data.id)"
-                  class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                  title="Edit"
-                  :disabled="data.status === 'Ditutup'"
-                  :class="{ 'opacity-50 cursor-not-allowed': data.status === 'Ditutup' }"
-                >
-                  <IconEdit size="14" />
-                </component>
-                <button
-                  @click="confirmDeleteIncident(data)"
-                  class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  title="Hapus"
-                >
-                  <IconTrash size="14" />
-                </button>
+                  <template #default>
+                    <div class="flex items-center text-slate-400 hover:text-blue-600">
+                      <IconChevronDown size="22" stroke-width="1.5" />
+                    </div>
+                  </template>
+                </Button>
+
+                <Menu
+                  ref="actionMenu"
+                  :model="actionMenuItems"
+                  :popup="true"
+                  class="!min-w-28"
+                  :pt="{
+                    itemIcon: { class: '!text-sm mr-1' },
+                    itemLabel: { class: 'text-sm' }
+                  }"
+                />
               </div>
             </template>
           </Column>
