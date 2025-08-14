@@ -39,6 +39,7 @@ const sidebarItems = ref([
     icon: IconLayoutBoard,
     route: 'admin.dashboard',
   },
+  { separator: true },
   {
     label: 'Insiden (Tiket)',
     icon: IconUrgent,
@@ -60,6 +61,7 @@ const sidebarItems = ref([
       },
     ],
   },
+  { separator: true },
   {
     label: 'Konten',
     icon: IconNews,
@@ -81,6 +83,7 @@ const sidebarItems = ref([
       }
     ],
   },
+  { separator: true },
   {
     label: 'Panduan',
     icon: IconBook2,
@@ -97,6 +100,7 @@ const sidebarItems = ref([
       },
     ],
   },
+  { separator: true },
   {
     label: 'Layanan',
     icon: IconHeartHandshake,
@@ -232,17 +236,17 @@ watch(
 
     <!-- Sidebar -->
     <div
-      class="fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-transform duration-300 ease-in-out"
+      class="fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-transform duration-300 ease-in-out w-72"
       :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
     >
       <!-- Sidebar header -->
-      <div class="flex items-center justify-between h-16 px-6 bg-gradient-to-r from-indigo-600 to-blue-600">
+      <div class="flex items-center justify-between h-[4.5rem] px-8 bg-gradient-to-r from-indigo-600 to-blue-600">
         <div class="flex items-center">
           <div class="h-9 w-9 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center mr-1">
             <IconShieldCheckFilled size="16" class="text-white"/>
           </div>
           <div class="ml-3">
-            <h1 class="font-bold text-white">CSIRT Bojonegoro</h1>
+            <h1 class="text-lg/5 font-bold text-white">CSIRT Bojonegoro</h1>
             <p class="text-xs text-blue-100">Admin Panel</p>
           </div>
         </div>
@@ -254,10 +258,10 @@ watch(
       </div>
 
       <!-- Navigation -->
-      <nav class="flex-1 p-4 space-y-2 overflow-y-auto h-[calc(100vh-8rem)]">
+      <nav class="flex-1 p-6 space-y-2 overflow-y-auto h-[calc(100vh-8.5rem)]">
         <template v-for="item in sidebarItems" :key="item.label">
           <div v-if="!item.visible || item.visible()">
-            <div v-if="item.separator" class="border-t border-slate-200 my-1"></div>
+            <div v-if="item.separator" class="border-t border-slate-100 my-1"></div>
             <div v-else>
             <!-- Single menu item -->
               <Link
@@ -265,9 +269,9 @@ watch(
                 :href="route(item.route)"
                 @click="closeSidebarOnMobile"
                 class="flex items-center px-3 py-2 font-normal rounded-lg transition-colors group"
-                :class="isCurrentRoute(item.route) ? 'bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'"
+                :class="[isCurrentRoute(item.route) ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-500' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900', item.label === 'Website' ? '!text-indigo-500 hover:!text-indigo-700' : '']"
               >
-                <component :is="item.icon" size="18" stroke-width="1.75" class="mr-3" :class="[isCurrentRoute(item.route) ? 'text-indigo-500' : 'text-slate-400']" />{{ item.label }}
+                <component :is="item.icon" size="18" stroke-width="1.75" class="mr-3" :class="[isCurrentRoute(item.route) ? 'text-blue-500' : 'text-slate-400', item.label === 'Website' ? '!text-indigo-500 hover:!text-indigo-700' : '']" />{{ item.label }}
               </Link>
 
               <!-- Menu with subitems -->
@@ -282,9 +286,9 @@ watch(
                     :href="route(subItem.route)"
                     @click="closeSidebarOnMobile"
                     class="flex items-center px-3 py-2 font-normal rounded-md transition-colors"
-                    :class="isCurrentRoute(subItem.route) ? 'bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'"
+                    :class="isCurrentRoute(subItem.route) ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-500' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'"
                   >
-                    <component :is="subItem.icon" size="18" stroke-width="1.75" class="mr-3" :class="[isCurrentRoute(subItem.route) ? 'text-indigo-500' : 'text-slate-400']" />{{ subItem.label }}
+                    <component :is="subItem.icon" size="18" stroke-width="1.75" class="mr-3" :class="[isCurrentRoute(subItem.route) ? 'text-blue-500' : 'text-slate-400']" />{{ subItem.label }}
                   </Link>
                 </div>
               </div>
@@ -301,7 +305,7 @@ watch(
       </nav>
 
       <!-- User info at bottom -->
-      <div class="border-t border-slate-200 p-4">
+      <div class="border-t border-slate-200 p-4 px-6">
         <div class="flex items-center">
           <div class="flex-shrink-0">
             <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
@@ -319,10 +323,10 @@ watch(
     </div>
 
     <!-- Main content -->
-    <div class="flex-1 lg:pl-64">
+    <div class="flex-1 lg:pl-72">
       <!-- Top navbar -->
       <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-30">
-        <div class="flex items-center justify-between h-16 px-3 lg:px-6">
+        <div class="flex items-center justify-between h-[4.5rem] px-4 lg:px-6">
           <div class="flex items-center">
             <button @click="toggleSidebar" class="p-2 rounded-md text-slate-400 hover:text-slate-500 hover:bg-slate-100 lg:hidden">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -330,7 +334,7 @@ watch(
               </svg>
             </button>
             <div class="ml-4 lg:ml-0">
-              <h1 class="text-lg font-semibold text-slate-900">{{ isDesktop ? title : 'CSIRT Bojonegoro: Admin Panel' }}</h1>
+              <h1 class="text-lg/5 font-semibold text-slate-900">{{ isDesktop ? title : 'CSIRT Bojonegoro: Admin Panel' }}</h1>
               <p class="text-xs text-slate-500">{{ new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</p>
             </div>
           </div>
@@ -340,26 +344,30 @@ watch(
             <div class="relative user-menu">
               <button
                 @click.stop="userMenuOpen = !userMenuOpen"
-                class="flex items-center p-2 text-sm rounded-lg hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                class="flex items-center p-2 text-sm rounded-full hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                   <span class="text-xs font-medium text-white">{{ page.props.auth.user?.name?.charAt(0)?.toUpperCase() || 'U' }}</span>
                 </div>
-                <span class="ml-2 text-slate-700 hidden sm:block">{{ page.props.auth.user?.name || 'User' }}</span>
                 <svg class="ml-1 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
 
               <!-- User dropdown menu -->
-              <div v-if="userMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-50">
+              <div v-if="userMenuOpen" class="absolute right-0 mt-2 bg-white rounded-lg shadow-lg border border-slate-200 pb-1 z-50">
+                <div class="px-4 py-3 text-slate-700 font-medium bg-slate-50 rounded-t-lg">
+                  <p>{{ page.props.auth.user?.name || 'User' }}</p>
+                  <p class="text-sm text-slate-400">{{ page.props.auth.user?.email || 'user@example.com' }}</p>
+                </div>
+                <div class="border-t border-slate-200 mb-1"></div>
                 <template v-for="item in userMenuItems" :key="item.label">
                   <div v-if="!item.visible || item.visible()">
                     <div v-if="item.separator" class="border-t border-slate-200 my-1"></div>
                     <button
                       v-else
                       @click="item.command"
-                      class="flex items-center w-full px-4 py-2 hover:bg-slate-50 transition-colors"
+                      class="flex items-center w-full px-4 py-2 hover:bg-slate-100 transition-colors"
                       :class="item.class || 'text-slate-500'"
                     >
                       <component v-if="item.icon" :is="item.icon" size="16" class="mr-3" :class="item.class ? item.class : 'text-slate-400'" />{{ item.label }}

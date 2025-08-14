@@ -164,7 +164,7 @@ const actionMenuItems = computed(() => {
 </script>
 
 <template>
-  <AdminLayout title="Kelola Panduan">
+  <AdminLayout title="Daftar Dokumen Panduan">
     <ConfirmDialog :style="{ width: isMobile ? '95vw' : undefined }" />
 
     <div class="space-y-4 lg:space-y-6">
@@ -172,7 +172,7 @@ const actionMenuItems = computed(() => {
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
         <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Kelola Dokumen Panduan</h2>
+            <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Daftar Dokumen Panduan</h2>
             <p class="text-slate-600">Kelola dokumen panduan untuk keamanan siber</p>
           </div>
           <Link
