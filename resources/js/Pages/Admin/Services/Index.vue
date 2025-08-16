@@ -2,7 +2,7 @@
 // filepath: resources/js/Pages/Admin/Services/Index.vue
 
 import { ref, computed } from 'vue'
-import { Link, router, useForm } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 import { useConfirm } from "primevue/useconfirm"
 import { useResponsive } from '@/Composables/useResponsive'
 
@@ -254,18 +254,19 @@ const actionMenuItems = computed(() => {
             <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Kelola Layanan</h2>
             <p class="text-slate-600">Kelola layanan yang disediakan organisasi</p>
           </div>
-          <Link
-            :href="route('admin.services.create')"
-            class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+          <Button
+            severity="primary"
+            @click="() => router.get(route('admin.services.create'))"
+            class="w-full sm:w-auto"
           >
             <IconHeartPlus size="16" />
               Tambah Layanan
-          </Link>
+          </Button>
         </div>
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+      <div class="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
         <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
             <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
@@ -316,7 +317,7 @@ const actionMenuItems = computed(() => {
           </button>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block font-medium text-slate-700 mb-2">Cari Layanan</label>
             <div class="relative">
@@ -359,11 +360,9 @@ const actionMenuItems = computed(() => {
         >
           <template #empty>
             <div class="text-center py-12">
-              <svg class="w-12 h-12 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
+              <IconHeartHandshake size="30" class="text-slate-300 mx-auto mb-4" />
               <p class="text-slate-500 text-lg font-medium">
-                {{ searchQuery || selectedStatus ? 'Tidak ada layanan yang sesuai filter' : 'Belum ada layanan yang dibuat' }}
+                {{ searchQuery || selectedStatus ? 'Tidak ada layanan ditemukan' : 'Belum ada layanan yang dibuat' }}
               </p>
               <p class="text-slate-400 mt-1 text-sm">
                 {{ searchQuery || selectedStatus ? 'Coba ubah kriteria pencarian' : 'Layanan yang dibuat akan muncul di sini' }}

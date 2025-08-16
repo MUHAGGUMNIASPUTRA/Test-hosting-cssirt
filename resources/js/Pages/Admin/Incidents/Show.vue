@@ -1,7 +1,7 @@
 <script setup>
 // filepath: resources/js/Pages/Admin/Incidents/Show.vue
 
-import { Link, useForm } from '@inertiajs/vue3';
+import { router, useForm } from '@inertiajs/vue3';
 import { useResponsive } from '@/Composables/useResponsive';
 
 const props = defineProps({
@@ -166,21 +166,23 @@ const getLogIconColor = (index, total) => {
             </div>
           </div>
           <div class="flex items-center space-x-3">
-            <Link
-              :href="route('admin.incidents.index')"
-              class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+            <Button
+              severity="secondary"
+              @click="() => router.get(route('admin.incidents.index'))"
+              class="w-full lg:w-auto"
             >
               <IconArrowLeft size="16"/>
                 Kembali
-            </Link>
-            <Link
+            </Button>
+            <Button
               v-if="incident.status !== 'Ditutup'"
-              :href="route('admin.incidents.edit', incident.id)"
-              class="bg-blue-600 hover:bg-blue-800 text-white w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+              severity="primary"
+              @click="() => router.get(route('admin.incidents.edit', incident.id))"
+              class="w-full lg:w-auto"
             >
               <IconEdit size="16"/>
               Edit Insiden
-            </Link>
+            </Button>
           </div>
         </div>
       </div>
@@ -378,15 +380,16 @@ const getLogIconColor = (index, total) => {
                 </p>
               </div>
 
-              <button
+              <Button
                 type="submit"
+                severity="primary"
                 :disabled="logForm.processing"
-                class="bg-blue-600 hover:bg-blue-800 text-white w-full inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
+                class="w-full"
               >
                 <IconLoader3 v-if="logForm.processing" class="animate-spin" size="16"/>
                 <IconSticker2 v-else :size="16" />
                 {{ logForm.processing ? 'Menambahkan...' : 'Tambah Catatan' }}
-              </button>
+              </Button>
             </form>
           </div>
         </div>

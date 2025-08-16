@@ -2,7 +2,7 @@
 // filepath: resources/js/Pages/Admin/IncidentTypes/Index.vue
 
 import { ref, computed } from 'vue'
-import { Link, router } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 import { useResponsive } from '@/Composables/useResponsive'
 
 const props = defineProps({
@@ -169,13 +169,14 @@ const actionMenuItems = computed(() => {
             <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Kategori Insiden</h2>
             <p class="text-slate-600">Kelola kategori untuk klasifikasi insiden keamanan siber</p>
           </div>
-          <Link
-            :href="route('admin.incident-types.create')"
-            class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+          <Button
+            severity="primary"
+            @click="() => router.get(route('admin.incident-types.create'))"
+            class="w-full sm:w-auto"
           >
             <IconPlus :size="16"/>
             Tambah Kategori
-          </Link>
+          </Button>
         </div>
       </div>
 
@@ -214,14 +215,12 @@ const actionMenuItems = computed(() => {
         >
           <template #empty>
             <div class="text-center py-12">
-              <svg class="w-12 h-12 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-              </svg>
+              <IconTicTac size="30" class="text-slate-300 mx-auto mb-4" />
               <p class="text-slate-500 text-lg font-medium">
-                {{ searchQuery ? 'Tidak ada kategori yang ditemukan' : 'Belum ada kategori insiden' }}
+                {{ searchQuery ? 'Tidak ada kategori ditemukan' : 'Belum ada kategori insiden' }}
               </p>
               <p class="text-slate-400 mt-1 text-sm">
-                {{ searchQuery ? 'Coba ubah kata kunci pencarian' : 'Tambah kategori untuk mengklasifikasikan insiden' }}
+                {{ searchQuery ? 'Coba ubah kriteria pencarian' : 'Tambah kategori untuk mengklasifikasikan insiden' }}
               </p>
             </div>
           </template>

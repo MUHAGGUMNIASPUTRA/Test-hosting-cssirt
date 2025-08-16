@@ -171,7 +171,7 @@ const tagActionMenuItems = computed(() => {
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+      <div class="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
         <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
             <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
@@ -313,11 +313,9 @@ const tagActionMenuItems = computed(() => {
 
           <!-- Empty State for Categories -->
           <div v-else class="text-center py-12">
-            <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <IconCategory class="text-blue-300"/>
-            </div>
-            <h3 class="font-medium text-slate-900 mb-2">Belum Ada Kategori</h3>
-            <p class="text-slate-500 mb-6">Tambah kategori untuk mengorganisir artikel</p>
+            <IconCategory size="30" class="mx-auto text-slate-300 mb-4" />
+            <p class="text-slate-500 text-lg font-medium">Belum Ada Kategori</p>
+            <p class="text-slate-400 mt-1 text-sm">Tambah kategori untuk mengorganisir artikel</p>
           </div>
         </div>
 
@@ -411,11 +409,9 @@ const tagActionMenuItems = computed(() => {
 
           <!-- Empty State for Tags -->
           <div v-else class="text-center py-12">
-            <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <IconTags class="text-green-300"/>
-            </div>
-            <h3 class="font-medium text-slate-900 mb-2">Belum Ada Tag</h3>
-            <p class="text-slate-500 mb-6">Tambah tag untuk mengelompokkan artikel</p>
+            <IconTags size="30" class="mx-auto text-slate-300 mb-4" />
+            <p class="text-slate-500 text-lg font-medium">Belum Ada Tag</p>
+            <p class="text-slate-400 mt-1 text-sm">Tambah tag untuk mengelompokkan artikel</p>
           </div>
         </div>
       </div>

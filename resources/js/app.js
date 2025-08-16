@@ -31,10 +31,10 @@ createInertiaApp({
           preset: Noir,
           options: {
             prefix: 'p',
-            darkModeSelector: '.p-dark',
+            darkModeSelector: '.dark',
           },
         },
-        ripple: true, // Enable ripple for client
+        ripple: true,
       })
       .use(ConfirmationService)
       .use(ToastService)

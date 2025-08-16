@@ -1,7 +1,7 @@
 <script setup>
 // filepath: resources/js/Pages/Admin/IncidentTypes/Create.vue
 
-import { Link, useForm } from '@inertiajs/vue3'
+import { router, useForm } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { useResponsive } from '@/Composables/useResponsive';
 
@@ -42,23 +42,25 @@ const submit = () => {
               </p>
             </div>
             <div class="flex items-center gap-3 w-full sm:w-auto">
-              <Link
-                :href="route('admin.incident-types.index')"
-                class="bg-slate-100 hover:bg-slate-200 text-slate-700 w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+              <Button
+                severity="secondary"
+                @click="() => router.get(route('admin.incident-types.index'))"
+                class="w-full sm:w-auto"
               >
                 <IconArrowLeft :size="16"/>
                 Kembali
-              </Link>
-              <button
+              </Button>
+              <Button
                 v-if="!isMobile"
                 type="submit"
+                severity="primary"
                 :disabled="form.processing"
-                class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
+                class="w-full sm:w-auto"
               >
                 <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
                 <IconDeviceFloppy v-else size="16"/>
                 {{ form.processing ? 'Menyimpan...' : submitButtonText }}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

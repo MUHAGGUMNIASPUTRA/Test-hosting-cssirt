@@ -263,7 +263,7 @@ const actionMenuItems = computed(() => {
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+      <div class="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
         <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
             <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
@@ -326,7 +326,7 @@ const actionMenuItems = computed(() => {
           </button>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div>
             <label class="block font-medium text-slate-700 mb-2">Cari FAQ</label>
             <div class="relative">
@@ -385,7 +385,7 @@ const actionMenuItems = computed(() => {
             <div class="text-center py-12">
               <IconHelp class="text-slate-300 mx-auto mb-4" size="30"/>
               <p class="text-slate-500 text-lg font-medium">
-                {{ searchQuery || selectedCategory || selectedStatus ? 'Tidak ada FAQ yang sesuai filter' : 'Belum ada FAQ yang dibuat' }}
+                {{ searchQuery || selectedCategory || selectedStatus ? 'Tidak ada FAQ ditemukan' : 'Belum ada FAQ yang dibuat' }}
               </p>
               <p class="text-slate-400 mt-1 text-sm">
                 {{ searchQuery || selectedCategory || selectedStatus ? 'Coba ubah kriteria pencarian' : 'FAQ yang dibuat akan muncul di sini' }}

@@ -2,7 +2,7 @@
 // filepath: resources/js/Pages/Admin/Incidents/Index.vue
 
 import { ref, computed } from 'vue'
-import { Link, router } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 import { useResponsive } from '@/Composables/useResponsive';
 
 const props = defineProps({
@@ -277,13 +277,15 @@ const actionMenuItems = computed(() => {
             <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Daftar Laporan Insiden</h2>
             <p class="text-slate-600">Kelola dan monitor laporan insiden keamanan siber</p>
           </div>
-          <Link
-            :href="route('admin.incidents.create')"
-            class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+          <Button
+            severity="primary"
+            @click="() => router.get(route('admin.incidents.create'))"
+            class="w-full sm:w-auto"
+
           >
             <IconBellPlus :size="16"/>
               Lapor Insiden Baru
-          </Link>
+          </Button>
         </div>
       </div>
 
@@ -429,11 +431,9 @@ const actionMenuItems = computed(() => {
         >
           <template #empty>
             <div class="text-center py-12">
-              <svg class="w-12 h-12 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+              <IconMailExclamation size="30" class="text-slate-300 mx-auto mb-4" />
               <p class="text-slate-500 text-lg font-medium">
-                {{ searchQuery || selectedStatus || selectedPriority ? 'Tidak ada insiden yang sesuai filter' : 'Belum ada insiden yang dilaporkan' }}
+                {{ searchQuery || selectedStatus || selectedPriority ? 'Tidak ada insiden ditemukan' : 'Belum ada insiden yang dilaporkan' }}
               </p>
               <p class="text-slate-400 mt-1 text-sm">
                 {{ searchQuery || selectedStatus || selectedPriority ? 'Coba ubah kriteria pencarian' : 'Insiden yang dilaporkan akan muncul di sini' }}
@@ -443,14 +443,13 @@ const actionMenuItems = computed(() => {
 
           <Column field="case_id" header="ID Insiden">
             <template #body="{ data }">
-              <Link :href="route('admin.incidents.show', data.id)">
-                <Tag
-                  :value="data.case_id"
-                  severity="secondary"
-                  size="small"
-                  class="font-mono !text-slate-500"
-                />
-              </Link>
+              <Button
+                size="small"
+                :label="data.case_id"
+                severity="secondary"
+                class="!py-0.5 !px-1.5 !font-mono border !border-slate-200 dark:!border-slate-700"
+                @click="() => router.get(route('admin.incidents.show', data.id))"
+              />
               <div class="lg:hidden text-xs text-slate-500 space-x-1 mt-1">
                 <span>{{ data.reporter_name }}</span>
                 <span>•</span>

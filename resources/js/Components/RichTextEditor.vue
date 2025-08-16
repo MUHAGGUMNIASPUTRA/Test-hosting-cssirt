@@ -36,17 +36,17 @@ const editor = useEditor({
       link: { openOnClick: false },
       blockquote: {
         HTMLAttributes: {
-          class: 'border-l-4 border-gray-700 pl-4 not-italic text-gray-600',
+          class: 'border-l-4 border-slate-700 pl-4 not-italic text-slate-600',
         },
       },
       code: {
         HTMLAttributes: {
-          class: 'border border-gray-300 bg-gray-100 text-gray-700 font-mono font-normal text-sm rounded-md px-1 py-0.5',
+          class: 'border border-slate-300 bg-slate-100 text-slate-700 font-mono font-normal text-sm rounded-md px-1 py-0.5',
         },
       },
       codeBlock: {
         HTMLAttributes: {
-          class: 'border border-gray-300 bg-gray-100 text-gray-700 font-mono text-sm rounded-xl p-4 my-4 overflow-x-auto',
+          class: 'border border-slate-300 bg-slate-100 text-slate-700 font-mono text-sm rounded-xl p-4 my-4 overflow-x-auto',
         },
       },
     }),
@@ -187,51 +187,51 @@ const handleImageUpload = (event) => {
 </script>
 
 <template>
-  <div v-if="editor" class="border border-gray-300 rounded-md bg-white">
+  <div v-if="editor" class="border border-slate-300 hover:border-slate-400 focus-within:border-blue-600 hover:shadow-sm rounded-md bg-white transition-colors">
     <!-- Toolbar -->
-    <div class="p-2 border-b border-gray-300 rounded-t-md flex flex-wrap items-center gap-[2px]">
+    <div class="p-2 border-b border-slate-300 rounded-t-md flex flex-wrap items-center gap-[2px]">
       <!-- Undo/Redo & Clear Formatting -->
-      <Button @click="editor.chain().focus().undo().run()" :disabled="!editor.can().undo()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.can().undo() ? 'text-gray-700 hover:bg-gray-200' : 'text-gray-400 cursor-not-allowed']" title="Undo"> <IconArrowBackUp/> </Button>
-      <Button @click="editor.chain().focus().redo().run()" :disabled="!editor.can().redo()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.can().redo() ? 'text-gray-700 hover:bg-gray-200' : 'text-gray-400 cursor-not-allowed']" title="Redo"> <IconArrowForwardUp/> </Button>
-      <Button @click="editor.chain().focus().unsetAllMarks().clearNodes().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Clear Formatting"> <IconEraser/> </Button>
+      <Button @click="editor.chain().focus().undo().run()" :disabled="!editor.can().undo()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.can().undo() ? 'text-slate-700 hover:bg-slate-200' : 'text-slate-400 cursor-not-allowed']" title="Undo"> <IconArrowBackUp/> </Button>
+      <Button @click="editor.chain().focus().redo().run()" :disabled="!editor.can().redo()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.can().redo() ? 'text-slate-700 hover:bg-slate-200' : 'text-slate-400 cursor-not-allowed']" title="Redo"> <IconArrowForwardUp/> </Button>
+      <Button @click="editor.chain().focus().unsetAllMarks().clearNodes().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-slate-700 hover:bg-slate-200" title="Clear Formatting"> <IconEraser/> </Button>
 
       <div class="hidden lg:flex border-l h-6 mx-2"></div>
 
       <!-- Headings Panel -->
-      <Button @click="toggleHeadingPanel" unstyled :class="['h-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('heading') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Headings">
+      <Button @click="toggleHeadingPanel" unstyled :class="['h-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('heading') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Headings">
         <component :is="activeHeadingIcon" :size="14" />
       </Button>
       <Popover ref="headingPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
         <div class="flex items-center gap-[2px]">
-          <Button @click="editor.chain().focus().toggleHeading({ level: 1 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 1 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Heading 1"> <IconH1/> </Button>
-          <Button @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 2 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Heading 2"> <IconH2/> </Button>
-          <Button @click="editor.chain().focus().toggleHeading({ level: 3 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 3 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Heading 3"> <IconH3/> </Button>
-          <Button @click="editor.chain().focus().toggleHeading({ level: 4 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 4 }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Heading 4"> <IconH4/> </Button>
+          <Button @click="editor.chain().focus().toggleHeading({ level: 1 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 1 }) ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200'" title="Heading 1"> <IconH1/> </Button>
+          <Button @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 2 }) ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200'" title="Heading 2"> <IconH2/> </Button>
+          <Button @click="editor.chain().focus().toggleHeading({ level: 3 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 3 }) ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200'" title="Heading 3"> <IconH3/> </Button>
+          <Button @click="editor.chain().focus().toggleHeading({ level: 4 }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('heading', { level: 4 }) ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200'" title="Heading 4"> <IconH4/> </Button>
         </div>
       </Popover>
 
       <!-- Lists Panel -->
-      <Button @click="toggleListPanel" unstyled :class="['h-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('bulletList') || editor.isActive('orderedList') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Lists">
+      <Button @click="toggleListPanel" unstyled :class="['h-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('bulletList') || editor.isActive('orderedList') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Lists">
         <component :is="activeListIcon" :size="14" />
       </Button>
       <Popover ref="listPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
         <div class="flex items-center gap-[2px]">
-          <Button @click="editor.chain().focus().toggleBulletList().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('bulletList') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Bullet List"> <IconList/> </Button>
-          <Button @click="editor.chain().focus().toggleOrderedList().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('orderedList') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Ordered List"> <IconListNumbers/> </Button>
+          <Button @click="editor.chain().focus().toggleBulletList().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('bulletList') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200'" title="Bullet List"> <IconList/> </Button>
+          <Button @click="editor.chain().focus().toggleOrderedList().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('orderedList') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200'" title="Ordered List"> <IconListNumbers/> </Button>
         </div>
       </Popover>
 
       <!-- Blockquote & Code Block -->
-      <Button @click="editor.chain().focus().toggleBlockquote().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('blockquote') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Blockquote"> <IconBlockquote/> </Button>
-      <Button @click="editor.chain().focus().toggleCodeBlock().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('codeBlock') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Code Block"> <i-lucide-square-code /> </Button>
+      <Button @click="editor.chain().focus().toggleBlockquote().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('blockquote') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Blockquote"> <IconBlockquote/> </Button>
+      <Button @click="editor.chain().focus().toggleCodeBlock().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('codeBlock') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Code Block"> <i-lucide-square-code /> </Button>
 
       <div class="hidden lg:flex border-l h-6 mx-2"></div>
 
       <!-- Basic Formatting -->
-      <Button @click="editor.chain().focus().toggleBold().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('bold') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Bold"> <IconBold stroke-width="3"/> </Button>
-      <Button @click="editor.chain().focus().toggleItalic().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('italic') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Italic"> <IconItalic/> </Button>
-      <Button @click="editor.chain().focus().toggleUnderline().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('underline') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Underline"> <IconUnderline/> </Button>
-      <Button @click="editor.chain().focus().toggleStrike().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('strike') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Strike"> <IconStrikethrough/> </Button>
+      <Button @click="editor.chain().focus().toggleBold().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('bold') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Bold"> <IconBold stroke-width="3"/> </Button>
+      <Button @click="editor.chain().focus().toggleItalic().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('italic') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Italic"> <IconItalic/> </Button>
+      <Button @click="editor.chain().focus().toggleUnderline().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('underline') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Underline"> <IconUnderline/> </Button>
+      <Button @click="editor.chain().focus().toggleStrike().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('strike') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Strike"> <IconStrikethrough/> </Button>
 
       <div class="hidden lg:flex border-l h-6 mx-2"></div>
 
@@ -239,23 +239,23 @@ const handleImageUpload = (event) => {
       <Button
         @click="toggleTextAlignPanel"
         unstyled
-        class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200"
-        :class="editor.isActive({ textAlign: 'left' }) || editor.isActive({ textAlign: 'center' }) || editor.isActive({ textAlign: 'right' }) || editor.isActive({ textAlign: 'justify' }) ? 'bg-gray-100 !text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'"
+        class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-slate-700 hover:bg-slate-200"
+        :class="editor.isActive({ textAlign: 'left' }) || editor.isActive({ textAlign: 'center' }) || editor.isActive({ textAlign: 'right' }) || editor.isActive({ textAlign: 'justify' }) ? 'bg-slate-100 !text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200'"
         title="Text Align"
       >
         <component :is="activeAlignIcon" :size="14" />
       </Button>
       <Popover ref="textAlignPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
         <div class="flex items-center gap-[2px]">
-          <Button @click="editor.chain().focus().setTextAlign('left').run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive({ textAlign: 'left' }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Left"> <IconAlignLeft/> </Button>
-          <Button @click="editor.chain().focus().setTextAlign('center').run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive({ textAlign: 'center' }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Center"> <IconAlignCenter/> </Button>
-          <Button @click="editor.chain().focus().setTextAlign('right').run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive({ textAlign: 'right' }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Right"> <IconAlignRight/> </Button>
-          <Button @click="editor.chain().focus().setTextAlign('justify').run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive({ textAlign: 'justify' }) ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'" title="Align Justify"> <IconAlignJustified/> </Button>
+          <Button @click="editor.chain().focus().setTextAlign('left').run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive({ textAlign: 'left' }) ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200'" title="Align Left"> <IconAlignLeft/> </Button>
+          <Button @click="editor.chain().focus().setTextAlign('center').run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive({ textAlign: 'center' }) ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200'" title="Align Center"> <IconAlignCenter/> </Button>
+          <Button @click="editor.chain().focus().setTextAlign('right').run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive({ textAlign: 'right' }) ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200'" title="Align Right"> <IconAlignRight/> </Button>
+          <Button @click="editor.chain().focus().setTextAlign('justify').run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive({ textAlign: 'justify' }) ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200'" title="Align Justify"> <IconAlignJustified/> </Button>
           <div class="border-l h-5 mx-1"></div>
           <button
             @click="editor.chain().focus().unsetTextAlign().run()"
             type="button"
-            class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-gray-200"
+            class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-slate-200"
             title="Unset Text Align"
           >
             <IconBan size="16"/>
@@ -266,8 +266,8 @@ const handleImageUpload = (event) => {
       <div class="hidden lg:flex border-l h-6 mx-2"></div>
 
       <!-- Code, Highlight, Link -->
-      <Button @click="editor.chain().focus().toggleCode().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('code') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Code"> <IconCode/> </Button>
-      <Button @click="toggleHighlightPanel" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('highlight') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Highlight"> <i-lucide-highlighter /> </Button>
+      <Button @click="editor.chain().focus().toggleCode().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('code') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Code"> <IconCode/> </Button>
+      <Button @click="toggleHighlightPanel" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('highlight') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Highlight"> <i-lucide-highlighter /> </Button>
       <Popover ref="highlightPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
         <div class="flex items-center gap-[2px]">
           <button
@@ -275,8 +275,8 @@ const handleImageUpload = (event) => {
             :key="swatch.color"
             @click="applyHighlight(swatch.color)"
             type="button"
-            class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-gray-200"
-            :class="{ 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700': editor.isActive('highlight', { color: swatch.color }) }"
+            class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-slate-200"
+            :class="{ 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700': editor.isActive('highlight', { color: swatch.color }) }"
             :title="swatch.name"
           >
             <span class="w-5 h-5 rounded-full" :style="{ color: swatch.color, backgroundColor: swatch.color, border: '1px solid ' + adjustBrightness(swatch.color, 0.90) }"></span>
@@ -285,33 +285,33 @@ const handleImageUpload = (event) => {
           <button
             @click="applyHighlight(null)"
             type="button"
-            class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-gray-200"
+            class="w-8 h-8 rounded-xl flex items-center justify-center transition-colors hover:bg-slate-200"
             title="Remove Highlight"
           >
             <IconBan size="16"/>
           </button>
         </div>
       </Popover>
-      <Button @click="setLink" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('link') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200']" title="Link"> <IconLink/> </Button>
+      <Button @click="setLink" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('link') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Link"> <IconLink/> </Button>
 
       <div class="hidden lg:flex border-l h-6 mx-2"></div>
 
       <!-- Table -->
-      <Button @click="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('table') ? 'bg-gray-100 text-blue-600 hover:bg-gray-200 hover:text-gray-700' : 'text-gray-700 hover:bg-gray-200'"  title="Insert Table"> <IconTable/> </Button>
+      <Button @click="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('table') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200'"  title="Insert Table"> <IconTable/> </Button>
       <template v-if="editor.isActive('table')">
-        <Button @click="toggleRowPanel" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Row"> <IconLayoutRows/> </Button>
+        <Button @click="toggleRowPanel" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-slate-700 hover:bg-slate-200" title="Row"> <IconLayoutRows/> </Button>
         <Popover ref="rowPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
           <div class="flex items-center gap-[2px]">
-            <Button @click="editor.chain().focus().addRowBefore().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Add Row Before"> <IconRowInsertTop/> </Button>
-            <Button @click="editor.chain().focus().addRowAfter().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Add Row After"> <IconRowInsertBottom/> </Button>
+            <Button @click="editor.chain().focus().addRowBefore().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-slate-700 hover:bg-slate-200" title="Add Row Before"> <IconRowInsertTop/> </Button>
+            <Button @click="editor.chain().focus().addRowAfter().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-slate-700 hover:bg-slate-200" title="Add Row After"> <IconRowInsertBottom/> </Button>
             <Button @click="editor.chain().focus().deleteRow().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-red-500 hover:bg-red-100" title="Delete Row"> <IconTrash/> </Button>
           </div>
         </Popover>
-        <Button @click="toggleColumnPanel" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Column"> <IconLayoutColumns/> </Button>
+        <Button @click="toggleColumnPanel" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-slate-700 hover:bg-slate-200" title="Column"> <IconLayoutColumns/> </Button>
         <Popover ref="columnPanel" class="!rounded-xl" :pt="{ content: { class: '!p-1.5' } }">
           <div class="flex items-center gap-[2px]">
-            <Button @click="editor.chain().focus().addColumnBefore().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Add Column Before"> <IconColumnInsertLeft/> </Button>
-            <Button @click="editor.chain().focus().addColumnAfter().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Add Column After"> <IconColumnInsertRight/> </Button>
+            <Button @click="editor.chain().focus().addColumnBefore().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-slate-700 hover:bg-slate-200" title="Add Column Before"> <IconColumnInsertLeft/> </Button>
+            <Button @click="editor.chain().focus().addColumnAfter().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-slate-700 hover:bg-slate-200" title="Add Column After"> <IconColumnInsertRight/> </Button>
             <Button @click="editor.chain().focus().deleteColumn().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-red-500 hover:bg-red-100" title="Delete Column"> <IconTrash/> </Button>
           </div>
         </Popover>
@@ -321,15 +321,15 @@ const handleImageUpload = (event) => {
       <div class="hidden lg:flex border-l h-6 mx-2"></div>
 
       <!-- Font Color -->
-      <div class="inline-flex items-center p-1 rounded-xl hover:bg-gray-200">
+      <div class="inline-flex items-center p-1 rounded-xl hover:bg-slate-200">
         <input type="color" @input="editor.chain().focus().setColor($event.target.value).run()" :value="editor.getAttributes('textStyle').color || '#000000'" class="w-6 h-6 border-none bg-transparent cursor-pointer" title="Text Color">
       </div>
 
       <!-- Horizontal Line -->
-      <Button @click="editor.chain().focus().setHorizontalRule().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200" title="Horizontal Line"> <IconSeparator/> </Button>
+      <Button @click="editor.chain().focus().setHorizontalRule().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-slate-700 hover:bg-slate-200" title="Horizontal Line"> <IconSeparator/> </Button>
 
       <!-- Image -->
-      <Button @click="triggerFileInput" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200']" title="Insert Image"> <IconPhotoPlus/> </Button>
+      <Button @click="triggerFileInput" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-slate-700 hover:bg-slate-200']" title="Insert Image"> <IconPhotoPlus/> </Button>
     </div>
 
     <!-- Editor Content -->
@@ -339,7 +339,7 @@ const handleImageUpload = (event) => {
     <input type="file" ref="fileInput" @change="handleImageUpload" class="hidden" accept=".jpg,.jpeg,.png,.webp,.gif" />
 
     <!-- Character Count -->
-    <div class="p-2 border-t border-gray-300 text-xs text-gray-500 flex justify-end gap-4">
+    <div class="p-2 border-t border-slate-300 text-xs text-slate-500 flex justify-end gap-4">
       <span>
         {{ editor.storage.characterCount.characters() }} karakter
       </span>

@@ -2,7 +2,7 @@
 // filepath: resources/js/Pages/Admin/Posts/Index.vue
 
 import { ref, computed } from 'vue'
-import { Link, router } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 import { useConfirm } from "primevue/useconfirm"
 import { useResponsive } from '@/Composables/useResponsive'
 
@@ -261,13 +261,14 @@ const actionMenuItems = computed(() => {
             <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Daftar Artikel</h2>
             <p class="text-slate-600">Kelola artikel dan konten website</p>
           </div>
-          <Link
-            :href="route('admin.posts.create')"
-            class="bg-blue-600 hover:bg-blue-800 text-white w-full sm:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+          <Button
+            severity="primary"
+            @click="() => router.get(route('admin.posts.create'))"
+            class="w-full sm:w-auto"
           >
             <IconTextPlus size="16" />
               Tambah Artikel
-          </Link>
+          </Button>
         </div>
       </div>
 
@@ -327,11 +328,9 @@ const actionMenuItems = computed(() => {
         >
           <template #empty>
             <div class="text-center py-12">
-              <svg class="w-12 h-12 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+              <IconArticle size="30" class="text-slate-300 mx-auto mb-4" />
               <p class="text-slate-500 text-lg font-medium">
-                {{ searchQuery || selectedStatus ? 'Tidak ada artikel yang sesuai filter' : 'Belum ada artikel yang dibuat' }}
+                {{ searchQuery || selectedStatus ? 'Tidak ada artikel ditemukan' : 'Belum ada artikel yang dibuat' }}
               </p>
               <p class="text-slate-400 mt-1 text-sm">
                 {{ searchQuery || selectedStatus ? 'Coba ubah kriteria pencarian' : 'Artikel yang dibuat akan muncul di sini' }}

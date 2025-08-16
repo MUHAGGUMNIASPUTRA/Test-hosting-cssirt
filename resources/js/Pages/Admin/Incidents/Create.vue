@@ -1,7 +1,7 @@
 <script setup>
 // filepath: resources/js/Pages/Admin/Incidents/Create.vue
 
-import { Link, router, useForm } from '@inertiajs/vue3'
+import { router, useForm } from '@inertiajs/vue3'
 import { computed, onMounted, ref } from 'vue'
 import { useResponsive } from '@/Composables/useResponsive';
 
@@ -281,23 +281,25 @@ const formatDateTime = (date) => {
               </div>
             </div>
             <div class="flex items-center space-x-3">
-              <Link
-                :href="route('admin.incidents.index')"
-                class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+              <Button
+                severity="secondary"
+                @click="() => router.get(route('admin.incidents.index'))"
+                class="w-full lg:w-auto"
               >
                 <IconArrowLeft size="16"/>
                   Kembali
-              </Link>
-              <button
+              </Button>
+              <Button
                 v-if="!isMobile"
                 type="submit"
+                severity="primary"
                 :disabled="form.processing"
-                class="bg-blue-600 hover:bg-blue-800 text-white w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
+                class="w-full lg:w-auto"
               >
                 <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
                 <IconDeviceFloppy v-else size="16"/>
                 {{ form.processing ? 'Menyimpan...' : submitButtonText }}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

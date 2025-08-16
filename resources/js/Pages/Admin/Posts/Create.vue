@@ -2,7 +2,7 @@
 // filepath: resources/js/Pages/Admin/Posts/Create.vue
 
 import { ref, computed, watch } from 'vue';
-import { Link, useForm } from '@inertiajs/vue3';
+import { router, useForm } from '@inertiajs/vue3';
 import { useResponsive } from '@/Composables/useResponsive';
 
 const props = defineProps({
@@ -178,7 +178,7 @@ const submit = () => {
 
 <template>
   <AdminLayout :title="isEditMode ? 'Edit Artikel' : 'Tambah Artikel Baru'">
-    <div class="min-h-screen bg-gray-50">
+    <div>
       <form @submit.prevent="submit" class="space-y-4 lg:space-y-6">
         <!-- Header Section -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
@@ -188,23 +188,25 @@ const submit = () => {
               <p class="text-slate-600">{{ isEditMode ? 'Perbarui informasi artikel' : 'Buat artikel baru untuk diterbitkankan' }}</p>
             </div>
             <div class="flex items-center space-x-3">
-              <Link
-                :href="route('admin.posts.index')"
-                class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+              <Button
+                severity="secondary"
+                @click="() => router.get(route('admin.posts.index'))"
+                class="w-full lg:w-auto"
               >
                 <IconArrowLeft size="16"/>
                   Kembali
-              </Link>
-              <button
+              </Button>
+              <Button
                 v-if="!isMobile"
                 type="submit"
+                severity="primary"
                 :disabled="form.processing"
-                class="bg-blue-600 hover:bg-blue-800 text-white w-full lg:w-auto inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
+                class="w-full lg:w-auto"
               >
                 <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
                 <IconDeviceFloppy v-else size="16"/>
                 {{ form.processing ? 'Menyimpan...' : isEditMode ? 'Update Artikel' : 'Simpan Artikel' }}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -218,7 +220,7 @@ const submit = () => {
           <!-- Main Content (Left Column) -->
           <div class="lg:col-span-2 space-y-4 lg:space-y-6">
             <!-- Title & Content Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 lg:p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
               <div class="flex items-center mb-4 lg:mb-6">
                 <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
                   <IconLetterT class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
@@ -232,7 +234,7 @@ const submit = () => {
               <!-- Title -->
               <div class="space-y-4">
                 <div>
-                  <label for="title" class="block font-medium text-gray-700 mb-2">
+                  <label for="title" class="block font-medium text-slate-700 mb-2">
                     Judul Artikel <span class="text-red-500">*</span>
                   </label>
                   <InputText
@@ -247,7 +249,7 @@ const submit = () => {
 
                 <!-- Body -->
                 <div>
-                  <label class="block font-medium text-gray-700 mb-2">
+                  <label class="block font-medium text-slate-700 mb-2">
                     Isi Artikel <span class="text-red-500">*</span>
                   </label>
                   <RichTextEditor
@@ -260,7 +262,7 @@ const submit = () => {
             </div>
 
             <!-- Excerpt Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 lg:p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
               <div class="flex items-center mb-4 lg:mb-6">
                 <div class="w-10 h-10 lg:w-12 lg:h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
                   <IconReceipt class="text-purple-600" :size="!isDesktop ? 18 : undefined"/>
@@ -273,9 +275,9 @@ const submit = () => {
 
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <label class="block font-medium text-gray-700">
+                  <label class="block font-medium text-slate-700">
                     Ringkasan Artikel <span class="text-red-500">*</span>
-                    <span class="text-xs text-gray-500 ml-1">(maksimal {{ excerptWordLimit }} kata)</span>
+                    <span class="text-xs text-slate-500 ml-1">(maksimal {{ excerptWordLimit }} kata)</span>
                   </label>
 
                   <!-- AI Generate Button -->
@@ -286,7 +288,7 @@ const submit = () => {
                     class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md transition-colors"
                     :class="canGenerateExcerpt
                       ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-sm'
-                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'"
+                      : 'bg-slate-100 text-slate-400 cursor-not-allowed'"
                   >
                     <IconLoader3 v-if="isGeneratingExcerpt" class="animate-spin" size="14"/>
                     <IconSparkles v-else size="14"/>
@@ -299,7 +301,7 @@ const submit = () => {
                   <small
                     :class="excerptGenerationMessage.includes('✓') ? 'text-green-600' :
                             excerptGenerationMessage.includes('❌') ? 'text-red-600' : 'text-blue-600'"
-                    class="text-xs block p-2 bg-gray-50 rounded border"
+                    class="text-xs block p-2 bg-slate-50 rounded border"
                   >
                     {{ excerptGenerationMessage }}
                   </small>
@@ -315,7 +317,7 @@ const submit = () => {
 
                 <div class="flex justify-between items-center">
                   <small v-if="form.errors.excerpt" class="p-error">{{ form.errors.excerpt }}</small>
-                  <small :class="{ 'text-red-500': isExcerptOverLimit, 'text-gray-500': !isExcerptOverLimit }"
+                  <small :class="{ 'text-red-500': isExcerptOverLimit, 'text-slate-500': !isExcerptOverLimit }"
                           class="text-xs">
                     {{ excerptWordCount }}/{{ excerptWordLimit }} kata
                     <span v-if="isExcerptOverLimit" class="ml-1">- Melebihi batas!</span>
@@ -328,7 +330,7 @@ const submit = () => {
           <!-- Sidebar (Right Column) -->
           <div class="space-y-4 lg:space-y-6">
             <!-- Publication Options Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 lg:p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
               <div class="flex items-center mb-4 lg:mb-6">
                 <div class="w-10 h-10 lg:w-12 lg:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
                   <IconBrowserShare class="text-green-600" :size="!isDesktop ? 18 : undefined"/>
@@ -342,7 +344,7 @@ const submit = () => {
               <!-- Status -->
               <div class="space-y-4">
                 <div>
-                  <label class="block font-medium text-gray-700 mb-3">Status Publikasi</label>
+                  <label class="block font-medium text-slate-700 mb-3">Status Publikasi</label>
                   <SelectButton
                     v-model="form.status"
                     :options="statusOptions"
@@ -353,7 +355,7 @@ const submit = () => {
 
                 <!-- Featured Image -->
                 <div>
-                  <label class="block font-medium text-gray-700 mb-2">Gambar Utama</label>
+                  <label class="block font-medium text-slate-700 mb-2">Gambar Utama</label>
 
                   <!-- Current Image Preview (Edit Mode) -->
                   <div v-if="isEditMode && props.post?.image && !imagePreview" class="mb-3">
@@ -373,7 +375,7 @@ const submit = () => {
                         <IconX class="text-white" size="10"/>
                       </button>
                     </div>
-                    <p class="text-xs text-gray-500 mt-1">Gambar saat ini</p>
+                    <p class="text-xs text-slate-500 mt-1">Gambar saat ini</p>
                   </div>
 
                   <!-- New Image Preview -->
@@ -391,7 +393,7 @@ const submit = () => {
                         </template>
                       </Image>
                     </div>
-                    <p class="text-xs text-gray-500 mt-1">
+                    <p class="text-xs text-slate-500 mt-1">
                       {{ isEditMode ? 'Gambar baru (akan mengganti gambar lama)' : 'Preview gambar' }}
                     </p>
                   </div>
@@ -433,14 +435,14 @@ const submit = () => {
 
                     <template #empty>
                       <div
-                        class="flex flex-col items-center justify-center py-6 px-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-600 transition-colors cursor-pointer"
+                        class="flex flex-col items-center justify-center py-6 px-4 border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-600 transition-colors cursor-pointer"
                         @click="triggerFileInput"
                       >
-                        <IconPhotoSearch class="text-gray-400 mb-2" :size="!isDesktop ? 18 : undefined"/>
-                        <p class="text-sm text-gray-600 text-center">
+                        <IconPhotoSearch class="text-slate-400 mb-2" :size="!isDesktop ? 18 : undefined"/>
+                        <p class="text-sm text-slate-600 text-center">
                           {{ isEditMode ? 'Pilih gambar baru untuk mengganti' : 'Drag & drop atau klik untuk memilih gambar' }}
                         </p>
-                        <p class="text-xs text-gray-400 mt-1">JPG, PNG, WEBP (Maks. 2MB)</p>
+                        <p class="text-xs text-slate-400 mt-1">JPG, PNG, WEBP (Maks. 2MB)</p>
                       </div>
                     </template>
                   </FileUpload>
@@ -449,7 +451,7 @@ const submit = () => {
             </div>
 
             <!-- Categories & Tags Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 lg:p-6">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
               <div class="flex items-center mb-4 lg:mb-6">
                 <div class="w-10 h-10 lg:w-12 lg:h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
                   <IconBookmarks class="text-orange-600" :size="!isDesktop ? 18 : undefined"/>
@@ -463,7 +465,7 @@ const submit = () => {
               <div class="space-y-4">
                 <!-- Categories -->
                 <div>
-                  <label class="block font-medium text-gray-700 mb-2">
+                  <label class="block font-medium text-slate-700 mb-2">
                     Kategori <span class="text-red-500">*</span>
                   </label>
                   <MultiSelect
@@ -484,8 +486,8 @@ const submit = () => {
 
                 <!-- Tags -->
                 <div>
-                  <label class="block font-medium text-gray-700 mb-2">
-                    Tag <span class="text-gray-400">(Opsional)</span>
+                  <label class="block font-medium text-slate-700 mb-2">
+                    Tag <span class="text-slate-400">(Opsional)</span>
                   </label>
                   <MultiSelect
                     v-model="form.tags"

@@ -261,7 +261,7 @@ const actionMenuItems = computed(() => {
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+      <div class="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
         <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center">
             <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
@@ -369,7 +369,7 @@ const actionMenuItems = computed(() => {
             <div class="text-center py-12">
               <IconUsers class="text-slate-300 mx-auto mb-4" size="30"/>
               <p class="text-slate-500 text-lg font-medium">
-                {{ searchQuery || selectedRole ? 'Tidak ada pengguna yang sesuai filter' : 'Belum ada pengguna yang terdaftar' }}
+                {{ searchQuery || selectedRole ? 'Tidak ada pengguna ditemukan' : 'Belum ada pengguna yang terdaftar' }}
               </p>
               <p class="text-slate-400 mt-1 text-sm">
                 {{ searchQuery || selectedRole ? 'Coba ubah kriteria pencarian' : 'Pengguna yang ditambahkan akan muncul di sini' }}

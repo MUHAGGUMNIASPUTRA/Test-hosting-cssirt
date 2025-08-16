@@ -26,6 +26,37 @@ const toast = useToast()
 const sidebarOpen = ref(false)
 const userMenuOpen = ref(false)
 
+// Dark mode state
+const darkMode = ref(false)
+
+// Initialize dark mode from localStorage or system preference
+const initDarkMode = () => {
+  try {
+    const stored = localStorage.getItem('theme')
+    if (stored === 'dark') darkMode.value = true
+    else if (stored === 'light') darkMode.value = false
+    else darkMode.value = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+  } catch (e) {
+    darkMode.value = false
+  }
+  applyDarkClass()
+}
+
+const applyDarkClass = () => {
+  const root = document.documentElement
+  if (darkMode.value) root.classList.add('dark')
+  else root.classList.remove('dark')
+}
+
+const toggleDarkMode = () => {
+  darkMode.value = !darkMode.value
+  try { localStorage.setItem('theme', darkMode.value ? 'dark' : 'light') } catch (e) {}
+  applyDarkClass()
+}
+
+// Sync html class if darkMode changes elsewhere
+watch(darkMode, () => applyDarkClass())
+
 // Sidebar items configuration
 const sidebarItems = ref([
   {
@@ -174,6 +205,7 @@ const closeDropdowns = (event) => {
 
 onMounted(() => {
   document.addEventListener('click', closeDropdowns)
+  initDarkMode()
 })
 
 watch(
@@ -236,7 +268,7 @@ watch(
 
     <!-- Sidebar -->
     <div
-      class="fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-transform duration-300 ease-in-out w-72"
+      class="fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-transform duration-300 ease-in-out w-72 border-r border-transparent"
       :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
     >
       <!-- Sidebar header -->
@@ -269,9 +301,9 @@ watch(
                 :href="route(item.route)"
                 @click="closeSidebarOnMobile"
                 class="flex items-center px-3 py-2 font-normal rounded-lg transition-colors group"
-                :class="[isCurrentRoute(item.route) ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-500' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900', item.label === 'Website' ? '!text-indigo-500 hover:!text-indigo-700' : '']"
+                :class="[isCurrentRoute(item.route) ? 'font-semibold bg-blue-50 text-blue-500 border-r-2 border-blue-500' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900', item.label === 'Website' ? '!text-indigo-500 hover:!text-indigo-700 dark:hover:!text-indigo-400' : '']"
               >
-                <component :is="item.icon" size="18" stroke-width="1.75" class="mr-3" :class="[isCurrentRoute(item.route) ? 'text-blue-500' : 'text-slate-400', item.label === 'Website' ? '!text-indigo-500 hover:!text-indigo-700' : '']" />{{ item.label }}
+                <component :is="item.icon" size="18" stroke-width="1.75" class="mr-3" :class="[isCurrentRoute(item.route) ? 'text-blue-500' : 'text-slate-400', item.label === 'Website' ? '!text-indigo-500 hover:!text-indigo-700 dark:hover:!text-indigo-400' : '']" />{{ item.label }}
               </Link>
 
               <!-- Menu with subitems -->
@@ -286,7 +318,7 @@ watch(
                     :href="route(subItem.route)"
                     @click="closeSidebarOnMobile"
                     class="flex items-center px-3 py-2 font-normal rounded-md transition-colors"
-                    :class="isCurrentRoute(subItem.route) ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-500' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'"
+                    :class="isCurrentRoute(subItem.route) ? 'font-semibold bg-blue-50 text-blue-500 border-r-2 border-blue-500' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'"
                   >
                     <component :is="subItem.icon" size="18" stroke-width="1.75" class="mr-3" :class="[isCurrentRoute(subItem.route) ? 'text-blue-500' : 'text-slate-400']" />{{ subItem.label }}
                   </Link>
@@ -340,6 +372,17 @@ watch(
           </div>
 
           <div class="flex items-center space-x-4">
+            <!-- Dark mode toggle -->
+            <button
+              @click="toggleDarkMode"
+              class="p-2 rounded-md border border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors dark:text-slate-300 dark:hover:text-slate-100"
+              :aria-label="darkMode ? 'Switch to light mode' : 'Switch to dark mode'"
+              :title="darkMode ? 'Light mode' : 'Dark mode'"
+            >
+              <IconMoon v-if="!darkMode" size="18" />
+              <IconSun v-else size="18" />
+            </button>
+
             <!-- User menu -->
             <div class="relative user-menu">
               <button
@@ -349,9 +392,7 @@ watch(
                 <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                   <span class="text-xs font-medium text-white">{{ page.props.auth.user?.name?.charAt(0)?.toUpperCase() || 'U' }}</span>
                 </div>
-                <svg class="ml-1 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
+                <IconChevronDown size="16" class="ml-1 text-slate-400 transition-transform" :class="{ 'rotate-180': userMenuOpen }" />
               </button>
 
               <!-- User dropdown menu -->

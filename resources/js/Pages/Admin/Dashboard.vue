@@ -1,7 +1,6 @@
 <script setup>
 // filepath: resources/js/Pages/Admin/Dashboard.vue
 
-import { ref, computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import { useResponsive } from '@/Composables/useResponsive'
 
@@ -125,7 +124,7 @@ const truncateText = (text, length = 50) => {
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6">
+      <div class="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-5 gap-4 lg:gap-6">
         <!-- Total Incidents -->
         <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
           <div class="flex items-center justify-between">
