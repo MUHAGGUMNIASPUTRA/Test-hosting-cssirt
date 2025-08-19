@@ -34,6 +34,9 @@ class Incident extends Model
     'assigned_to',
     'reported_at',
     'resolved_at',
+    'is_read',
+    'read_by',
+    'read_at',
   ];
 
   /**
@@ -45,6 +48,8 @@ class Incident extends Model
     'incident_at' => 'datetime',
     'reported_at' => 'datetime',
     'resolved_at' => 'datetime',
+    'is_read' => 'boolean',
+    'read_at' => 'datetime',
   ];
 
   /**
@@ -138,5 +143,35 @@ class Incident extends Model
     }
     // Fallback: include a random suffix to guarantee uniqueness
     return 'CSIRT-' . $year . '-' . $month . '-' . str_pad((string) random_int(1, 999), 3, '0', STR_PAD_LEFT);
+  }
+
+  /**
+   * Get the user who read the incident.
+   */
+  public function readBy()
+  {
+    return $this->belongsTo(User::class, 'read_by');
+  }
+
+  /**
+   * Scope a query to only include unread incidents.
+   *
+   * @param \Illuminate\Database\Eloquent\Builder $query
+   * @return \Illuminate\Database\Eloquent\Builder
+   */
+  public function scopeUnread($query)
+  {
+    return $query->where('is_read', false);
+  }
+
+  /**
+   * Scope a query to only include read incidents.
+   *
+   * @param \Illuminate\Database\Eloquent\Builder $query
+   * @return \Illuminate\Database\Eloquent\Builder
+   */
+  public function scopeRead($query)
+  {
+    return $query->where('is_read', true);
   }
 }

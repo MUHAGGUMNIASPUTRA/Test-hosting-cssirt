@@ -1,11 +1,12 @@
 <script setup>
 // filepath: resources/js/Layouts/Admin/AdminLayout.vue
 
-import { ref, onMounted, nextTick, watch } from 'vue';
+import { computed, ref, onMounted, nextTick, watch } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3'
 import { useResponsive } from '@/Composables/useResponsive'
 import { useToast } from 'primevue/usetoast'
 import Toast from 'primevue/toast'
+import NotificationPanel from '@/Components/NotificationPanel.vue'
 
 import {
   IconWorldCheck, IconLayoutBoard, IconUrgent,
@@ -13,14 +14,14 @@ import {
   IconNews, IconArticle, IconTextPlus, IconBookmarks,
   IconBook2, IconNotebook, IconFilePlus,
   IconHeartHandshake, IconHelp, IconSpeakerphone,
-  IconUsers, IconLogout,
+  IconUsers, IconLogout, IconSun, IconMoon,
 } from '@tabler/icons-vue';
 
 defineProps({
   title: String,
 })
 
-const { isDesktop } = useResponsive()
+const { isMobile, isDesktop } = useResponsive()
 const page = usePage()
 const toast = useToast()
 const sidebarOpen = ref(false)
@@ -150,12 +151,18 @@ const sidebarItems = ref([
 ])
 
 // User menu items
-const userMenuItems = ref([
+const userMenuItems = computed(() => [
   {
     label: 'Pengguna',
     icon: IconUsers,
     command: () => router.get(route('admin.users.index')),
     visible: () => page.props.auth.user?.role === 'admin'
+  },
+  {
+    label: darkMode.value ? 'Mode Terang' : 'Mode Gelap',
+    icon: darkMode.value ? IconSun : IconMoon,
+    command: toggleDarkMode,
+    visible: () => isMobile.value
   },
   {
     separator: true,
@@ -361,9 +368,7 @@ watch(
         <div class="flex items-center justify-between h-[4.5rem] px-4 lg:px-6">
           <div class="flex items-center">
             <button @click="toggleSidebar" class="p-2 rounded-md text-slate-400 hover:text-slate-500 hover:bg-slate-100 lg:hidden">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              <IconMenu2 size="20" />
             </button>
             <div class="ml-4 lg:ml-0">
               <h1 class="text-lg/5 font-semibold text-slate-900">{{ isDesktop ? title : 'CSIRT Bojonegoro: Admin Panel' }}</h1>
@@ -371,23 +376,27 @@ watch(
             </div>
           </div>
 
-          <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-3">
             <!-- Dark mode toggle -->
             <button
+              v-if="!isMobile"
               @click="toggleDarkMode"
-              class="p-2 rounded-md border border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors dark:text-slate-300 dark:hover:text-slate-100"
+              class="p-3 rounded-full border border-transparent text-slate-500 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors dark:text-slate-300 dark:hover:text-slate-100"
               :aria-label="darkMode ? 'Switch to light mode' : 'Switch to dark mode'"
-              :title="darkMode ? 'Light mode' : 'Dark mode'"
+              :title="darkMode ? 'Mode Terang' : 'Mode Gelap'"
             >
               <IconMoon v-if="!darkMode" size="18" />
               <IconSun v-else size="18" />
             </button>
 
+            <!-- Notifications -->
+            <NotificationPanel />
+
             <!-- User menu -->
             <div class="relative user-menu">
               <button
                 @click.stop="userMenuOpen = !userMenuOpen"
-                class="flex items-center p-2 text-sm rounded-full hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="flex items-center p-2 text-sm rounded-full bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                   <span class="text-xs font-medium text-white">{{ page.props.auth.user?.name?.charAt(0)?.toUpperCase() || 'U' }}</span>

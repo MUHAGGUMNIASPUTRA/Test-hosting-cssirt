@@ -17,6 +17,7 @@
 .dark .bg-yellow-50 { @apply bg-yellow-500/10; }
 .dark .bg-yellow-100 { @apply bg-yellow-500/20; }
 .dark .bg-purple-50 { @apply bg-purple-500/10; }
+.dark .bg-sky-50 { @apply bg-sky-500/10; }
 
 .dark .hover\:bg-slate-50:hover { @apply bg-slate-700/40; }
 .dark .hover\:bg-slate-100:hover { @apply bg-slate-700/50; }
@@ -58,7 +59,8 @@
 .dark .hover\:text-slate-900:hover { @apply text-slate-100; }
 .dark .text-slate-700 { @apply text-slate-300; }
 .dark .text-slate-600,
-.dark .text-slate-500 { color: oklch(70.4% 0.04 256.788); } /* text-slate-400 */
+.dark .text-slate-500,
+.dark .hover\:text-slate-600:hover { color: oklch(70.4% 0.04 256.788); } /* text-slate-400 */
 .dark .text-slate-400 { color: oklch(44.6% 0.043 257.281); } /* text-slate-600 */
 
 .dark .text-indigo-600 { @apply text-indigo-400; }

@@ -115,6 +115,15 @@ class IncidentController extends Controller
    */
   public function show(Incident $incident): Response
   {
+    // Mark incident as read if it's not already read
+    if (!$incident->is_read) {
+      $incident->update([
+        'is_read' => true,
+        'read_by' => Auth::id(),
+        'read_at' => now()
+      ]);
+    }
+
     // Pass staffUsers to the view for the assignment dropdown
     return Inertia::render('Admin/Incidents/Show', [
       'incident' => $incident->load([
