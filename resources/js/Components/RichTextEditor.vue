@@ -187,7 +187,7 @@ const handleImageUpload = (event) => {
 </script>
 
 <template>
-  <div v-if="editor" class="border border-slate-300 hover:border-slate-400 focus-within:border-blue-600 hover:shadow-sm rounded-md bg-white transition-colors">
+  <div v-if="editor" class="border border-slate-300 hover:border-zinc-400 focus-within:border-blue-600 hover:shadow-sm rounded-md bg-white transition-colors">
     <!-- Toolbar -->
     <div class="p-2 border-b border-slate-300 rounded-t-md flex flex-wrap items-center gap-[2px]">
       <!-- Undo/Redo & Clear Formatting -->
@@ -195,7 +195,7 @@ const handleImageUpload = (event) => {
       <Button @click="editor.chain().focus().redo().run()" :disabled="!editor.can().redo()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.can().redo() ? 'text-slate-700 hover:bg-slate-200' : 'text-slate-400 cursor-not-allowed']" title="Redo"> <IconArrowForwardUp/> </Button>
       <Button @click="editor.chain().focus().unsetAllMarks().clearNodes().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors text-slate-700 hover:bg-slate-200" title="Clear Formatting"> <IconEraser/> </Button>
 
-      <div class="hidden lg:flex border-l h-6 mx-2"></div>
+      <div class="hidden lg:flex border-l border-slate-200 h-6 mx-2"></div>
 
       <!-- Headings Panel -->
       <Button @click="toggleHeadingPanel" unstyled :class="['h-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('heading') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Headings">
@@ -225,7 +225,7 @@ const handleImageUpload = (event) => {
       <Button @click="editor.chain().focus().toggleBlockquote().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('blockquote') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Blockquote"> <IconBlockquote/> </Button>
       <Button @click="editor.chain().focus().toggleCodeBlock().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('codeBlock') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Code Block"> <i-lucide-square-code /> </Button>
 
-      <div class="hidden lg:flex border-l h-6 mx-2"></div>
+      <div class="hidden lg:flex border-l border-slate-200 h-6 mx-2"></div>
 
       <!-- Basic Formatting -->
       <Button @click="editor.chain().focus().toggleBold().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('bold') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Bold"> <IconBold stroke-width="3"/> </Button>
@@ -233,7 +233,7 @@ const handleImageUpload = (event) => {
       <Button @click="editor.chain().focus().toggleUnderline().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('underline') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Underline"> <IconUnderline/> </Button>
       <Button @click="editor.chain().focus().toggleStrike().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('strike') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Strike"> <IconStrikethrough/> </Button>
 
-      <div class="hidden lg:flex border-l h-6 mx-2"></div>
+      <div class="hidden lg:flex border-l border-slate-200 h-6 mx-2"></div>
 
       <!-- Text Align Panel -->
       <Button
@@ -263,7 +263,7 @@ const handleImageUpload = (event) => {
         </div>
       </Popover>
 
-      <div class="hidden lg:flex border-l h-6 mx-2"></div>
+      <div class="hidden lg:flex border-l border-slate-200 h-6 mx-2"></div>
 
       <!-- Code, Highlight, Link -->
       <Button @click="editor.chain().focus().toggleCode().run()" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('code') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Code"> <IconCode/> </Button>
@@ -294,7 +294,7 @@ const handleImageUpload = (event) => {
       </Popover>
       <Button @click="setLink" unstyled :class="['h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors', editor.isActive('link') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200']" title="Link"> <IconLink/> </Button>
 
-      <div class="hidden lg:flex border-l h-6 mx-2"></div>
+      <div class="hidden lg:flex border-l border-slate-200 h-6 mx-2"></div>
 
       <!-- Table -->
       <Button @click="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center transition-colors" :class="editor.isActive('table') ? 'bg-slate-100 text-blue-600 hover:bg-slate-200 hover:text-slate-700' : 'text-slate-700 hover:bg-slate-200'"  title="Insert Table"> <IconTable/> </Button>
@@ -318,7 +318,7 @@ const handleImageUpload = (event) => {
         <Button @click="editor.chain().focus().deleteTable().run()" unstyled class="h-8 w-8 !p-2 rounded-xl flex items-center justify-center text-red-500 hover:bg-red-100" title="Delete Table"> <IconTrash/> </Button>
       </template>
 
-      <div class="hidden lg:flex border-l h-6 mx-2"></div>
+      <div class="hidden lg:flex border-l border-slate-200 h-6 mx-2"></div>
 
       <!-- Font Color -->
       <div class="inline-flex items-center p-1 rounded-xl hover:bg-slate-200">

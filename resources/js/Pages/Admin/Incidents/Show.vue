@@ -282,7 +282,7 @@ const getLogIconColor = (index, total) => {
                   <a
                     :href="`/storage/${incident.attachment}`"
                     target="_blank"
-                    class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+                    class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
                   >
                     <IconPaperclip size="18" class="mr-2" />
                     Lihat Lampiran
@@ -297,7 +297,7 @@ const getLogIconColor = (index, total) => {
                   <a
                     :href="route('incident.show', { caseId: incident.case_id, token: incident.access_token })"
                     target="_blank"
-                    class="text-blue-600 hover:text-blue-800 font-medium"
+                    class="text-blue-600 hover:text-blue-700 font-medium"
                     title="Link Publik"
                   >
                     <IconTicket size="18"/>

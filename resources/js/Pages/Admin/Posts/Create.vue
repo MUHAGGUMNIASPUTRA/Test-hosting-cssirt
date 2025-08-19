@@ -292,7 +292,7 @@ const submit = () => {
                   >
                     <IconLoader3 v-if="isGeneratingExcerpt" class="animate-spin" size="14"/>
                     <IconSparkles v-else size="14"/>
-                    {{ isGeneratingExcerpt ? 'Membuat...' : 'Buat Ringkasan' }}
+                    {{ isGeneratingExcerpt ? 'Membuat Ringkasan...' : 'Buat Ringkasan' }}
                   </button>
                 </div>
 
@@ -301,7 +301,7 @@ const submit = () => {
                   <small
                     :class="excerptGenerationMessage.includes('✓') ? 'text-green-600' :
                             excerptGenerationMessage.includes('❌') ? 'text-red-600' : 'text-blue-600'"
-                    class="text-xs block p-2 bg-slate-50 rounded border"
+                    class="text-xs block p-2 bg-slate-50 rounded-lg border border-slate-300"
                   >
                     {{ excerptGenerationMessage }}
                   </small>
@@ -440,7 +440,7 @@ const submit = () => {
                       >
                         <IconPhotoSearch class="text-slate-400 mb-2" :size="!isDesktop ? 18 : undefined"/>
                         <p class="text-sm text-slate-600 text-center">
-                          {{ isEditMode ? 'Pilih gambar baru untuk mengganti' : 'Drag & drop atau klik untuk memilih gambar' }}
+                          {{ isEditMode ? 'Pilih gambar baru untuk mengganti' : 'Klik atau drag file gambar ke sini' }}
                         </p>
                         <p class="text-xs text-slate-400 mt-1">JPG, PNG, WEBP (Maks. 2MB)</p>
                       </div>

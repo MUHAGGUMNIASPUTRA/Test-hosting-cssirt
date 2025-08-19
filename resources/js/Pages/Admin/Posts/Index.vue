@@ -285,7 +285,7 @@ const actionMenuItems = computed(() => {
           </button>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
           <div>
             <label class="block font-medium text-slate-700 mb-2">Cari Artikel</label>
             <div class="relative">

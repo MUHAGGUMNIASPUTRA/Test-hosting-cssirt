@@ -172,7 +172,7 @@ const submit = () => {
                   <p v-if="form.version === 'RFC2350'" class="text-xs text-blue-500 mt-1">
                     Versi ini akan ditampilkan pada halaman publik <strong>RFC2350</strong> dan tidak ditampilkan pada halaman <strong>Panduan</strong>.
                   </p>
-                  <p v-else class="text-xs text-slate-400 mt-1">
+                  <p v-else class="text-xs text-slate-500 mt-1">
                     Gunakan format seperti <code>v1.0</code> atau <code>v2.1</code>. Jika ini adalah dokumen RFC 2350, masukkan <code>RFC2350</code>.
                   </p>
                 </div>
@@ -219,7 +219,7 @@ const submit = () => {
                     </div>
                   </div>
                 </div>
-                <p class="text-xs text-slate-500 mt-2">
+                <p class="text-xs text-slate-500 mt-1">
                   {{ isEditMode ? 'Upload file baru untuk mengganti file lama' : '' }}
                 </p>
               </div>
@@ -274,7 +274,7 @@ const submit = () => {
                     >
                       <IconFileSearch class="text-slate-400 mb-2" :size="!isDesktop ? 18 : undefined"/>
                       <p class="text-sm text-slate-600 text-center">
-                        {{ isEditMode ? 'Pilih file baru untuk mengganti' : 'Drag & drop atau klik untuk memilih file' }}
+                        {{ isEditMode ? 'Pilih file baru untuk mengganti' : 'Klik atau drag file ke sini' }}
                       </p>
                       <p class="text-xs text-slate-400 mt-1">PDF (Maks. 8MB)</p>
                     </div>

@@ -441,7 +441,7 @@ const formatDateTime = (date) => {
                   <p v-if="form.errors.description" class="mt-1 text-red-600">
                     {{ form.errors.description }}
                   </p>
-                  <p class="text-sm text-slate-400">
+                  <p class="text-xs text-slate-500">
                     Berikan informasi selengkap mungkin untuk membantu proses penanganan
                   </p>
                 </div>
@@ -476,7 +476,6 @@ const formatDateTime = (date) => {
                     </div>
                     <div class="flex-1">
                       <p class="font-medium text-slate-900">File Saat Ini</p>
-                      <!-- <p class="text-sm text-slate-500 break-all">{{ incident.attachment.split('/').pop() }}</p> -->
                       <p class="text-sm text-slate-500">{{ incident.file_size }}</p>
                     </div>
                     <div class="flex gap-2">
@@ -491,7 +490,7 @@ const formatDateTime = (date) => {
                     </div>
                   </div>
                 </div>
-                <p class="text-xs text-slate-500 mt-2">
+                <p class="text-xs text-slate-500 mt-1">
                   Upload file baru untuk mengganti file lama
                 </p>
               </div>
@@ -547,14 +546,14 @@ const formatDateTime = (date) => {
 
                   <template #empty>
                     <div
-                      class="flex flex-col items-center justify-center py-6 px-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-600 transition-colors cursor-pointer"
+                      class="flex flex-col items-center justify-center py-6 px-4 border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-600 transition-colors cursor-pointer"
                       @click="triggerFileInput"
                     >
-                      <IconFileSearch class="text-gray-400 mb-2" :size="!isDesktop ? 18 : undefined"/>
-                      <p class="text-sm text-gray-600 text-center">
-                        Drag & drop atau klik untuk memilih file
+                      <IconFileSearch class="text-slate-400 mb-2" :size="!isDesktop ? 18 : undefined"/>
+                      <p class="text-sm text-slate-600 text-center">
+                        {{ isEditing ? 'Pilih file baru untuk mengganti' : 'Klik atau drag file ke sini' }}
                       </p>
-                      <p class="text-xs text-gray-400 mt-1">JPG, PNG, PDF, ZIP, DOC (Maks. 2MB)</p>
+                      <p class="text-xs text-slate-400 mt-1">JPG, PNG, PDF, ZIP, DOC (Maks. 2MB)</p>
                     </div>
                   </template>
                 </FileUpload>

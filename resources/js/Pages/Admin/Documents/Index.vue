@@ -238,10 +238,10 @@ const actionMenuItems = computed(() => {
                 <div class="flex-1 min-w-0">
                   <h4 class="flex items-center gap-2 font-semibold text-slate-900">
                     {{ data.title }}
-                    <span v-if="data.version" class="hidden sm:flex inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-orange-100 text-orange-700">
+                    <span v-if="data.version" class="hidden sm:inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-orange-100 text-orange-600">
                       {{ data.version }}
                     </span>
-                    <span v-if="!data.file_exists" class="hidden sm:flex inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-red-100 text-red-700">
+                    <span v-if="!data.file_exists" class="hidden sm:inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-red-100 text-red-600">
                       File Hilang
                     </span>
                   </h4>
