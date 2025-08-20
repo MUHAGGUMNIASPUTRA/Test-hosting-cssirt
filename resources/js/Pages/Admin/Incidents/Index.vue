@@ -7,7 +7,8 @@ import { useResponsive } from '@/Composables/useResponsive';
 
 const props = defineProps({
   incidents: Object,
-  filters: Object
+  filters: Object,
+  stats: Object
 })
 
 const { isMobile, isDesktop, dtConfig } = useResponsive();
@@ -298,7 +299,7 @@ const actionMenuItems = computed(() => {
             </div>
             <div class="ml-3">
               <p class="text-sm lg:text-base font-medium text-slate-600">Total Insiden</p>
-              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ incidents.total || 0 }}</p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats?.total || 0 }}</p>
             </div>
           </div>
         </div>
@@ -310,9 +311,7 @@ const actionMenuItems = computed(() => {
             </div>
             <div class="ml-3">
               <p class="text-sm lg:text-base font-medium text-slate-600">Dalam Proses</p>
-              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">
-                {{ incidents.data?.filter(i => ['Baru', 'Diverifikasi', 'Dalam Penyelidikan'].includes(i.status)).length || 0 }}
-              </p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats?.in_progress || 0 }}</p>
             </div>
           </div>
         </div>
@@ -324,9 +323,7 @@ const actionMenuItems = computed(() => {
             </div>
             <div class="ml-3">
               <p class="text-sm lg:text-base font-medium text-slate-600">Kritikal</p>
-              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">
-                {{ incidents.data?.filter(i => i.priority === 'Kritikal').length || 0 }}
-              </p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats?.critical || 0 }}</p>
             </div>
           </div>
         </div>
@@ -338,9 +335,7 @@ const actionMenuItems = computed(() => {
             </div>
             <div class="ml-3">
               <p class="text-sm lg:text-base font-medium text-slate-600">Selesai</p>
-              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">
-                {{ incidents.data?.filter(i => i.status === 'Selesai').length || 0 }}
-              </p>
+              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats?.completed || 0 }}</p>
             </div>
           </div>
         </div>

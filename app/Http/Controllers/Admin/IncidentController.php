@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -53,9 +54,13 @@ class IncidentController extends Controller
       $query->where('status', $request->get('status'));
     }
 
+    // Get global stats efficiently with a single query
+    $stats = $this->getGlobalStats();
+
     return Inertia::render('Admin/Incidents/Index', [
       'incidents' => $query->latest('reported_at')->paginate(10)->withQueryString(),
       'filters' => $request->only(['search', 'status', 'priority', 'category']),
+      'stats' => $stats,
     ]);
   }
 
@@ -369,5 +374,28 @@ class IncidentController extends Controller
         'icon' => 'error',
       ])->withInput();
     }
+  }
+
+  /**
+   * Get global statistics for all incidents efficiently
+   */
+  private function getGlobalStats(): array
+  {
+    // Single query to get all the stats we need
+    $stats = DB::table('incidents')
+      ->select([
+        DB::raw('COUNT(*) as total'),
+        DB::raw("COUNT(CASE WHEN status IN ('Baru', 'Diverifikasi', 'Dalam Penyelidikan') THEN 1 END) as in_progress"),
+        DB::raw("COUNT(CASE WHEN priority = 'Kritikal' THEN 1 END) as critical"),
+        DB::raw("COUNT(CASE WHEN status = 'Selesai' THEN 1 END) as completed"),
+      ])
+      ->first();
+
+    return [
+      'total' => (int) $stats->total,
+      'in_progress' => (int) $stats->in_progress,
+      'critical' => (int) $stats->critical,
+      'completed' => (int) $stats->completed,
+    ];
   }
 }
