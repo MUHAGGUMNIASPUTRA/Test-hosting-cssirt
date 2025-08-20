@@ -139,3 +139,9 @@
 .dark .prose :where(ul > li):not(:where([class~="not-prose"],[class~="not-prose"] *))::marker {
   color: oklch(86.9% 0.022 252.894); /* text-slate-300 */
 }
+.dark .prose th {
+  background-color: oklch(37.2% 0.044 257.287); /* bg-slate-700 */
+}
+.dark .prose th, .dark .prose td {
+  border: 1px solid oklch(55.4% 0.046 257.417); /* border-slate-500 */
+}

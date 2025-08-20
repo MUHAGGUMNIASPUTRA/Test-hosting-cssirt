@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, nextTick } from 'vue'
 import { Link, useForm } from '@inertiajs/vue3'
 import { useResponsive } from '@/Composables/useResponsive'
 
@@ -22,9 +22,38 @@ const currentRating = ref(0);
 const hoverRating = ref(0);
 const userHasRated = ref(props.hasRated);
 
+// Sidebar visibility state
+const sidebarVisible = ref(true);
+const isAnimating = ref(false);
+
 const ratingForm = useForm({
   rating: 0,
 });
+
+// Toggle sidebar visibility
+const toggleSidebar = async () => {
+  isAnimating.value = true;
+
+  // Remove animation classes first
+  if (contentRef.value) {
+    contentRef.value.classList.remove('animate-fade-in-up');
+    contentRef.value.classList.add('opacity-0', 'translate-y-10');
+  }
+
+  // Toggle sidebar
+  sidebarVisible.value = !sidebarVisible.value;
+
+  // Wait for DOM update, then re-apply animation
+  await nextTick();
+
+  setTimeout(() => {
+    if (contentRef.value) {
+      contentRef.value.classList.remove('opacity-0', 'translate-y-10');
+      contentRef.value.classList.add('animate-fade-in-up');
+    }
+    isAnimating.value = false;
+  }, 50);
+};
 
 // Check local storage
 onMounted(() => {
@@ -81,6 +110,18 @@ const readingTime = computed(() => {
 // Social sharing
 const shareUrl = computed(() => window.location.href);
 const shareText = computed(() => props.post.title);
+
+// Computed classes for content layout
+const contentClasses = computed(() => {
+  const baseClasses = 'transition-all duration-300';
+  const layoutClasses = !isDesktop.value
+    ? 'lg:col-span-8'
+    : sidebarVisible.value
+      ? 'lg:col-span-8'
+      : 'lg:col-span-12';
+
+  return `${baseClasses} ${layoutClasses} opacity-0 translate-y-10`;
+});
 </script>
 
 <template>
@@ -199,9 +240,8 @@ const shareText = computed(() => props.post.title);
     <div class="bg-white py-8 sm:py-16 lg:py-24">
       <div class="container">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12">
-
           <!-- Article Content -->
-          <article ref="contentRef" class="lg:col-span-8 opacity-0 translate-y-10">
+          <article ref="contentRef" :class="contentClasses">
             <!-- Featured Image -->
             <div v-if="post.image" class="relative mb-8 lg:mb-12">
               <div class="aspect-[16/9] rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl">
@@ -264,10 +304,48 @@ const shareText = computed(() => props.post.title);
                 </a>
               </div>
             </div>
+
+            <hr v-if="isDesktop" class="my-8" />
+
+            <!-- Sidebar Toggle Button (Desktop Only) -->
+            <div v-if="isDesktop" class="flex justify-end mb-6">
+              <button
+                @click="toggleSidebar"
+                :disabled="isAnimating"
+                class="inline-flex items-center px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors duration-200 border border-slate-200 disabled:opacity-50"
+                :title="sidebarVisible ? 'Sembunyikan sidebar' : 'Tampilkan sidebar'"
+              >
+                <svg
+                  v-if="sidebarVisible"
+                  class="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+                <svg
+                  v-else
+                  class="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                {{ sidebarVisible ? 'Sembunyikan Sidebar' : 'Tampilkan Sidebar' }}
+              </button>
+            </div>
+
           </article>
 
           <!-- Sidebar -->
-          <aside ref="sidebarRef" class="lg:col-span-4 opacity-0 translate-y-10">
+          <aside
+            ref="sidebarRef"
+            v-show="!isDesktop || sidebarVisible"
+            class="lg:col-span-4 opacity-0 translate-y-10 transition-all duration-300"
+            :class="{ 'lg:hidden': isDesktop && !sidebarVisible }"
+          >
             <div class="sticky top-8 space-y-6 sm:space-y-8">
 
               <!-- Rating Section -->
@@ -355,6 +433,7 @@ const shareText = computed(() => props.post.title);
                   Semua Artikel
                 </Link>
               </div>
+
             </div>
           </aside>
         </div>
