@@ -306,7 +306,7 @@ onMounted(() => {
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <!-- Emergency Contact -->
           <div class="bg-gradient-to-br from-red-600 to-red-800 rounded-2xl p-6 sm:p-8 text-center text-white">
-            <div class="hidden sm:flex w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div class="hidden sm:flex w-16 h-16 bg-white/20 rounded-full items-center justify-center mx-auto mb-4">
               <svg class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
                 <path fill-rule="evenodd" d="M1.5 4.5a3 3 0 0 1 3-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 0 1-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 0 0 6.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 0 1 1.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 0 1-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5Z" clip-rule="evenodd" />
               </svg>
@@ -318,7 +318,7 @@ onMounted(() => {
 
           <!-- General Contact -->
           <div class="bg-gradient-to-br from-gray-100 to-indigo-100 rounded-2xl p-6 sm:p-8 text-center border border-slate-200">
-            <div class="hidden sm:flex w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div class="hidden sm:flex w-16 h-16 bg-indigo-100 rounded-full items-center justify-center mx-auto mb-4">
               <svg class="h-8 w-8 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
                 <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
@@ -331,7 +331,7 @@ onMounted(() => {
 
           <!-- Office Address -->
           <div class="bg-gradient-to-br from-gray-100 to-indigo-100 rounded-2xl p-6 sm:p-8 text-center border border-slate-200">
-            <div class="hidden sm:flex w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div class="hidden sm:flex w-16 h-16 bg-indigo-100 rounded-full items-center justify-center mx-auto mb-4">
               <svg class="h-8 w-8 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
               </svg>

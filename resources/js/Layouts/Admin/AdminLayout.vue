@@ -186,6 +186,19 @@ const isCurrentRoute = (routeName) => {
   }
 }
 
+const displayRole = (role) => {
+  switch (role) {
+    case 'admin':
+      return 'Administrator'
+    case 'editor':
+      return 'Editor'
+    case 'viewer':
+      return 'Viewer'
+    default:
+      return 'User'
+  }
+}
+
 // Toggle sidebar
 const toggleSidebar = () => {
   sidebarOpen.value = !sidebarOpen.value
@@ -371,7 +384,7 @@ watch(
               <IconMenu2 size="20" />
             </button>
             <div class="ml-4 lg:ml-0">
-              <h1 class="text-lg/5 font-semibold text-slate-900">{{ isDesktop ? title : 'CSIRT Bojonegoro: Admin Panel' }}</h1>
+              <h1 class="text-lg/5 font-semibold text-slate-900">{{ isDesktop ? displayRole(page.props.auth.user?.role) : 'CSIRT Bojonegoro: Admin Panel' }}</h1>
               <p class="text-xs text-slate-500">{{ new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</p>
             </div>
           </div>

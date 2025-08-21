@@ -29,8 +29,18 @@ const isLandingPage = computed(() => {
   return page.url === '/' || page.url === '';
 });
 
+// Remove dark mode class when AppLayout mounts (public pages should be light)
+const removeDarkMode = () => {
+  if (typeof window !== 'undefined') {
+    const root = document.documentElement
+    root.classList.remove('dark')
+  }
+}
+
 // Handle scroll for navbar styling (SSR-safe)
 onMounted(() => {
+  removeDarkMode()
+
   if (typeof window !== 'undefined') {
     const handleScroll = () => {
       isScrolled.value = window.scrollY > 10
