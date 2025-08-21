@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
+import { useParticles } from '@/Composables/useParticles'
 
 // Animation refs
 const heroRef = ref(null)
@@ -7,6 +8,7 @@ const aboutRef = ref(null)
 const visionRef = ref(null)
 const teamRef = ref(null)
 const timelineRef = ref(null)
+const { minimalParticlesOptions } = useParticles()
 
 // Scroll animations
 onMounted(() => {
@@ -34,7 +36,11 @@ onMounted(() => {
 <template>
   <AppLayout title="Profil">
     <!-- Hero Section -->
-    <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-indigo-900 to-blue-900 py-24 sm:py-32 opacity-0 translate-y-10">
+    <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 py-24 sm:py-32 opacity-0 translate-y-10">
+      <div class="absolute inset-0 z-0">
+        <vue-particles id="tsparticles" :options="minimalParticlesOptions" class="w-full h-full"/>
+      </div>
+
       <div class="sm:pt-16"></div>
 
       <!-- Background Pattern -->

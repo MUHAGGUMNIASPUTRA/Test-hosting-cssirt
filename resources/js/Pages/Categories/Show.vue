@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import { useResponsive } from '@/Composables/useResponsive'
+import { useParticles } from '@/Composables/useParticles'
 
 const props = defineProps({
   category: Object,
@@ -11,6 +12,7 @@ const props = defineProps({
 // Animation refs
 const heroRef = ref(null)
 const postsRef = ref(null)
+const { minimalParticlesOptions } = useParticles()
 
 // Responsive composable
 const { isMobile } = useResponsive()
@@ -79,6 +81,10 @@ onMounted(() => {
   <AppLayout :title="`Kategori: ${category.name}`">
     <!-- Hero Section -->
     <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      <div class="absolute inset-0 z-0">
+        <vue-particles id="tsparticles" :options="minimalParticlesOptions" class="w-full h-full"/>
+      </div>
+
       <div class="sm:pt-16"></div>
 
       <!-- Background Pattern -->

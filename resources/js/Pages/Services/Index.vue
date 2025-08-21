@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
+import { useParticles } from '@/Composables/useParticles'
 
 const props = defineProps({
   services: Array,
@@ -11,6 +12,7 @@ const heroRef = ref(null)
 const capabilitiesRef = ref(null)
 const servicesRef = ref(null)
 const processRef = ref(null)
+const { minimalParticlesOptions } = useParticles()
 
 // Process steps data
 const processSteps = [
@@ -102,7 +104,11 @@ const serviceGridClasses = computed(() => {
 <template>
   <AppLayout title="Layanan">
     <!-- Hero Section -->
-    <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-indigo-900 to-blue-900 py-24 sm:py-32 opacity-0 translate-y-10">
+    <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 py-24 sm:py-32 opacity-0 translate-y-10">
+      <div class="absolute inset-0 z-0">
+        <vue-particles id="tsparticles" :options="minimalParticlesOptions" class="w-full h-full"/>
+      </div>
+
       <div class="sm:pt-16"></div>
 
       <!-- Background Pattern -->

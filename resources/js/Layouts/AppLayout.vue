@@ -3,6 +3,7 @@ import { ref, onMounted, nextTick, computed, watch } from 'vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { useToast } from "primevue/usetoast";
 import { useResponsive } from "@/Composables/useResponsive";
+import { useParticles } from '@/Composables/useParticles'
 
 // The 'title' prop will be passed from individual pages
 defineProps({
@@ -15,6 +16,7 @@ const isScrolled = ref(false);
 const page = usePage();
 const contact = page.props.contact
 const isLoggedIn = computed(() => !!(page.props.auth && page.props.auth.user));
+const { minimalParticlesOptions } = useParticles()
 
 // Toast notification setup (SSR-safe)
 let toast = null
@@ -373,7 +375,10 @@ watch(
       </main>
 
       <!-- Modern Footer -->
-      <footer class="bg-slate-900 text-slate-300">
+      <footer class="relative bg-slate-900 text-slate-300 overflow-hidden">
+        <div class="absolute inset-0 z-0 pointer-events-none">
+          <vue-particles id="footerParticles" :options="minimalParticlesOptions" class="w-full h-full"/>
+        </div>
         <div class="container py-8 sm:py-16">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <!-- Brand Section -->

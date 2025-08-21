@@ -3,6 +3,7 @@
 
 import { router, useForm, usePage } from '@inertiajs/vue3';
 import { ref, onMounted, computed, watch } from 'vue';
+import { useParticles } from '@/Composables/useParticles';
 import { IconFile, IconFileTypeDoc, IconFileTypeDocx, IconFileTypeJpg, IconFileTypePdf, IconFileTypePng, IconFileTypeZip } from '@tabler/icons-vue';
 
 const page = usePage();
@@ -14,6 +15,7 @@ const props = defineProps({
 // Animation refs
 const heroRef = ref(null);
 const formRef = ref(null);
+const { minimalParticlesOptions } = useParticles();
 
 // Step management
 const activeStep = ref(0);
@@ -360,6 +362,10 @@ onMounted(() => {
 
     <!-- Hero Section -->
     <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      <div class="absolute inset-0 z-0">
+        <vue-particles id="tsparticles" :options="minimalParticlesOptions" class="w-full h-full"/>
+      </div>
+
       <div class="sm:pt-16"></div>
 
       <!-- Background Pattern -->

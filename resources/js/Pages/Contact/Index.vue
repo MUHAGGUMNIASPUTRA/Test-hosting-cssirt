@@ -3,6 +3,7 @@
 
 import { onMounted, ref } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3';
+import { useParticles } from '@/Composables/useParticles'
 
 const page = usePage()
 const contact = page.props.contact
@@ -10,6 +11,7 @@ const contact = page.props.contact
 // Animation refs
 const heroRef = ref(null)
 const contactRef = ref(null)
+const { minimalParticlesOptions } = useParticles()
 
 // Contact details data
 const contactDetails = [
@@ -55,6 +57,10 @@ onMounted(() => {
   <AppLayout title="Hubungi Kami">
     <!-- Hero Section -->
     <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 opacity-0 translate-y-10">
+      <div class="absolute inset-0 z-0">
+        <vue-particles id="tsparticles" :options="minimalParticlesOptions" class="w-full h-full"/>
+      </div>
+
       <div class="sm:pt-16"></div>
 
       <!-- Background Pattern -->

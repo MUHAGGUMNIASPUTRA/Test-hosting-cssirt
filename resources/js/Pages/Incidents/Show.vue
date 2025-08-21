@@ -3,11 +3,14 @@
 
 import { computed } from 'vue'
 import { usePage } from '@inertiajs/vue3'
+import { useParticles } from '@/Composables/useParticles'
 
 const page = usePage()
 const props = defineProps({
   incident: Object,
 })
+
+const { minimalParticlesOptions } = useParticles()
 
 const incident = computed(() => props.incident || page.props.incident || {})
 
@@ -62,6 +65,10 @@ const hasAttachment = computed(() => Boolean(incident.value?.attachment?.filenam
 
     <!-- Hero Section -->
     <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      <div class="absolute inset-0 z-0">
+        <vue-particles id="tsparticles" :options="minimalParticlesOptions" class="w-full h-full"/>
+      </div>
+
       <div class="sm:pt-16"></div>
 
       <!-- Background Pattern -->

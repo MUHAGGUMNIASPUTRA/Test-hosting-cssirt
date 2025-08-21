@@ -3,12 +3,14 @@
 import { ref, computed } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
 import { useResponsive } from '@/Composables/useResponsive'
+import { useParticles } from '@/Composables/useParticles'
 
 const props = defineProps({
   documents: Object,
   filters: Object,
 })
 
+const { minimalParticlesOptions } = useParticles()
 const { isMobile, dtConfig } = useResponsive()
 
 // Reactive state
@@ -78,6 +80,10 @@ const totalFileSize = computed(() => {
   <AppLayout title="Panduan Keamanan Siber">
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      <div class="absolute inset-0 z-0">
+        <vue-particles id="tsparticles" :options="minimalParticlesOptions" class="w-full h-full"/>
+      </div>
+
       <div class="sm:pt-16"></div>
 
       <!-- Background Pattern -->

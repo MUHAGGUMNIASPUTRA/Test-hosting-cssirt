@@ -1,6 +1,7 @@
 <script setup>
 import { Link, router, usePage } from '@inertiajs/vue3'
 import { onMounted, ref, computed } from 'vue'
+import { useParticles } from '@/Composables/useParticles'
 
 const props = defineProps({
   services: Array,
@@ -14,6 +15,7 @@ const contact = page.props.contact
 const heroRef = ref(null)
 const aboutRef = ref(null)
 const servicesRef = ref(null)
+const { heroParticlesOptions, minimalParticlesOptions } = useParticles()
 
 // Dynamic grid classes based on services count
 const serviceGridClasses = computed(() => {
@@ -42,51 +44,15 @@ onMounted(() => {
   if (aboutRef.value) observer.observe(aboutRef.value)
   if (servicesRef.value) observer.observe(servicesRef.value)
 })
-
-const options = ref({
-  preset: "links",
-  background: { color: "transparent" },
-  fullScreen: { enable: true, zIndex: 0 },
-  particles: {
-    number: { value: 100, density: { enable: true, area: 800 } },
-    color: { value: ["#3B82F6", "#8B5CF6", "#10B981", "#F59E0B"] },
-    shape: { type: "circle" },
-    opacity: { value: 0.5, random: { enable: true, minimumValue: 0.1 } },
-    size: { value: { min: 1, max: 3 }, random: { enable: true, minimumValue: 1 } },
-    links: { enable: true, distance: 150, color: "#ffffff", opacity: 0.2, width: 1 },
-    move: { enable: true, speed: 1, direction: "none", random: true, straight: false, outModes: { default: "out" } }
-  },
-  interactivity: {
-    detectsOn: "window",
-    events: {
-      onHover: { enable: true, mode: "repulse" },
-      onClick: { enable: true, mode: "push" },
-      resize: true
-    },
-    modes: {
-      repulse: { distance: 100, duration: 0.4 },
-      push: { quantity: 2 }
-    }
-  },
-  responsive: [
-    {
-      maxWidth: 768,
-      options: { particles: { number: { value: 100, density: { enable: true, area: 600 } } } }
-    },
-    {
-      maxWidth: 1024,
-      options: {particles: { number: { value: 100, density: { enable: true, area: 600 } } } }
-    }
-  ],
-  detectRetina: true
-})
 </script>
 
 <template>
   <AppLayout title="Selamat Datang">
     <!-- Hero Section -->
     <section ref="heroRef" class="relative min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 overflow-hidden">
-      <vue-particles id="tsparticles" :options="options" />
+      <div class="absolute inset-0 z-0">
+        <vue-particles id="tsParticles" :options="heroParticlesOptions" class="w-full h-full"/>
+      </div>
       <!-- Background Pattern -->
       <div class="absolute inset-0 opacity-10">
         <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
@@ -328,7 +294,11 @@ const options = ref({
     </section>
 
     <!-- Contact Section -->
-    <section id="kontak" class="py-8 sm:py-16 lg:py-20 bg-slate-900">
+    <section id="kontak" class="relative py-8 sm:py-16 lg:py-20 bg-slate-900 overflow-hidden">
+      <div class="absolute inset-0 z-0 pointer-events-none">
+        <vue-particles id="landing2particles" :options="minimalParticlesOptions" class="w-full h-full"/>
+      </div>
+
       <div class="container">
         <div class="text-center mb-8 sm:mb-16">
           <h2 class="text-lg font-semibold uppercase tracking-wider text-indigo-400 mb-2">
@@ -344,7 +314,7 @@ const options = ref({
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <!-- Emergency Contact -->
-          <div class="bg-gradient-to-br from-red-600 to-red-800 rounded-2xl p-6 sm:p-8 text-center text-white">
+          <div class="bg-gradient-to-br from-red-600 to-red-800 rounded-2xl p-6 sm:p-8 text-center text-white z-20">
             <div class="hidden sm:flex w-16 h-16 bg-white/20 rounded-full items-center justify-center mx-auto mb-4">
               <svg class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
                 <path fill-rule="evenodd" d="M1.5 4.5a3 3 0 0 1 3-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 0 1-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 0 0 6.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 0 1 1.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 0 1-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5Z" clip-rule="evenodd" />
@@ -356,7 +326,7 @@ const options = ref({
           </div>
 
           <!-- General Contact -->
-          <div class="bg-gradient-to-br from-gray-100 to-indigo-100 rounded-2xl p-6 sm:p-8 text-center border border-slate-200">
+          <div class="bg-gradient-to-br from-gray-100 to-indigo-100 rounded-2xl p-6 sm:p-8 text-center border border-slate-200 z-20">
             <div class="hidden sm:flex w-16 h-16 bg-indigo-100 rounded-full items-center justify-center mx-auto mb-4">
               <svg class="h-8 w-8 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
@@ -369,7 +339,7 @@ const options = ref({
           </div>
 
           <!-- Office Address -->
-          <div class="bg-gradient-to-br from-gray-100 to-indigo-100 rounded-2xl p-6 sm:p-8 text-center border border-slate-200">
+          <div class="bg-gradient-to-br from-gray-100 to-indigo-100 rounded-2xl p-6 sm:p-8 text-center border border-slate-200 z-20">
             <div class="hidden sm:flex w-16 h-16 bg-indigo-100 rounded-full items-center justify-center mx-auto mb-4">
               <svg class="h-8 w-8 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />

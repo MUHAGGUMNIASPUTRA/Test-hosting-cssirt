@@ -4,6 +4,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
 import { useResponsive } from '@/Composables/useResponsive'
+import { useParticles } from '@/Composables/useParticles'
 
 const props = defineProps({
   posts: Object,
@@ -14,6 +15,7 @@ const props = defineProps({
 // Animation refs
 const heroRef = ref(null)
 const postsRef = ref(null)
+const { minimalParticlesOptions } = useParticles()
 
 // Search functionality - separate input value from applied search
 const searchInput = ref(props.filters?.search || '') // What user is typing
@@ -137,6 +139,10 @@ onMounted(() => {
   <AppLayout title="Artikel & Panduan">
     <!-- Hero Section -->
     <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      <div class="absolute inset-0 z-0">
+        <vue-particles id="tsparticles" :options="minimalParticlesOptions" class="w-full h-full"/>
+      </div>
+
       <div class="sm:pt-16"></div>
 
       <!-- Background Pattern -->

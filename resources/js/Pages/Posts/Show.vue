@@ -2,6 +2,7 @@
 import { onMounted, ref, computed, nextTick } from 'vue'
 import { Link, useForm } from '@inertiajs/vue3'
 import { useResponsive } from '@/Composables/useResponsive'
+import { useParticles } from '@/Composables/useParticles'
 
 const props = defineProps({
   post: Object,
@@ -13,6 +14,7 @@ const props = defineProps({
 const heroRef = ref(null)
 const contentRef = ref(null)
 const sidebarRef = ref(null)
+const { minimalParticlesOptions } = useParticles()
 
 // Responsive composable
 const { isDesktop } = useResponsive()
@@ -128,6 +130,10 @@ const contentClasses = computed(() => {
   <AppLayout :title="post.title">
     <!-- Hero Section -->
     <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      <div class="absolute inset-0 z-0">
+        <vue-particles id="tsparticles" :options="minimalParticlesOptions" class="w-full h-full"/>
+      </div>
+
       <div class="sm:pt-16"></div>
 
       <!-- Background Pattern -->
