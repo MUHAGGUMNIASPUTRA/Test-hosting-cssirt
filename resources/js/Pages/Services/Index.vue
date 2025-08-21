@@ -292,7 +292,7 @@ const serviceGridClasses = computed(() => {
                 <!-- Step Content -->
                 <div class="flex-1 pt-0 sm:pt-2">
                   <!-- Step Icon -->
-                  <div class="hidden sm:flex w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-indigo-50 transition-colors duration-300">
+                  <div class="hidden sm:flex w-12 h-12 bg-slate-100 rounded-lg items-center justify-center mb-4 group-hover:bg-indigo-50 transition-colors duration-300">
                     <i :class="`pi ${step.icon} text-2xl text-indigo-600`"></i>
                   </div>
 
