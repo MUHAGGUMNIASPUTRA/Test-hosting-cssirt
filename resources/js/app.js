@@ -13,6 +13,10 @@ import 'primeicons/primeicons.css'
 import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';
 
+import Particles from "@tsparticles/vue3"
+import { loadSlim } from "@tsparticles/slim"
+import { loadLinksPreset } from "@tsparticles/preset-links"
+
 const appName = import.meta.env.VITE_APP_NAME || 'CSIRT Bojonegoro'
 
 createInertiaApp({
@@ -38,6 +42,12 @@ createInertiaApp({
       })
       .use(ConfirmationService)
       .use(ToastService)
+      .use(Particles, {
+        init: async (engine) => {
+          await loadSlim(engine)
+          await loadLinksPreset(engine)
+        }
+      })
       .mount(el)
   },
   // Progress bar enabled for client
