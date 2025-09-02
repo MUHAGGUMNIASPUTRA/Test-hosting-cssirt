@@ -47,7 +47,7 @@
 .dark .p-tag-danger { border-color: oklch(44.4% 0.177 26.899) !important; } /* border-red-800 */
 .dark .p-tag-secondary {
   border-color: oklch(37% 0.013 285.805) !important; /* border-zinc-700 */
-  background-color: oklch(27.4% 0.006 286.033) !important; /* bg-zinc-800 */
+  background-color: oklch(37.2% 0.044 257.287) !important; /* bg-slate-700 */
 }
 
 .dark .hover\:border-zinc-400:hover { @apply border-zinc-500; }
@@ -132,7 +132,7 @@
   @apply border-slate-700;
 }
 .dark .p-datatable.p-datatable-striped .p-datatable-tbody > tr.p-row-odd {
-  @apply bg-slate-900;
+  @apply bg-slate-800-ish;
 }
 
 /* Prose */

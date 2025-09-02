@@ -16,6 +16,9 @@ export default {
       fontFamily: {
         sans: ['Figtree', ...defaultTheme.fontFamily.sans],
       },
+      colors: {
+        'slate-800-ish': 'oklch(26.04% 0.04098 261.869)',
+      },
       typography: ({ theme }) => ({
         DEFAULT: {
           css: {

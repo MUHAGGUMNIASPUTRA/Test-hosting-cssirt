@@ -226,3 +226,12 @@ html {
 .prose strong {
   @apply text-slate-900;
 }
+
+.dark-mode-toggle {
+  svg {
+    transition: transform 0.3s ease;
+  }
+  &:hover svg {
+    transform: rotate(180deg);
+  }
+}

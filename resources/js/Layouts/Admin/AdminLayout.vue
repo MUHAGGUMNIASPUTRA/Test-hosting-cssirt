@@ -394,7 +394,7 @@ watch(
             <button
               v-if="!isMobile"
               @click="toggleDarkMode"
-              class="p-3 rounded-full border border-transparent text-slate-500 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors dark:text-slate-300 dark:hover:text-slate-100"
+              class="p-3 rounded-full border border-transparent text-slate-500 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors dark:text-slate-300 dark:hover:text-slate-100 dark-mode-toggle"
               :aria-label="darkMode ? 'Switch to light mode' : 'Switch to dark mode'"
               :title="darkMode ? 'Mode Terang' : 'Mode Gelap'"
             >
