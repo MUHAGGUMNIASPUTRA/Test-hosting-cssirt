@@ -59,7 +59,9 @@ const form = useForm({
   incident_at: null,
   description: '',
   priority: 'Sedang',
+  attachment_type: 'file',
   attachment: null,
+  attachment_links: '',
   captcha_answer: '',
   captcha_expected: '',
 });
@@ -71,7 +73,26 @@ const searchForm = useForm({
   captcha_expected: '',
 });
 
-// File upload
+// Selected incident type info
+const selectedType = computed(() => {
+  if (!form.incident_type_id) return null;
+  return props.incidentTypes.find(t => t.id === form.incident_type_id) || null;
+});
+
+// Attachment mode toggle
+const attachmentMode = ref('file'); // 'file' | 'link'
+
+const setAttachmentMode = (mode) => {
+  attachmentMode.value = mode;
+  form.attachment_type = mode;
+  form.attachment = null;
+  form.attachment_links = '';
+  if (mode === 'file') {
+    attachmentPreview.value = null;
+    if (uploader.value) uploader.value.clear();
+  }
+};
+
 const uploader = ref(null);
 const attachmentPreview = ref(null);
 
@@ -214,9 +235,7 @@ const handleFileSelect = (event) => {
 };
 
 const clearAttachment = () => {
-  if (uploader.value) {
-    uploader.value.clear();
-  }
+  if (uploader.value) uploader.value.clear();
   form.attachment = null;
   attachmentPreview.value = null;
 };
@@ -225,38 +244,32 @@ const submitForm = () => {
   if (selectedService.value === 'create') {
     form.post(route('incident.store'), {
       onSuccess: () => {
-        // Reset form and return to initial state
         form.reset();
         clearAttachment();
+        attachmentMode.value = 'file';
         activeStep.value = 0;
         selectedService.value = null;
         captcha.value = { question: '', answer: '', userAnswer: '' };
       },
       onError: () => {
-        // Regenerate captcha on error
         if (activeStep.value === 2) {
           generateCaptcha();
         }
       }
     });
   } else {
-    // Ensure captcha values are included correctly before submit
     if (searchCaptchaRequired.value) {
       searchForm.captcha_answer = (searchCaptcha.value.userAnswer ?? '').toString();
-      // Prefer the current generated answer if present
       if (searchCaptcha.value.answer) {
         searchForm.captcha_expected = searchCaptcha.value.answer.toString();
       }
     }
     searchForm.post(route('incident.search'), {
       onSuccess: () => {
-        // Handle search success and clear captcha state
         searchCaptcha.value = { question: '', answer: '', userAnswer: '' };
         searchForm.captcha_answer = '';
         searchForm.captcha_expected = '';
-        // Clear any lingering validation errors so computed doesn't keep captcha visible
         searchForm.clearErrors();
-        // Proactively clear any stale captcha_required flash on the client
         if (page.props.flash && 'captcha_required' in page.props.flash) {
           delete page.props.flash.captcha_required;
         }
@@ -397,7 +410,7 @@ onMounted(() => {
                 <div class="text-sm sm:text-base text-slate-300">Layanan Siaga</div>
               </div>
               <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-2 sm:p-6 border border-white/20">
-                <div class="text-xl sm:text-2xl lg:text-4xl font-bold text-white mb-0 sm:mb-1 lg:mb-2">< 24 Jam</div>
+                <div class="text-xl sm:text-2xl lg:text-4xl font-bold text-white mb-0 sm:mb-1 lg:mb-2">&lt; 24 Jam</div>
                 <div class="text-sm sm:text-base text-slate-300">Respons Awal</div>
               </div>
               <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-2 sm:p-6 border border-white/20">
@@ -683,11 +696,73 @@ onMounted(() => {
                           <small v-if="form.errors.description" class="p-error">{{ form.errors.description }}</small>
                         </div>
 
-                        <!-- File Upload -->
+                        <!-- Selected Type Info Panel -->
+                        <Transition
+                          enter-active-class="transition-all duration-300 ease-out"
+                          enter-from-class="opacity-0 -translate-y-2"
+                          enter-to-class="opacity-100 translate-y-0"
+                          leave-active-class="transition-all duration-200 ease-in"
+                          leave-from-class="opacity-100 translate-y-0"
+                          leave-to-class="opacity-0 -translate-y-2"
+                        >
+                          <div v-if="selectedType && (selectedType.description || selectedType.guide)">
+                            <div class="bg-indigo-50 border border-indigo-200 rounded-xl overflow-hidden">
+                              <!-- Header -->
+                              <div class="bg-indigo-100 border-b border-indigo-200 px-5 py-3 flex items-center gap-3">
+                                <div class="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                  <i class="pi pi-info-circle !text-sm text-white"></i>
+                                </div>
+                                <div>
+                                  <p class="font-semibold text-indigo-900">{{ selectedType.name }}</p>
+                                  <p v-if="selectedType.description" class="text-sm text-indigo-700">{{ selectedType.description }}</p>
+                                </div>
+                              </div>
+                              <!-- Guide Content -->
+                              <div v-if="selectedType.guide" class="p-5">
+                                <p class="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-3">Panduan Pelaporan</p>
+                                <div
+                                  class="prose prose-sm max-w-none text-slate-700 [&>h3]:text-base [&>h3]:font-semibold [&>h3]:text-indigo-900 [&>h3]:mb-2 [&>p]:mb-2 [&>ul]:mb-2 [&>ol]:mb-2 [&>ul]:pl-5 [&>ol]:pl-5 [&>li]:mb-1"
+                                  v-html="selectedType.guide"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </Transition>
+
+                        <!-- Attachment -->
                         <div>
                           <label class="block font-medium text-slate-700 mb-2">
-                            Lampiran Bukti <span class="text-slate-500">(Opsional, maks 2MB)</span>
+                            Lampiran Bukti <span class="text-slate-500">(Opsional)</span>
                           </label>
+
+                          <!-- Mode Toggle -->
+                          <div class="flex rounded-xl overflow-hidden border border-slate-300 mb-4 w-fit">
+                            <button
+                              type="button"
+                              @click="setAttachmentMode('file')"
+                              class="flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors"
+                              :class="attachmentMode === 'file'
+                                ? 'bg-indigo-600 text-white'
+                                : 'bg-white text-slate-600 hover:bg-slate-50'"
+                            >
+                              <i class="pi pi-upload text-xs"></i>
+                              Upload Dokumen
+                            </button>
+                            <button
+                              type="button"
+                              @click="setAttachmentMode('link')"
+                              class="flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors border-l border-slate-300"
+                              :class="attachmentMode === 'link'
+                                ? 'bg-indigo-600 text-white'
+                                : 'bg-white text-slate-600 hover:bg-slate-50'"
+                            >
+                              <i class="pi pi-link text-xs"></i>
+                              Kirim Link
+                            </button>
+                          </div>
+
+                          <!-- File Upload -->
+                          <div v-if="attachmentMode === 'file'">
                           <FileUpload
                             ref="uploader"
                             name="attachment"
@@ -739,7 +814,25 @@ onMounted(() => {
                               </div>
                             </template>
                           </FileUpload>
-                          <small v-if="form.errors.attachment" class="p-error">{{ form.errors.attachment }}</small>
+                          </div>
+
+                          <!-- Link Input -->
+                          <div v-else class="space-y-2">
+                            <Textarea
+                              v-model="form.attachment_links"
+                              rows="3"
+                              class="w-full rounded-xl"
+                              placeholder="Masukkan URL bukti, pisahkan dengan koma jika lebih dari satu.&#10;Contoh: https://drive.google.com/file/xxx, https://example.com/screenshot.png"
+                            />
+                            <p class="text-sm text-slate-500">
+                              <i class="pi pi-info-circle mr-1"></i>
+                              Untuk beberapa link, pisahkan dengan koma (,)
+                            </p>
+                          </div>
+
+                          <small v-if="form.errors.attachment || form.errors.attachment_links" class="p-error">
+                            {{ form.errors.attachment || form.errors.attachment_links }}
+                          </small>
                         </div>
                       </div>
                     </div>

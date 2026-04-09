@@ -1,5 +1,4 @@
 <?php
-// filepath: app/Http/Controllers/IncidentController.php
 
 namespace App\Http\Controllers;
 
@@ -12,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use App\Mail\IncidentReportMail;
 use App\Mail\IncidentConfirmationMail;
 
@@ -20,19 +18,13 @@ class IncidentController extends Controller
 {
   use HandlesSeoRequests;
 
-  /**
-   * Show the form for creating a new incident report.
-   */
   public function create()
   {
     return $this->handleSeoRequest('Incidents/Create', [
-      'incidentTypes' => IncidentType::orderBy('name')->get(['id', 'name']),
+      'incidentTypes' => IncidentType::orderBy('name')->get(['id', 'name', 'description', 'guide']),
     ]);
   }
 
-  /**
-   * Store a newly created incident report in storage.
-   */
   public function store(Request $request)
   {
     $validated = $request->validate([
@@ -43,7 +35,9 @@ class IncidentController extends Controller
       'incident_at' => 'required|date',
       'description' => 'required|string',
       'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritikal',
-      'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,zip,doc,docx|max:2048', // Max 2MB
+      'attachment_type' => 'nullable|in:file,link',
+      'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,zip,doc,docx|max:5120',
+      'attachment_links' => 'nullable|string|max:2000',
       'captcha_answer' => 'required',
       'captcha_expected' => 'required|string',
     ], [
@@ -63,11 +57,13 @@ class IncidentController extends Controller
       return back()->withErrors(['captcha_answer' => 'Jawaban captcha tidak sesuai.'])->withInput();
     }
 
-    // Handle file upload
-    $path = null;
-    if ($request->hasFile('attachment')) {
-      // Store attachments privately
-      $path = $request->file('attachment')->store('incidents', 'local');
+    // Handle attachment: file (stored privately) or link
+    $attachmentValue = null;
+
+    if (($validated['attachment_type'] ?? 'file') === 'file' && $request->hasFile('attachment')) {
+      $attachmentValue = $request->file('attachment')->store('incidents', 'local');
+    } elseif (($validated['attachment_type'] ?? null) === 'link' && !empty($validated['attachment_links'])) {
+      $attachmentValue = $validated['attachment_links'];
     }
 
     // Create incident with auto-generated case ID (safe monthly sequence) and access token for reporter
@@ -76,12 +72,12 @@ class IncidentController extends Controller
       'access_token' => Str::random(64),
       'reporter_name' => $validated['reporter_name'],
       'reporter_email' => $validated['reporter_email'],
-      'reporter_phone' => $validated['reporter_phone'],
+      'reporter_phone' => $validated['reporter_phone'] ?? null,
       'incident_type_id' => $validated['incident_type_id'],
       'description' => $validated['description'],
       'status' => 'Baru',
       'priority' => $validated['priority'],
-      'attachment' => $path,
+      'attachment' => $attachmentValue,
       'incident_at' => $validated['incident_at'],
       'reported_at' => now(),
     ]);
