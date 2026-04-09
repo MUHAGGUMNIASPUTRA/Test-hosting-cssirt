@@ -2,19 +2,20 @@
 // filepath: resources/js/Layouts/Admin/AdminLayout.vue
 
 import { computed, ref, onMounted, nextTick, watch } from 'vue';
-import { Head, Link, router, usePage } from '@inertiajs/vue3'
-import { useResponsive } from '@/Composables/useResponsive'
-import { useToast } from 'primevue/usetoast'
-import Toast from 'primevue/toast'
-import NotificationPanel from '@/Components/NotificationPanel.vue'
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { useResponsive } from '@/Composables/useResponsive';
+import { useToast } from 'primevue/usetoast';
+import Toast from 'primevue/toast';
+import NotificationPanel from '@/Components/NotificationPanel.vue';
 
 import {
   IconWorldCheck, IconLayoutBoard, IconUrgent,
   IconMailExclamation, IconBellPlus, IconTicTac,
   IconNews, IconArticle, IconTextPlus, IconBookmarks,
-  IconBook2, IconNotebook, IconFilePlus,
+  IconFileDescription, IconFilePlus,
   IconHeartHandshake, IconHelp, IconSpeakerphone,
   IconUsers, IconLogout, IconSun, IconMoon,
+  IconMenu2, IconChevronDown,
 } from '@tabler/icons-vue';
 
 defineProps({
@@ -73,7 +74,23 @@ const sidebarItems = ref([
   },
   { separator: true },
   {
-    label: 'Insiden (Tiket)',
+    label: 'Panduan',
+    icon: IconFileDescription,
+    items: [
+      {
+        label: 'Daftar Panduan',
+        icon: IconFileDescription,
+        route: 'admin.documents.index'
+      },
+      {
+        label: 'Tambah Panduan',
+        icon: IconFilePlus,
+        route: 'admin.documents.create'
+      },
+    ],
+  },
+  {
+    label: 'Insiden',
     icon: IconUrgent,
     items: [
       {
@@ -117,42 +134,9 @@ const sidebarItems = ref([
   },
   { separator: true },
   {
-    label: 'Panduan',
-    icon: IconBook2,
-    items: [
-      {
-        label: 'Daftar Panduan',
-        icon: IconNotebook,
-        route: 'admin.documents.index'
-      },
-      {
-        label: 'Tambah Panduan',
-        icon: IconFilePlus,
-        route: 'admin.documents.create'
-      },
-    ],
-  },
-  { separator: true },
-  {
     label: 'Layanan',
     icon: IconHeartHandshake,
     route: 'admin.services.index',
-  },
-  {
-    label: 'Panduan',
-    icon: IconFileDescription,
-    items: [
-      {
-        label: 'Daftar Panduan',
-        icon: IconFileDescription,
-        route: 'admin.documents.index'
-      },
-      {
-        label: 'Tambah Panduan',
-        icon: IconFilePlus,
-        route: 'admin.documents.create'
-      },
-    ],
   },
   {
     label: 'FAQ',
@@ -291,37 +275,32 @@ watch(
 
 <template>
   <div class="min-h-screen bg-slate-50 flex flex-col">
+
     <Head :title="title" />
 
     <loading-page />
 
     <!-- Mobile sidebar backdrop -->
-    <div
-      v-if="sidebarOpen"
-      class="fixed inset-0 z-40 bg-slate-600 bg-opacity-75 transition-opacity lg:hidden"
-      @click="toggleSidebar"
-    ></div>
+    <div v-if="sidebarOpen" class="fixed inset-0 z-40 bg-slate-600 bg-opacity-75 transition-opacity lg:hidden"
+      @click="toggleSidebar"></div>
 
     <!-- Sidebar -->
     <div
-      class="fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-transform duration-300 ease-in-out w-72 border-r border-transparent"
+      class="fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-xl transform transition-transform duration-300 ease-in-out"
       :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
     >
       <!-- Sidebar header -->
       <div class="flex items-center justify-between h-[4.5rem] px-8 bg-gradient-to-r from-indigo-600 to-blue-600">
         <div class="flex items-center">
           <div class="h-9 w-9 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center mr-1">
-            <IconShieldCheckFilled size="16" class="text-white"/>
+            <IconShieldCheckFilled size="16" class="text-white" />
           </div>
           <div class="ml-3">
             <h1 class="text-lg/5 font-bold text-white">CSIRT Bojonegoro</h1>
             <p class="text-xs text-blue-100">Admin Panel</p>
           </div>
         </div>
-        <button
-          @click="toggleSidebar"
-          class="p-1 rounded-md text-blue-100 hover:bg-white/10 lg:hidden"
-        >
+        <button @click="toggleSidebar" class="p-1 rounded-md text-blue-100 hover:bg-white/10 lg:hidden">
         </button>
       </div>
 
@@ -331,20 +310,34 @@ watch(
           <div v-if="!item.visible || item.visible()">
             <div v-if="item.separator" class="border-t border-slate-100 my-1"></div>
             <div v-else>
-            <!-- Single menu item -->
+              <!-- Single menu item -->
               <Link
                 v-if="item.route && !item.items"
                 :href="route(item.route)"
                 @click="closeSidebarOnMobile"
-                class="flex items-center px-3 py-2 font-normal rounded-lg transition-colors group"
-                :class="[isCurrentRoute(item.route) ? 'font-semibold bg-blue-50 text-blue-500 border-r-2 border-blue-500' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900', item.label === 'Website' ? '!text-indigo-500 hover:!text-indigo-700 dark:hover:!text-indigo-400' : '']"
+                class="flex items-center px-3 py-2 rounded-lg transition-colors group"
+                :class="[
+                  isCurrentRoute(item.route)
+                    ? 'font-medium bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500'
+                    : 'font-normal text-slate-600 hover:bg-slate-50 hover:text-slate-900',
+                  item.label === 'Website' ? '!text-indigo-500 hover:!text-indigo-700' : ''
+                ]"
               >
-                <component :is="item.icon" size="18" stroke-width="1.75" class="mr-3" :class="[isCurrentRoute(item.route) ? 'text-blue-500' : 'text-slate-400', item.label === 'Website' ? '!text-indigo-500 hover:!text-indigo-700 dark:hover:!text-indigo-400' : '']" />{{ item.label }}
+                <component
+                  :is="item.icon"
+                  size="18"
+                  stroke-width="1.75"
+                  class="mr-3"
+                  :class="[
+                    isCurrentRoute(item.route) ? 'text-indigo-500' : 'text-slate-400',
+                    item.label === 'Website' ? '!text-indigo-500' : ''
+                  ]"
+                />{{ item.label }}
               </Link>
 
               <!-- Menu with subitems -->
               <div v-else-if="item.items && item.items.length > 0" class="space-y-1">
-                <div class="flex items-center px-3 py-2 font-normal text-slate-500">
+                <div class="flex items-center px-3 py-2 font-medium text-slate-600">
                   <component :is="item.icon" size="18" stroke-width="1.75" class="mr-3 text-slate-400" />{{ item.label }}
                 </div>
                 <div class="ml-6 space-y-1">
@@ -353,10 +346,18 @@ watch(
                     :key="subItem.label"
                     :href="route(subItem.route)"
                     @click="closeSidebarOnMobile"
-                    class="flex items-center px-3 py-2 font-normal rounded-md transition-colors"
-                    :class="isCurrentRoute(subItem.route) ? 'font-semibold bg-blue-50 text-blue-500 border-r-2 border-blue-500' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'"
+                    class="flex items-center px-3 py-2 rounded-md transition-colors"
+                    :class="isCurrentRoute(subItem.route)
+                      ? 'font-medium bg-indigo-50 text-indigo-700 border-r-2 border-indigo-500'
+                      : 'font-normal text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
                   >
-                    <component :is="subItem.icon" size="18" stroke-width="1.75" class="mr-3" :class="[isCurrentRoute(subItem.route) ? 'text-blue-500' : 'text-slate-400']" />{{ subItem.label }}
+                    <component
+                      :is="subItem.icon"
+                      size="18"
+                      stroke-width="1.75"
+                      class="mr-3"
+                      :class="isCurrentRoute(subItem.route) ? 'text-indigo-500' : 'text-slate-400'"
+                    />{{ subItem.label }}
                   </Link>
                 </div>
               </div>
@@ -376,7 +377,7 @@ watch(
       <div class="border-t border-slate-200 p-4 px-6">
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+            <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
               <span class="text-xs font-medium text-white">
                 {{ page.props.auth.user?.name?.charAt(0)?.toUpperCase() || 'U' }}
               </span>
@@ -410,7 +411,7 @@ watch(
             <button
               v-if="!isMobile"
               @click="toggleDarkMode"
-              class="p-3 rounded-full border border-transparent text-slate-500 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors dark:text-slate-300 dark:hover:text-slate-100 dark-mode-toggle"
+              class="p-3 rounded-full border border-transparent text-slate-500 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors dark:text-slate-300 dark:hover:text-slate-100 dark-mode-toggle"
               :aria-label="darkMode ? 'Switch to light mode' : 'Switch to dark mode'"
               :title="darkMode ? 'Mode Terang' : 'Mode Gelap'"
             >
@@ -425,9 +426,9 @@ watch(
             <div class="relative user-menu">
               <button
                 @click.stop="userMenuOpen = !userMenuOpen"
-                class="flex items-center p-2 text-sm rounded-full bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="flex items-center p-2 text-sm rounded-full bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
-                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
                   <span class="text-xs font-medium text-white">{{ page.props.auth.user?.name?.charAt(0)?.toUpperCase() || 'U' }}</span>
                 </div>
                 <IconChevronDown size="16" class="ml-1 text-slate-400 transition-transform" :class="{ 'rotate-180': userMenuOpen }" />
@@ -469,7 +470,7 @@ watch(
     <div class="text-sm py-5 mx-6 border-t border-slate-200 text-center lg:text-right mb-0.5">
       <p class="text-slate-400">
         &copy; {{ new Date().getFullYear() }}
-        <a href="https://bojonegorokab.go.id/" target="_blank" class="hover:text-blue-600 transition-colors duration-200">Pemerintah Kabupaten Bojonegoro</a>. All rights reserved.
+        <a href="https://bojonegorokab.go.id/" target="_blank" class="hover:text-indigo-600 transition-colors duration-200">Pemerintah Kabupaten Bojonegoro</a>. All rights reserved.
       </p>
     </div>
 
