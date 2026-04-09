@@ -2,7 +2,7 @@
 // filepath: resources/js/Pages/Admin/Incidents/Create.vue
 
 import { router, useForm } from '@inertiajs/vue3'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useResponsive } from '@/Composables/useResponsive';
 
 import {
@@ -12,7 +12,7 @@ import {
 const props = defineProps({
   incident: {
     type: Object,
-    default: null // null means creating, object means editing
+    default: null
   },
   incidentTypes: Array,
   staffUsers: Array,
@@ -23,7 +23,6 @@ const { isMobile, isDesktop } = useResponsive();
 // File upload ref
 const fileUploader = ref(null)
 
-// Determine if editing or creating
 const isEditing = computed(() => !!props.incident)
 const pageTitle = computed(() =>
   isEditing.value ? `Edit Insiden: ${props.incident.case_id}` : 'Lapor Insiden Baru'
@@ -31,22 +30,27 @@ const pageTitle = computed(() =>
 const headerTitle = computed(() =>
   isEditing.value ? 'Edit Insiden' : 'Lapor Insiden Baru'
 )
-const headerDescription = computed(() =>
-  isEditing.value
-    ? 'Perbarui informasi insiden keamanan siber'
-    : 'Buat laporan insiden keamanan siber baru untuk ditindaklanjuti'
-)
 const submitButtonText = computed(() =>
   isEditing.value ? 'Update Laporan' : 'Simpan Laporan'
 )
 
-// Format current date properly for the form
+// Detect attachment type from existing value (URL or file path)
+const detectExistingAttachmentMode = () => {
+  if (!props.incident?.attachment) return 'file';
+  const val = props.incident.attachment;
+  if (val.startsWith('http://') || val.startsWith('https://')) return 'link';
+  return 'file';
+};
+
+const attachmentMode = ref(detectExistingAttachmentMode());
+const uploader = ref(null);
+const attachmentPreview = ref(null);
+
 const formatDateForInput = (date) => {
   const d = new Date(date)
-  return d.toISOString().slice(0, 16) // Returns "YYYY-MM-DDTHH:MM"
+  return d.toISOString().slice(0, 16)
 }
 
-// Initialize form with default or existing values
 const form = useForm({
   reporter_name: props.incident?.reporter_name || '',
   reporter_email: props.incident?.reporter_email || '',
@@ -57,59 +61,43 @@ const form = useForm({
   status: props.incident?.status || 'Baru',
   priority: props.incident?.priority || 'Sedang',
   assigned_to: props.incident?.assigned_to || null,
-  attachment: null, // File attachment
+  attachment_type: detectExistingAttachmentMode(),
+  attachment: null,
+  attachment_links: (detectExistingAttachmentMode() === 'link' ? props.incident?.attachment : '') || '',
 })
 
-// Watch for changes in props.incident and update form accordingly
-onMounted(() => {
-  if (props.incident) {
-    form.reporter_name = props.incident.reporter_name || ''
-    form.reporter_email = props.incident.reporter_email || ''
-    form.reporter_phone = props.incident.reporter_phone || ''
-    form.incident_type_id = props.incident.incident_type_id || null
-    form.incident_at = props.incident.incident_at ? new Date(props.incident.incident_at) : new Date()
-    form.description = props.incident.description || ''
-    form.status = props.incident.status || 'Baru'
-    form.priority = props.incident.priority || 'Sedang'
-    form.assigned_to = props.incident.assigned_to || null
+// Selected incident type for info panel
+const selectedType = computed(() => {
+  if (!form.incident_type_id) return null;
+  return props.incidentTypes?.find(t => t.id === form.incident_type_id) || null;
+});
+
+const setAttachmentMode = (mode) => {
+  attachmentMode.value = mode;
+  form.attachment_type = mode;
+  form.attachment = null;
+  form.attachment_links = '';
+  if (mode === 'file') {
+    attachmentPreview.value = null;
+    if (uploader.value) uploader.value.clear();
   }
-})
+};
 
-// File upload functions
-const onFileSelect = (event) => {
-  const file = event.files[0]
-  form.attachment = file
-}
-
-const clearFile = () => {
-  form.attachment = null
-  if (fileUploader.value) {
-    fileUploader.value.clear()
+const handleFileSelect = (event) => {
+  const file = event.files[0];
+  form.attachment = file;
+  if (file && file.type.startsWith('image/')) {
+    attachmentPreview.value = URL.createObjectURL(file);
+  } else {
+    attachmentPreview.value = null;
   }
-}
+};
 
-const triggerFileInput = () => {
-  const input = fileUploader.value?.$el.querySelector('input[type="file"]')
-  if (input) input.click()
-}
-
-// Get file icon color based on file type
-const getFileIcon = (fileName) => {
-  if (!fileName) return 'text-slate-600'
-
-  const extension = fileName.split('.').pop()?.toLowerCase()
-
-  switch (extension) {
-    case 'pdf': return [IconFileTypePdf, 'text-red-600', 'bg-red-50', 'border-red-200']
-    case 'doc':
-    case 'docx': return [IconFileTypeDoc, 'text-blue-600', 'bg-blue-50', 'border-blue-200']
-    case 'zip': return [IconFileTypeZip, 'text-yellow-600', 'bg-yellow-50', 'border-yellow-200']
-    case 'jpg':
-    case 'jpeg':
-    case 'png': return [IconPhoto, 'text-green-600', 'bg-green-50', 'border-green-200']
-    default: return [IconFileText, 'text-slate-600', 'bg-slate-50', 'border-slate-200']
-  }
-}
+const clearAttachment = () => {
+  if (uploader.value) uploader.value.clear();
+  form.attachment = null;
+  attachmentPreview.value = null;
+};
 
 const statusOptions = [
   { label: 'Baru', value: 'Baru' },
@@ -126,7 +114,6 @@ const priorityOptions = [
   { label: 'Kritikal', value: 'Kritikal' }
 ]
 
-// Transform incident types for select
 const incidentTypeOptions = computed(() => {
   return props.incidentTypes?.map(type => ({
     label: type.name,
@@ -134,7 +121,6 @@ const incidentTypeOptions = computed(() => {
   })) || []
 })
 
-// Transform staff users for select
 const staffUserOptions = computed(() => {
   return [
     { label: 'Tidak ditugaskan', value: null },
@@ -146,85 +132,33 @@ const staffUserOptions = computed(() => {
 })
 
 const submit = () => {
-  // Format the date properly before submission
   const formData = { ...form.data() }
   if (formData.incident_at) {
     formData.incident_at = formatDateForInput(formData.incident_at)
   }
 
   if (isEditing.value) {
-    // For updates, we need to use POST with _method override due to file uploads
-    // because browsers don't support file uploads with PUT method
-    const formData = new FormData()
-
-    // Add all form fields
-    formData.append('reporter_name', form.reporter_name || '')
-    formData.append('reporter_email', form.reporter_email || '')
-    formData.append('reporter_phone', form.reporter_phone || '')
-    formData.append('incident_type_id', form.incident_type_id || '')
-    formData.append('description', form.description || '')
-    formData.append('status', form.status || '')
-    formData.append('priority', form.priority || '')
-    formData.append('assigned_to', form.assigned_to || '')
-
-    // Handle date formatting
-    if (form.incident_at) {
-      formData.append('incident_at', formatDateForInput(form.incident_at))
-    }
-
-    // Handle file attachment
-    if (form.attachment) {
-      formData.append('attachment', form.attachment)
-    }
-
-    // Add method override for Laravel
-    formData.append('_method', 'PUT')
-
-    // Use Inertia's router.post with FormData
-    router.post(route('admin.incidents.update', props.incident.id), formData, {
-      forceFormData: true,
-      preserveState: false,
-      onSuccess: () => {
-        // Optional: handle success
-      },
-      onError: (errors) => {
-        // Optional: handle errors
-        console.error('Update failed:', errors)
-      }
-    })
+    form.transform(() => formData).put(route('admin.incidents.update', props.incident.id))
   } else {
-    // Create new incident
-    form.transform(() => formData).post(route('admin.incidents.store'), {
-      forceFormData: true
-    })
+    form.transform(() => formData).post(route('admin.incidents.store'))
   }
 }
 
 const getPrioritySeverity = (priority) => {
-  const severities = {
-    'Rendah': 'success',
-    'Sedang': 'info',
-    'Tinggi': 'warn',
-    'Kritikal': 'danger'
-  }
+  const severities = { 'Rendah': 'success', 'Sedang': 'info', 'Tinggi': 'warn', 'Kritikal': 'danger' }
   return severities[priority] || 'info'
 }
 
 const getStatusSeverity = (status) => {
   const severities = {
-    'Baru': 'info',
-    'Diverifikasi': 'primary',
-    'Dalam Penyelidikan': 'warn',
-    'Selesai': 'success',
-    'Ditutup': 'secondary'
+    'Baru': 'info', 'Diverifikasi': 'primary', 'Dalam Penyelidikan': 'warn',
+    'Selesai': 'success', 'Ditutup': 'secondary'
   }
   return severities[status] || 'info'
 }
 
-// Get priority button styles based on severity
 const getPriorityButtonClasses = (priority, isSelected) => {
   const baseClasses = 'p-2 font-medium border rounded-lg transition-all duration-200 text-center'
-
   if (isSelected) {
     const selectedClasses = {
       'Rendah': 'border-green-500 bg-green-50 text-green-700 ring-2 ring-green-500 ring-opacity-20',
@@ -260,24 +194,10 @@ const formatDateTime = (date) => {
             <div>
               <h2 class="text-xl lg:text-2xl font-bold text-slate-900">{{ headerTitle }}</h2>
               <p class="text-slate-600">{{ !isEditing ? 'Buat laporan insiden keamanan siber baru untuk ditindaklanjuti' : '' }}</p>
-              <!-- Show incident ID when editing -->
               <div v-if="isEditing" class="flex items-center gap-3 mt-2">
-                <Tag
-                  :value="incident.case_id"
-                  severity="secondary"
-                  size="small"
-                  class="font-mono !text-slate-500"
-                />
-                <Tag
-                  :value="incident.status"
-                  :severity="getStatusSeverity(incident.status)"
-                  size="small"
-                />
-                <Tag
-                  :value="incident.priority"
-                  :severity="getPrioritySeverity(incident.priority)"
-                  size="small"
-                />
+                <Tag :value="incident.case_id" severity="secondary" size="small" class="font-mono !text-slate-500" />
+                <Tag :value="incident.status" :severity="getStatusSeverity(incident.status)" size="small" />
+                <Tag :value="incident.priority" :severity="getPrioritySeverity(incident.priority)" size="small" />
               </div>
             </div>
             <div class="flex items-center space-x-3">
@@ -330,11 +250,9 @@ const formatDateTime = (date) => {
                     placeholder="Masukkan nama lengkap pelapor"
                     required
                     class="w-full"
-                    :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.reporter_name }"
+                    :class="{ 'border-red-300': form.errors.reporter_name }"
                   />
-                  <p v-if="form.errors.reporter_name" class="mt-1 text-red-600">
-                    {{ form.errors.reporter_name }}
-                  </p>
+                  <p v-if="form.errors.reporter_name" class="mt-1 text-red-600 text-sm">{{ form.errors.reporter_name }}</p>
                 </div>
 
                 <div>
@@ -348,11 +266,9 @@ const formatDateTime = (date) => {
                     placeholder="contoh@email.com"
                     required
                     class="w-full"
-                    :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.reporter_email }"
+                    :class="{ 'border-red-300': form.errors.reporter_email }"
                   />
-                  <p v-if="form.errors.reporter_email" class="mt-1 text-red-600">
-                    {{ form.errors.reporter_email }}
-                  </p>
+                  <p v-if="form.errors.reporter_email" class="mt-1 text-red-600 text-sm">{{ form.errors.reporter_email }}</p>
                 </div>
 
                 <div class="md:col-span-2">
@@ -365,11 +281,7 @@ const formatDateTime = (date) => {
                     type="tel"
                     placeholder="Contoh: 081234567890"
                     class="w-full"
-                    :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.reporter_phone }"
                   />
-                  <p v-if="form.errors.reporter_phone" class="mt-1 text-red-600">
-                    {{ form.errors.reporter_phone }}
-                  </p>
                 </div>
               </div>
             </div>
@@ -390,7 +302,7 @@ const formatDateTime = (date) => {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
                   <div>
                     <label for="incident_type_id" class="block font-medium text-slate-700 mb-2">
-                      Kategori Insiden <span class="text-red-500">*</span>
+                      Jenis Insiden <span class="text-red-500">*</span>
                     </label>
                     <Select
                       v-model="form.incident_type_id"
@@ -401,13 +313,11 @@ const formatDateTime = (date) => {
                       class="w-full"
                       :class="{ 'border-red-300': form.errors.incident_type_id }"
                     />
-                    <p v-if="form.errors.incident_type_id" class="mt-1 text-red-600">
-                      {{ form.errors.incident_type_id }}
-                    </p>
+                    <p v-if="form.errors.incident_type_id" class="mt-1 text-red-600 text-sm">{{ form.errors.incident_type_id }}</p>
                   </div>
 
                   <div>
-                    <label for="incident_at" class="block font-medium text-slate-700 mb-2">
+                    <label class="block font-medium text-slate-700 mb-2">
                       Waktu Kejadian <span class="text-red-500">*</span>
                     </label>
                     <DatePicker
@@ -419,31 +329,146 @@ const formatDateTime = (date) => {
                       class="w-full"
                       :class="{ 'border-red-300': form.errors.incident_at }"
                     />
-                    <p v-if="form.errors.incident_at" class="mt-1 text-red-600">
-                      {{ form.errors.incident_at }}
-                    </p>
+                    <p v-if="form.errors.incident_at" class="mt-1 text-red-600 text-sm">{{ form.errors.incident_at }}</p>
                   </div>
                 </div>
 
+                <!-- Selected Type Info Panel -->
+                <Transition
+                  enter-active-class="transition-all duration-300 ease-out"
+                  enter-from-class="opacity-0 -translate-y-2"
+                  enter-to-class="opacity-100 translate-y-0"
+                  leave-active-class="transition-all duration-200 ease-in"
+                  leave-from-class="opacity-100 translate-y-0"
+                  leave-to-class="opacity-0 -translate-y-2"
+                >
+                  <div v-if="selectedType && (selectedType.description || selectedType.guide)">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg overflow-hidden">
+                      <div class="bg-blue-100 border-b border-blue-200 px-4 py-2.5 flex items-center gap-2">
+                        <IconInfoCircle size="16" class="text-blue-600 flex-shrink-0" />
+                        <div>
+                          <span class="font-semibold text-blue-900 text-sm">{{ selectedType.name }}</span>
+                          <span v-if="selectedType.description" class="text-blue-700 text-sm ml-2">— {{ selectedType.description }}</span>
+                        </div>
+                      </div>
+                      <div v-if="selectedType.guide" class="p-4">
+                        <p class="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-2">Panduan Pelaporan</p>
+                        <div
+                          class="prose prose-sm max-w-none text-slate-700 [&>h3]:text-sm [&>h3]:font-semibold [&>h3]:text-blue-900 [&>h3]:mb-1.5 [&>p]:mb-1.5 [&>ul]:mb-1.5 [&>ol]:mb-1.5 [&>ul]:pl-4 [&>ol]:pl-4 [&>li]:mb-0.5"
+                          v-html="selectedType.guide"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </Transition>
+
                 <div>
-                  <label for="description" class="block font-medium text-slate-700 mb-2">
+                  <label class="block font-medium text-slate-700 mb-2">
                     Deskripsi Insiden <span class="text-red-500">*</span>
                   </label>
                   <Textarea
-                    id="description"
                     v-model="form.description"
                     rows="5"
                     placeholder="Jelaskan detail insiden yang terjadi, termasuk dampak dan langkah yang sudah diambil..."
                     required
                     class="w-full"
-                    :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.description }"
+                    :class="{ 'border-red-300': form.errors.description }"
                   />
-                  <p v-if="form.errors.description" class="mt-1 text-red-600">
-                    {{ form.errors.description }}
-                  </p>
-                  <p class="text-xs text-slate-500">
-                    Berikan informasi selengkap mungkin untuk membantu proses penanganan
-                  </p>
+                  <p v-if="form.errors.description" class="mt-1 text-red-600 text-sm">{{ form.errors.description }}</p>
+                </div>
+
+                <!-- Attachment -->
+                <div>
+                  <label class="block font-medium text-slate-700 mb-2">
+                    Lampiran Bukti <span class="text-slate-400 font-normal">(Opsional)</span>
+                  </label>
+
+                  <!-- Mode Toggle -->
+                  <div class="flex rounded-lg overflow-hidden border border-slate-300 mb-3 w-fit">
+                    <button
+                      type="button"
+                      @click="setAttachmentMode('file')"
+                      class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors"
+                      :class="attachmentMode === 'file' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'"
+                    >
+                      <IconUpload size="14" />
+                      Upload Dokumen
+                    </button>
+                    <button
+                      type="button"
+                      @click="setAttachmentMode('link')"
+                      class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors border-l border-slate-300"
+                      :class="attachmentMode === 'link' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'"
+                    >
+                      <IconLink size="14" />
+                      Kirim Link
+                    </button>
+                  </div>
+
+                  <!-- Existing file attachment (edit mode) -->
+                  <div v-if="isEditing && incident.attachment && attachmentMode === 'file' && !form.attachment" class="mb-3 p-3 bg-slate-50 rounded-lg border border-slate-200 flex items-center gap-3">
+                    <IconPaperclip size="16" class="text-slate-500 flex-shrink-0" />
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm text-slate-600">Lampiran saat ini:</p>
+                      <p class="text-sm font-medium text-blue-600 truncate">{{ incident.attachment }}</p>
+                    </div>
+                    <p class="text-xs text-slate-400">Upload baru untuk mengganti</p>
+                  </div>
+
+                  <!-- File Upload -->
+                  <div v-if="attachmentMode === 'file'">
+                    <FileUpload
+                      ref="uploader"
+                      name="attachment"
+                      @select="handleFileSelect"
+                      :showUploadButton="false"
+                      :showCancelButton="false"
+                      :multiple="false"
+                      accept=".jpg,.jpeg,.png,.pdf,.zip,.doc,.docx"
+                      :maxFileSize="5000000"
+                    >
+                      <template #content="{ files }">
+                        <div v-if="files[0]" class="p-4 bg-slate-50">
+                          <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                              <div class="w-12 h-12 bg-white rounded-lg shadow-sm flex items-center justify-center overflow-hidden flex-shrink-0">
+                                <img v-if="attachmentPreview" :src="attachmentPreview" :alt="files[0].name" class="w-full h-full object-cover" />
+                                <IconFile v-else size="20" class="text-slate-400" />
+                              </div>
+                              <div>
+                                <p class="font-medium text-slate-900 text-sm">{{ files[0].name }}</p>
+                                <p class="text-slate-500 text-xs">{{ (files[0].size / 1024 / 1024).toFixed(2) }} MB</p>
+                              </div>
+                            </div>
+                            <button type="button" @click="clearAttachment" class="w-7 h-7 bg-red-100 hover:bg-red-200 rounded-md flex items-center justify-center transition-colors">
+                              <IconX size="14" class="text-red-600" />
+                            </button>
+                          </div>
+                        </div>
+                      </template>
+                      <template #empty>
+                        <div class="p-6 text-center border-2 border-dashed border-slate-300 rounded-lg">
+                          <IconCloudUpload size="32" class="text-slate-400 mx-auto mb-2" />
+                          <p class="text-slate-600 text-sm font-medium mb-1">Seret file atau klik untuk memilih</p>
+                          <p class="text-slate-400 text-xs">JPG, PNG, PDF, ZIP, DOC (Maks. 5MB)</p>
+                        </div>
+                      </template>
+                    </FileUpload>
+                  </div>
+
+                  <!-- Link Input -->
+                  <div v-else class="space-y-2">
+                    <Textarea
+                      v-model="form.attachment_links"
+                      rows="3"
+                      class="w-full"
+                      placeholder="Masukkan URL bukti, pisahkan dengan koma jika lebih dari satu.&#10;Contoh: https://drive.google.com/file/xxx, https://example.com/screenshot.png"
+                    />
+                    <p class="text-xs text-slate-500">
+                      <IconInfoCircle size="12" class="inline mr-1" />
+                      Untuk beberapa link, pisahkan dengan koma (,)
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -451,117 +476,6 @@ const formatDateTime = (date) => {
 
           <!-- Sidebar -->
           <div class="space-y-4 lg:space-y-6">
-            <!-- File Attachment -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
-              <div class="flex items-center mb-4 lg:mb-6">
-                <div class="w-10 h-10 lg:w-12 lg:h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
-                  <IconCloudUp class="text-purple-600" :size="!isDesktop ? 18 : undefined"/>
-                </div>
-                <div class="ml-3">
-                  <h3 class="text-xl/6 font-semibold text-slate-900">Lampiran Bukti</h3>
-                  <p class="text-xs lg:text-sm text-slate-600">Upload bukti pendukung insiden</p>
-                </div>
-              </div>
-
-              <!-- Current File Info (Edit Mode) -->
-              <div v-if="isEditing && incident?.attachment" class="mb-4">
-                <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                  <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg flex items-center justify-center" :class="getFileIcon(incident.attachment)[2] + ' border ' + getFileIcon(incident.attachment)[3]">
-                      <component
-                        :is="getFileIcon(incident.attachment)[0]"
-                        :class="getFileIcon(incident.attachment)[1]"
-                        size="18"
-                      />
-                    </div>
-                    <div class="flex-1">
-                      <p class="font-medium text-slate-900">File Saat Ini</p>
-                      <p class="text-sm text-slate-500">{{ incident.file_size }}</p>
-                    </div>
-                    <div class="flex gap-2">
-                      <a
-                        :href="`/storage/${incident.attachment}`"
-                        target="_blank"
-                        class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                        title="Lihat File"
-                      >
-                        <IconEye size="16" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <p class="text-xs text-slate-500 mt-1">
-                  Upload file baru untuk mengganti file lama
-                </p>
-              </div>
-
-              <!-- File Upload -->
-              <div>
-                <label class="block font-medium text-slate-700 mb-2">
-                  Lampiran Bukti
-                  <span class="text-slate-500 text-xs">(Opsional, maksimal 2MB)</span>
-                </label>
-
-                <FileUpload
-                  ref="fileUploader"
-                  name="attachment"
-                  @select="onFileSelect"
-                  :auto="true"
-                  :customUpload="true"
-                  :showUploadButton="false"
-                  :showCancelButton="false"
-                  :multiple="false"
-                  accept=".jpg,.jpeg,.png,.pdf,.zip,.doc,.docx"
-                  :maxFileSize="2097152"
-                  class="w-full"
-                  :class="{ 'p-invalid': form.errors.attachment }"
-                >
-                  <template #content="{ files }">
-                    <div v-if="files[0]" class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                      <div class="flex items-start justify-between gap-4">
-                        <div class="flex items-start">
-                          <div class="mt-1">
-                            <component
-                              :is="getFileIcon(files[0].name)[0]"
-                              :class="getFileIcon(files[0].name)[1]"
-                              class="mr-3"
-                              size="18"
-                            />
-                          </div>
-                          <div>
-                            <p class="font-medium text-slate-900 break-all">{{ files[0].name }}</p>
-                            <p class="text-sm text-slate-500">{{ (files[0].size / 1024 / 1024).toFixed(2) }} MB</p>
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          @click="clearFile"
-                          class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        >
-                          <IconX size="16" />
-                        </button>
-                      </div>
-                    </div>
-                  </template>
-
-                  <template #empty>
-                    <div
-                      class="flex flex-col items-center justify-center py-6 px-4 border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-600 transition-colors cursor-pointer"
-                      @click="triggerFileInput"
-                    >
-                      <IconFileSearch class="text-slate-400 mb-2" :size="!isDesktop ? 18 : undefined"/>
-                      <p class="text-sm text-slate-600 text-center">
-                        {{ isEditing ? 'Pilih file baru untuk mengganti' : 'Klik atau drag file ke sini' }}
-                      </p>
-                      <p class="text-xs text-slate-400 mt-1">JPG, PNG, PDF, ZIP, DOC (Maks. 2MB)</p>
-                    </div>
-                  </template>
-                </FileUpload>
-
-                <small v-if="form.errors.attachment" class="p-error block mt-1">{{ form.errors.attachment }}</small>
-              </div>
-            </div>
-
             <!-- Status Management -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
               <div class="flex items-center mb-4 lg:mb-6">
@@ -612,9 +526,7 @@ const formatDateTime = (date) => {
                 </div>
 
                 <div>
-                  <label for="assigned_to" class="block font-medium text-slate-700 mb-2">
-                    Tugaskan Kepada
-                  </label>
+                  <label class="block font-medium text-slate-700 mb-2">Tugaskan Kepada</label>
                   <Select
                     v-model="form.assigned_to"
                     :options="staffUserOptions"
@@ -622,11 +534,7 @@ const formatDateTime = (date) => {
                     optionValue="value"
                     placeholder="Pilih staf"
                     class="w-full"
-                    :class="{ 'border-red-300': form.errors.assigned_to }"
                   />
-                  <p v-if="form.errors.assigned_to" class="mt-1 text-red-600">
-                    {{ form.errors.assigned_to }}
-                  </p>
                 </div>
               </div>
             </div>
@@ -649,19 +557,11 @@ const formatDateTime = (date) => {
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-slate-500">Status:</span>
-                  <Tag
-                    :value="form.status"
-                    :severity="getStatusSeverity(form.status)"
-                    size="small"
-                  />
+                  <Tag :value="form.status" :severity="getStatusSeverity(form.status)" size="small" />
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-slate-500">Prioritas:</span>
-                  <Tag
-                    :value="form.priority"
-                    :severity="getPrioritySeverity(form.priority)"
-                    size="small"
-                  />
+                  <Tag :value="form.priority" :severity="getPrioritySeverity(form.priority)" size="small" />
                 </div>
                 <div class="flex justify-between items-center">
                   <span class="text-slate-500">Kategori:</span>

@@ -1,11 +1,10 @@
 <?php
-// filepath: app/Http/Controllers/Admin/DocumentController.php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Document;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -13,23 +12,20 @@ use Inertia\Response;
 
 class DocumentController extends Controller
 {
-  /**
-   * Display a listing of the documents.
-   */
   public function index(Request $request): Response
   {
     $query = Document::query()->orderBy('title');
 
-    // Apply search filter
     if ($request->filled('search')) {
-      $query->where('title', 'ilike', '%' . $request->search . '%')
-            ->orWhere('description', 'ilike', '%' . $request->search . '%')
-            ->orWhere('version', 'ilike', '%' . $request->search . '%');
+      $query->where(function ($q) use ($request) {
+        $q->where('title', 'ilike', '%' . $request->search . '%')
+          ->orWhere('description', 'ilike', '%' . $request->search . '%')
+          ->orWhere('version', 'ilike', '%' . $request->search . '%');
+      });
     }
 
     $documents = $query->paginate(10)->withQueryString();
 
-    // Add file size and status to each document
     $documents->getCollection()->transform(function ($document) {
       $document->file_size = $document->fileSize();
       $document->file_exists = $document->fileExists();
@@ -43,45 +39,43 @@ class DocumentController extends Controller
     ]);
   }
 
-  /**
-   * Show the form for creating a new document.
-   */
   public function create(): Response
   {
     return Inertia::render('Admin/Documents/Create');
   }
 
-  /**
-   * Store a newly created document in storage.
-   */
   public function store(Request $request)
   {
     $validated = $request->validate([
       'title' => 'required|string|max:255',
       'description' => 'nullable|string',
-      'version' => 'nullable|string|max:255',
-      'file' => 'required|file|mimes:pdf|max:8192', // Max 8MB
+      'version' => 'nullable|string|max:50',
       'published_at' => 'nullable|date',
+      'file_type' => 'required|in:file,link',
+      'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,zip,txt|max:20480',
+      'file_links' => 'nullable|string|max:2000',
     ]);
 
-    // Store the file
-    $path = $request->file('file')->store('documents', 'public');
+    $filePath = null;
+    if ($validated['file_type'] === 'file' && $request->hasFile('file')) {
+      $filePath = $request->file('file')->store('documents', 'public');
+    } elseif ($validated['file_type'] === 'link' && !empty($validated['file_links'])) {
+      $filePath = $validated['file_links'];
+    }
 
     Document::create([
       'title' => $validated['title'],
       'slug' => Str::slug($validated['title']),
-      'description' => $validated['description'],
-      'file_path' => $path,
-      'version' => $validated['version'],
-      'published_at' => now(),
+      'description' => $validated['description'] ?? null,
+      'file_path' => $filePath,
+      'version' => $validated['version'] ?? null,
+      'published_at' => $validated['published_at'] ?? null,
     ]);
 
-    return redirect()->route('admin.documents.index')->with('success', 'Dokumen berhasil ditambahkan.');
+    return redirect()->route('admin.documents.index')
+      ->with('success', 'Dokumen berhasil ditambahkan.');
   }
 
-  /**
-   * Show the form for editing the specified document.
-   */
   public function edit(Document $document): Response
   {
     $document->file_size = $document->fileSize();
@@ -92,58 +86,53 @@ class DocumentController extends Controller
     ]);
   }
 
-  /**
-   * Update the specified document in storage.
-   */
   public function update(Request $request, Document $document)
   {
     $validated = $request->validate([
       'title' => 'required|string|max:255',
       'description' => 'nullable|string',
-      'version' => 'nullable|string|max:255',
-      'file' => 'nullable|file|mimes:pdf|max:10240', // Max 10MB
+      'version' => 'nullable|string|max:50',
       'published_at' => 'nullable|date',
+      'file_type' => 'required|in:file,link',
+      'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,zip,txt|max:20480',
+      'file_links' => 'nullable|string|max:2000',
     ]);
 
-    $path = $document->file_path;
-    if ($request->hasFile('file')) {
-      // Delete old file if it exists
-      if ($document->fileExists()) {
+    $filePath = $document->file_path;
+    if ($validated['file_type'] === 'file' && $request->hasFile('file')) {
+      if ($document->file_path && !str_starts_with($document->file_path, 'http')) {
         Storage::disk('public')->delete($document->file_path);
       }
-      $path = $request->file('file')->store('documents', 'public');
+      $filePath = $request->file('file')->store('documents', 'public');
+    } elseif ($validated['file_type'] === 'link') {
+      $filePath = !empty($validated['file_links']) ? $validated['file_links'] : null;
     }
 
     $document->update([
       'title' => $validated['title'],
       'slug' => Str::slug($validated['title']),
-      'description' => $validated['description'],
-      'file_path' => $path,
-      'version' => $validated['version'],
-      'published_at' => now(),
+      'description' => $validated['description'] ?? null,
+      'file_path' => $filePath,
+      'version' => $validated['version'] ?? null,
+      'published_at' => $validated['published_at'] ?? null,
     ]);
 
-    return redirect()->route('admin.documents.index')->with('success', 'Dokumen berhasil diperbarui.');
+    return redirect()->route('admin.documents.index')
+      ->with('success', 'Dokumen berhasil diperbarui.');
   }
 
-  /**
-   * Remove the specified document from storage.
-   */
   public function destroy(Document $document)
   {
-    // Delete the file
-    if ($document->fileExists()) {
+    if ($document->file_path && !str_starts_with($document->file_path, 'http')) {
       Storage::disk('public')->delete($document->file_path);
     }
 
     $document->delete();
 
-    return redirect()->route('admin.documents.index')->with('success', 'Dokumen berhasil dihapus.');
+    return redirect()->route('admin.documents.index')
+      ->with('success', 'Dokumen berhasil dihapus.');
   }
 
-  /**
-   * Get document status
-   */
   private function getDocumentStatus($document)
   {
     if (!$document->published_at) {

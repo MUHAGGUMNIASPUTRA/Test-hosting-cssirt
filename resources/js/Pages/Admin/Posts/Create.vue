@@ -5,6 +5,14 @@ import { ref, computed, watch } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import { useResponsive } from '@/Composables/useResponsive';
 
+// Detect existing image type (URL or file path)
+const detectExistingImageMode = (post) => {
+  if (!post?.image) return 'file';
+  const val = post.image;
+  if (val.startsWith('http://') || val.startsWith('https://')) return 'link';
+  return 'file';
+};
+
 const props = defineProps({
   post: {
     type: Object,
@@ -19,6 +27,9 @@ const { isMobile, isDesktop } = useResponsive();
 // Check if we're in edit mode
 const isEditMode = computed(() => !!props.post);
 
+// Image mode toggle
+const imageMode = ref(detectExistingImageMode(props.post));
+
 // Initialize form with post data if editing, empty values if creating
 const form = useForm({
   _method: isEditMode.value ? 'PUT' : 'POST',
@@ -26,7 +37,8 @@ const form = useForm({
   body: props.post?.body || '',
   excerpt: props.post?.excerpt || '',
   image: null,
-  removeImage: false,
+  image_type: detectExistingImageMode(props.post),
+  image_url: (detectExistingImageMode(props.post) === 'link' ? props.post?.image : '') || '',
   status: props.post?.status || 'Draft',
   categories: props.post?.categories?.map(c => c.id) || [],
   tags: props.post?.tags?.map(t => t.id) || [],
@@ -59,6 +71,17 @@ const canGenerateExcerpt = computed(() => {
 watch(() => form.excerpt, (newExcerpt) => {
   excerptWords.value = excerptWordCount.value;
 }, { immediate: true });
+
+const setImageMode = (mode) => {
+  imageMode.value = mode;
+  form.image_type = mode;
+  form.image = null;
+  form.image_url = '';
+  imagePreview.value = null;
+  if (mode === 'file' && fileUploader.value) {
+    fileUploader.value.clear?.();
+  }
+};
 
 const onImageSelect = (event) => {
   const file = event.files[0];
@@ -357,95 +380,116 @@ const submit = () => {
                 <div>
                   <label class="block font-medium text-slate-700 mb-2">Gambar Utama</label>
 
-                  <!-- Current Image Preview (Edit Mode) -->
-                  <div v-if="isEditMode && props.post?.image && !imagePreview" class="mb-3">
-                    <div class="relative inline-block rounded-lg w-full h-32 overflow-hidden">
-                      <Image
-                        :src="`/storage/${props.post.image}`"
-                        :alt="props.post.title"
-                        class="w-full h-full object-cover"
-                        :pt="{ image: { class: 'w-full h-full object-cover' } }"
-                        preview
-                      />
-                      <button
-                        v-if="isEditMode"
-                        type="button"
-                        @click="removeImage"
-                        class="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-500 transition-colors">
-                        <IconX class="text-white" size="10"/>
-                      </button>
-                    </div>
-                    <p class="text-xs text-slate-500 mt-1">Gambar saat ini</p>
+                  <!-- Mode Toggle -->
+                  <div class="flex rounded-lg overflow-hidden border border-slate-300 mb-3 w-fit">
+                    <button
+                      type="button"
+                      @click="setImageMode('file')"
+                      class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors"
+                      :class="imageMode === 'file' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'"
+                    >
+                      <IconUpload size="12" />
+                      Upload Gambar
+                    </button>
+                    <button
+                      type="button"
+                      @click="setImageMode('link')"
+                      class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-colors border-l border-slate-300"
+                      :class="imageMode === 'link' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'"
+                    >
+                      <IconLink size="12" />
+                      Kirim Link
+                    </button>
                   </div>
 
-                  <!-- New Image Preview -->
-                  <div v-if="imagePreview" class="mb-3">
-                    <div class="relative inline-block rounded-lg w-full h-32 overflow-hidden">
-                      <Image
-                        :src="imagePreview"
-                        alt="Preview"
-                        class="w-full h-full object-cover"
-                        :pt="{ image: { class: 'w-full h-full object-cover' } }"
-                        preview
-                      >
-                        <template #previewicon>
-                          <IconSearch/>
-                        </template>
-                      </Image>
+                  <!-- File Upload Mode -->
+                  <template v-if="imageMode === 'file'">
+                    <!-- Current Image Preview (Edit Mode) -->
+                    <div v-if="isEditMode && props.post?.image && !imagePreview" class="mb-3">
+                      <div class="relative inline-block rounded-lg w-full h-32 overflow-hidden">
+                        <Image
+                          :src="`/storage/${props.post.image}`"
+                          :alt="props.post.title"
+                          class="w-full h-full object-cover"
+                          :pt="{ image: { class: 'w-full h-full object-cover' } }"
+                          preview
+                        />
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1">Gambar saat ini</p>
                     </div>
-                    <p class="text-xs text-slate-500 mt-1">
-                      {{ isEditMode ? 'Gambar baru (akan mengganti gambar lama)' : 'Preview gambar' }}
-                    </p>
-                  </div>
 
-                  <!-- File Upload -->
-                  <FileUpload
-                    ref="fileUploader"
-                    name="image"
-                    @select="onImageSelect"
-                    :auto="true"
-                    :customUpload="true"
-                    :showUploadButton="false"
-                    :showCancelButton="false"
-                    :multiple="false"
-                    accept=".jpg,.jpeg,.png,.webp"
-                    :maxFileSize="2097152"
-                    class="w-full"
-                  >
-                    <template #content="{ files }">
-                      <div v-if="files[0]" class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                        <div class="flex items-start justify-between gap-4">
-                          <div class="flex items-start">
-                            <div class="mt-1"><IconPhoto class="text-green-600 mr-3" size="18"/></div>
-                            <div>
-                              <p class="font-medium text-slate-900 break-all">{{ files[0].name }}</p>
-                              <p class="text-sm text-slate-500">{{ (files[0].size / 1024 / 1024).toFixed(2) }} MB</p>
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            @click="clearFile"
-                            class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                          >
-                            <IconX size="16" />
-                          </button>
+                    <!-- New Image Preview -->
+                    <div v-if="imagePreview" class="mb-3">
+                      <div class="relative inline-block rounded-lg w-full h-32 overflow-hidden">
+                        <Image
+                          :src="imagePreview"
+                          alt="Preview"
+                          class="w-full h-full object-cover"
+                          :pt="{ image: { class: 'w-full h-full object-cover' } }"
+                          preview
+                        />
+                        <button
+                          type="button"
+                          @click="removeImage"
+                          class="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-500 transition-colors">
+                          <IconX class="text-white" size="10"/>
+                        </button>
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1">
+                        {{ isEditMode ? 'Gambar baru (akan mengganti gambar lama)' : 'Preview gambar' }}
+                      </p>
+                    </div>
+
+                    <!-- File Upload -->
+                    <FileUpload
+                      ref="fileUploader"
+                      name="image"
+                      @select="onImageSelect"
+                      :auto="true"
+                      :customUpload="true"
+                      :showUploadButton="false"
+                      :showCancelButton="false"
+                      :multiple="false"
+                      accept="image/*"
+                      class="w-full"
+                    >
+                      <template #empty>
+                        <div
+                          class="flex flex-col items-center justify-center py-6 px-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-600 transition-colors cursor-pointer"
+                          @click="triggerFileInput"
+                        >
+                          <IconPhotoSearch class="text-gray-400 mb-2" :size="isMobile ? 18 : undefined"/>
+                          <p class="text-sm text-gray-600 text-center">
+                            {{ isEditMode ? 'Pilih gambar baru untuk mengganti' : 'Drag & drop atau klik untuk memilih gambar' }}
+                          </p>
+                          <p class="text-xs text-gray-400 mt-1">JPG, PNG, WEBP (max 2MB)</p>
                         </div>
-                      </div>
-                    </template>
+                      </template>
+                    </FileUpload>
+                  </template>
 
-                    <template #empty>
-                      <div
-                        class="flex flex-col items-center justify-center py-6 px-4 border-2 border-dashed border-slate-300 rounded-lg hover:border-blue-600 transition-colors cursor-pointer"
-                        @click="triggerFileInput"
-                      >
-                        <IconPhotoSearch class="text-slate-400 mb-2" :size="!isDesktop ? 18 : undefined"/>
-                        <p class="text-sm text-slate-600 text-center">
-                          {{ isEditMode ? 'Pilih gambar baru untuk mengganti' : 'Klik atau drag file gambar ke sini' }}
-                        </p>
-                        <p class="text-xs text-slate-400 mt-1">JPG, PNG, WEBP (Maks. 2MB)</p>
+                  <!-- Link Mode -->
+                  <template v-else>
+                    <!-- Preview current image URL (edit mode) -->
+                    <div v-if="isEditMode && props.post?.image && !form.image_url" class="mb-3">
+                      <div class="relative rounded-lg w-full h-32 overflow-hidden">
+                        <img :src="props.post.image" :alt="props.post.title" class="w-full h-full object-cover" />
                       </div>
-                    </template>
-                  </FileUpload>
+                      <p class="text-xs text-gray-500 mt-1">Gambar saat ini (URL)</p>
+                    </div>
+                    <!-- Preview new URL -->
+                    <div v-if="form.image_url" class="mb-3">
+                      <div class="relative rounded-lg w-full h-32 overflow-hidden bg-slate-100">
+                        <img :src="form.image_url" alt="Preview URL" class="w-full h-full object-cover" @error="$event.target.style.display='none'" />
+                      </div>
+                    </div>
+                    <InputText
+                      v-model="form.image_url"
+                      class="w-full"
+                      placeholder="https://example.com/gambar.jpg"
+                    />
+                    <p class="text-xs text-gray-400 mt-1">Masukkan URL gambar langsung</p>
+                  </template>
                 </div>
               </div>
             </div>

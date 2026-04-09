@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Incident;
-use App\Models\IncidentLog;
 use App\Models\IncidentType;
 use App\Models\User;
 use Carbon\Carbon;
@@ -70,7 +69,7 @@ class IncidentController extends Controller
   public function create(): Response
   {
     return Inertia::render('Admin/Incidents/Create', [
-      'incidentTypes' => IncidentType::orderBy('name')->get(['id', 'name']),
+      'incidentTypes' => IncidentType::orderBy('name')->get(['id', 'name', 'description', 'guide']),
       'staffUsers' => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
     ]);
   }
@@ -90,21 +89,33 @@ class IncidentController extends Controller
       'status' => 'required|in:Baru,Diverifikasi,Dalam Penyelidikan,Selesai,Ditutup',
       'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritikal',
       'assigned_to' => 'nullable|exists:users,id',
-      'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,zip,doc,docx|max:2048', // Max 2MB
+      'attachment_type' => 'nullable|in:file,link',
+      'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,zip,doc,docx|max:5120',
+      'attachment_links' => 'nullable|string|max:2000',
     ]);
 
-    // Handle file upload
-    $path = null;
-    if ($request->hasFile('attachment')) {
-      $path = $request->file('attachment')->store('incidents', 'local');
+    $attachmentValue = null;
+    if (($validated['attachment_type'] ?? 'file') === 'file' && $request->hasFile('attachment')) {
+      $attachmentValue = $request->file('attachment')->store('attachments', 'public');
+    } elseif (($validated['attachment_type'] ?? null) === 'link' && !empty($validated['attachment_links'])) {
+      $attachmentValue = $validated['attachment_links'];
     }
 
-    $incident = Incident::create(array_merge($validated, [
+    $incident = Incident::create([
       'case_id' => Incident::generateCaseId(),
       'access_token' => Str::random(64),
-      'attachment' => $path,
+      'reporter_name' => $validated['reporter_name'],
+      'reporter_email' => $validated['reporter_email'],
+      'reporter_phone' => $validated['reporter_phone'] ?? null,
+      'incident_type_id' => $validated['incident_type_id'],
+      'incident_at' => $validated['incident_at'],
+      'description' => $validated['description'],
+      'status' => $validated['status'],
+      'priority' => $validated['priority'],
+      'assigned_to' => $validated['assigned_to'] ?? null,
+      'attachment' => $attachmentValue,
       'reported_at' => now(),
-    ]));
+    ]);
 
     // Log creation by the current admin/staff user
     $incident->incidentLogs()->create([
@@ -154,7 +165,7 @@ class IncidentController extends Controller
 
     return Inertia::render('Admin/Incidents/Create', [
       'incident' => $incident,
-      'incidentTypes' => IncidentType::all(['id', 'name']),
+      'incidentTypes' => IncidentType::all(['id', 'name', 'description', 'guide']),
       'staffUsers' => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
     ]);
   }
@@ -179,21 +190,33 @@ class IncidentController extends Controller
       'status' => 'required|in:Baru,Diverifikasi,Dalam Penyelidikan,Selesai,Ditutup',
       'priority' => 'required|in:Rendah,Sedang,Tinggi,Kritikal',
       'assigned_to' => 'nullable|exists:users,id',
-      'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,zip,doc,docx|max:2048', // Max 2MB
+      'attachment_type' => 'nullable|in:file,link',
+      'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,zip,doc,docx|max:5120',
+      'attachment_links' => 'nullable|string|max:2000',
     ]);
 
-    // Handle file upload
-    if ($request->hasFile('attachment')) {
-      // Delete old attachment if exists
-      if ($incident->attachment && Storage::disk('public')->exists($incident->attachment)) {
-        Storage::disk('public')->delete($incident->attachment);
-      }
-
-      $validated['attachment'] = $request->file('attachment')->store('incidents', 'local');
+    $attachmentValue = $incident->attachment;
+    if (($validated['attachment_type'] ?? 'file') === 'file' && $request->hasFile('attachment')) {
+      $attachmentValue = $request->file('attachment')->store('attachments', 'public');
+    } elseif (($validated['attachment_type'] ?? null) === 'link') {
+      $attachmentValue = !empty($validated['attachment_links']) ? $validated['attachment_links'] : null;
     }
 
-    $this->logChanges($incident, $validated);
-    $incident->update($validated);
+    $coreData = [
+      'reporter_name' => $validated['reporter_name'],
+      'reporter_email' => $validated['reporter_email'],
+      'reporter_phone' => $validated['reporter_phone'] ?? null,
+      'incident_type_id' => $validated['incident_type_id'],
+      'incident_at' => $validated['incident_at'],
+      'description' => $validated['description'],
+      'status' => $validated['status'],
+      'priority' => $validated['priority'],
+      'assigned_to' => $validated['assigned_to'] ?? null,
+      'attachment' => $attachmentValue,
+    ];
+
+    $this->logChanges($incident, $coreData);
+    $incident->update($coreData);
 
     return redirect()->route('admin.incidents.show', $incident)->with('success', 'Insiden berhasil diperbarui.');
   }
