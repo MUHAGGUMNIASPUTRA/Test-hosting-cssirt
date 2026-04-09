@@ -57,22 +57,38 @@ Dokumen ini berisi panduan instalasi, pengembangan, troubleshooting, dan kontrib
 
 ## Development
 
-Jalankan semua proses sekaligus (server, queue, log, Vite) menggunakan perintah berikut:
+Ada dua perintah dev tergantung environment:
+
+### Menggunakan Laravel Herd (Windows)
+
+Herd sudah menangani web server secara otomatis via domain `.test`, sehingga hanya perlu menjalankan queue dan Vite:
+
+```bash
+composer dev:herd
+```
+
+Akses aplikasi di `http://csirt.bojonegorokab.go.id.test`.
+
+### Tanpa Herd (Linux / macOS / Docker)
+
+Menjalankan server, queue, log viewer (Pail), dan Vite sekaligus:
 
 ```bash
 composer dev
 ```
 
-Atau jalankan masing-masing secara terpisah:
+> **Catatan:** `composer dev` membutuhkan ekstensi `pcntl` (hanya tersedia di Linux/macOS) untuk Laravel Pail. Tidak bisa digunakan di Windows.
+
+### Menjalankan masing-masing secara terpisah
 
 ```bash
-# Backend
+# Backend (tidak diperlukan jika pakai Herd)
 php artisan serve
 
 # Queue worker
 php artisan queue:listen --tries=1
 
-# Log viewer
+# Log viewer (Linux/macOS only)
 php artisan pail --timeout=0
 
 # Frontend (Vite)
