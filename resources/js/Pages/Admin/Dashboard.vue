@@ -2,7 +2,6 @@
 // filepath: resources/js/Pages/Admin/Dashboard.vue
 
 import { Link } from '@inertiajs/vue3'
-import { useResponsive } from '@/Composables/useResponsive'
 
 const props = defineProps({
   stats: {
@@ -47,29 +46,6 @@ const props = defineProps({
     default: () => []
   }
 })
-
-const { isDesktop } = useResponsive()
-
-const getPrioritySeverity = (priority) => {
-  const severities = {
-    'Rendah': 'success',
-    'Sedang': 'info',
-    'Tinggi': 'warn',
-    'Kritikal': 'danger'
-  }
-  return severities[priority] || 'warn'
-}
-
-const getStatusSeverity = (status) => {
-  const severities = {
-    'Baru': 'info',
-    'Diverifikasi': 'primary',
-    'Dalam Penyelidikan': 'warn',
-    'Selesai': 'success',
-    'Ditutup': 'secondary'
-  }
-  return severities[status] || 'info'
-}
 
 const getAlertColor = (level) => {
   const colors = {
@@ -125,85 +101,52 @@ const truncateText = (text, length = 50) => {
 
       <!-- Stats Cards -->
       <div class="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-5 gap-4 lg:gap-6">
-        <!-- Total Incidents -->
-        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm lg:text-base font-medium text-slate-600">Total Insiden</p>
-              <p class="text-xl lg:text-3xl font-bold text-slate-900">{{ stats.incidents.total }}</p>
-              <p class="text-xs lg:text-sm text-green-600">
-                <span class="font-medium">+{{ stats.incidents.thisMonth }}</span> bulan ini
-              </p>
-            </div>
-            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
-              <IconUrgent class="text-red-600" :size="!isDesktop ? 18 : undefined"/>
-            </div>
-          </div>
-        </div>
+        <StatCard layout="vertical" color="red" label="Total Insiden" :value="stats.incidents.total"
+          subtextClass="text-green-600">
+          <template #default="{ iconClass, iconSize }">
+            <IconUrgent :class="iconClass" :size="iconSize" />
+          </template>
+          <template #subtext>
+            <span class="font-medium">+{{ stats.incidents.thisMonth }}</span> bulan ini
+          </template>
+        </StatCard>
 
-        <!-- Open Incidents -->
-        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm lg:text-base font-medium text-slate-600">Insiden Terbuka</p>
-              <p class="text-xl lg:text-3xl font-bold text-slate-900">{{ stats.incidents.open }}</p>
-              <p class="text-xs lg:text-sm text-red-600">
-                <span class="font-medium">{{ stats.incidents.critical }}</span> kritikal
-              </p>
-            </div>
-            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
-              <IconFileAlert class="text-orange-600" :size="!isDesktop ? 18 : undefined"/>
-            </div>
-          </div>
-        </div>
+        <StatCard layout="vertical" color="orange" label="Insiden Terbuka" :value="stats.incidents.open"
+          subtextClass="text-red-600">
+          <template #default="{ iconClass, iconSize }">
+            <IconFileAlert :class="iconClass" :size="iconSize" />
+          </template>
+          <template #subtext>
+            <span class="font-medium">{{ stats.incidents.critical }}</span> kritikal
+          </template>
+        </StatCard>
 
-        <!-- Published Posts -->
-        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm lg:text-base font-medium text-slate-600">Artikel Diterbitkan</p>
-              <p class="text-xl lg:text-3xl font-bold text-slate-900">{{ stats.posts.published }}</p>
-              <p class="text-xs lg:text-sm text-slate-500">
-                <span class="font-medium">{{ stats.posts.draft }}</span> draft
-              </p>
-            </div>
-            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <IconNews class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
-            </div>
-          </div>
-        </div>
+        <StatCard layout="vertical" color="blue" label="Artikel Diterbitkan" :value="stats.posts.published">
+          <template #default="{ iconClass, iconSize }">
+            <IconNews :class="iconClass" :size="iconSize" />
+          </template>
+          <template #subtext>
+            <span class="font-medium">{{ stats.posts.draft }}</span> draft
+          </template>
+        </StatCard>
 
-        <!-- Total Documents -->
-        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm lg:text-base font-medium text-slate-600">Dokumen Panduan</p>
-              <p class="text-xl lg:text-3xl font-bold text-slate-900">{{ stats.documents?.total || 0 }}</p>
-              <p class="text-xs lg:text-sm text-slate-500">
-                <span class="font-medium">{{ stats.services?.total || 0 }}</span> layanan aktif
-              </p>
-            </div>
-            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-center">
-              <IconFileTypePdf class="text-purple-600" :size="!isDesktop ? 18 : undefined"/>
-            </div>
-          </div>
-        </div>
+        <StatCard layout="vertical" color="purple" label="Dokumen Panduan" :value="stats.documents?.total || 0">
+          <template #default="{ iconClass, iconSize }">
+            <IconFileTypePdf :class="iconClass" :size="iconSize" />
+          </template>
+          <template #subtext>
+            <span class="font-medium">{{ stats.services?.total || 0 }}</span> layanan aktif
+          </template>
+        </StatCard>
 
-        <!-- Total Users -->
-        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm lg:text-base font-medium text-slate-600">Total Pengguna</p>
-              <p class="text-xl lg:text-3xl font-bold text-slate-900">{{ stats.users.total }}</p>
-              <p class="text-xs lg:text-sm text-slate-500">
-                <span class="font-medium">{{ stats.faqs.published }}</span> FAQ aktif
-              </p>
-            </div>
-            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-              <IconUsers class="text-green-600" :size="!isDesktop ? 18 : undefined"/>
-            </div>
-          </div>
-        </div>
+        <StatCard layout="vertical" color="green" label="Total Pengguna" :value="stats.users.total">
+          <template #default="{ iconClass, iconSize }">
+            <IconUsers :class="iconClass" :size="iconSize" />
+          </template>
+          <template #subtext>
+            <span class="font-medium">{{ stats.faqs.published }}</span> FAQ aktif
+          </template>
+        </StatCard>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
@@ -236,17 +179,9 @@ const truncateText = (text, length = 50) => {
                           size="small"
                           class="font-mono !text-slate-500"
                         />
-                        <Tag
-                          :value="incident.priority"
-                          :severity="getPrioritySeverity(incident.priority)"
-                          size="small"
-                        />
+                        <StatusBadge type="priority" :value="incident.priority" />
                       </div>
-                      <Tag
-                        :value="incident.status"
-                        :severity="getStatusSeverity(incident.status)"
-                        size="small"
-                      />
+                      <StatusBadge type="incident-status" :value="incident.status" />
                     </div>
                     <h4 class="font-medium text-slate-700 text-sm mb-1 line-clamp-1">
                       {{ incident.description }}
@@ -322,11 +257,7 @@ const truncateText = (text, length = 50) => {
                   <div class="flex-1 min-w-0">
                     <h4 class="font-medium text-slate-700 text-sm mb-2 line-clamp-2">{{ post.title }}</h4>
                     <div class="flex items-center gap-2 text-sm text-slate-500">
-                      <Tag
-                        :value="post.status"
-                        :severity="post.status === 'Published' ? 'success' : 'warning'"
-                        size="small"
-                      />
+                      <StatusBadge type="post-status" :value="post.status" />
                       <span>•</span>
                       <span class="text-sm">{{ post.views_count || 0 }} views</span>
                       <span>•</span>

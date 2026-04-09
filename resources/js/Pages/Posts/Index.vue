@@ -6,6 +6,8 @@ import { Link, router } from '@inertiajs/vue3'
 import { useResponsive } from '@/Composables/useResponsive'
 import { useParticles } from '@/Composables/useParticles'
 
+// generateExcerpt dipindahkan ke dalam PostCard.vue
+
 const props = defineProps({
   posts: Object,
   isFirstPage: Boolean,
@@ -23,19 +25,6 @@ const appliedSearch = ref(props.filters?.search || '') // What search is actuall
 
 // Responsive composable
 const { isMobile } = useResponsive()
-
-const generateExcerpt = (post) => {
-  let content = post.excerpt;
-
-  if (!content || content.trim() === '') {
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = post.body;
-    content = tempDiv.textContent || tempDiv.innerText || '';
-  }
-
-  content = content.trim();
-  return content;
-};
 
 // Get posts for grid display (exclude featured post on first page)
 const gridPosts = computed(() => {
@@ -291,69 +280,12 @@ onMounted(() => {
           </div>
 
           <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <article
+            <PostCard
               v-for="(post, index) in gridPosts"
               :key="post.id"
-              class="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden border border-slate-200"
-              :style="{ animationDelay: `${(index + 1) * 100}ms` }"
-            >
-              <!-- Post Image -->
-              <div class="relative overflow-hidden">
-                <Link :href="route('posts.show', { post: post.slug })" class="block">
-                  <PostImage :post="post" class="h-48 w-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </Link>
-              </div>
-
-              <!-- Post Content -->
-              <div class="p-6">
-                <!-- Categories -->
-                <div class="mb-3">
-                  <div v-if="post.categories?.length > 0" class="flex flex-wrap gap-2">
-                    <span v-for="category in post.categories" :key="category.id" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 hover:bg-indigo-200 transition-colors duration-200">
-                      <Link :href="route('categories.show', category.slug)">{{ category.name }}</Link>
-                    </span>
-                  </div>
-                  <span v-else class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800">Artikel</span>
-                </div>
-
-                <!-- Title -->
-                <h3 class="text-2xl font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300 line-clamp-2">
-                  <Link :href="route('posts.show', { post: post.slug })">
-                    {{ post.title }}
-                  </Link>
-                </h3>
-
-                <!-- Excerpt -->
-                <p class="text-slate-600 mb-4 line-clamp-3 leading-relaxed">
-                  {{ generateExcerpt(post) }}
-                </p>
-
-                <!-- Meta Info -->
-                <div class="flex items-center justify-between text-sm text-slate-500">
-                  <div class="flex items-center">
-                    <i-lucide-user-pen class="mr-2" />
-                    <span>{{ post.published_by }}</span>
-                  </div>
-                  <time :datetime="post.published_at">
-                    {{ new Date(post.published_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) }}
-                  </time>
-                </div>
-
-                <!-- Read More Link -->
-                <div class="mt-4 pt-4 border-t border-slate-200">
-                  <Link
-                    :href="route('posts.show', { post: post.slug })"
-                    class="inline-flex items-center text-indigo-600 hover:text-indigo-700 font-medium group/link"
-                  >
-                    Baca Artikel
-                    <svg class="ml-1 h-3 w-3 group-hover/link:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </div>
-              </div>
-            </article>
+              :post="post"
+              :animation-delay="(index + 1) * 100"
+            />
           </div>
         </div>
 

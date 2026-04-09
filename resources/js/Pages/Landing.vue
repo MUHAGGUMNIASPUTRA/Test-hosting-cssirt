@@ -184,32 +184,12 @@ onMounted(() => {
         </div>
 
         <div class="grid gap-8" :class="serviceGridClasses">
-          <div
+          <ServiceCard
             v-for="(service, index) in props.services"
             :key="service.id"
-            class="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-slate-200 hover:border-indigo-300"
-            :style="{ animationDelay: `${index * 100}ms` }"
-          >
-            <!-- Service Content -->
-            <div class="flex items-center gap-4 mb-4">
-              <div class="relative">
-                <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <span class="material-symbols-outlined text-white !text-2xl">{{ service.icon }}</span>
-                </div>
-                <div class="absolute -inset-2 bg-gradient-to-br from-indigo-500/20 to-blue-600/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
-              </div>
-              <h4 class="text-2xl font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors duration-300">
-                {{ service.name }}
-              </h4>
-            </div>
-
-            <p class="text-slate-600 leading-relaxed">
-              {{ service.short_description }}
-            </p>
-
-            <!-- Hover Effect -->
-            <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500/5 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </div>
+            :service="service"
+            :animation-delay="index * 100"
+          />
         </div>
       </div>
     </section>
@@ -230,52 +210,12 @@ onMounted(() => {
         </div>
 
         <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          <article
+          <PostCard
             v-for="(post, index) in props.posts"
             :key="post.id"
-            class="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 overflow-hidden"
-            :style="{ animationDelay: `${index * 150}ms` }"
-          >
-            <!-- Post Image -->
-            <div v-if="post.image" class="relative overflow-hidden">
-              <img
-                :src="post.image.startsWith('http') ? post.image : '/storage/' + post.image"
-                :alt="post.title"
-                class="h-48 w-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </div>
-
-            <!-- Post Content -->
-            <div class="p-6">
-              <div class="flex items-center text-slate-500 mb-3">
-                <i-lucide-calendar-check-2 class="h-4 w-4 mr-2" />
-                {{ new Date(post.created_at).toLocaleDateString('id-ID', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric'
-                }) }}
-              </div>
-
-              <h4 class="text-2xl font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300 line-clamp-2">
-                {{ post.title }}
-              </h4>
-
-              <p class="text-slate-600 mb-4 line-clamp-3">
-                {{ post.excerpt }}
-              </p>
-
-              <a
-                :href="route('posts.show', { post: post.slug })"
-                class="inline-flex items-center text-indigo-600 hover:text-indigo-700 font-medium group/link"
-              >
-                Baca selengkapnya
-                <svg class="ml-2 h-4 w-4 group-hover/link:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-              </a>
-            </div>
-          </article>
+            :post="post"
+            :animation-delay="index * 150"
+          />
         </div>
 
         <!-- View All Button -->
