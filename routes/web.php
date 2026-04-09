@@ -75,6 +75,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
   Route::resource('faqs', AdminFaqController::class)->except(['show', 'create', 'edit']);
   Route::resource('announcements', AnnouncementController::class)->except(['show', 'create', 'edit']);
   Route::resource('users', AdminUserController::class)->except(['show', 'create', 'edit'])->middleware('admin');
+  Route::resource('documents', AdminDocumentController::class)->except(['show']);
 });
 
 Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(function () {

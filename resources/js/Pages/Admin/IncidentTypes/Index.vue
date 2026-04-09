@@ -1,6 +1,4 @@
 <script setup>
-// filepath: resources/js/Pages/Admin/IncidentTypes/Index.vue
-
 import { ref, computed } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { useResponsive } from '@/Composables/useResponsive'
@@ -236,11 +234,16 @@ const actionMenuItems = computed(() => {
 
           <Column field="description" header="Deskripsi" class="hidden lg:table-cell">
             <template #body="{ data }">
-              <div>
-                <p class="text-sm text-slate-600 line-clamp-2">
-                  {{ data.description || 'Tidak ada deskripsi' }}
-                </p>
-              </div>
+              <p class="text-sm text-slate-600 line-clamp-2">
+                {{ data.description || 'Tidak ada deskripsi' }}
+              </p>
+            </template>
+          </Column>
+
+          <Column header="Panduan" class="hidden sm:table-cell">
+            <template #body="{ data }">
+              <Tag v-if="data.guide" value="Ada" severity="success" size="small" />
+              <Tag v-else value="Tidak Ada" severity="secondary" size="small" />
             </template>
           </Column>
 

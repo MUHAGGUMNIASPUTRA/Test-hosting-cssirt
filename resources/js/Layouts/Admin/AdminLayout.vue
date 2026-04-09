@@ -139,6 +139,22 @@ const sidebarItems = ref([
     route: 'admin.services.index',
   },
   {
+    label: 'Panduan',
+    icon: IconFileDescription,
+    items: [
+      {
+        label: 'Daftar Panduan',
+        icon: IconFileDescription,
+        route: 'admin.documents.index'
+      },
+      {
+        label: 'Tambah Panduan',
+        icon: IconFilePlus,
+        route: 'admin.documents.create'
+      },
+    ],
+  },
+  {
     label: 'FAQ',
     icon: IconHelp,
     route: 'admin.faqs.index',
