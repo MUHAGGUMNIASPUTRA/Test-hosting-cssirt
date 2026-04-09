@@ -20,6 +20,7 @@ class IncidentType extends Model
     'name',
     'slug',
     'description',
+    'guide',
   ];
 
   /**
