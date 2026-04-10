@@ -1,21 +1,58 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
-import { useAdminTable } from '@/Composables/useAdminTable';
 import { useResponsive } from '@/Composables/useResponsive';
 
 const props = defineProps({
   documents: Object,
+  documentAreas: Array,
   filters: Object,
 });
 
-const { isMobile } = useResponsive();
+const { isMobile, dtConfig } = useResponsive();
 
 const searchQuery = ref(props.filters?.search || '');
-const paginatedData = computed(() => props.documents);
-const { serverSideConfig, applyFilters, onPage, clearFilters, hasActiveFilters } =
-  useAdminTable(paginatedData, 'admin.documents.index', { search: searchQuery });
+const selectedAreas = ref(props.filters?.areas ? [].concat(props.filters.areas).map(Number) : []);
 
+const paginatedData = computed(() => props.documents);
+
+const buildUrl = (page = 1) => {
+  const params = new URLSearchParams();
+  if (searchQuery.value) params.set('search', searchQuery.value);
+  selectedAreas.value.forEach((id) => params.append('areas[]', id));
+  if (page > 1) params.set('page', page);
+  const qs = params.toString();
+  return route('admin.documents.index') + (qs ? '?' + qs : '');
+};
+
+const navigate = (page) => {
+  router.get(buildUrl(page), {}, { preserveState: true, preserveScroll: true, replace: true });
+};
+
+const applyFilters = () => navigate(1);
+
+const onPage = (event) => {
+  const page = Math.floor(event.first / event.rows) + 1;
+  navigate(page);
+};
+
+const clearFilters = () => {
+  searchQuery.value = '';
+  selectedAreas.value = [];
+  navigate(1);
+};
+
+const hasActiveFilters = computed(() => !!searchQuery.value || selectedAreas.value.length > 0);
+
+const serverSideConfig = computed(() => ({
+  ...dtConfig(),
+  lazy: true,
+  totalRecords: paginatedData.value?.total,
+  first: (paginatedData.value?.current_page - 1) * paginatedData.value?.per_page,
+  rows: paginatedData.value?.per_page,
+}));
+
+// Delete
 const deleteVisible = ref(false);
 const docToDelete = ref(null);
 
@@ -30,6 +67,13 @@ const handleDelete = () => {
       deleteVisible.value = false;
       docToDelete.value = null;
     },
+  });
+};
+
+// Toggle visibility
+const toggleVisibility = (doc) => {
+  router.patch(route('admin.documents.toggle-visibility', doc.id), {}, {
+    preserveScroll: true,
   });
 };
 
@@ -56,28 +100,41 @@ const formatDate = (date) => {
             class="bg-blue-600 hover:bg-blue-700 text-white inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
           >
             <IconPlus size="16" />
-            Tambah Panduan
+            Tambah Dokumen
           </Link>
         </div>
       </div>
 
-      <!-- Search -->
+      <!-- Filter -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="font-semibold text-slate-900">Pencarian</h3>
+          <h3 class="font-semibold text-slate-900">Filter & Pencarian</h3>
           <button v-if="hasActiveFilters" @click="clearFilters" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
             Reset
           </button>
         </div>
-        <IconField class="w-full">
-          <InputIcon><i class="pi pi-search" /></InputIcon>
-          <InputText
-            v-model="searchQuery"
-            placeholder="Cari berdasarkan judul, deskripsi, atau versi..."
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <IconField>
+            <InputIcon><i class="pi pi-search" /></InputIcon>
+            <InputText
+              v-model="searchQuery"
+              placeholder="Cari judul, deskripsi, versi..."
+              class="w-full"
+              @keyup.enter="applyFilters"
+            />
+          </IconField>
+          <MultiSelect
+            v-model="selectedAreas"
+            :options="documentAreas"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Filter Area Dokumen"
             class="w-full"
-            @keyup.enter="applyFilters"
+            :maxSelectedLabels="2"
+            selectedItemsLabel="{0} area dipilih"
+            @change="applyFilters"
           />
-        </IconField>
+        </div>
       </div>
 
       <!-- Table -->
@@ -90,38 +147,67 @@ const formatDate = (date) => {
           <Column field="title" header="Judul">
             <template #body="{ data }">
               <div class="font-medium text-slate-900">{{ data.title }}</div>
+              <div v-if="data.document_area" class="text-xs text-indigo-600 font-medium mt-0.5">
+                <IconFolders size="11" class="inline mr-0.5" />{{ data.document_area.name }}
+              </div>
               <div v-if="data.description" class="text-sm text-slate-500 truncate max-w-xs">{{ data.description }}</div>
             </template>
           </Column>
+
           <Column header="Versi" v-if="!isMobile" style="width: 80px">
             <template #body="{ data }">
               <Tag v-if="data.version" :value="data.version" severity="secondary" />
               <span v-else class="text-slate-400">-</span>
             </template>
           </Column>
-          <Column header="File/Link" v-if="!isMobile">
+
+          <Column header="File Sah" v-if="!isMobile">
             <template #body="{ data }">
-              <div v-if="data.file_path">
-                <Tag v-if="isUrl(data.file_path)" value="Link" severity="info" />
-                <Tag v-else value="File" severity="success" />
+              <div v-if="data.official_file_path">
+                <Tag v-if="isUrl(data.official_file_path)" value="Link" severity="info" />
+                <Tag v-else value="PDF" severity="success" />
               </div>
-              <Tag v-else value="Tidak Ada" severity="secondary" />
+              <Tag v-else value="Belum Ada" severity="secondary" />
             </template>
           </Column>
-          <Column header="Tanggal Terbit" v-if="!isMobile">
+
+          <Column header="Visibilitas" v-if="!isMobile" style="width: 100px">
+            <template #body="{ data }">
+              <Tag
+                :value="data.is_public ? 'Publik' : 'Privat'"
+                :severity="data.is_public ? 'success' : 'secondary'"
+              />
+            </template>
+          </Column>
+
+          <Column header="Terbit" v-if="!isMobile">
             <template #body="{ data }">
               <span class="text-sm text-slate-600">{{ formatDate(data.published_at) }}</span>
             </template>
           </Column>
-          <Column header="Aksi" style="width: 120px">
+
+          <Column header="Aksi" style="width: 160px">
             <template #body="{ data }">
-              <div class="flex items-center gap-2">
-                <a v-if="data.file_path && isUrl(data.file_path)" :href="data.file_path" target="_blank" rel="noopener">
-                  <Button icon="pi pi-external-link" size="small" severity="info" text rounded v-tooltip="'Buka Link'" />
+              <div class="flex items-center gap-1">
+                <!-- Toggle Visibility -->
+                <Button
+                  :icon="data.is_public ? 'pi pi-eye' : 'pi pi-eye-slash'"
+                  size="small"
+                  :severity="data.is_public ? 'success' : 'secondary'"
+                  text
+                  rounded
+                  :v-tooltip="data.is_public ? 'Sembunyikan dari publik' : 'Publikasikan'"
+                  @click="toggleVisibility(data)"
+                />
+
+                <!-- File Dokumen Sah -->
+                <a v-if="data.official_file_path && isUrl(data.official_file_path)" :href="data.official_file_path" target="_blank" rel="noopener">
+                  <Button icon="pi pi-external-link" size="small" severity="info" text rounded v-tooltip="'Buka File Sah'" />
                 </a>
-                <a v-else-if="data.file_path" :href="`/storage/${data.file_path}`" target="_blank" rel="noopener">
-                  <Button icon="pi pi-download" size="small" severity="info" text rounded v-tooltip="'Unduh'" />
+                <a v-else-if="data.official_file_path" :href="`/storage/${data.official_file_path}`" target="_blank" rel="noopener">
+                  <Button icon="pi pi-file-pdf" size="small" severity="info" text rounded v-tooltip="'Unduh File Sah'" />
                 </a>
+
                 <Link :href="route('admin.documents.edit', data.id)">
                   <Button icon="pi pi-pencil" size="small" severity="secondary" text rounded v-tooltip="'Edit'" />
                 </Link>
@@ -137,6 +223,7 @@ const formatDate = (date) => {
               </div>
             </template>
           </Column>
+
           <template #empty>
             <div class="text-center py-8 text-slate-500">
               <IconFileDescription size="40" class="mx-auto mb-3 text-slate-300" />

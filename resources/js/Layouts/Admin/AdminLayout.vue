@@ -12,7 +12,7 @@ import {
   IconWorldCheck, IconLayoutBoard, IconUrgent,
   IconMailExclamation, IconBellPlus, IconTicTac,
   IconNews, IconArticle, IconTextPlus, IconBookmarks,
-  IconFileDescription, IconFilePlus,
+  IconFileDescription, IconFilePlus, IconFolders,
   IconHeartHandshake, IconHelp, IconSpeakerphone,
   IconUsers, IconLogout, IconSun, IconMoon,
   IconMenu2, IconChevronDown,
@@ -86,6 +86,11 @@ const sidebarItems = ref([
         label: 'Tambah Panduan',
         icon: IconFilePlus,
         route: 'admin.documents.create'
+      },
+      {
+        label: 'Area Dokumen',
+        icon: IconFolders,
+        route: 'admin.document-areas.index'
       },
     ],
   },

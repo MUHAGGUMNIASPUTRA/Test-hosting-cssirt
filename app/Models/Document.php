@@ -21,8 +21,11 @@ class Document extends Model
     'slug',
     'description',
     'file_path',
+    'official_file_path',
     'version',
     'published_at',
+    'is_public',
+    'document_area_id',
   ];
 
   /**
@@ -32,7 +35,13 @@ class Document extends Model
    */
   protected $casts = [
     'published_at' => 'datetime',
+    'is_public' => 'boolean',
   ];
+
+  public function documentArea()
+  {
+    return $this->belongsTo(DocumentArea::class);
+  }
 
   /**
    * Get only published documents

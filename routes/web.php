@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DocumentAreaController;
 use App\Http\Controllers\Admin\DocumentController as AdminDocumentController;
 use App\Http\Controllers\Admin\ExcerptController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
@@ -70,12 +71,13 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
   Route::put('/tags/{tag}', [TaxonomyController::class, 'updateTag'])->name('tags.update');
   Route::delete('/tags/{tag}', [TaxonomyController::class, 'destroyTag'])->name('tags.destroy');
 
+  Route::resource('document-areas', DocumentAreaController::class);
+  Route::patch('/documents/{document}/toggle-visibility', [AdminDocumentController::class, 'toggleVisibility'])->name('documents.toggle-visibility');
   Route::resource('documents', AdminDocumentController::class);
   Route::resource('services', AdminServiceController::class);
   Route::resource('faqs', AdminFaqController::class)->except(['show', 'create', 'edit']);
   Route::resource('announcements', AnnouncementController::class)->except(['show', 'create', 'edit']);
   Route::resource('users', AdminUserController::class)->except(['show', 'create', 'edit'])->middleware('admin');
-  Route::resource('documents', AdminDocumentController::class)->except(['show']);
 });
 
 Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(function () {
