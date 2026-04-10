@@ -467,9 +467,9 @@ watch(
                     <path
                       d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
                   </svg>
-                  <Link :href="`mailto:${contact.email}`" class="hover:no-underline">
+                  <a :href="`mailto:${contact.email}`" class="hover:no-underline">
                     <span class="text-slate-400">{{ contact.email }}</span>
-                  </Link>
+                  </a>
                 </div>
               </div>
             </div>

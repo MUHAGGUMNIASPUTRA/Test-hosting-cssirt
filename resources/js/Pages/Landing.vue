@@ -275,7 +275,7 @@ onMounted(() => {
           </div>
 
           <!-- General Contact -->
-          <Link :href="`mailto:${contact.email}`" class="block hover:no-underline">
+          <a :href="`mailto:${contact.email}`" class="block hover:no-underline">
             <div
               class="bg-gradient-to-br from-gray-100 to-indigo-100 rounded-2xl p-6 sm:p-8 text-center border border-slate-200 z-20">
               <div class="hidden sm:flex w-16 h-16 bg-indigo-100 rounded-full items-center justify-center mx-auto mb-4">
@@ -290,7 +290,7 @@ onMounted(() => {
               <p class="text-slate-600 mb-0 sm:mb-2">Kontak umum dan konsultasi</p>
               <p class="text-lg font-medium text-indigo-600">{{ contact.email }}</p>
             </div>
-          </Link>
+          </a>
 
           <!-- Office Address -->
           <div
