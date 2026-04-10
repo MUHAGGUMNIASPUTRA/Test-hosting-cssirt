@@ -1,10 +1,10 @@
 <script setup>
 // filepath: resources/js/Pages/RFC2350/Index.vue
 
-import { onMounted, ref } from 'vue'
-import { Link } from '@inertiajs/vue3'
-import { useResponsive } from '@/Composables/useResponsive'
 import { useParticles } from '@/Composables/useParticles'
+import { useResponsive } from '@/Composables/useResponsive'
+import { Link } from '@inertiajs/vue3'
+import { onMounted, ref } from 'vue'
 
 const props = defineProps({
   document: Object,
@@ -33,14 +33,16 @@ onMounted(async () => {
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
       <div class="absolute inset-0 z-0">
-        <vue-particles id="tsparticles" :options="minimalParticlesOptions" class="w-full h-full"/>
+        <vue-particles id="tsparticles" :options="minimalParticlesOptions" class="w-full h-full" />
       </div>
 
       <div class="sm:pt-16"></div>
 
       <!-- Background Pattern -->
       <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+        <div
+          class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]">
+        </div>
       </div>
 
       <div class="relative z-10 px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
@@ -49,7 +51,8 @@ onMounted(async () => {
             RFC <span class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">2350</span>
           </h1>
           <p class="mx-auto mt-6 max-w-3xl text-xl sm:text-2xl text-slate-300">
-            Dokumen Deskripsi CSIRT Bojonegoro sesuai standar RFC 2350 yang berisi informasi komprehensif tentang tim, layanan, dan prosedur
+            Dokumen Deskripsi CSIRT Bojonegoro sesuai standar RFC 2350 yang berisi informasi komprehensif tentang tim,
+            layanan, dan prosedur
           </p>
 
           <!-- No Document Available -->
@@ -57,7 +60,8 @@ onMounted(async () => {
             <div class="bg-yellow-100/20 backdrop-blur-sm rounded-2xl p-8 max-w-md mx-auto">
               <div class="w-16 h-16 bg-yellow-100/30 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg class="w-8 h-8 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
               </div>
               <h3 class="text-xl font-semibold text-white mb-2">Dokumen Belum Tersedia</h3>
@@ -80,11 +84,9 @@ onMounted(async () => {
               <h3 class="text-xl font-semibold text-slate-900">{{ document.title }}</h3>
               <div v-if="isPdfAvailable" class="hidden sm:flex items-center gap-3">
                 <span class="text-sm text-slate-500">Format: PDF | Ukuran: {{ document.file_size }}</span>
-                <a
-                  :href="route('rfc2350.download')"
-                  class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                >
-                  <IconFileDownload size="14" class="mr-2"/>
+                <a :href="route('rfc2350.download')"
+                  class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                  <IconFileDownload size="14" class="mr-2" />
                   Download
                 </a>
               </div>
@@ -93,14 +95,8 @@ onMounted(async () => {
 
           <!-- PDF Embed -->
           <div class="relative" :class="!isMobile ? isPdfAvailable ? 'h-[800px]' : 'h-[400px]' : 'h-[450px]'">
-            <iframe
-              v-if="isPdfAvailable"
-              ref="pdfViewer"
-              :src="pdfUrl + '#toolbar=1&navpanes=1&scrollbar=1'"
-              class="w-full h-full border-0"
-              :title="document.title"
-              @error="onIframeError"
-            >
+            <iframe v-if="isPdfAvailable" ref="pdfViewer" :src="pdfUrl + '#toolbar=1&navpanes=1&scrollbar=1'"
+              class="w-full h-full border-0" :title="document.title" @error="onIframeError">
             </iframe>
 
             <!-- Fallback for browsers that don't support PDF embedding -->
@@ -113,11 +109,9 @@ onMounted(async () => {
                 Browser Anda tidak mendukung tampilan PDF secara langsung. Silakan download dokumen untuk membacanya.
               </p>
               <p class="mb-4 text-sm text-slate-400">Ukuran: {{ document.file_size }}</p>
-              <a
-                :href="route('rfc2350.download')"
-                class="inline-flex items-center px-4 py-2 font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-              >
-                <IconFileDownload size="16" class="mr-2"/>
+              <a :href="route('rfc2350.download')"
+                class="inline-flex items-center px-4 py-2 font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                <IconFileDownload size="16" class="mr-2" />
                 Download RFC 2350
               </a>
             </div>
@@ -130,13 +124,12 @@ onMounted(async () => {
     <section class="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-slate-900 via-indigo-900 to-blue-900">
       <div class="container text-center">
         <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-6">Dokumen Lainnya</h2>
-        <p class="mx-auto max-w-2xl text-xl sm:text-2xl text-slate-300 mb-8">Lihat dokumen panduan dan kebijakan keamanan siber lainnya</p>
+        <p class="mx-auto max-w-2xl text-xl sm:text-2xl text-slate-300 mb-8">Lihat dokumen panduan dan kebijakan
+          keamanan siber lainnya</p>
 
-        <Link
-          :href="route('documents.index')"
-          class="inline-flex items-center px-6 py-3 sm:px-8 sm:py-4 sm:text-lg font-semibold text-white bg-gradient-to-r from-indigo-600 to-blue-600 rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
-        >
-          <IconFileStack :size="isMobile ? 16 : 20" class="mr-3"/>
+        <Link :href="route('documents.index')"
+          class="inline-flex items-center px-6 py-3 sm:px-8 sm:py-4 sm:text-lg font-semibold text-white bg-gradient-to-r from-indigo-600 to-blue-600 rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+          <IconFileStack :size="isMobile ? 16 : 20" class="mr-3" />
           Lihat Semua Dokumen
         </Link>
       </div>
