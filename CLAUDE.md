@@ -138,6 +138,9 @@ GET  /contact               contact.index
 POST /contact               contact.store
 GET  /incident              incident.create
 POST /incident              incident.store
+GET  /documents             documents.index
+GET  /documents/{slug}/view     documents.view      (redirect jika link, inline PDF jika file)
+GET  /documents/{slug}/download documents.download  (hanya berlaku untuk file, bukan link)
 ```
 
 ### Admin (`/admin`, middleware: `auth`, `verified`)
@@ -150,6 +153,8 @@ resource services           admin.services.*
 resource faqs               admin.faqs.*        (kecuali show, create, edit)
 resource announcements      admin.announcements.* (kecuali show, create, edit)
 resource users              admin.users.*       (kecuali show, create, edit) [middleware: admin]
+resource document-areas     admin.document-areas.*
+resource documents          admin.documents.*   (+toggle-visibility)
 POST   /admin/images/upload admin.images.upload
 POST   /admin/generate-excerpt admin.generate-excerpt
 ```
@@ -170,7 +175,8 @@ Announcement  (standalone)
 Service       (standalone)
 Faq           (standalone)
 Rating        belongsTo Post, User
-Document      (standalone, belum dipakai di UI)
+Document      belongsTo DocumentArea | official_file_path bisa berupa storage path (PDF) atau URL eksternal
+DocumentArea  hasMany Document
 ```
 
 ---
@@ -197,8 +203,14 @@ announcements   id, title, content, level(info|warning|critical),
                 start_date, end_date, is_active
 services        id, name, slug, icon, short_description, full_description, is_active
 faqs            id, question, answer, category, is_published
-documents       id, title, slug, description, file_path, version, published_at
+document_areas  id, name, slug, description
+documents       id, title, slug, description,
+                file_path (link Word doc — hanya admin),
+                official_file_path (PDF upload path ATAU URL eksternal),
+                version, published_at, is_public, document_area_id(FK document_areas)
 ```
+
+> **Catatan `official_file_path`**: Jika nilai diawali `http://` atau `https://`, berarti dokumen berupa tautan eksternal (view=redirect, download=ditolak). Jika tidak, berarti path file di `storage/public/` (view=inline PDF, download=tersedia).
 
 ---
 
@@ -214,6 +226,8 @@ documents       id, title, slug, description, file_path, version, published_at
 | `FaqController` | `admin/faqs` | CRUD via dialog inline (no dedicated create/edit page) |
 | `AnnouncementController` | `admin/announcements` | CRUD via dialog inline |
 | `UserController` | `admin/users` | CRUD, hanya bisa diakses role `admin` |
+| `DocumentAreaController` | `admin/document-areas` | Full CRUD area/kategori dokumen |
+| `DocumentController` (Admin) | `admin/documents` | Full CRUD + toggle-visibility; `official_file_path` bisa file upload atau link |
 | `ImageUploadController` | `admin/images/upload` | Upload gambar untuk Tiptap editor |
 | `ExcerptController` | `admin/generate-excerpt` | Generate excerpt artikel via AI |
 
