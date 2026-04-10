@@ -138,7 +138,8 @@ const submit = () => {
   }
 
   if (isEditing.value) {
-    form.transform(() => formData).put(route('admin.incidents.update', props.incident.id))
+    form.transform(() => ({ ...formData, _method: 'PUT' }))
+      .post(route('admin.incidents.update', props.incident.id))
   } else {
     form.transform(() => formData).post(route('admin.incidents.store'))
   }

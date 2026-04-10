@@ -68,9 +68,10 @@ const clearOfficialFile = () => {
 
 const submit = () => {
   if (isEditMode.value) {
-    form.put(route('admin.documents.update', props.document.id), {
-      forceFormData: true,
-    });
+    form.transform((data) => ({ ...data, _method: 'PUT' }))
+      .post(route('admin.documents.update', props.document.id), {
+        forceFormData: true,
+      });
   } else {
     form.post(route('admin.documents.store'), {
       forceFormData: true,
@@ -169,8 +170,14 @@ const submit = () => {
               <label class="block font-medium text-gray-700 text-sm">
                 Link Dokumen Word <span class="text-slate-400 font-normal">(Opsional)</span>
               </label>
-              <InputText v-model="form.doc_file_link" class="w-full" :class="{ 'p-invalid': form.errors.doc_file_link }"
-                placeholder="https://docs.google.com/document/d/... atau URL lainnya" />
+              <div class="flex gap-2">
+                <InputText v-model="form.doc_file_link" class="w-full flex-1" :class="{ 'p-invalid': form.errors.doc_file_link }"
+                  placeholder="https://docs.google.com/document/d/... atau URL lainnya" />
+                <a v-if="form.doc_file_link" :href="form.doc_file_link" target="_blank" rel="noopener noreferrer"
+                  class="flex items-center gap-1 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md transition text-sm flex-shrink-0 border border-slate-300">
+                  <IconExternalLink size="15" />
+                </a>
+              </div>
               <p class="text-xs text-slate-500">
                 <IconInfoCircle size="12" class="inline mr-1" />
                 Link ini hanya dapat diakses oleh admin, tidak ditampilkan ke publik.
@@ -226,7 +233,7 @@ const submit = () => {
             <div v-if="officialFileMode === 'file'">
               <FileUpload ref="officialUploader" name="official_file" @select="handleOfficialFileSelect"
                 :showUploadButton="false" :showCancelButton="false" :multiple="false" accept=".pdf"
-                :maxFileSize="52428800">
+                :maxFileSize="52428800" :class="{ 'border border-red-400 rounded-lg': form.errors.official_file }">
                 <template #content="{ files }">
                   <div v-if="files[0]" class="p-4 bg-slate-50">
                     <div class="flex items-center justify-between">

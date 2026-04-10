@@ -20,7 +20,8 @@ const form = useForm({
 
 const submit = () => {
   if (isEditMode.value) {
-    form.put(route('admin.document-areas.update', props.documentArea.id))
+    form.transform((data) => ({ ...data, _method: 'PUT' }))
+      .post(route('admin.document-areas.update', props.documentArea.id))
   } else {
     form.post(route('admin.document-areas.store'))
   }

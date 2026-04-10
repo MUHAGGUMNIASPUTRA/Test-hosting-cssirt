@@ -26,7 +26,14 @@ class DocumentController extends Controller
     }
 
     if ($request->filled('areas')) {
-      $query->whereIn('document_area_id', (array) $request->areas);
+      $areas = (array) $request->areas;
+      $includeNoArea = in_array('0', $areas) || in_array(0, $areas);
+      $areaIds = array_values(array_filter($areas, fn($a) => $a != '0' && $a != 0));
+
+      $query->where(function ($q) use ($areaIds, $includeNoArea) {
+        if ($areaIds) $q->whereIn('document_area_id', $areaIds);
+        if ($includeNoArea) $q->orWhereNull('document_area_id');
+      });
     }
 
     $documents = $query->paginate(10)->withQueryString();

@@ -22,7 +22,8 @@ const form = useForm({
 
 const submit = () => {
   if (isEditMode.value) {
-    form.put(route('admin.incident-types.update', props.incidentType.id));
+    form.transform((data) => ({ ...data, _method: 'PUT' }))
+      .post(route('admin.incident-types.update', props.incidentType.id));
   } else {
     form.post(route('admin.incident-types.store'));
   }

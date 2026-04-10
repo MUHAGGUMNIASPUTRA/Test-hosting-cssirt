@@ -1,7 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
 import { useResponsive } from '@/Composables/useResponsive';
+import { Link, router } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
 
 const props = defineProps({
   documents: Object,
@@ -11,15 +11,24 @@ const props = defineProps({
 
 const { isMobile, dtConfig } = useResponsive();
 
+const NO_AREA_OPTION = { id: 0, name: 'Tanpa Area' };
+const documentAreasOptions = computed(() => [NO_AREA_OPTION, ...(props.documentAreas ?? [])]);
+
 const searchQuery = ref(props.filters?.search || '');
-const selectedAreas = ref(props.filters?.areas ? [].concat(props.filters.areas).map(Number) : []);
+const selectedAreas = ref(
+  props.filters?.areas
+    ? documentAreasOptions.value.filter((a) =>
+        [].concat(props.filters.areas).map(Number).includes(Number(a.id)),
+      )
+    : [],
+);
 
 const paginatedData = computed(() => props.documents);
 
 const buildUrl = (page = 1) => {
   const params = new URLSearchParams();
   if (searchQuery.value) params.set('search', searchQuery.value);
-  selectedAreas.value.forEach((id) => params.append('areas[]', id));
+  selectedAreas.value.forEach((area) => params.append('areas[]', area.id));
   if (page > 1) params.set('page', page);
   const qs = params.toString();
   return route('admin.documents.index') + (qs ? '?' + qs : '');
@@ -95,10 +104,8 @@ const formatDate = (date) => {
             <h2 class="text-xl sm:text-2xl font-bold text-slate-900">Panduan & Dokumen</h2>
             <p class="text-slate-600">Kelola dokumen panduan dan file referensi</p>
           </div>
-          <Link
-            :href="route('admin.documents.create')"
-            class="bg-blue-600 hover:bg-blue-700 text-white inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
-          >
+          <Link :href="route('admin.documents.create')"
+            class="bg-blue-600 hover:bg-blue-700 text-white inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition">
             <IconPlus size="16" />
             Tambah Dokumen
           </Link>
@@ -109,41 +116,26 @@ const formatDate = (date) => {
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="font-semibold text-slate-900">Filter & Pencarian</h3>
-          <button v-if="hasActiveFilters" @click="clearFilters" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+          <button v-if="hasActiveFilters" @click="clearFilters"
+            class="text-blue-600 hover:text-blue-800 text-sm font-medium">
             Reset
           </button>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <IconField>
             <InputIcon><i class="pi pi-search" /></InputIcon>
-            <InputText
-              v-model="searchQuery"
-              placeholder="Cari judul, deskripsi, versi..."
-              class="w-full"
-              @keyup.enter="applyFilters"
-            />
+            <InputText v-model="searchQuery" placeholder="Cari judul, deskripsi, versi..." class="w-full"
+              @keyup.enter="applyFilters" />
           </IconField>
-          <MultiSelect
-            v-model="selectedAreas"
-            :options="documentAreas"
-            optionLabel="name"
-            optionValue="id"
-            placeholder="Filter Area Dokumen"
-            class="w-full"
-            :maxSelectedLabels="2"
-            selectedItemsLabel="{0} area dipilih"
-            @change="applyFilters"
-          />
+          <MultiSelect v-model="selectedAreas" :options="documentAreasOptions" optionLabel="name" dataKey="id"
+            placeholder="Filter Area Dokumen" class="w-full" :maxSelectedLabels="2"
+            selectedItemsLabel="{0} area dipilih" @change="applyFilters" />
         </div>
       </div>
 
       <!-- Table -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <AdminDataTable
-          :value="documents.data"
-          :serverConfig="serverSideConfig"
-          @page="onPage"
-        >
+        <AdminDataTable :value="documents.data" :serverConfig="serverSideConfig" @page="onPage">
           <Column field="title" header="Judul">
             <template #body="{ data }">
               <div class="font-medium text-slate-900">{{ data.title }}</div>
@@ -154,29 +146,46 @@ const formatDate = (date) => {
             </template>
           </Column>
 
-          <Column header="Versi" v-if="!isMobile" style="width: 80px">
+          <Column header="Area Dokumen" v-if="!isMobile">
             <template #body="{ data }">
-              <Tag v-if="data.version" :value="data.version" severity="secondary" />
+              <span v-if="data.document_area" class="text-sm text-slate-700">{{ data.document_area.name }}</span>
               <span v-else class="text-slate-400">-</span>
             </template>
           </Column>
 
-          <Column header="File Sah" v-if="!isMobile">
+          <Column header="File" v-if="!isMobile">
             <template #body="{ data }">
-              <div v-if="data.official_file_path">
-                <Tag v-if="isUrl(data.official_file_path)" value="Link" severity="info" />
-                <Tag v-else value="PDF" severity="success" />
+              <div class="space-y-1">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs text-slate-500 w-16 shrink-0">Dokumen Draft</span>
+                  <a v-if="data.file_path && isUrl(data.file_path)" :href="data.file_path" target="_blank"
+                    rel="noopener">
+                    <Tag value="Link" severity="info" class="cursor-pointer hover:opacity-80" />
+                  </a>
+                  <a v-else-if="data.file_path" :href="`/storage/${data.file_path}`" target="_blank" rel="noopener">
+                    <Tag value="PDF" severity="success" class="cursor-pointer hover:opacity-80" />
+                  </a>
+                  <span v-else class="text-slate-400 text-sm">-</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs text-slate-500 w-16 shrink-0">Dokumen Sah</span>
+                  <a v-if="data.official_file_path && isUrl(data.official_file_path)" :href="data.official_file_path"
+                    target="_blank" rel="noopener">
+                    <Tag value="Link" severity="info" class="cursor-pointer hover:opacity-80" />
+                  </a>
+                  <a v-else-if="data.official_file_path" :href="`/storage/${data.official_file_path}`" target="_blank"
+                    rel="noopener">
+                    <Tag value="PDF" severity="success" class="cursor-pointer hover:opacity-80" />
+                  </a>
+                  <span v-else class="text-slate-400 text-sm">-</span>
+                </div>
               </div>
-              <Tag v-else value="Belum Ada" severity="secondary" />
             </template>
           </Column>
 
           <Column header="Visibilitas" v-if="!isMobile" style="width: 100px">
             <template #body="{ data }">
-              <Tag
-                :value="data.is_public ? 'Publik' : 'Privat'"
-                :severity="data.is_public ? 'success' : 'secondary'"
-              />
+              <Tag :value="data.is_public ? 'Publik' : 'Privat'" :severity="data.is_public ? 'success' : 'secondary'" />
             </template>
           </Column>
 
@@ -190,36 +199,16 @@ const formatDate = (date) => {
             <template #body="{ data }">
               <div class="flex items-center gap-1">
                 <!-- Toggle Visibility -->
-                <Button
-                  :icon="data.is_public ? 'pi pi-eye' : 'pi pi-eye-slash'"
-                  size="small"
-                  :severity="data.is_public ? 'success' : 'secondary'"
-                  text
-                  rounded
+                <Button :icon="data.is_public ? 'pi pi-eye' : 'pi pi-eye-slash'" size="small"
+                  :severity="data.is_public ? 'success' : 'secondary'" text rounded
                   :v-tooltip="data.is_public ? 'Sembunyikan dari publik' : 'Publikasikan'"
-                  @click="toggleVisibility(data)"
-                />
-
-                <!-- File Dokumen Sah -->
-                <a v-if="data.official_file_path && isUrl(data.official_file_path)" :href="data.official_file_path" target="_blank" rel="noopener">
-                  <Button icon="pi pi-external-link" size="small" severity="info" text rounded v-tooltip="'Buka File Sah'" />
-                </a>
-                <a v-else-if="data.official_file_path" :href="`/storage/${data.official_file_path}`" target="_blank" rel="noopener">
-                  <Button icon="pi pi-file-pdf" size="small" severity="info" text rounded v-tooltip="'Unduh File Sah'" />
-                </a>
+                  @click="toggleVisibility(data)" />
 
                 <Link :href="route('admin.documents.edit', data.id)">
                   <Button icon="pi pi-pencil" size="small" severity="secondary" text rounded v-tooltip="'Edit'" />
                 </Link>
-                <Button
-                  icon="pi pi-trash"
-                  size="small"
-                  severity="danger"
-                  text
-                  rounded
-                  v-tooltip="'Hapus'"
-                  @click="confirmDelete(data)"
-                />
+                <Button icon="pi pi-trash" size="small" severity="danger" text rounded v-tooltip="'Hapus'"
+                  @click="confirmDelete(data)" />
               </div>
             </template>
           </Column>
@@ -235,12 +224,8 @@ const formatDate = (date) => {
     </div>
 
     <!-- Delete Dialog -->
-    <DeleteConfirmDialog
-      v-model:visible="deleteVisible"
-      entityLabel="panduan"
-      :deleteLabel="docToDelete?.title"
-      @confirm="handleDelete"
-    >
+    <DeleteConfirmDialog v-model:visible="deleteVisible" entityLabel="panduan" :deleteLabel="docToDelete?.title"
+      @confirm="handleDelete">
       <template #item-info>
         <div v-if="docToDelete" class="space-y-1 text-sm">
           <p><span class="font-medium">Judul:</span> {{ docToDelete.title }}</p>
