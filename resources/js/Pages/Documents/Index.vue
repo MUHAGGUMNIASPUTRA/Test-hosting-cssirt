@@ -1,9 +1,9 @@
 <script setup>
 // filepath: resources/js/Pages/Documents/Index.vue
-import { ref, computed } from 'vue'
-import { Link, router } from '@inertiajs/vue3'
-import { useResponsive } from '@/Composables/useResponsive'
 import { useParticles } from '@/Composables/useParticles'
+import { useResponsive } from '@/Composables/useResponsive'
+import { router } from '@inertiajs/vue3'
+import { ref } from 'vue'
 
 const props = defineProps({
   documents: Object,
@@ -41,11 +41,15 @@ const applyFilters = () => {
   const queryString = params.toString()
   const url = route('documents.index') + (queryString ? '?' + queryString : '')
 
-  router.get(url, {}, {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true
-  })
+  router.get(
+    url,
+    {},
+    {
+      preserveState: true,
+      preserveScroll: true,
+      replace: true,
+    },
+  )
 }
 
 // Handle pagination change
@@ -56,81 +60,103 @@ const onPage = (event) => {
   applyFilters()
 }
 
-const formatDate = (dateString) => {
-  if (!dateString) return '-'
-  return new Date(dateString).toLocaleDateString('id-ID', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })
-}
-
-const truncateText = (text, length = 100) => {
-  if (!text || text.length <= length) return text
-  return text.substring(0, length) + '...'
-}
-
-// Calculate total file size display
-const totalFileSize = computed(() => {
-  return props.documents.total + ' files'
-})
+const isLink = (path) =>
+  path && (path.startsWith('http://') || path.startsWith('https://'))
 </script>
 
 <template>
   <AppLayout title="Panduan Keamanan Siber">
     <!-- Hero Section -->
-    <section class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+    <section
+      class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900"
+    >
       <div class="absolute inset-0 z-0">
-        <vue-particles id="tsparticles" :options="minimalParticlesOptions" class="w-full h-full"/>
+        <vue-particles
+          id="tsparticles"
+          :options="minimalParticlesOptions"
+          class="h-full w-full"
+        />
       </div>
 
       <div class="sm:pt-16"></div>
 
       <!-- Background Pattern -->
       <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+        <div
+          class="bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] absolute inset-0"
+        ></div>
       </div>
 
       <div class="relative z-10 px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
         <div class="container text-center">
-          <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl">
-            Dokumen <span class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">Panduan</span>
+          <h1
+            class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl"
+          >
+            Dokumen
+            <span
+              class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent"
+              >Panduan</span
+            >
           </h1>
-          <p class="mx-auto mt-6 max-w-3xl text-xl sm:text-2xl text-slate-300">
-            Akses panduan dan kebijakan keamanan siber untuk melindungi
-            sistem digital instansi pemerintah dari berbagai ancaman
+          <p class="mx-auto mt-6 max-w-3xl text-xl text-slate-300 sm:text-2xl">
+            Akses panduan dan kebijakan keamanan siber untuk melindungi sistem
+            digital instansi pemerintah dari berbagai ancaman
           </p>
         </div>
       </div>
     </section>
 
     <!-- Documents List -->
-    <section class="py-8 sm:py-16 lg:py-20 bg-slate-50">
+    <section class="bg-slate-50 py-8 sm:py-16 lg:py-20">
       <div class="container max-w-7xl">
-
         <!-- Search Section -->
         <div class="mb-8 sm:mb-12">
-          <div class="max-w-2xl mx-auto">
+          <div class="mx-auto max-w-2xl">
             <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <div
+                class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4"
+              >
+                <svg
+                  class="h-5 w-5 text-slate-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
               </div>
               <input
                 v-model="searchQuery"
                 @keyup.enter="applyFilters"
                 type="text"
-                class="block w-full pl-12 pr-12 py-4 text-lg border border-slate-300 rounded-2xl leading-5 bg-white placeholder-slate-500 focus:outline-none focus:placeholder-slate-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                class="block w-full rounded-2xl border border-slate-300 bg-white py-4 pl-12 pr-12 text-lg leading-5 placeholder-slate-500 focus:border-indigo-500 focus:placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 placeholder="Cari panduan berdasarkan judul, deskripsi, atau versi..."
               />
-              <div v-if="searchQuery" class="absolute inset-y-0 right-0 pr-4 flex items-center">
+              <div
+                v-if="searchQuery"
+                class="absolute inset-y-0 right-0 flex items-center pr-4"
+              >
                 <button
                   @click="clearFilters"
-                  class="p-1 rounded-full hover:bg-slate-100 transition-colors duration-200"
+                  class="rounded-full p-1 transition-colors duration-200 hover:bg-slate-100"
                 >
-                  <svg class="h-5 w-5 text-slate-400 hover:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    class="h-5 w-5 text-slate-400 hover:text-slate-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
@@ -139,7 +165,9 @@ const totalFileSize = computed(() => {
         </div>
 
         <!-- Documents DataTable -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div
+          class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+        >
           <DataTable
             v-bind="dtConfig()"
             :value="documents.data"
@@ -147,75 +175,105 @@ const totalFileSize = computed(() => {
             size="large"
           >
             <template #empty>
-              <div class="text-center py-16">
-                <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div class="py-16 text-center">
+                <div
+                  class="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-slate-100"
+                >
                   <IconFileText class="text-slate-400" size="30" />
                 </div>
-                <h3 class="text-xl font-semibold text-slate-900 mb-2">
-                  {{ searchQuery ? 'Tidak ada dokumen yang sesuai' : 'Belum Ada Dokumen' }}
+                <h3 class="mb-2 text-xl font-semibold text-slate-900">
+                  {{
+                    searchQuery
+                      ? 'Tidak ada dokumen yang sesuai'
+                      : 'Belum Ada Dokumen'
+                  }}
                 </h3>
                 <p class="text-slate-600">
-                  {{ searchQuery ? 'Coba gunakan kata kunci yang berbeda' : 'Panduan dan dokumentasi akan segera tersedia di sini.' }}
+                  {{
+                    searchQuery
+                      ? 'Coba gunakan kata kunci yang berbeda'
+                      : 'Panduan dan dokumentasi akan segera tersedia di sini.'
+                  }}
                 </p>
               </div>
             </template>
 
-            <Column field="title" header="Dokumen" :style="!isMobile ? 'min-width: 200px' : undefined" class="text-lg">
+            <Column
+              field="title"
+              header="Dokumen"
+              :style="!isMobile ? 'min-width: 200px' : undefined"
+              class="text-lg"
+            >
               <template #body="{ data }">
-                  <div class="flex-1 min-w-0">
-                    <h4 class="flex items-center gap-2 font-semibold text-slate-900">
-                      <a
-                        :href="route('documents.view', data.slug)"
-                        target="_blank"
-                        class="hover:text-blue-600 cursor-pointer transition-colors duration-200"
-                      >
-                        {{ data.title }}
-                      </a>
-                      <span v-if="data.version" class="hidden sm:inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-orange-100 text-orange-700">
-                        {{ data.version }}
-                      </span>
-                      <span v-if="!data.file_exists" class="hidden sm:inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-red-100 text-red-700">
-                        File Hilang
-                      </span>
-                    </h4>
-                    <p v-if="data.description" class="text-sm text-slate-500 mb-1">
-                      {{ data.description }}
-                    </p>
-                    <div class="sm:hidden flex items-center gap-2">
-                      <span v-if="data.version" class="inline-flex items-center text-xs font-medium text-orange-600">
-                        {{ data.version }}
-                      </span>
-                      <span class="text-xs text-slate-500">{{ data.file_size }}</span>
-                      <span v-if="!data.file_exists" class="inline-flex items-center text-xs font-medium text-red-600">
-                        File Hilang
-                      </span>
-                    </div>
+                <div class="min-w-0 flex-1">
+                  <h4
+                    class="flex items-center gap-2 font-semibold text-slate-900"
+                  >
+                    <a
+                      :href="route('documents.view', data.slug)"
+                      target="_blank"
+                      class="cursor-pointer transition-colors duration-200 hover:text-blue-600"
+                    >
+                      {{ data.title }}
+                    </a>
+                    <span
+                      v-if="data.document_area"
+                      class="hidden items-center rounded-lg bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-700 sm:inline-flex"
+                    >
+                      {{ data.document_area.name }}
+                    </span>
+                    <span
+                      v-if="!data.official_file_path"
+                      class="hidden items-center rounded-lg bg-red-100 px-2 py-1 text-xs font-medium text-red-700 sm:inline-flex"
+                    >
+                      File Hilang
+                    </span>
+                  </h4>
+                  <p
+                    v-if="data.description"
+                    class="mb-1 text-sm text-slate-500"
+                  >
+                    {{ data.description }}
+                  </p>
+                  <div class="flex items-center gap-2 sm:hidden">
+                    <span
+                      v-if="data.document_area"
+                      class="inline-flex items-center text-xs font-medium text-indigo-600"
+                    >
+                      {{ data.document_area.name }}
+                    </span>
+                    <span
+                      v-if="!data.official_file_path"
+                      class="inline-flex items-center text-xs font-medium text-red-600"
+                    >
+                      File Hilang
+                    </span>
                   </div>
+                </div>
               </template>
             </Column>
 
-            <Column header="Ukuran" style="min-width: 120px;" class="hidden sm:table-cell text-lg">
-              <template #body="{ data }">
-                <span class="text-sm text-slate-600">{{ data.file_size || 'N/A' }}</span>
-              </template>
-            </Column>
-
-            <Column header="Aksi" :style="!isMobile ? 'min-width: 120px' : undefined" class="text-lg" :pt="{columnHeaderContent: 'justify-end' }">
+            <Column
+              header="Aksi"
+              :style="!isMobile ? 'min-width: 120px' : undefined"
+              class="text-lg"
+              :pt="{ columnHeaderContent: 'justify-end' }"
+            >
               <template #body="{ data }">
                 <div class="flex items-center justify-end gap-2">
                   <a
-                    v-if="data.file_exists"
+                    v-if="data.official_file_path"
                     :href="route('documents.view', data.slug)"
-                    target="_blank"
-                    class="bg-indigo-50 p-2 rounded-lg text-indigo-600 hover:bg-indigo-200 transition-colors duration-200"
+                    :target="isLink(data.official_file_path) ? '_blank' : '_blank'"
+                    class="rounded-lg bg-indigo-50 p-2 text-indigo-600 transition-colors duration-200 hover:bg-indigo-200"
                     title="Lihat Dokumen"
                   >
                     <IconEye size="16" />
                   </a>
                   <a
-                    v-if="data.file_exists"
+                    v-if="data.official_file_path && !isLink(data.official_file_path)"
                     :href="route('documents.download', data.slug)"
-                    class="bg-blue-50 p-2 rounded-lg text-blue-600 hover:bg-blue-200 transition-colors duration-200"
+                    class="rounded-lg bg-blue-50 p-2 text-blue-600 transition-colors duration-200 hover:bg-blue-200"
                     title="Download Dokumen"
                   >
                     <IconDownload size="16" />

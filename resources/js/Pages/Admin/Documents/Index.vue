@@ -18,8 +18,8 @@ const searchQuery = ref(props.filters?.search || '');
 const selectedAreas = ref(
   props.filters?.areas
     ? documentAreasOptions.value.filter((a) =>
-        [].concat(props.filters.areas).map(Number).includes(Number(a.id)),
-      )
+      [].concat(props.filters.areas).map(Number).includes(Number(a.id)),
+    )
     : [],
 );
 
@@ -139,9 +139,6 @@ const formatDate = (date) => {
           <Column field="title" header="Judul">
             <template #body="{ data }">
               <div class="font-medium text-slate-900">{{ data.title }}</div>
-              <div v-if="data.document_area" class="text-xs text-indigo-600 font-medium mt-0.5">
-                <IconFolders size="11" class="inline mr-0.5" />{{ data.document_area.name }}
-              </div>
               <div v-if="data.description" class="text-sm text-slate-500 truncate max-w-xs">{{ data.description }}</div>
             </template>
           </Column>

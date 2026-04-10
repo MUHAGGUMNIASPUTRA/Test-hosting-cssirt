@@ -16,10 +16,10 @@ class DocumentController extends Controller
    */
   public function index(Request $request)
   {
-    $query = Document::published()
+    $query = Document::with('documentArea:id,name')
+      ->published()
       ->where(function($q) {
-        $q->where('version', '!=', 'RFC2350')
-          ->orWhereNull('version');
+        $q->where('version', '!=', 'RFC2350');
       })
       ->orderBy('title');
 
@@ -34,13 +34,6 @@ class DocumentController extends Controller
 
     $documents = $query->paginate(10)->withQueryString();
 
-    // Add file size to each document
-    $documents->getCollection()->transform(function ($document) {
-      $document->file_size = $document->fileSize();
-      $document->file_exists = $document->fileExists();
-      return $document;
-    });
-
     return $this->handleSeoRequest('Documents/Index', [
       'documents' => $documents,
       'filters' => $request->only(['search']),
@@ -48,31 +41,51 @@ class DocumentController extends Controller
   }
 
   /**
-   * Download a document
+   * Download a document (hanya berlaku untuk file, bukan link)
    */
   public function download(Request $request, Document $document)
   {
-    if (!$document->fileExists()) {
+    $path = $document->official_file_path;
+
+    if (!$path) {
       abort(404, 'File tidak ditemukan');
     }
 
-    return response()->download($document->downloadUrl(), $document->title . '.pdf', [
+    if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+      abort(400, 'Dokumen ini berupa tautan eksternal dan tidak dapat diunduh');
+    }
+
+    if (!Storage::disk('public')->exists($path)) {
+      abort(404, 'File tidak ditemukan');
+    }
+
+    return response()->download(Storage::disk('public')->path($path), $document->title . '.pdf', [
       'Content-Type' => 'application/pdf',
     ]);
   }
 
   /**
-   * View a document in browser
+   * View a document in browser — redirect jika berupa link, tampilkan file jika berupa PDF
    */
   public function view(Request $request, Document $document)
   {
-    if (!$document->fileExists()) {
+    $path = $document->official_file_path;
+
+    if (!$path) {
       abort(404, 'File tidak ditemukan');
     }
 
-    return response()->file($document->downloadUrl(), [
+    if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+      return redirect($path);
+    }
+
+    if (!Storage::disk('public')->exists($path)) {
+      abort(404, 'File tidak ditemukan');
+    }
+
+    return response()->file(Storage::disk('public')->path($path), [
       'Content-Type' => 'application/pdf',
-      'Content-Disposition' => 'inline; filename="' . $document->title . '.pdf"'
+      'Content-Disposition' => 'inline; filename="' . $document->title . '.pdf"',
     ]);
   }
 }
