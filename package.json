@@ -6,7 +6,9 @@
     "build": "vite build && vite build --ssr",
     "ssr:build": "vite build --ssr resources/js/ssr.js --outDir bootstrap/ssr",
     "ssr:serve": "node bootstrap/ssr/ssr.js",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test:js": "vitest run",
+    "test:js:watch": "vitest"
   },
   "devDependencies": {
     "@iconify-json/ic": "^1.2.2",
@@ -23,6 +25,7 @@
     "postcss": "^8.4.31",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
+    "vitest": "^2.0.0",
     "tailwindcss": "^3.2.1",
     "unplugin-icons": "^22.1.0",
     "unplugin-vue-components": "^28.8.0",
