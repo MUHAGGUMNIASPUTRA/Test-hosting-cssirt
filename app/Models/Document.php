@@ -5,8 +5,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @property string      $title
+ * @property string      $slug
+ * @property string|null $description
+ * @property string|null $file_path
+ * @property string|null $official_file_path
+ * @property string|null $version
+ * @property bool        $is_public
+ * @property int|null    $document_area_id
+ * @property string|null $file_size   Virtual — set in controller/collection transform
+ * @property bool|null   $file_exists Virtual — set in controller/collection transform
+ * @property string|null $status      Virtual — set in controller/collection transform
+ */
 class Document extends Model
 {
   use HasFactory;
@@ -38,7 +52,7 @@ class Document extends Model
     'is_public' => 'boolean',
   ];
 
-  public function documentArea()
+  public function documentArea(): BelongsTo
   {
     return $this->belongsTo(DocumentArea::class);
   }
@@ -54,7 +68,7 @@ class Document extends Model
   /**
    * Get the file size in human readable format
    */
-  public function fileSize()
+  public function fileSize(): string
   {
     if ($this->file_path && Storage::disk('public')->exists($this->file_path)) {
       $bytes = Storage::disk('public')->size($this->file_path);
@@ -66,27 +80,29 @@ class Document extends Model
   /**
    * Get the download URL
    */
-  public function downloadUrl()
+  public function downloadUrl(): string
   {
-    return Storage::disk('public')->path($this->file_path);
+    return Storage::disk('public')->path($this->file_path ?? '');
   }
 
   /**
    * Check if file exists
    */
-  public function fileExists()
+  public function fileExists(): bool
   {
-    return Storage::disk('public')->exists($this->file_path);
+    return $this->file_path !== null && Storage::disk('public')->exists($this->file_path);
   }
 
   /**
    * Format bytes to human readable format
    */
-  private function formatBytes($bytes, $precision = 2)
+  private function formatBytes(int $bytes, int $precision = 2): string
   {
-    $units = array('B', 'KB', 'MB', 'GB', 'TB');
-    for ($i = 0; $bytes > 1024; $i++) {
+    $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    $i = 0;
+    while ($bytes >= 1024 && $i < count($units) - 1) {
       $bytes /= 1024;
+      $i++;
     }
     return round($bytes, $precision) . ' ' . $units[$i];
   }

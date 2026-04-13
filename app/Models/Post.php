@@ -3,11 +3,21 @@
 
 namespace App\Models;
 
+use App\Enums\PostStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property string      $title
+ * @property string      $slug
+ * @property string|null $image
+ * @property PostStatus  $status
+ * @property string      $excerpt
+ * @property string      $body
+ * @property string|null $published_by
+ */
 class Post extends Model
 {
   use HasFactory;
@@ -38,6 +48,7 @@ class Post extends Model
    */
   protected $casts = [
     'published_at' => 'datetime',
+    'status'       => PostStatus::class,
   ];
 
   /**

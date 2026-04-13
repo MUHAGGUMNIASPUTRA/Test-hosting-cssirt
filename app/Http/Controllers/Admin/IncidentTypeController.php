@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\IncidentType\SaveIncidentTypeRequest;
 use App\Models\IncidentType;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -34,19 +36,11 @@ class IncidentTypeController extends Controller
     return Inertia::render('Admin/IncidentTypes/Create');
   }
 
-  public function store(Request $request)
+  public function store(SaveIncidentTypeRequest $request): RedirectResponse
   {
-    $validated = $request->validate([
-      'name' => 'required|string|max:255|unique:incident_types,name',
-      'description' => 'nullable|string',
-      'guide' => 'nullable|string',
-    ], [
-      'name.required' => 'Nama jenis insiden wajib diisi.',
-      'name.unique' => 'Nama jenis insiden sudah digunakan.',
-    ]);
-
-    $validated['slug'] = Str::slug($validated['name']);
-    IncidentType::create($validated);
+    $data         = $request->validated();
+    $data['slug'] = Str::slug($data['name']);
+    IncidentType::create($data);
 
     return redirect()
       ->route('admin.incident-types.index')
@@ -60,19 +54,11 @@ class IncidentTypeController extends Controller
     ]);
   }
 
-  public function update(Request $request, IncidentType $incidentType)
+  public function update(SaveIncidentTypeRequest $request, IncidentType $incidentType): RedirectResponse
   {
-    $validated = $request->validate([
-      'name' => 'required|string|max:255|unique:incident_types,name,' . $incidentType->id,
-      'description' => 'nullable|string',
-      'guide' => 'nullable|string',
-    ], [
-      'name.required' => 'Nama jenis insiden wajib diisi.',
-      'name.unique' => 'Nama jenis insiden sudah digunakan.',
-    ]);
-
-    $validated['slug'] = Str::slug($validated['name']);
-    $incidentType->update($validated);
+    $data         = $request->validated();
+    $data['slug'] = Str::slug($data['name']);
+    $incidentType->update($data);
 
     return redirect()
       ->route('admin.incident-types.index')

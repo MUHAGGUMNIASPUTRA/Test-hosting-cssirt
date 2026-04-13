@@ -4,7 +4,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Faq\SaveFaqRequest;
 use App\Models\Faq;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -58,16 +60,9 @@ class FaqController extends Controller
   /**
    * Store a newly created resource in storage.
    */
-  public function store(Request $request)
+  public function store(SaveFaqRequest $request): RedirectResponse
   {
-    $validated = $request->validate([
-      'question' => 'required|string|min:5',
-      'answer' => 'required|string|min:10',
-      'category' => 'nullable|string|max:255',
-      'is_published' => 'boolean',
-    ]);
-
-    Faq::create($validated);
+    Faq::create($request->validated());
 
     return redirect()->back()->with('success', 'FAQ berhasil ditambahkan.');
   }
@@ -75,16 +70,9 @@ class FaqController extends Controller
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, Faq $faq)
+  public function update(SaveFaqRequest $request, Faq $faq): RedirectResponse
   {
-    $validated = $request->validate([
-      'question' => 'required|string|min:5',
-      'answer' => 'required|string|min:10',
-      'category' => 'nullable|string|max:255',
-      'is_published' => 'boolean',
-    ]);
-
-    $faq->update($validated);
+    $faq->update($request->validated());
 
     return redirect()->back()->with('success', 'FAQ berhasil diperbarui.');
   }
@@ -92,7 +80,7 @@ class FaqController extends Controller
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(Faq $faq)
+  public function destroy(Faq $faq): RedirectResponse
   {
     $faq->delete();
     return redirect()->back()->with('success', 'FAQ berhasil dihapus.');

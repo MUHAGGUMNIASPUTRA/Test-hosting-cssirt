@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\DocumentArea\SaveDocumentAreaRequest;
 use App\Models\DocumentArea;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -34,18 +36,11 @@ class DocumentAreaController extends Controller
     return Inertia::render('Admin/DocumentAreas/Create');
   }
 
-  public function store(Request $request)
+  public function store(SaveDocumentAreaRequest $request): RedirectResponse
   {
-    $validated = $request->validate([
-      'name' => 'required|string|max:255|unique:document_areas,name',
-      'description' => 'nullable|string',
-    ], [
-      'name.required' => 'Nama area dokumen wajib diisi.',
-      'name.unique' => 'Nama area dokumen sudah digunakan.',
-    ]);
-
-    $validated['slug'] = Str::slug($validated['name']);
-    DocumentArea::create($validated);
+    $data         = $request->validated();
+    $data['slug'] = Str::slug($data['name']);
+    DocumentArea::create($data);
 
     return redirect()
       ->route('admin.document-areas.index')
@@ -59,18 +54,11 @@ class DocumentAreaController extends Controller
     ]);
   }
 
-  public function update(Request $request, DocumentArea $documentArea)
+  public function update(SaveDocumentAreaRequest $request, DocumentArea $documentArea): RedirectResponse
   {
-    $validated = $request->validate([
-      'name' => 'required|string|max:255|unique:document_areas,name,' . $documentArea->id,
-      'description' => 'nullable|string',
-    ], [
-      'name.required' => 'Nama area dokumen wajib diisi.',
-      'name.unique' => 'Nama area dokumen sudah digunakan.',
-    ]);
-
-    $validated['slug'] = Str::slug($validated['name']);
-    $documentArea->update($validated);
+    $data         = $request->validated();
+    $data['slug'] = Str::slug($data['name']);
+    $documentArea->update($data);
 
     return redirect()
       ->route('admin.document-areas.index')

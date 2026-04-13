@@ -3,6 +3,8 @@
 
 namespace App\Models;
 
+use App\Enums\IncidentPriority;
+use App\Enums\IncidentStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +12,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @property IncidentStatus $status
+ * @property IncidentPriority $priority
+ * @property string|null $file_size  Virtual property set in controller for edit view
+ */
 class Incident extends Model
 {
   use HasFactory;
@@ -48,8 +55,10 @@ class Incident extends Model
     'incident_at' => 'datetime',
     'reported_at' => 'datetime',
     'resolved_at' => 'datetime',
-    'is_read' => 'boolean',
-    'read_at' => 'datetime',
+    'is_read'     => 'boolean',
+    'read_at'     => 'datetime',
+    'status'      => IncidentStatus::class,
+    'priority'    => IncidentPriority::class,
   ];
 
   /**
@@ -81,7 +90,7 @@ class Incident extends Model
   /**
    * Get the file size in human readable format
    */
-  public function fileSize()
+  public function fileSize(): string
   {
     if ($this->attachment !== null && Storage::disk('local')->exists($this->attachment)) {
       $bytes = Storage::disk('local')->size($this->attachment);
@@ -93,7 +102,7 @@ class Incident extends Model
   /**
    * Format bytes to human readable format
    */
-  private function formatBytes($bytes, $precision = 2)
+  private function formatBytes(int $bytes, int $precision = 2): string
   {
     $units = array('B', 'KB', 'MB', 'GB', 'TB');
     for ($i = 0; $bytes > 1024; $i++) {

@@ -8,14 +8,15 @@ use Illuminate\Support\Facades\Cache;
 
 class FaqCacheService
 {
-  const CACHE_DURATION = 60 * 60 * 24; // 24 hours
-  const FAQ_CACHE_KEY = 'faqs.published';
-  const FAQ_CATEGORIES_CACHE_KEY = 'faq.categories';
+  public const int    CACHE_DURATION           = 60 * 60 * 24; // 24 hours
+  public const string FAQ_CACHE_KEY            = 'faqs.published';
+  public const string FAQ_CATEGORIES_CACHE_KEY = 'faq.categories';
 
   /**
    * Get cached FAQ data
    */
-  public static function getFaqs()
+  /** @return \Illuminate\Support\Collection<string, \Illuminate\Support\Collection> */
+  public static function getFaqs(): \Illuminate\Support\Collection
   {
     return Cache::remember(self::FAQ_CACHE_KEY, self::CACHE_DURATION, function () {
       return Faq::published()
@@ -27,8 +28,10 @@ class FaqCacheService
 
   /**
    * Get cached categories
+   *
+   * @return string[]
    */
-  public static function getCategories()
+  public static function getCategories(): array
   {
     return Cache::remember(self::FAQ_CATEGORIES_CACHE_KEY, self::CACHE_DURATION, function () {
       return Faq::published()
@@ -43,7 +46,7 @@ class FaqCacheService
   /**
    * Clear all FAQ caches
    */
-  public static function clearAll()
+  public static function clearAll(): void
   {
     Cache::forget(self::FAQ_CACHE_KEY);
     Cache::forget(self::FAQ_CATEGORIES_CACHE_KEY);
@@ -52,7 +55,7 @@ class FaqCacheService
   /**
    * Refresh cache
    */
-  public static function refresh()
+  public static function refresh(): void
   {
     self::clearAll();
     self::getFaqs();

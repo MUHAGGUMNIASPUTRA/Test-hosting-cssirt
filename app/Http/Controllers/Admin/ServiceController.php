@@ -4,7 +4,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Service\SaveServiceRequest;
 use App\Models\Service;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -50,19 +52,12 @@ class ServiceController extends Controller
   /**
    * Store a newly created resource in storage.
    */
-  public function store(Request $request)
+  public function store(SaveServiceRequest $request): RedirectResponse
   {
-    $validated = $request->validate([
-      'name' => 'required|string|max:255',
-      'icon' => 'nullable|string|max:255',
-      'short_description' => 'required|string|max:500',
-      'full_description' => 'nullable|string',
-      'is_active' => 'boolean',
-    ]);
+    $data         = $request->validated();
+    $data['slug'] = Str::slug($data['name']);
 
-    $validated['slug'] = Str::slug($validated['name']);
-
-    Service::create($validated);
+    Service::create($data);
 
     return redirect()->route('admin.services.index')->with('success', 'Layanan berhasil dibuat.');
   }
@@ -90,21 +85,15 @@ class ServiceController extends Controller
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, Service $service)
+  public function update(SaveServiceRequest $request, Service $service): RedirectResponse
   {
-    $validated = $request->validate([
-      'name' => 'required|string|max:255',
-      'icon' => 'nullable|string|max:255',
-      'short_description' => 'required|string|max:500',
-      'full_description' => 'nullable|string',
-      'is_active' => 'boolean',
-    ]);
+    $data = $request->validated();
 
-    if ($service->name !== $validated['name']) {
-      $validated['slug'] = Str::slug($validated['name']);
+    if ($service->name !== $data['name']) {
+      $data['slug'] = Str::slug($data['name']);
     }
 
-    $service->update($validated);
+    $service->update($data);
 
     return redirect()->route('admin.services.index')->with('success', 'Layanan berhasil diperbarui.');
   }
@@ -112,7 +101,7 @@ class ServiceController extends Controller
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(Service $service)
+  public function destroy(Service $service): RedirectResponse
   {
     $service->delete();
     return redirect()->route('admin.services.index')->with('success', 'Layanan berhasil dihapus.');

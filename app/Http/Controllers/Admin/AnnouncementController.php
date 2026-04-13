@@ -4,7 +4,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Announcement\SaveAnnouncementRequest;
 use App\Models\Announcement;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -62,18 +64,9 @@ class AnnouncementController extends Controller
   /**
    * Store a newly created resource in storage.
    */
-  public function store(Request $request)
+  public function store(SaveAnnouncementRequest $request): RedirectResponse
   {
-    $validated = $request->validate([
-      'title' => 'required|string|max:255',
-      'content' => 'required|string',
-      'level' => 'required|in:info,warning,critical',
-      'start_date' => 'required|date',
-      'end_date' => 'required|date|after_or_equal:start_date',
-      'is_active' => 'boolean',
-    ]);
-
-    Announcement::create($validated);
+    Announcement::create($request->validated());
 
     return redirect()->back()->with('success', 'Pengumuman berhasil ditambahkan.');
   }
@@ -81,18 +74,9 @@ class AnnouncementController extends Controller
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, Announcement $announcement)
+  public function update(SaveAnnouncementRequest $request, Announcement $announcement): RedirectResponse
   {
-    $validated = $request->validate([
-      'title' => 'required|string|max:255',
-      'content' => 'required|string',
-      'level' => 'required|in:info,warning,critical',
-      'start_date' => 'required|date',
-      'end_date' => 'required|date|after_or_equal:start_date',
-      'is_active' => 'boolean',
-    ]);
-
-    $announcement->update($validated);
+    $announcement->update($request->validated());
 
     return redirect()->back()->with('success', 'Pengumuman berhasil diperbarui.');
   }
@@ -100,7 +84,7 @@ class AnnouncementController extends Controller
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(Announcement $announcement)
+  public function destroy(Announcement $announcement): RedirectResponse
   {
     $announcement->delete();
     return redirect()->back()->with('success', 'Pengumuman berhasil dihapus.');
