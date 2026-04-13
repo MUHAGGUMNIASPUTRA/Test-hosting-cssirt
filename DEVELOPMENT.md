@@ -207,6 +207,38 @@ Proyek menggunakan **Laravel Pint** untuk PHP dan **Prettier** untuk JavaScript/
 npm run format
 ```
 
+## VS Code Setup
+
+Project sudah menyertakan konfigurasi `.vscode/` untuk format otomatis saat file disimpan.
+
+### Ekstensi yang Direkomendasikan
+
+Install dua ekstensi berikut (VS Code akan menyarankan otomatis saat membuka project):
+
+| Ekstensi | ID | Fungsi |
+|----------|----|--------|
+| Run on Save | `emeraldwalk.runonsave` | Menjalankan Pint otomatis saat file PHP disimpan |
+| Prettier | `esbenp.prettier-vscode` | Memformat JS / Vue / TS / CSS / JSON saat disimpan |
+
+### Cara Install
+
+```bash
+# Via VS Code CLI
+code --install-extension emeraldwalk.runonsave
+code --install-extension esbenp.prettier-vscode
+```
+
+Atau buka Command Palette (`Ctrl+Shift+P`) → **Extensions: Show Recommended Extensions** → install semua.
+
+### Perilaku Format on Save
+
+Setelah ekstensi terinstall, format berjalan otomatis saat `Ctrl+S`:
+
+- **File `.php`** → diformat oleh Laravel Pint (`./vendor/bin/pint`)
+- **File `.js`, `.ts`, `.vue`, `.css`, `.json`** → diformat oleh Prettier (menggunakan `.prettierrc.json`)
+
+---
+
 ## Kontribusi
 
 1. Buat branch baru dari `main`:
