@@ -62,7 +62,8 @@ resources/js/
     Posts/            # Halaman publik artikel
     Services/         # Halaman publik layanan
     *.vue             # Halaman publik lainnya
-  Composables/        # Shared logic
+  Composables/        # Shared logic (useAdminTable, useResponsive)
+  utils/              # Pure non-reactive functions (date, status, string, file)
 
 resources/views/
   app.blade.php       # Root Inertia shell (satu-satunya blade template)
@@ -75,40 +76,15 @@ routes/
 
 ---
 
-## Komponen Reusable (`resources/js/Components/`)
+## Komponen, Composables & Utils Frontend
 
-### Komponen Khusus Proyek
-| Komponen | Kegunaan |
-|----------|----------|
-| `StatCard.vue` | Kartu statistik. Prop: `label`, `value`, `color`, `layout` (`horizontal`\|`vertical`), `subtext`. Slot default: `{ iconClass, iconSize }` |
-| `StatusBadge.vue` | Wrapper `<Tag>` PrimeVue dengan severity otomatis. Prop: `type` (`incident-status`\|`priority`\|`post-status`\|`published`), `value` |
-| `AdminDataTable.vue` | Wrapper `<DataTable>` PrimeVue. Prop: `value`, `serverConfig`. Event: `@page`. Slot: `default` (columns), `#empty` |
-| `DeleteConfirmDialog.vue` | Dialog hapus standar. Prop: `v-model:visible`, `entityLabel`, `deleteLabel`. Event: `@confirm`. Slot: `#item-info` |
-| `PostCard.vue` | Kartu artikel publik. Prop: `post`, `animationDelay` |
-| `ServiceCard.vue` | Kartu layanan publik. Prop: `service`, `animationDelay` |
-| `RichTextEditor.vue` | Editor Tiptap 3 dengan tabel, warna, gambar |
-| `PostImage.vue` | Gambar artikel dengan fallback |
-| `LoadingPage.vue` | Transisi halaman Inertia |
-
-### Komponen Form (dari Breeze)
-`TextInput`, `InputLabel`, `InputError`, `Checkbox`, `PrimaryButton`, `SecondaryButton`, `DangerButton`
+Detail lengkap (props, events, pola pakai, batas file) → **[`resources/js/CLAUDE.md`](resources/js/CLAUDE.md)**
 
 ---
 
-## Composables (`resources/js/Composables/`)
+## PHP Enums, Services & Form Requests
 
-| File | Kegunaan |
-|------|----------|
-| `useResponsive.js` | `isMobile` (boolean), `dtConfig()` (config base DataTable PrimeVue) |
-| `useAdminTable.js` | Server-side DataTable admin. Menerima `(paginatedDataRef, routeName, filterRefs)`. Return: `serverSideConfig`, `applyFilters`, `onPage`, `clearFilters`, `hasActiveFilters` |
-
-**Pola pakai `useAdminTable`:**
-```js
-const searchQuery = ref(props.filters?.search || '')
-const paginatedData = computed(() => props.posts)
-const { serverSideConfig, applyFilters, onPage, clearFilters, hasActiveFilters } =
-  useAdminTable(paginatedData, 'admin.posts.index', { search: searchQuery })
-```
+Detail lengkap (enum cases, method service, konvensi request, pola controller) → **[`app/CLAUDE.md`](app/CLAUDE.md)**
 
 ---
 
@@ -241,6 +217,29 @@ Controller mengembalikan `Inertia::render('PageName', [...data])`.
 - Flash messages: `session()->flash('success', '...')` → tersedia di `$page.props.flash`
 
 **Navigasi:** Gunakan `<Link :href="route('name')">` atau `router.visit()` / `router.delete()` dari `@inertiajs/vue3`.
+
+---
+
+## Kualitas Kode — Batas Panjang File & Auto-Format
+
+### Batas Panjang File (sinyal refactor, bukan aturan absolut)
+
+| Tipe File | Batas |
+|-----------|-------|
+| PHP Controller | 150 baris |
+| PHP Service | 300 baris |
+| PHP Model | 200 baris |
+| Vue Page (Index/Create) | 250 baris |
+| Vue Component | 150 baris |
+| JS Composable / Utils | 80–150 baris |
+
+File yang melebihi batas → ekstrak ke service/komponen/composable. Detail per jenis file ada di `app/CLAUDE.md` dan `resources/js/CLAUDE.md`.
+
+### Auto-Format via Hook
+
+Setiap file yang ditulis/diedit Claude otomatis diformat setelah tool call selesai:
+- **PHP** → Laravel Pint (`./vendor/bin/pint <file>`)
+- **JS / Vue / TS / CSS / JSON** → Prettier (`npx prettier --write <file>`, menggunakan `.prettierrc.json`)
 
 ---
 
