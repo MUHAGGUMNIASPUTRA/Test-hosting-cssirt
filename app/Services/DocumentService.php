@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Document;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -57,6 +58,52 @@ class DocumentService
     }
 
     /**
+     * Return a paginated, filtered, transformed collection of documents.
+     *
+     * @param  array{search?: string, areas?: array}  $filters
+     */
+    public function list(array $filters = []): LengthAwarePaginator
+    {
+        $query = Document::with('documentArea:id,name')->orderBy('title');
+
+        if (! empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'ilike', "%{$search}%")
+                    ->orWhere('description', 'ilike', "%{$search}%")
+                    ->orWhere('version', 'ilike', "%{$search}%");
+            });
+        }
+
+        if (! empty($filters['areas'])) {
+            $areas = (array) $filters['areas'];
+            $includeNoArea = \in_array('0', $areas) || \in_array(0, $areas);
+            $areaIds = array_values(array_filter($areas, fn ($a) => $a != '0' && $a != 0));
+
+            $query->where(function ($q) use ($areaIds, $includeNoArea) {
+                if ($areaIds) {
+                    $q->whereIn('document_area_id', $areaIds);
+                }
+                if ($includeNoArea) {
+                    $q->orWhereNull('document_area_id');
+                }
+            });
+        }
+
+        $documents = $query->paginate(10);
+
+        $documents->getCollection()->transform(function (Document $document) {
+            $document->file_size = $document->fileSize();
+            $document->file_exists = $document->fileExists();
+            $document->status = $this->getDocumentStatus($document);
+
+            return $document;
+        });
+
+        return $documents;
+    }
+
+    /**
      * Create a new document record.
      */
     public function create(
@@ -70,7 +117,7 @@ class DocumentService
             'title' => $validated['title'],
             'slug' => Str::slug($validated['title']),
             'description' => $validated['description'] ?? null,
-            'file_path' => $validated['doc_file_link'] ?? null,
+            'draft_file_path' => $validated['doc_file_link'] ?? null,
             'official_file_path' => $officialFilePath,
             'version' => $validated['version'] ?? null,
             'published_at' => $validated['published_at'] ?? null,
@@ -94,7 +141,7 @@ class DocumentService
             'title' => $validated['title'],
             'slug' => Str::slug($validated['title']),
             'description' => $validated['description'] ?? null,
-            'file_path' => $validated['doc_file_link'] ?? null,
+            'draft_file_path' => $validated['doc_file_link'] ?? null,
             'official_file_path' => $officialFilePath,
             'version' => $validated['version'] ?? null,
             'published_at' => $validated['published_at'] ?? null,

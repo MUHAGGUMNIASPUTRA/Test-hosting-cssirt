@@ -1,12 +1,13 @@
 <script setup>
 import { useResponsive } from '@/Composables/useResponsive'
+import { formatDate } from '@/utils/date'
 import { Link, router } from '@inertiajs/vue3'
-import { computed, ref } from 'vue'
+import { IconFileTypePdf } from '@tabler/icons-vue'
+import axios from 'axios'
+import { computed, onMounted, ref } from 'vue'
 
 const props = defineProps({
-  documents: Object,
   documentAreas: Array,
-  filters: Object,
 })
 
 const { isMobile, dtConfig } = useResponsive()
@@ -17,45 +18,44 @@ const documentAreasOptions = computed(() => [
   ...(props.documentAreas ?? []),
 ])
 
-const searchQuery = ref(props.filters?.search || '')
-const selectedAreas = ref(
-  props.filters?.areas
-    ? documentAreasOptions.value.filter((a) =>
-        [].concat(props.filters.areas).map(Number).includes(Number(a.id)),
-      )
-    : [],
-)
+const documents = ref(null)
+const loading = ref(false)
 
-const paginatedData = computed(() => props.documents)
+const searchQuery = ref('')
+const selectedAreas = ref([])
 
-const buildUrl = (page = 1) => {
-  const params = new URLSearchParams()
-  if (searchQuery.value) params.set('search', searchQuery.value)
-  selectedAreas.value.forEach((area) => params.append('areas[]', area.id))
-  if (page > 1) params.set('page', page)
-  const qs = params.toString()
-  return route('admin.documents.index') + (qs ? '?' + qs : '')
+const paginatedData = computed(() => documents.value)
+
+const fetchDocuments = async (page = 1) => {
+  loading.value = true
+  try {
+    const params = new URLSearchParams()
+    if (searchQuery.value) params.set('search', searchQuery.value)
+    selectedAreas.value.forEach((area) => params.append('areas[]', area.id))
+    if (page > 1) params.set('page', page)
+    const qs = params.toString()
+    const { data } = await axios.get(
+      route('api.admin.documents.index') + (qs ? '?' + qs : ''),
+    )
+    documents.value = data.data
+  } finally {
+    loading.value = false
+  }
 }
 
-const navigate = (page) => {
-  router.get(
-    buildUrl(page),
-    {},
-    { preserveState: true, preserveScroll: true, replace: true },
-  )
-}
+onMounted(() => fetchDocuments())
 
-const applyFilters = () => navigate(1)
+const applyFilters = () => fetchDocuments(1)
 
 const onPage = (event) => {
   const page = Math.floor(event.first / event.rows) + 1
-  navigate(page)
+  fetchDocuments(page)
 }
 
 const clearFilters = () => {
   searchQuery.value = ''
   selectedAreas.value = []
-  navigate(1)
+  fetchDocuments(1)
 }
 
 const hasActiveFilters = computed(
@@ -65,10 +65,11 @@ const hasActiveFilters = computed(
 const serverSideConfig = computed(() => ({
   ...dtConfig(),
   lazy: true,
-  totalRecords: paginatedData.value?.total,
-  first:
-    (paginatedData.value?.current_page - 1) * paginatedData.value?.per_page,
-  rows: paginatedData.value?.per_page,
+  totalRecords: paginatedData.value?.total ?? 0,
+  first: paginatedData.value
+    ? (paginatedData.value.current_page - 1) * paginatedData.value.per_page
+    : 0,
+  rows: paginatedData.value?.per_page ?? 10,
 }))
 
 // Delete
@@ -85,6 +86,7 @@ const handleDelete = () => {
     onSuccess: () => {
       deleteVisible.value = false
       docToDelete.value = null
+      fetchDocuments(paginatedData.value?.current_page ?? 1)
     },
   })
 }
@@ -96,21 +98,13 @@ const toggleVisibility = (doc) => {
     {},
     {
       preserveScroll: true,
+      onSuccess: () => fetchDocuments(paginatedData.value?.current_page ?? 1),
     },
   )
 }
 
 const isUrl = (path) =>
   path && (path.startsWith('http://') || path.startsWith('https://'))
-
-const formatDate = (date) => {
-  if (!date) return '-'
-  return new Date(date).toLocaleDateString('id-ID', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-}
 </script>
 
 <template>
@@ -182,7 +176,7 @@ const formatDate = (date) => {
         class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
       >
         <AdminDataTable
-          :value="documents.data"
+          :value="documents?.data ?? []"
           :serverConfig="serverSideConfig"
           @page="onPage"
         >
@@ -200,79 +194,60 @@ const formatDate = (date) => {
 
           <Column header="Area Dokumen" v-if="!isMobile">
             <template #body="{ data }">
-              <span v-if="data.document_area" class="text-sm text-slate-700">{{
-                data.document_area.name
-              }}</span>
+              <span v-if="data.document_area" class="text-sm text-slate-700">
+                {{ data.document_area.name }}
+              </span>
               <span v-else class="text-slate-400">-</span>
             </template>
           </Column>
 
-          <Column header="File" v-if="!isMobile">
+          <Column header="File Draft" v-if="!isMobile" style="width: 90px">
             <template #body="{ data }">
-              <div class="space-y-1">
-                <div class="flex items-center gap-1.5">
-                  <span class="w-16 shrink-0 text-xs text-slate-500"
-                    >Dokumen Draft</span
-                  >
-                  <a
-                    v-if="data.file_path && isUrl(data.file_path)"
-                    :href="data.file_path"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    <Tag
-                      value="Link"
-                      severity="info"
-                      class="cursor-pointer hover:opacity-80"
-                    />
-                  </a>
-                  <a
-                    v-else-if="data.file_path"
-                    :href="`/storage/${data.file_path}`"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    <Tag
-                      value="PDF"
-                      severity="success"
-                      class="cursor-pointer hover:opacity-80"
-                    />
-                  </a>
-                  <span v-else class="text-sm text-slate-400">-</span>
-                </div>
-                <div class="flex items-center gap-1.5">
-                  <span class="w-16 shrink-0 text-xs text-slate-500"
-                    >Dokumen Sah</span
-                  >
-                  <a
-                    v-if="
-                      data.official_file_path && isUrl(data.official_file_path)
-                    "
-                    :href="data.official_file_path"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    <Tag
-                      value="Link"
-                      severity="info"
-                      class="cursor-pointer hover:opacity-80"
-                    />
-                  </a>
-                  <a
-                    v-else-if="data.official_file_path"
-                    :href="`/storage/${data.official_file_path}`"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    <Tag
-                      value="PDF"
-                      severity="success"
-                      class="cursor-pointer hover:opacity-80"
-                    />
-                  </a>
-                  <span v-else class="text-sm text-slate-400">-</span>
-                </div>
-              </div>
+              <a
+                v-if="data.draft_file_path"
+                :href="
+                  isUrl(data.draft_file_path)
+                    ? data.draft_file_path
+                    : `/storage/${data.draft_file_path}`
+                "
+                target="_blank"
+                rel="noopener"
+                class="inline-flex items-center text-blue-600 hover:text-blue-800"
+                v-tooltip.top="'Buka File Draft'"
+              >
+                <IconExternalLink size="18" />
+              </a>
+              <span v-else class="text-slate-400">-</span>
+            </template>
+          </Column>
+
+          <Column header="File Sah" v-if="!isMobile" style="width: 110px">
+            <template #body="{ data }">
+              <a
+                v-if="data.official_file_path"
+                :href="
+                  isUrl(data.official_file_path)
+                    ? data.official_file_path
+                    : `/storage/${data.official_file_path}`
+                "
+                target="_blank"
+                rel="noopener"
+                class="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800"
+              >
+                <IconExternalLink
+                  v-if="isUrl(data.official_file_path)"
+                  size="16"
+                />
+                <IconFileTypePdf v-else size="16" />
+                <Tag
+                  :value="isUrl(data.official_file_path) ? 'Link' : 'PDF'"
+                  :severity="
+                    isUrl(data.official_file_path) ? 'info' : 'success'
+                  "
+                  class="text-xs"
+                />
+              </a>
+              <span v-else class="text-slate-400">-</span>
             </template>
           </Column>
 
@@ -293,7 +268,7 @@ const formatDate = (date) => {
             </template>
           </Column>
 
-          <Column header="Aksi" style="width: 160px">
+          <Column header="Aksi" style="width: 120px">
             <template #body="{ data }">
               <div class="flex items-center gap-1">
                 <!-- Toggle Visibility -->
@@ -334,11 +309,20 @@ const formatDate = (date) => {
 
           <template #empty>
             <div class="py-8 text-center text-slate-500">
-              <IconFileDescription
-                size="40"
-                class="mx-auto mb-3 text-slate-300"
-              />
-              <p>Belum ada panduan atau dokumen.</p>
+              <template v-if="loading">
+                <IconLoader2
+                  size="40"
+                  class="mx-auto mb-3 animate-spin text-slate-300"
+                />
+                <p>Memuat data...</p>
+              </template>
+              <template v-else>
+                <IconFileDescription
+                  size="40"
+                  class="mx-auto mb-3 text-slate-300"
+                />
+                <p>Belum ada panduan atau dokumen.</p>
+              </template>
             </div>
           </template>
         </AdminDataTable>

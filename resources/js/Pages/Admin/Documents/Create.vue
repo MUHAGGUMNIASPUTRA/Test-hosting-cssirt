@@ -38,7 +38,7 @@ const form = useForm({
   is_public: props.document?.is_public ?? false,
   document_area_id: props.document?.document_area_id ?? null,
   // File Dokumen (Word — link saja, hanya admin)
-  doc_file_link: props.document?.file_path || '',
+  doc_file_link: props.document?.draft_file_path || '',
   // File Dokumen Sah (PDF — upload atau link, wajib)
   official_file_type: detectOfficialFileMode(),
   official_file: null,

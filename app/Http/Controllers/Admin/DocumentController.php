@@ -9,7 +9,6 @@ use App\Models\Document;
 use App\Models\DocumentArea;
 use App\Services\DocumentService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -18,48 +17,10 @@ class DocumentController extends Controller
 {
     public function __construct(private readonly DocumentService $documentService) {}
 
-    public function index(Request $request): Response
+    public function index(): Response
     {
-        $query = Document::with('documentArea:id,name')->orderBy('title');
-
-        if ($request->filled('search')) {
-            $search = $request->get('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'ilike', "%{$search}%")
-                    ->orWhere('description', 'ilike', "%{$search}%")
-                    ->orWhere('version', 'ilike', "%{$search}%");
-            });
-        }
-
-        if ($request->filled('areas')) {
-            $areas = (array) $request->get('areas');
-            $includeNoArea = \in_array('0', $areas) || \in_array(0, $areas);
-            $areaIds = array_values(array_filter($areas, fn ($a) => $a != '0' && $a != 0));
-
-            $query->where(function ($q) use ($areaIds, $includeNoArea) {
-                if ($areaIds) {
-                    $q->whereIn('document_area_id', $areaIds);
-                }
-                if ($includeNoArea) {
-                    $q->orWhereNull('document_area_id');
-                }
-            });
-        }
-
-        $documents = $query->paginate(10)->withQueryString();
-
-        $documents->getCollection()->transform(function (Document $document) {
-            $document->file_size = $document->fileSize();
-            $document->file_exists = $document->fileExists();
-            $document->status = $this->documentService->getDocumentStatus($document);
-
-            return $document;
-        });
-
         return Inertia::render('Admin/Documents/Index', [
-            'documents' => $documents,
             'documentAreas' => DocumentArea::orderBy('name')->get(['id', 'name']),
-            'filters' => $request->only(['search', 'areas']),
         ]);
     }
 

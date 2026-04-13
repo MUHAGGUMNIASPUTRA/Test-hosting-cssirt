@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
  * @property string $title
  * @property string $slug
  * @property string|null $description
- * @property string|null $file_path
+ * @property string|null $draft_file_path
  * @property string|null $official_file_path
  * @property string|null $version
  * @property bool $is_public
@@ -35,7 +35,7 @@ class Document extends Model
         'title',
         'slug',
         'description',
-        'file_path',
+        'draft_file_path',
         'official_file_path',
         'version',
         'published_at',
@@ -71,8 +71,8 @@ class Document extends Model
      */
     public function fileSize(): string
     {
-        if ($this->file_path && Storage::disk('public')->exists($this->file_path)) {
-            $bytes = Storage::disk('public')->size($this->file_path);
+        if ($this->draft_file_path && Storage::disk('public')->exists($this->draft_file_path)) {
+            $bytes = Storage::disk('public')->size($this->draft_file_path);
 
             return $this->formatBytes($bytes);
         }
@@ -85,7 +85,7 @@ class Document extends Model
      */
     public function downloadUrl(): string
     {
-        return Storage::disk('public')->path($this->file_path ?? '');
+        return Storage::disk('public')->path($this->draft_file_path ?? '');
     }
 
     /**
@@ -93,7 +93,7 @@ class Document extends Model
      */
     public function fileExists(): bool
     {
-        return $this->file_path !== null && Storage::disk('public')->exists($this->file_path);
+        return $this->draft_file_path !== null && Storage::disk('public')->exists($this->draft_file_path);
     }
 
     /**
@@ -103,7 +103,7 @@ class Document extends Model
     {
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
         $i = 0;
-        while ($bytes >= 1024 && $i < count($units) - 1) {
+        while ($bytes >= 1024 && $i < \count($units) - 1) {
             $bytes /= 1024;
             $i++;
         }
