@@ -3,7 +3,7 @@
 
 import { ref, computed } from 'vue'
 import { router, useForm } from '@inertiajs/vue3'
-import { useConfirm } from "primevue/useconfirm"
+import { useConfirm } from 'primevue/useconfirm'
 import { useResponsive } from '@/Composables/useResponsive'
 
 const props = defineProps({
@@ -29,7 +29,7 @@ const selectedRole = ref(props.filters?.role || '')
 const lazyParams = ref({
   first: 0,
   rows: props.users.per_page || 10,
-  page: props.users.current_page || 1
+  page: props.users.current_page || 1,
 })
 
 // Form for user operations
@@ -43,7 +43,10 @@ const form = useForm({
 })
 
 const roleOptionsArray = computed(() => {
-  return Object.entries(props.roleOptions).map(([value, label]) => ({ label, value }))
+  return Object.entries(props.roleOptions).map(([value, label]) => ({
+    label,
+    value,
+  }))
 })
 
 const applyFilters = () => {
@@ -56,13 +59,18 @@ const applyFilters = () => {
   if (lazyParams.value.page > 1) params.set('page', lazyParams.value.page)
 
   const queryString = params.toString()
-  const url = route('admin.users.index') + (queryString ? '?' + queryString : '')
+  const url =
+    route('admin.users.index') + (queryString ? '?' + queryString : '')
 
-  router.get(url, {}, {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true
-  })
+  router.get(
+    url,
+    {},
+    {
+      preserveState: true,
+      preserveScroll: true,
+      replace: true,
+    },
+  )
 }
 
 // Handle pagination change
@@ -79,13 +87,18 @@ const onPage = (event) => {
   params.set('page', lazyParams.value.page)
 
   const queryString = params.toString()
-  const url = route('admin.users.index') + (queryString ? '?' + queryString : '')
+  const url =
+    route('admin.users.index') + (queryString ? '?' + queryString : '')
 
-  router.get(url, {}, {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true
-  })
+  router.get(
+    url,
+    {},
+    {
+      preserveState: true,
+      preserveScroll: true,
+      replace: true,
+    },
+  )
 }
 
 const clearFilters = () => {
@@ -147,7 +160,7 @@ const deleteUser = (user) => {
       label: 'Batal',
       severity: 'secondary',
       outlined: true,
-      class: 'mr-2'
+      class: 'mr-2',
     },
     acceptProps: {
       icon: 'pi pi-trash',
@@ -156,7 +169,7 @@ const deleteUser = (user) => {
     },
     accept: () => {
       router.delete(route('admin.users.destroy', user.id))
-    }
+    },
   })
 }
 
@@ -164,7 +177,7 @@ const getRoleSeverity = (role) => {
   const severityMap = {
     admin: 'danger',
     staff: 'primary',
-    user: 'success'
+    user: 'success',
   }
   return severityMap[role] || 'secondary'
 }
@@ -173,7 +186,7 @@ const getRoleIcon = (role) => {
   const iconMap = {
     admin: 'admin_panel_settings',
     staff: 'badge',
-    user: 'person'
+    user: 'person',
   }
   return iconMap[role] || 'person'
 }
@@ -183,16 +196,16 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('id-ID', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
   })
 }
 
 // Stats computed
 const stats = computed(() => {
   const allData = props.users.data || []
-  const admin = allData.filter(user => user.role === 'admin').length
-  const staff = allData.filter(user => user.role === 'staff').length
-  const users = allData.filter(user => user.role === 'user').length
+  const admin = allData.filter((user) => user.role === 'admin').length
+  const staff = allData.filter((user) => user.role === 'staff').length
+  const users = allData.filter((user) => user.role === 'user').length
 
   return { admin, staff, users }
 })
@@ -209,30 +222,34 @@ const serverSideConfig = computed(() => {
 })
 
 // Action menu handling
-const actionMenu = ref();
-const selectedMenu = ref(null);
+const actionMenu = ref()
+const selectedMenu = ref(null)
 const toggleActionMenu = (event, item) => {
-  selectedMenu.value = item;
-  actionMenu.value.toggle(event);
-};
+  selectedMenu.value = item
+  actionMenu.value.toggle(event)
+}
 
 const actionMenuItems = computed(() => {
-  if (!selectedMenu.value) return [];
-  const item = selectedMenu.value;
+  if (!selectedMenu.value) return []
+  const item = selectedMenu.value
   return [
     {
       label: 'Edit',
       icon: 'pi pi-pen-to-square',
-      command: () => { openEditDialog(item); },
+      command: () => {
+        openEditDialog(item)
+      },
     },
     {
       label: 'Hapus',
       icon: 'pi pi-trash',
-      command: () => { deleteUser(item); },
+      command: () => {
+        deleteUser(item)
+      },
       visible: item.id !== props.auth.user.id,
-    }
-  ];
-});
+    },
+  ]
+})
 </script>
 
 <template>
@@ -241,10 +258,16 @@ const actionMenuItems = computed(() => {
 
     <div class="space-y-4 lg:space-y-6">
       <!-- Header Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-4">
+      <div
+        class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
+      >
+        <div
+          class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div>
-            <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Kelola Pengguna</h2>
+            <h2 class="text-xl font-bold text-slate-900 lg:text-2xl">
+              Kelola Pengguna
+            </h2>
             <p class="text-slate-600">Kelola akun pengguna sistem</p>
           </div>
           <Button
@@ -261,72 +284,124 @@ const actionMenuItems = computed(() => {
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
-        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
+      <div
+        class="grid grid-cols-2 gap-4 lg:grid-cols-2 lg:gap-6 xl:grid-cols-4"
+      >
+        <div
+          class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
+        >
           <div class="flex items-center">
-            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <IconUsers class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 lg:h-12 lg:w-12"
+            >
+              <IconUsers
+                class="text-blue-600"
+                :size="!isDesktop ? 18 : undefined"
+              />
             </div>
             <div class="ml-3">
-              <p class="text-sm lg:text-base font-medium text-slate-600">Total</p>
-              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ users.total || 0 }}</p>
+              <p class="text-sm font-medium text-slate-600 lg:text-base">
+                Total
+              </p>
+              <p class="text-lg/5 font-bold text-slate-900 lg:text-xl">
+                {{ users.total || 0 }}
+              </p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
+        <div
+          class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
+        >
           <div class="flex items-center">
-            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-red-50 border border-red-200 rounded-lg flex items-center justify-center">
-              <IconUserShield class="text-red-600" :size="!isDesktop ? 18 : undefined"/>
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-lg border border-red-200 bg-red-50 lg:h-12 lg:w-12"
+            >
+              <IconUserShield
+                class="text-red-600"
+                :size="!isDesktop ? 18 : undefined"
+              />
             </div>
             <div class="ml-3">
-              <p class="text-sm lg:text-base font-medium text-slate-600">Administrator</p>
-              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats.admin }}</p>
+              <p class="text-sm font-medium text-slate-600 lg:text-base">
+                Administrator
+              </p>
+              <p class="text-lg/5 font-bold text-slate-900 lg:text-xl">
+                {{ stats.admin }}
+              </p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
+        <div
+          class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
+        >
           <div class="flex items-center">
-            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <IconIdBadge2 class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 lg:h-12 lg:w-12"
+            >
+              <IconIdBadge2
+                class="text-blue-600"
+                :size="!isDesktop ? 18 : undefined"
+              />
             </div>
             <div class="ml-3">
-              <p class="text-sm lg:text-base font-medium text-slate-600">Staff</p>
-              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats.staff }}</p>
+              <p class="text-sm font-medium text-slate-600 lg:text-base">
+                Staff
+              </p>
+              <p class="text-lg/5 font-bold text-slate-900 lg:text-xl">
+                {{ stats.staff }}
+              </p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
+        <div
+          class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
+        >
           <div class="flex items-center">
-            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-              <IconUser class="text-green-600" :size="!isDesktop ? 18 : undefined"/>
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-lg border border-green-200 bg-green-50 lg:h-12 lg:w-12"
+            >
+              <IconUser
+                class="text-green-600"
+                :size="!isDesktop ? 18 : undefined"
+              />
             </div>
             <div class="ml-3">
-              <p class="text-sm lg:text-base font-medium text-slate-600">Pengguna</p>
-              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats.users }}</p>
+              <p class="text-sm font-medium text-slate-600 lg:text-base">
+                Pengguna
+              </p>
+              <p class="text-lg/5 font-bold text-slate-900 lg:text-xl">
+                {{ stats.users }}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Filters Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xl font-semibold text-slate-900">Filter & Pencarian</h3>
+      <div
+        class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
+      >
+        <div class="mb-4 flex items-center justify-between">
+          <h3 class="text-xl font-semibold text-slate-900">
+            Filter & Pencarian
+          </h3>
           <button
             v-if="searchQuery || selectedRole"
             @click="clearFilters"
-            class="text-blue-600 hover:text-blue-800 font-medium"
+            class="font-medium text-blue-600 hover:text-blue-800"
           >
             Reset Filter
           </button>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <div>
-            <label class="block font-medium text-slate-700 mb-2">Cari Pengguna</label>
+            <label class="mb-2 block font-medium text-slate-700"
+              >Cari Pengguna</label
+            >
             <div class="relative">
               <IconField class="w-full">
                 <InputIcon>
@@ -343,7 +418,9 @@ const actionMenuItems = computed(() => {
           </div>
 
           <div>
-            <label class="block font-medium text-slate-700 mb-2">Filter Role</label>
+            <label class="mb-2 block font-medium text-slate-700"
+              >Filter Role</label
+            >
             <Select
               v-model="selectedRole"
               :options="roleOptionsArray"
@@ -359,20 +436,26 @@ const actionMenuItems = computed(() => {
       </div>
 
       <!-- DataTable -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <DataTable
-          v-bind="serverSideConfig"
-          :value="users.data"
-          @page="onPage"
-        >
+      <div
+        class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+      >
+        <DataTable v-bind="serverSideConfig" :value="users.data" @page="onPage">
           <template #empty>
-            <div class="text-center py-12">
-              <IconUsers class="text-slate-300 mx-auto mb-4" size="30"/>
-              <p class="text-slate-500 text-lg font-medium">
-                {{ searchQuery || selectedRole ? 'Tidak ada pengguna ditemukan' : 'Belum ada pengguna yang terdaftar' }}
+            <div class="py-12 text-center">
+              <IconUsers class="mx-auto mb-4 text-slate-300" size="30" />
+              <p class="text-lg font-medium text-slate-500">
+                {{
+                  searchQuery || selectedRole
+                    ? 'Tidak ada pengguna ditemukan'
+                    : 'Belum ada pengguna yang terdaftar'
+                }}
               </p>
-              <p class="text-slate-400 mt-1 text-sm">
-                {{ searchQuery || selectedRole ? 'Coba ubah kriteria pencarian' : 'Pengguna yang ditambahkan akan muncul di sini' }}
+              <p class="mt-1 text-sm text-slate-400">
+                {{
+                  searchQuery || selectedRole
+                    ? 'Coba ubah kriteria pencarian'
+                    : 'Pengguna yang ditambahkan akan muncul di sini'
+                }}
               </p>
             </div>
           </template>
@@ -381,23 +464,25 @@ const actionMenuItems = computed(() => {
             <template #body="{ data }">
               <div class="flex items-center gap-3">
                 <div class="flex-shrink-0">
-                  <div class="w-10 h-10 rounded-full flex items-center justify-center"
-                       :class="{
-                         'bg-red-100 text-red-600': data.role === 'admin',
-                         'bg-blue-100 text-blue-600': data.role === 'staff',
-                         'bg-green-100 text-green-600': data.role === 'user'
-                       }">
+                  <div
+                    class="flex h-10 w-10 items-center justify-center rounded-full"
+                    :class="{
+                      'bg-red-100 text-red-600': data.role === 'admin',
+                      'bg-blue-100 text-blue-600': data.role === 'staff',
+                      'bg-green-100 text-green-600': data.role === 'user',
+                    }"
+                  >
                     <span class="text-lg font-semibold">
                       {{ data.name.charAt(0).toUpperCase() }}
                     </span>
                   </div>
                 </div>
 
-                <div class="flex-1 min-w-0">
-                  <h3 class="font-medium text-slate-900 truncate">
+                <div class="min-w-0 flex-1">
+                  <h3 class="truncate font-medium text-slate-900">
                     {{ data.name }}
                   </h3>
-                  <p class="text-sm text-slate-500 truncate">
+                  <p class="truncate text-sm text-slate-500">
                     {{ data.email }}
                   </p>
                 </div>
@@ -415,13 +500,19 @@ const actionMenuItems = computed(() => {
             </template>
           </Column>
 
-          <Column field="created_at" header="Terdaftar" class="hidden lg:table-cell">
+          <Column
+            field="created_at"
+            header="Terdaftar"
+            class="hidden lg:table-cell"
+          >
             <template #body="{ data }">
-              <span class="text-sm text-slate-500">{{ formatDate(data.created_at) }}</span>
+              <span class="text-sm text-slate-500">{{
+                formatDate(data.created_at)
+              }}</span>
             </template>
           </Column>
 
-          <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
+          <Column header="Aksi" :pt="{ columnHeaderContent: 'justify-end' }">
             <template #body="{ data }">
               <div class="flex items-center justify-end">
                 <Button
@@ -430,7 +521,9 @@ const actionMenuItems = computed(() => {
                   @click="toggleActionMenu($event, data)"
                 >
                   <template #default>
-                    <div class="flex items-center text-slate-400 hover:text-blue-600">
+                    <div
+                      class="flex items-center text-slate-400 hover:text-blue-600"
+                    >
                       <IconChevronDown size="22" stroke-width="1.5" />
                     </div>
                   </template>
@@ -443,7 +536,7 @@ const actionMenuItems = computed(() => {
                   class="!min-w-28"
                   :pt="{
                     itemIcon: { class: '!text-sm mr-1' },
-                    itemLabel: { class: 'text-sm' }
+                    itemLabel: { class: 'text-sm' },
                   }"
                 />
               </div>
@@ -461,16 +554,36 @@ const actionMenuItems = computed(() => {
       class="w-full max-w-[95vw] lg:max-w-2xl"
     >
       <template #container="{ closeCallback }">
-        <div class="bg-white rounded-xl shadow-2xl border border-slate-200">
+        <div class="rounded-xl border border-slate-200 bg-white shadow-2xl">
           <!-- Header -->
-          <div class="p-4 lg:p-6 border-b border-slate-200 flex items-center gap-3 lg:gap-4">
-            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <IconEdit class="text-blue-600" :size="!isDesktop ? 18 : undefined" v-if="isEditing"/>
-              <IconUser class="text-blue-600" :size="!isDesktop ? 18 : undefined" v-else/>
+          <div
+            class="flex items-center gap-3 border-b border-slate-200 p-4 lg:gap-4 lg:p-6"
+          >
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 lg:h-12 lg:w-12"
+            >
+              <IconEdit
+                class="text-blue-600"
+                :size="!isDesktop ? 18 : undefined"
+                v-if="isEditing"
+              />
+              <IconUser
+                class="text-blue-600"
+                :size="!isDesktop ? 18 : undefined"
+                v-else
+              />
             </div>
             <div>
-              <h3 class="text-xl/6 font-semibold text-slate-900">{{ isEditing ? 'Edit Pengguna' : 'Tambah Pengguna Baru' }}</h3>
-              <p class="text-xs lg:text-sm text-slate-500">{{ isEditing ? `Perbarui informasi ${currentUser?.name}` : 'Buat akun pengguna baru' }}</p>
+              <h3 class="text-xl/6 font-semibold text-slate-900">
+                {{ isEditing ? 'Edit Pengguna' : 'Tambah Pengguna Baru' }}
+              </h3>
+              <p class="text-xs text-slate-500 lg:text-sm">
+                {{
+                  isEditing
+                    ? `Perbarui informasi ${currentUser?.name}`
+                    : 'Buat akun pengguna baru'
+                }}
+              </p>
             </div>
           </div>
 
@@ -478,15 +591,28 @@ const actionMenuItems = computed(() => {
           <form @submit.prevent="submitForm" class="p-4 lg:p-6">
             <div class="space-y-4 lg:space-y-6">
               <!-- Authentication Section (Only for Edit) -->
-              <div v-if="isEditing" class="bg-amber-50 border border-amber-200 rounded-xl p-4 lg:p-6">
-                <div class="flex items-start gap-3 mb-2">
-                  <IconShieldLock class="text-amber-600"/>
-                  <div><h4 class="font-medium text-amber-800">Verifikasi Keamanan</h4></div>
+              <div
+                v-if="isEditing"
+                class="rounded-xl border border-amber-200 bg-amber-50 p-4 lg:p-6"
+              >
+                <div class="mb-2 flex items-start gap-3">
+                  <IconShieldLock class="text-amber-600" />
+                  <div>
+                    <h4 class="font-medium text-amber-800">
+                      Verifikasi Keamanan
+                    </h4>
+                  </div>
                 </div>
-                <p class="text-sm text-amber-700 mb-4">Masukkan password dari akun <strong>{{ currentUser?.name }}</strong> untuk melanjutkan</p>
+                <p class="mb-4 text-sm text-amber-700">
+                  Masukkan password dari akun
+                  <strong>{{ currentUser?.name }}</strong> untuk melanjutkan
+                </p>
 
                 <div>
-                  <label for="current_password" class="block font-medium text-slate-700 mb-2">
+                  <label
+                    for="current_password"
+                    class="mb-2 block font-medium text-slate-700"
+                  >
                     Password Saat Ini <span class="text-red-500">*</span>
                   </label>
                   <Password
@@ -497,19 +623,30 @@ const actionMenuItems = computed(() => {
                     required
                     class="w-full"
                     inputClass="w-full"
-                    :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.current_password }"
+                    :class="{
+                      'border-red-300 focus:border-red-500 focus:ring-red-500':
+                        form.errors.current_password,
+                    }"
                     :feedback="false"
                   />
-                  <p v-if="form.errors.current_password" class="mt-1 text-red-600 text-xs">
+                  <p
+                    v-if="form.errors.current_password"
+                    class="mt-1 text-xs text-red-600"
+                  >
                     {{ form.errors.current_password }}
                   </p>
                 </div>
               </div>
 
               <!-- User Information -->
-              <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 lg:p-6 space-y-4">
+              <div
+                class="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-4 lg:p-6"
+              >
                 <div>
-                  <label for="name" class="block font-medium text-slate-700 mb-2">
+                  <label
+                    for="name"
+                    class="mb-2 block font-medium text-slate-700"
+                  >
                     Nama Lengkap <span class="text-red-500">*</span>
                   </label>
                   <InputText
@@ -518,15 +655,21 @@ const actionMenuItems = computed(() => {
                     placeholder="Masukkan nama lengkap..."
                     required
                     class="w-full"
-                    :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.name }"
+                    :class="{
+                      'border-red-300 focus:border-red-500 focus:ring-red-500':
+                        form.errors.name,
+                    }"
                   />
-                  <p v-if="form.errors.name" class="mt-1 text-red-600 text-xs">
+                  <p v-if="form.errors.name" class="mt-1 text-xs text-red-600">
                     {{ form.errors.name }}
                   </p>
                 </div>
 
                 <div>
-                  <label for="email" class="block font-medium text-slate-700 mb-2">
+                  <label
+                    for="email"
+                    class="mb-2 block font-medium text-slate-700"
+                  >
                     Alamat Email <span class="text-red-500">*</span>
                   </label>
                   <InputText
@@ -536,17 +679,24 @@ const actionMenuItems = computed(() => {
                     placeholder="Masukkan alamat email..."
                     required
                     class="w-full"
-                    :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.email }"
+                    :class="{
+                      'border-red-300 focus:border-red-500 focus:ring-red-500':
+                        form.errors.email,
+                    }"
                   />
-                  <p v-if="form.errors.email" class="mt-1 text-red-600 text-xs">
+                  <p v-if="form.errors.email" class="mt-1 text-xs text-red-600">
                     {{ form.errors.email }}
                   </p>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
                   <div>
-                    <label for="password" class="block font-medium text-slate-700 mb-2">
-                      {{ isEditing ? 'Password Baru' : 'Password' }} <span v-if="!isEditing" class="text-red-500">*</span>
+                    <label
+                      for="password"
+                      class="mb-2 block font-medium text-slate-700"
+                    >
+                      {{ isEditing ? 'Password Baru' : 'Password' }}
+                      <span v-if="!isEditing" class="text-red-500">*</span>
                     </label>
                     <Password
                       id="password"
@@ -556,20 +706,33 @@ const actionMenuItems = computed(() => {
                       :required="!isEditing"
                       class="w-full"
                       inputClass="w-full"
-                      :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.password }"
+                      :class="{
+                        'border-red-300 focus:border-red-500 focus:ring-red-500':
+                          form.errors.password,
+                      }"
                       :feedback="true"
                     />
-                    <p v-if="form.errors.password" class="mt-1 text-red-600 text-xs">
+                    <p
+                      v-if="form.errors.password"
+                      class="mt-1 text-xs text-red-600"
+                    >
                       {{ form.errors.password }}
                     </p>
-                    <p v-else-if="isEditing" class="mt-1 text-slate-500 text-xs">
+                    <p
+                      v-else-if="isEditing"
+                      class="mt-1 text-xs text-slate-500"
+                    >
                       Kosongkan jika tidak ingin mengubah
                     </p>
                   </div>
 
                   <div>
-                    <label for="password_confirmation" class="block font-medium text-slate-700 mb-2">
-                      Konfirmasi Password <span v-if="!isEditing" class="text-red-500">*</span>
+                    <label
+                      for="password_confirmation"
+                      class="mb-2 block font-medium text-slate-700"
+                    >
+                      Konfirmasi Password
+                      <span v-if="!isEditing" class="text-red-500">*</span>
                     </label>
                     <Password
                       id="password_confirmation"
@@ -579,10 +742,16 @@ const actionMenuItems = computed(() => {
                       :required="!isEditing"
                       class="w-full"
                       inputClass="w-full"
-                      :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.password_confirmation }"
+                      :class="{
+                        'border-red-300 focus:border-red-500 focus:ring-red-500':
+                          form.errors.password_confirmation,
+                      }"
                       :feedback="false"
                     />
-                    <p v-if="form.errors.password_confirmation" class="mt-1 text-red-600 text-xs">
+                    <p
+                      v-if="form.errors.password_confirmation"
+                      class="mt-1 text-xs text-red-600"
+                    >
                       {{ form.errors.password_confirmation }}
                     </p>
                   </div>
@@ -590,9 +759,14 @@ const actionMenuItems = computed(() => {
               </div>
 
               <!-- Settings -->
-              <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 lg:p-6">
+              <div
+                class="rounded-xl border border-slate-200 bg-slate-50 p-4 lg:p-6"
+              >
                 <div>
-                  <label for="role" class="block font-medium text-slate-700 mb-2">
+                  <label
+                    for="role"
+                    class="mb-2 block font-medium text-slate-700"
+                  >
                     Role Pengguna <span class="text-red-500">*</span>
                   </label>
                   <Select
@@ -603,12 +777,15 @@ const actionMenuItems = computed(() => {
                     optionValue="value"
                     placeholder="Pilih Role"
                     class="w-full"
-                    :class="{ 'border-red-300 focus:ring-red-500 focus:border-red-500': form.errors.role }"
+                    :class="{
+                      'border-red-300 focus:border-red-500 focus:ring-red-500':
+                        form.errors.role,
+                    }"
                   />
-                  <p v-if="form.errors.role" class="mt-1 text-red-600 text-xs">
+                  <p v-if="form.errors.role" class="mt-1 text-xs text-red-600">
                     {{ form.errors.role }}
                   </p>
-                  <p class="mt-1 text-slate-500 text-xs">
+                  <p class="mt-1 text-xs text-slate-500">
                     Pilih role sesuai dengan tingkat akses yang diperlukan
                   </p>
                 </div>
@@ -616,15 +793,15 @@ const actionMenuItems = computed(() => {
             </div>
 
             <!-- Actions -->
-            <div class="flex items-center justify-end space-x-3 mt-6 pt-6 border-t border-slate-200">
+            <div
+              class="mt-6 flex items-center justify-end space-x-3 border-t border-slate-200 pt-6"
+            >
               <Button
                 @click="closeCallback"
                 severity="secondary"
                 :disabled="form.processing"
               >
-                <template #default>
-                  <IconX size="16"/>Batal
-                </template>
+                <template #default> <IconX size="16" />Batal </template>
               </Button>
               <Button
                 type="submit"
@@ -632,9 +809,19 @@ const actionMenuItems = computed(() => {
                 :loading="form.processing"
               >
                 <template #default>
-                  <IconLoader3 v-if="form.processing" class="animate-spin" size="16"/>
-                  <IconDeviceFloppy v-else size="16"/>
-                  {{ form.processing ? 'Menyimpan...' : (isEditing ? 'Update Pengguna' : 'Simpan Pengguna') }}
+                  <IconLoader3
+                    v-if="form.processing"
+                    class="animate-spin"
+                    size="16"
+                  />
+                  <IconDeviceFloppy v-else size="16" />
+                  {{
+                    form.processing
+                      ? 'Menyimpan...'
+                      : isEditing
+                        ? 'Update Pengguna'
+                        : 'Simpan Pengguna'
+                  }}
                 </template>
               </Button>
             </div>

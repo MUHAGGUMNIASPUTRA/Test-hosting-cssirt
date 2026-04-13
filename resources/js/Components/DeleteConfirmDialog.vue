@@ -32,34 +32,47 @@ defineEmits(['update:visible', 'confirm'])
     class="w-full max-w-md"
   >
     <template #container="{ closeCallback }">
-      <div class="bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
+      <div
+        class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl"
+      >
         <!-- Header merah -->
         <div class="bg-gradient-to-r from-red-500 to-red-600 px-6 py-4">
           <div class="flex items-center">
-            <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-lg bg-white/20"
+            >
               <IconAlertTriangle class="text-white" />
             </div>
             <div class="ml-3">
-              <h3 class="text-lg font-semibold text-white">Konfirmasi Penghapusan</h3>
-              <p class="text-red-100 text-sm">Tindakan ini tidak dapat dibatalkan</p>
+              <h3 class="text-lg font-semibold text-white">
+                Konfirmasi Penghapusan
+              </h3>
+              <p class="text-sm text-red-100">
+                Tindakan ini tidak dapat dibatalkan
+              </p>
             </div>
           </div>
         </div>
 
         <!-- Konten -->
         <div class="p-6">
-          <div class="text-center mb-6">
-            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div class="mb-6 text-center">
+            <div
+              class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50"
+            >
               <IconTrash class="text-red-500" />
             </div>
-            <p class="text-slate-700 mb-3">
+            <p class="mb-3 text-slate-700">
               Apakah Anda yakin ingin menghapus {{ entityLabel }}?
             </p>
-            <div class="bg-slate-50 border border-slate-100 rounded-lg p-3 text-left">
+            <div
+              class="rounded-lg border border-slate-100 bg-slate-50 p-3 text-left"
+            >
               <slot name="item-info" />
             </div>
-            <p class="text-sm text-red-600 mt-3">
-              <strong>Peringatan:</strong> Data yang dihapus tidak dapat dikembalikan
+            <p class="mt-3 text-sm text-red-600">
+              <strong>Peringatan:</strong> Data yang dihapus tidak dapat
+              dikembalikan
             </p>
           </div>
 

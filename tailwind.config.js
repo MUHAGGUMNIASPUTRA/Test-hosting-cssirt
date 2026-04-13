@@ -41,7 +41,7 @@ export default {
 
             // Custom styling for specific elements
             p: {
-              marginTop: '1.5em',    // Make paragraph spacing wider
+              marginTop: '1.5em', // Make paragraph spacing wider
               marginBottom: '1.5em',
             },
             a: {
@@ -81,9 +81,8 @@ export default {
         '.icon-wght-500': { 'font-variation-settings': "'wght' 500" },
         '.icon-wght-600': { 'font-variation-settings': "'wght' 600" },
         '.icon-wght-700': { 'font-variation-settings': "'wght' 700" },
-      };
-      addUtilities(newUtilities, ['responsive', 'hover']); // Bisa juga responsif dan hover
+      }
+      addUtilities(newUtilities, ['responsive', 'hover']) // Bisa juga responsif dan hover
     },
   ],
-
 }

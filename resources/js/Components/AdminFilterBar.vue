@@ -35,12 +35,12 @@ defineEmits(['clear'])
 </script>
 
 <template>
-  <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
-    <div class="flex items-center justify-between mb-4">
+  <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6">
+    <div class="mb-4 flex items-center justify-between">
       <h3 class="text-xl font-semibold text-slate-900">{{ title }}</h3>
       <button
         v-if="hasActiveFilters"
-        class="text-blue-600 hover:text-blue-800 font-medium text-sm"
+        class="text-sm font-medium text-blue-600 hover:text-blue-800"
         @click="$emit('clear')"
       >
         Reset Filter

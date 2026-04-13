@@ -20,7 +20,8 @@ const form = useForm({
 
 const submit = () => {
   if (isEditMode.value) {
-    form.transform((data) => ({ ...data, _method: 'PUT' }))
+    form
+      .transform((data) => ({ ...data, _method: 'PUT' }))
       .post(route('admin.document-areas.update', props.documentArea.id))
   } else {
     form.post(route('admin.document-areas.store'))
@@ -29,23 +30,31 @@ const submit = () => {
 </script>
 
 <template>
-  <AdminLayout :title="isEditMode ? 'Edit Area Dokumen' : 'Tambah Area Dokumen'">
+  <AdminLayout
+    :title="isEditMode ? 'Edit Area Dokumen' : 'Tambah Area Dokumen'"
+  >
     <form @submit.prevent="submit" class="space-y-4 sm:space-y-6">
       <!-- Header -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div
+          class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div>
-            <h2 class="text-xl sm:text-2xl font-bold text-slate-900">
+            <h2 class="text-xl font-bold text-slate-900 sm:text-2xl">
               {{ isEditMode ? 'Edit Area Dokumen' : 'Tambah Area Dokumen' }}
             </h2>
             <p class="text-slate-600">
-              {{ isEditMode ? 'Perbarui informasi area dokumen' : 'Buat area/kategori dokumen baru' }}
+              {{
+                isEditMode
+                  ? 'Perbarui informasi area dokumen'
+                  : 'Buat area/kategori dokumen baru'
+              }}
             </p>
           </div>
           <div class="flex items-center gap-3">
             <Link
               :href="route('admin.document-areas.index')"
-              class="bg-slate-100 hover:bg-slate-200 text-slate-600 inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition"
+              class="inline-flex items-center justify-center gap-2 rounded-md bg-slate-100 px-4 py-2 text-slate-600 transition hover:bg-slate-200"
             >
               <IconArrowLeft size="16" />
               Kembali
@@ -54,29 +63,45 @@ const submit = () => {
               v-if="!isMobile"
               type="submit"
               :disabled="form.processing"
-              class="bg-blue-600 hover:bg-blue-700 text-white inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
+              class="inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700 disabled:opacity-50"
             >
-              <IconLoader3 v-if="form.processing" class="animate-spin" size="16" />
+              <IconLoader3
+                v-if="form.processing"
+                class="animate-spin"
+                size="16"
+              />
               <IconDeviceFloppy v-else size="16" />
-              {{ form.processing ? 'Menyimpan...' : isEditMode ? 'Update' : 'Simpan' }}
+              {{
+                form.processing
+                  ? 'Menyimpan...'
+                  : isEditMode
+                    ? 'Update'
+                    : 'Simpan'
+              }}
             </button>
           </div>
         </div>
       </div>
 
       <!-- Form -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
+      <div
+        class="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+      >
         <!-- Usage info in edit mode -->
-        <div v-if="isEditMode && documentArea.documents_count > 0" class="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <IconInfoCircle size="18" class="text-blue-500 flex-shrink-0" />
+        <div
+          v-if="isEditMode && documentArea.documents_count > 0"
+          class="flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 p-3"
+        >
+          <IconInfoCircle size="18" class="flex-shrink-0 text-blue-500" />
           <p class="text-sm text-blue-700">
-            Area ini digunakan oleh <strong>{{ documentArea.documents_count }} dokumen</strong>.
+            Area ini digunakan oleh
+            <strong>{{ documentArea.documents_count }} dokumen</strong>.
           </p>
         </div>
 
         <!-- Name -->
         <div>
-          <label class="block font-medium text-gray-700 mb-2">
+          <label class="mb-2 block font-medium text-gray-700">
             Nama Area <span class="text-red-500">*</span>
           </label>
           <InputText
@@ -86,13 +111,15 @@ const submit = () => {
             placeholder="Contoh: Tata Kelola Keamanan Informasi..."
             required
           />
-          <small v-if="form.errors.name" class="p-error block mt-1">{{ form.errors.name }}</small>
+          <small v-if="form.errors.name" class="p-error mt-1 block">{{
+            form.errors.name
+          }}</small>
         </div>
 
         <!-- Description -->
         <div>
-          <label class="block font-medium text-gray-700 mb-2">
-            Deskripsi <span class="text-slate-400 font-normal">(Opsional)</span>
+          <label class="mb-2 block font-medium text-gray-700">
+            Deskripsi <span class="font-normal text-slate-400">(Opsional)</span>
           </label>
           <Textarea
             v-model="form.description"
@@ -101,7 +128,9 @@ const submit = () => {
             :class="{ 'p-invalid': form.errors.description }"
             placeholder="Jelaskan secara singkat area dokumen ini..."
           />
-          <small v-if="form.errors.description" class="p-error block mt-1">{{ form.errors.description }}</small>
+          <small v-if="form.errors.description" class="p-error mt-1 block">{{
+            form.errors.description
+          }}</small>
         </div>
       </div>
 
@@ -110,11 +139,13 @@ const submit = () => {
         <button
           type="submit"
           :disabled="form.processing"
-          class="bg-blue-600 hover:bg-blue-700 text-white w-full inline-flex justify-center items-center gap-2 px-4 py-2 rounded-md transition disabled:opacity-50"
+          class="inline-flex w-full items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700 disabled:opacity-50"
         >
           <IconLoader3 v-if="form.processing" class="animate-spin" size="16" />
           <IconDeviceFloppy v-else size="16" />
-          {{ form.processing ? 'Menyimpan...' : isEditMode ? 'Update' : 'Simpan' }}
+          {{
+            form.processing ? 'Menyimpan...' : isEditMode ? 'Update' : 'Simpan'
+          }}
         </button>
       </div>
     </form>

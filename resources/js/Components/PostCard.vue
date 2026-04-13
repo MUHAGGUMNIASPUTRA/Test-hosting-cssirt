@@ -28,7 +28,10 @@ const excerpt = computed(() => {
     return (div.textContent || div.innerText || '').trim()
   }
   // SSR fallback
-  return (p.body || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+  return (p.body || '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
 })
 
 const formattedDate = computed(() => {
@@ -44,7 +47,7 @@ const formattedDate = computed(() => {
 
 <template>
   <article
-    class="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden border border-slate-200"
+    class="group transform overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
     :style="animationDelay ? { animationDelay: `${animationDelay}ms` } : {}"
   >
     <!-- Gambar -->
@@ -52,9 +55,11 @@ const formattedDate = computed(() => {
       <Link :href="postUrl" class="block">
         <PostImage
           :post="post"
-          class="h-48 w-full object-cover group-hover:scale-105 transition-transform duration-300"
+          class="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        ></div>
       </Link>
     </div>
 
@@ -66,23 +71,32 @@ const formattedDate = computed(() => {
           <span
             v-for="category in post.categories"
             :key="category.id"
-            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800 hover:bg-indigo-200 transition-colors duration-200"
+            class="inline-flex items-center rounded-full bg-indigo-100 px-3 py-1 text-sm font-medium text-indigo-800 transition-colors duration-200 hover:bg-indigo-200"
           >
-            <Link :href="route('categories.show', category.slug)">{{ category.name }}</Link>
+            <Link :href="route('categories.show', category.slug)">{{
+              category.name
+            }}</Link>
           </span>
         </div>
-        <span v-else class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800">
+        <span
+          v-else
+          class="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-800"
+        >
           Artikel
         </span>
       </div>
 
       <!-- Judul -->
-      <h3 class="text-xl font-semibold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors duration-300 line-clamp-2">
+      <h3
+        class="mb-3 line-clamp-2 text-xl font-semibold text-slate-900 transition-colors duration-300 group-hover:text-indigo-600"
+      >
         <Link :href="postUrl">{{ post.title }}</Link>
       </h3>
 
       <!-- Excerpt -->
-      <p class="text-slate-600 mb-4 line-clamp-3 leading-relaxed">{{ excerpt }}</p>
+      <p class="mb-4 line-clamp-3 leading-relaxed text-slate-600">
+        {{ excerpt }}
+      </p>
 
       <!-- Meta: penulis + tanggal -->
       <div class="flex items-center justify-between text-sm text-slate-500">
@@ -90,20 +104,33 @@ const formattedDate = computed(() => {
           <i-lucide-user-pen class="h-4 w-4" />
           <span>{{ post.published_by }}</span>
         </div>
-        <time v-if="formattedDate" :datetime="post.published_at || post.created_at">
+        <time
+          v-if="formattedDate"
+          :datetime="post.published_at || post.created_at"
+        >
           {{ formattedDate }}
         </time>
       </div>
 
       <!-- Baca Artikel -->
-      <div class="mt-4 pt-4 border-t border-slate-200">
+      <div class="mt-4 border-t border-slate-200 pt-4">
         <Link
           :href="postUrl"
-          class="inline-flex items-center text-indigo-600 hover:text-indigo-700 font-medium group/link"
+          class="group/link inline-flex items-center font-medium text-indigo-600 hover:text-indigo-700"
         >
           Baca Artikel
-          <svg class="ml-1 h-3 w-3 group-hover/link:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          <svg
+            class="ml-1 h-3 w-3 transition-transform duration-200 group-hover/link:translate-x-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
           </svg>
         </Link>
       </div>

@@ -18,35 +18,35 @@ const props = defineProps({
 
 const severityMap = {
   'incident-status': {
-    'Baru':               'info',
-    'Diverifikasi':       'primary',
+    Baru: 'info',
+    Diverifikasi: 'primary',
     'Dalam Penyelidikan': 'warn',
-    'Selesai':            'success',
-    'Ditutup':            'secondary',
+    Selesai: 'success',
+    Ditutup: 'secondary',
   },
-  'priority': {
-    'Rendah':  'success',
-    'Sedang':  'info',
-    'Tinggi':  'warn',
-    'Kritikal': 'danger',
+  priority: {
+    Rendah: 'success',
+    Sedang: 'info',
+    Tinggi: 'warn',
+    Kritikal: 'danger',
   },
   'post-status': {
-    'Published': 'success',
-    'Draft':     'warn',
+    Published: 'success',
+    Draft: 'warn',
   },
-  'published': {
-    true:  'success',
+  published: {
+    true: 'success',
     false: 'secondary',
   },
 }
 
 const labelMap = {
   'post-status': {
-    'Published': 'Diterbitkan',
-    'Draft':     'Draft',
+    Published: 'Diterbitkan',
+    Draft: 'Draft',
   },
-  'published': {
-    true:  'Diterbitkan',
+  published: {
+    true: 'Diterbitkan',
     false: 'Draft',
   },
 }

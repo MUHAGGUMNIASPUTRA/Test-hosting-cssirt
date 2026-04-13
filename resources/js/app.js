@@ -7,15 +7,15 @@ import { createApp, h } from 'vue'
 import { ZiggyVue } from '../../vendor/tightenco/ziggy'
 
 import PrimeVue from 'primevue/config'
-import Noir from "./presets/noir";
+import Noir from './presets/noir'
 import 'primeicons/primeicons.css'
 
-import ConfirmationService from 'primevue/confirmationservice';
-import ToastService from 'primevue/toastservice';
+import ConfirmationService from 'primevue/confirmationservice'
+import ToastService from 'primevue/toastservice'
 
-import Particles from "@tsparticles/vue3"
-import { loadSlim } from "@tsparticles/slim"
-import { loadLinksPreset } from "@tsparticles/preset-links"
+import Particles from '@tsparticles/vue3'
+import { loadSlim } from '@tsparticles/slim'
+import { loadLinksPreset } from '@tsparticles/preset-links'
 
 const appName = import.meta.env.VITE_APP_NAME || 'CSIRT Bojonegoro'
 
@@ -46,7 +46,7 @@ createInertiaApp({
         init: async (engine) => {
           await loadSlim(engine)
           await loadLinksPreset(engine)
-        }
+        },
       })
       .mount(el)
   },

@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { isExternalUrl, getFileExtension, formatFileSize, storageUrl } from '@/utils/file'
+import {
+  isExternalUrl,
+  getFileExtension,
+  formatFileSize,
+  storageUrl,
+} from '@/utils/file'
 
 describe('isExternalUrl', () => {
   it('returns false for null', () => {
@@ -19,7 +24,9 @@ describe('isExternalUrl', () => {
   })
 
   it('returns true for https:// URLs', () => {
-    expect(isExternalUrl('https://jdih.bojonegorokab.go.id/perda.pdf')).toBe(true)
+    expect(isExternalUrl('https://jdih.bojonegorokab.go.id/perda.pdf')).toBe(
+      true,
+    )
   })
 })
 

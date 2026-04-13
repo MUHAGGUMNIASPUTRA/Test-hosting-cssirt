@@ -14,17 +14,22 @@ const props = defineProps({
 const { isMobile } = useResponsive()
 
 // --- Filter state ---
-const searchQuery    = ref(props.filters?.search || '')
+const searchQuery = ref(props.filters?.search || '')
 const selectedStatus = ref(props.filters?.status || '')
 
 // --- Server-side DataTable + pagination ---
 const paginatedData = computed(() => props.posts)
 
-const { serverSideConfig, applyFilters, onPage, clearFilters, hasActiveFilters } = useAdminTable(
-  paginatedData,
-  'admin.posts.index',
-  { search: searchQuery, status: selectedStatus }
-)
+const {
+  serverSideConfig,
+  applyFilters,
+  onPage,
+  clearFilters,
+  hasActiveFilters,
+} = useAdminTable(paginatedData, 'admin.posts.index', {
+  search: searchQuery,
+  status: selectedStatus,
+})
 
 // --- Delete dialog ---
 const showDeleteDialog = ref(false)
@@ -49,13 +54,16 @@ const deletePost = () => {
 const formatDate = (dateString) => {
   if (!dateString) return '-'
   return new Date(dateString).toLocaleDateString('id-ID', {
-    year: 'numeric', month: 'short', day: 'numeric',
-    hour: '2-digit', minute: '2-digit',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   })
 }
 
 const statusOptions = [
-  { label: 'Draft',       value: 'Draft' },
+  { label: 'Draft', value: 'Draft' },
   { label: 'Diterbitkan', value: 'Published' },
 ]
 
@@ -74,18 +82,24 @@ const actionMenuItems = computed(() => {
     {
       label: 'Baca',
       icon: 'pi pi-eye',
-      command: () => { router.get(route('posts.show', item.slug)) },
+      command: () => {
+        router.get(route('posts.show', item.slug))
+      },
     },
     {
       label: 'Edit',
       icon: 'pi pi-pen-to-square',
-      command: () => { router.get(route('admin.posts.edit', item.id)) },
+      command: () => {
+        router.get(route('admin.posts.edit', item.id))
+      },
     },
     {
       label: 'Hapus',
       icon: 'pi pi-trash',
-      command: () => { confirmDeletePost(item) },
-    }
+      command: () => {
+        confirmDeletePost(item)
+      },
+    },
   ]
 })
 </script>
@@ -100,23 +114,35 @@ const actionMenuItems = computed(() => {
       @confirm="deletePost"
     >
       <template #item-info>
-        <div class="flex justify-between items-center mb-1">
+        <div class="mb-1 flex items-center justify-between">
           <span class="font-medium text-slate-600">Judul:</span>
-          <span class="text-slate-900 text-right max-w-48 truncate">{{ postToDelete?.title }}</span>
+          <span class="max-w-48 truncate text-right text-slate-900">{{
+            postToDelete?.title
+          }}</span>
         </div>
-        <div class="flex justify-between items-center">
+        <div class="flex items-center justify-between">
           <span class="font-medium text-slate-600">Status:</span>
-          <StatusBadge v-if="postToDelete" type="post-status" :value="postToDelete.status" />
+          <StatusBadge
+            v-if="postToDelete"
+            type="post-status"
+            :value="postToDelete.status"
+          />
         </div>
       </template>
     </DeleteConfirmDialog>
 
     <div class="space-y-4 lg:space-y-6">
       <!-- Header Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-4">
+      <div
+        class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
+      >
+        <div
+          class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div>
-            <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Daftar Artikel</h2>
+            <h2 class="text-xl font-bold text-slate-900 lg:text-2xl">
+              Daftar Artikel
+            </h2>
             <p class="text-slate-600">Kelola artikel dan konten website</p>
           </div>
           <Button
@@ -131,21 +157,27 @@ const actionMenuItems = computed(() => {
       </div>
 
       <!-- Filters Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xl font-semibold text-slate-900">Filter & Pencarian</h3>
+      <div
+        class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
+      >
+        <div class="mb-4 flex items-center justify-between">
+          <h3 class="text-xl font-semibold text-slate-900">
+            Filter & Pencarian
+          </h3>
           <button
             v-if="hasActiveFilters"
             @click="clearFilters"
-            class="text-blue-600 hover:text-blue-800 font-medium"
+            class="font-medium text-blue-600 hover:text-blue-800"
           >
             Reset Filter
           </button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block font-medium text-slate-700 mb-2">Cari Artikel</label>
+            <label class="mb-2 block font-medium text-slate-700"
+              >Cari Artikel</label
+            >
             <IconField class="w-full">
               <InputIcon><i class="pi pi-search" /></InputIcon>
               <InputText
@@ -158,24 +190,45 @@ const actionMenuItems = computed(() => {
           </div>
 
           <div>
-            <label class="block font-medium text-slate-700 mb-2">Filter Status</label>
-            <Select v-model="selectedStatus" :options="statusOptions"
-              optionLabel="label" optionValue="value"
-              placeholder="Pilih Status" class="w-full" showClear @change="applyFilters" />
+            <label class="mb-2 block font-medium text-slate-700"
+              >Filter Status</label
+            >
+            <Select
+              v-model="selectedStatus"
+              :options="statusOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Pilih Status"
+              class="w-full"
+              showClear
+              @change="applyFilters"
+            />
           </div>
         </div>
       </div>
 
       <!-- DataTable -->
-      <AdminDataTable :value="posts.data" :server-config="serverSideConfig" @page="onPage">
+      <AdminDataTable
+        :value="posts.data"
+        :server-config="serverSideConfig"
+        @page="onPage"
+      >
         <template #empty>
-          <div class="text-center py-12">
-            <IconArticle size="30" class="text-slate-300 mx-auto mb-4" />
-            <p class="text-slate-500 text-lg font-medium">
-              {{ hasActiveFilters ? 'Tidak ada artikel yang sesuai filter' : 'Belum ada artikel yang dibuat' }}
+          <div class="py-12 text-center">
+            <IconArticle size="30" class="mx-auto mb-4 text-slate-300" />
+            <p class="text-lg font-medium text-slate-500">
+              {{
+                hasActiveFilters
+                  ? 'Tidak ada artikel yang sesuai filter'
+                  : 'Belum ada artikel yang dibuat'
+              }}
             </p>
-            <p class="text-slate-400 mt-1 text-sm">
-              {{ hasActiveFilters ? 'Coba ubah kriteria pencarian' : 'Artikel yang dibuat akan muncul di sini' }}
+            <p class="mt-1 text-sm text-slate-400">
+              {{
+                hasActiveFilters
+                  ? 'Coba ubah kriteria pencarian'
+                  : 'Artikel yang dibuat akan muncul di sini'
+              }}
             </p>
           </div>
         </template>
@@ -183,23 +236,35 @@ const actionMenuItems = computed(() => {
         <Column :header="`Artikel (${posts.total})`">
           <template #body="{ data }">
             <div class="flex items-center gap-3">
-              <div class="hidden lg:flex flex-shrink-0 relative w-16 h-16 overflow-hidden rounded-xl group">
+              <div
+                class="group relative hidden h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl lg:flex"
+              >
                 <PostImage
                   :post="data"
-                  class="object-cover block h-full group-hover:scale-110 transition-transform duration-300"
+                  class="block h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
               </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="font-medium mb-1 line-clamp-1">{{ data.title }}</h3>
+              <div class="min-w-0 flex-1">
+                <h3 class="mb-1 line-clamp-1 font-medium">{{ data.title }}</h3>
                 <div class="flex items-center gap-3 text-slate-500">
-                  <span v-if="data.published_by" class="lg:hidden flex items-center gap-1">
+                  <span
+                    v-if="data.published_by"
+                    class="flex items-center gap-1 lg:hidden"
+                  >
                     <IconUserEdit size="14" stroke-width="1.5" />
                     <span class="text-sm">{{ data.published_by }}</span>
                   </span>
-                  <span v-if="data.categories?.length > 0" class="flex items-center gap-1">
+                  <span
+                    v-if="data.categories?.length > 0"
+                    class="flex items-center gap-1"
+                  >
                     <IconCategory size="14" stroke-width="1.5" />
                     <span class="text-sm">
-                      {{ !isMobile ? data.categories.map(c => c.name).join(', ') : data.categories[0].name }}
+                      {{
+                        !isMobile
+                          ? data.categories.map((c) => c.name).join(', ')
+                          : data.categories[0].name
+                      }}
                     </span>
                   </span>
                 </div>
@@ -208,7 +273,11 @@ const actionMenuItems = computed(() => {
           </template>
         </Column>
 
-        <Column field="published_by" header="Penulis" class="hidden lg:table-cell">
+        <Column
+          field="published_by"
+          header="Penulis"
+          class="hidden lg:table-cell"
+        >
           <template #body="{ data }">
             <span class="text-sm text-slate-500">
               {{ data.published_by || 'Tidak diketahui' }}
@@ -222,13 +291,19 @@ const actionMenuItems = computed(() => {
           </template>
         </Column>
 
-        <Column field="published_at" header="Diterbitkan" class="hidden lg:table-cell">
+        <Column
+          field="published_at"
+          header="Diterbitkan"
+          class="hidden lg:table-cell"
+        >
           <template #body="{ data }">
-            <span class="text-sm text-slate-500">{{ formatDate(data.published_at || data.created_at) }}</span>
+            <span class="text-sm text-slate-500">{{
+              formatDate(data.published_at || data.created_at)
+            }}</span>
           </template>
         </Column>
 
-        <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
+        <Column header="Aksi" :pt="{ columnHeaderContent: 'justify-end' }">
           <template #body="{ data }">
             <div class="flex items-center justify-end">
               <Button
@@ -237,7 +312,9 @@ const actionMenuItems = computed(() => {
                 @click="toggleActionMenu($event, data)"
               >
                 <template #default>
-                  <div class="flex items-center text-slate-400 hover:text-blue-600">
+                  <div
+                    class="flex items-center text-slate-400 hover:text-blue-600"
+                  >
                     <IconChevronDown size="22" stroke-width="1.5" />
                   </div>
                 </template>
@@ -250,7 +327,7 @@ const actionMenuItems = computed(() => {
                 class="!min-w-28"
                 :pt="{
                   itemIcon: { class: '!text-sm mr-1' },
-                  itemLabel: { class: 'text-sm' }
+                  itemLabel: { class: 'text-sm' },
                 }"
               />
             </div>

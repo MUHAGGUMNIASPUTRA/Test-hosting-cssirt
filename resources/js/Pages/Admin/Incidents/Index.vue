@@ -9,30 +9,32 @@ import { useResponsive } from '@/Composables/useResponsive'
 const props = defineProps({
   incidents: Object,
   filters: Object,
-  stats: Object
+  stats: Object,
 })
 
 const { isMobile } = useResponsive()
 
 // --- Filter state ---
-const searchQuery      = ref(props.filters?.search   || '')
+const searchQuery = ref(props.filters?.search || '')
 const selectedCategory = ref(props.filters?.category || '')
-const selectedStatus   = ref(props.filters?.status   || '')
+const selectedStatus = ref(props.filters?.status || '')
 const selectedPriority = ref(props.filters?.priority || '')
 
 // --- Server-side DataTable + pagination ---
 const paginatedData = computed(() => props.incidents)
 
-const { serverSideConfig, applyFilters, onPage, clearFilters, hasActiveFilters } = useAdminTable(
-  paginatedData,
-  'admin.incidents.index',
-  {
-    search:   searchQuery,
-    category: selectedCategory,
-    status:   selectedStatus,
-    priority: selectedPriority,
-  }
-)
+const {
+  serverSideConfig,
+  applyFilters,
+  onPage,
+  clearFilters,
+  hasActiveFilters,
+} = useAdminTable(paginatedData, 'admin.incidents.index', {
+  search: searchQuery,
+  category: selectedCategory,
+  status: selectedStatus,
+  priority: selectedPriority,
+})
 
 // --- Delete dialog ---
 const showDeleteDialog = ref(false)
@@ -56,31 +58,34 @@ const deleteIncident = () => {
 // --- Helpers ---
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('id-ID', {
-    year: 'numeric', month: 'short', day: 'numeric',
-    hour: '2-digit', minute: '2-digit',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   })
 }
 
 const categoryOptions = [
-  { label: 'Phishing',       value: 1 },
-  { label: 'Malware',        value: 2 },
-  { label: 'Defacement',     value: 3 },
-  { label: 'Serangan DDoS',  value: 4 },
+  { label: 'Phishing', value: 1 },
+  { label: 'Malware', value: 2 },
+  { label: 'Defacement', value: 3 },
+  { label: 'Serangan DDoS', value: 4 },
   { label: 'Kebocoran Data', value: 5 },
 ]
 
 const statusOptions = [
-  { label: 'Baru',               value: 'Baru' },
-  { label: 'Diverifikasi',       value: 'Diverifikasi' },
+  { label: 'Baru', value: 'Baru' },
+  { label: 'Diverifikasi', value: 'Diverifikasi' },
   { label: 'Dalam Penyelidikan', value: 'Dalam Penyelidikan' },
-  { label: 'Selesai',            value: 'Selesai' },
-  { label: 'Ditutup',            value: 'Ditutup' },
+  { label: 'Selesai', value: 'Selesai' },
+  { label: 'Ditutup', value: 'Ditutup' },
 ]
 
 const priorityOptions = [
-  { label: 'Rendah',   value: 'Rendah' },
-  { label: 'Sedang',   value: 'Sedang' },
-  { label: 'Tinggi',   value: 'Tinggi' },
+  { label: 'Rendah', value: 'Rendah' },
+  { label: 'Sedang', value: 'Sedang' },
+  { label: 'Tinggi', value: 'Tinggi' },
   { label: 'Kritikal', value: 'Kritikal' },
 ]
 
@@ -99,19 +104,25 @@ const actionMenuItems = computed(() => {
     {
       label: 'Detail',
       icon: 'pi pi-eye',
-      command: () => { router.get(route('admin.incidents.show', item.id)) },
+      command: () => {
+        router.get(route('admin.incidents.show', item.id))
+      },
     },
     {
       label: 'Edit',
       icon: 'pi pi-pen-to-square',
-      command: () => { router.get(route('admin.incidents.edit', item.id)) },
+      command: () => {
+        router.get(route('admin.incidents.edit', item.id))
+      },
       visible: item.status !== 'Ditutup',
     },
     {
       label: 'Hapus',
       icon: 'pi pi-trash',
-      command: () => { confirmDeleteIncident(item) },
-    }
+      command: () => {
+        confirmDeleteIncident(item)
+      },
+    },
   ]
 })
 </script>
@@ -126,47 +137,65 @@ const actionMenuItems = computed(() => {
       @confirm="deleteIncident"
     >
       <template #item-info>
-        <div class="flex justify-between items-center mb-1">
+        <div class="mb-1 flex items-center justify-between">
           <span class="font-medium text-slate-600">ID Insiden:</span>
-          <span class="font-mono text-slate-900 bg-slate-200 px-2 py-1 rounded text-xs">
+          <span
+            class="rounded bg-slate-200 px-2 py-1 font-mono text-xs text-slate-900"
+          >
             {{ incidentToDelete?.case_id }}
           </span>
         </div>
-        <div class="flex justify-between items-center">
+        <div class="flex items-center justify-between">
           <span class="font-medium text-slate-600">Pelapor:</span>
-          <span class="text-slate-900">{{ incidentToDelete?.reporter_name }}</span>
+          <span class="text-slate-900">{{
+            incidentToDelete?.reporter_name
+          }}</span>
         </div>
       </template>
     </DeleteConfirmDialog>
 
     <div class="space-y-4 lg:space-y-6">
       <!-- Header Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-4">
+      <div
+        class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
+      >
+        <div
+          class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div>
-            <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Daftar Laporan Insiden</h2>
-            <p class="text-slate-600">Kelola dan monitor laporan insiden keamanan siber</p>
+            <h2 class="text-xl font-bold text-slate-900 lg:text-2xl">
+              Daftar Laporan Insiden
+            </h2>
+            <p class="text-slate-600">
+              Kelola dan monitor laporan insiden keamanan siber
+            </p>
           </div>
           <Button
             severity="primary"
             @click="() => router.get(route('admin.incidents.create'))"
             class="w-full sm:w-auto"
           >
-            <IconBellPlus :size="16"/>
+            <IconBellPlus :size="16" />
             Lapor Insiden Baru
           </Button>
         </div>
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
+      <div
+        class="grid grid-cols-2 gap-4 lg:grid-cols-2 lg:gap-6 xl:grid-cols-4"
+      >
         <StatCard color="blue" label="Total Insiden" :value="stats?.total || 0">
           <template #default="{ iconClass, iconSize }">
             <IconMailExclamation :class="iconClass" :size="iconSize" />
           </template>
         </StatCard>
 
-        <StatCard color="yellow" label="Dalam Proses" :value="stats?.in_progress || 0">
+        <StatCard
+          color="yellow"
+          label="Dalam Proses"
+          :value="stats?.in_progress || 0"
+        >
           <template #default="{ iconClass, iconSize }">
             <IconRefresh :class="iconClass" :size="iconSize" />
           </template>
@@ -186,21 +215,27 @@ const actionMenuItems = computed(() => {
       </div>
 
       <!-- Filters Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xl font-semibold text-slate-900">Filter & Pencarian</h3>
+      <div
+        class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
+      >
+        <div class="mb-4 flex items-center justify-between">
+          <h3 class="text-xl font-semibold text-slate-900">
+            Filter & Pencarian
+          </h3>
           <button
             v-if="hasActiveFilters"
             @click="clearFilters"
-            class="text-blue-600 hover:text-blue-800 font-medium"
+            class="font-medium text-blue-600 hover:text-blue-800"
           >
             Reset Filter
           </button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <label class="block font-medium text-slate-700 mb-2">Cari Insiden</label>
+            <label class="mb-2 block font-medium text-slate-700"
+              >Cari Insiden</label
+            >
             <IconField class="w-full">
               <InputIcon>
                 <i class="pi pi-search" />
@@ -215,38 +250,80 @@ const actionMenuItems = computed(() => {
           </div>
 
           <div>
-            <label class="block font-medium text-slate-700 mb-2">Filter Kategori</label>
-            <Select v-model="selectedCategory" :options="categoryOptions"
-              optionLabel="label" optionValue="value"
-              placeholder="Pilih Kategori" class="w-full" showClear @change="applyFilters" />
+            <label class="mb-2 block font-medium text-slate-700"
+              >Filter Kategori</label
+            >
+            <Select
+              v-model="selectedCategory"
+              :options="categoryOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Pilih Kategori"
+              class="w-full"
+              showClear
+              @change="applyFilters"
+            />
           </div>
 
           <div>
-            <label class="block font-medium text-slate-700 mb-2">Filter Status</label>
-            <Select v-model="selectedStatus" :options="statusOptions"
-              optionLabel="label" optionValue="value"
-              placeholder="Pilih Status" class="w-full" showClear @change="applyFilters" />
+            <label class="mb-2 block font-medium text-slate-700"
+              >Filter Status</label
+            >
+            <Select
+              v-model="selectedStatus"
+              :options="statusOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Pilih Status"
+              class="w-full"
+              showClear
+              @change="applyFilters"
+            />
           </div>
 
           <div>
-            <label class="block font-medium text-slate-700 mb-2">Filter Prioritas</label>
-            <Select v-model="selectedPriority" :options="priorityOptions"
-              optionLabel="label" optionValue="value"
-              placeholder="Pilih Prioritas" class="w-full" showClear @change="applyFilters" />
+            <label class="mb-2 block font-medium text-slate-700"
+              >Filter Prioritas</label
+            >
+            <Select
+              v-model="selectedPriority"
+              :options="priorityOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Pilih Prioritas"
+              class="w-full"
+              showClear
+              @change="applyFilters"
+            />
           </div>
         </div>
       </div>
 
       <!-- DataTable -->
-      <AdminDataTable :value="incidents.data" :server-config="serverSideConfig" @page="onPage">
+      <AdminDataTable
+        :value="incidents.data"
+        :server-config="serverSideConfig"
+        @page="onPage"
+      >
         <template #empty>
-          <div class="text-center py-12">
-            <IconMailExclamation size="30" class="text-slate-300 mx-auto mb-4" />
-            <p class="text-slate-500 text-lg font-medium">
-              {{ hasActiveFilters ? 'Tidak ada insiden yang sesuai filter' : 'Belum ada insiden yang dilaporkan' }}
+          <div class="py-12 text-center">
+            <IconMailExclamation
+              size="30"
+              class="mx-auto mb-4 text-slate-300"
+            />
+            <p class="text-lg font-medium text-slate-500">
+              {{
+                hasActiveFilters
+                  ? 'Tidak ada insiden yang sesuai filter'
+                  : 'Belum ada insiden yang dilaporkan'
+              }}
             </p>
-            <p class="text-slate-400 mt-1 text-sm">
-              {{ hasActiveFilters ? 'Coba ubah kriteria pencarian' : 'Insiden yang dilaporkan akan muncul di sini' }}
+            <p class="mt-1 text-sm text-slate-400">
+              {{
+                hasActiveFilters
+                  ? 'Coba ubah kriteria pencarian'
+                  : 'Insiden yang dilaporkan akan muncul di sini'
+              }}
             </p>
           </div>
         </template>
@@ -254,28 +331,49 @@ const actionMenuItems = computed(() => {
         <Column field="case_id" header="ID Insiden">
           <template #body="{ data }">
             <Link :href="route('admin.incidents.show', data.id)">
-              <Tag :value="data.case_id" severity="secondary" size="small" class="font-mono !text-slate-500" />
+              <Tag
+                :value="data.case_id"
+                severity="secondary"
+                size="small"
+                class="font-mono !text-slate-500"
+              />
             </Link>
-            <div class="lg:hidden text-xs text-slate-500 space-x-1 mt-1">
+            <div class="mt-1 space-x-1 text-xs text-slate-500 lg:hidden">
               <span>{{ data.reporter_name }}</span>
               <span>•</span>
-              <span class="text-slate-400">{{ data.incident_type?.name || 'N/A' }}</span>
+              <span class="text-slate-400">{{
+                data.incident_type?.name || 'N/A'
+              }}</span>
             </div>
           </template>
         </Column>
 
-        <Column field="reporter_name" header="Pelapor" class="hidden lg:table-cell">
+        <Column
+          field="reporter_name"
+          header="Pelapor"
+          class="hidden lg:table-cell"
+        >
           <template #body="{ data }">
             <div>
-              <div class="text-sm text-slate-700 font-medium">{{ data.reporter_name }}</div>
-              <div class="text-sm text-slate-500">{{ data.reporter_email }}</div>
+              <div class="text-sm font-medium text-slate-700">
+                {{ data.reporter_name }}
+              </div>
+              <div class="text-sm text-slate-500">
+                {{ data.reporter_email }}
+              </div>
             </div>
           </template>
         </Column>
 
-        <Column field="incident_type" header="Kategori" class="hidden lg:table-cell">
+        <Column
+          field="incident_type"
+          header="Kategori"
+          class="hidden lg:table-cell"
+        >
           <template #body="{ data }">
-            <span class="text-sm text-slate-700">{{ data.incident_type?.name || 'N/A' }}</span>
+            <span class="text-sm text-slate-700">{{
+              data.incident_type?.name || 'N/A'
+            }}</span>
           </template>
         </Column>
 
@@ -285,19 +383,29 @@ const actionMenuItems = computed(() => {
           </template>
         </Column>
 
-        <Column field="priority" header="Prioritas" class="hidden lg:table-cell">
+        <Column
+          field="priority"
+          header="Prioritas"
+          class="hidden lg:table-cell"
+        >
           <template #body="{ data }">
             <StatusBadge type="priority" :value="data.priority" />
           </template>
         </Column>
 
-        <Column field="reported_at" header="Dilaporkan" class="hidden lg:table-cell">
+        <Column
+          field="reported_at"
+          header="Dilaporkan"
+          class="hidden lg:table-cell"
+        >
           <template #body="{ data }">
-            <span class="text-sm text-slate-500">{{ formatDate(data.reported_at) }}</span>
+            <span class="text-sm text-slate-500">{{
+              formatDate(data.reported_at)
+            }}</span>
           </template>
         </Column>
 
-        <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
+        <Column header="Aksi" :pt="{ columnHeaderContent: 'justify-end' }">
           <template #body="{ data }">
             <div class="flex items-center justify-end">
               <Button
@@ -306,7 +414,9 @@ const actionMenuItems = computed(() => {
                 @click="toggleActionMenu($event, data)"
               >
                 <template #default>
-                  <div class="flex items-center text-slate-400 hover:text-blue-600">
+                  <div
+                    class="flex items-center text-slate-400 hover:text-blue-600"
+                  >
                     <IconChevronDown size="22" stroke-width="1.5" />
                   </div>
                 </template>
@@ -319,7 +429,7 @@ const actionMenuItems = computed(() => {
                 class="!min-w-28"
                 :pt="{
                   itemIcon: { class: '!text-sm mr-1' },
-                  itemLabel: { class: 'text-sm' }
+                  itemLabel: { class: 'text-sm' },
                 }"
               />
             </div>

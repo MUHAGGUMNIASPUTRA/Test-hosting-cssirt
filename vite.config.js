@@ -1,15 +1,15 @@
-import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
-import vue from '@vitejs/plugin-vue';
+import { defineConfig } from 'vite'
+import laravel from 'laravel-vite-plugin'
+import vue from '@vitejs/plugin-vue'
 // eslint-disable-next-line import/no-unresolved
-import { configDefaults } from 'vitest/config';
+import { configDefaults } from 'vitest/config'
 
-import Components from 'unplugin-vue-components/vite';
-import { PrimeVueResolver } from '@primevue/auto-import-resolver';
-import { TablerIconsResolver } from './vite/tabler-resolver';
+import Components from 'unplugin-vue-components/vite'
+import { PrimeVueResolver } from '@primevue/auto-import-resolver'
+import { TablerIconsResolver } from './vite/tabler-resolver'
 
-import Icons from 'unplugin-icons/vite';
-import IconsResolver from 'unplugin-icons/resolver';
+import Icons from 'unplugin-icons/vite'
+import IconsResolver from 'unplugin-icons/resolver'
 
 export default defineConfig(({ command, mode, isSsrBuild }) => ({
   plugins: [
@@ -52,7 +52,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => ({
       'primeicons',
       '@inertiajs/vue3',
       '@inertiajs/core',
-      'laravel-vite-plugin'
+      'laravel-vite-plugin',
     ],
     external: ['fs', 'path', 'url'],
     // Allow Node.js modules in SSR
@@ -74,4 +74,4 @@ export default defineConfig(({ command, mode, isSsrBuild }) => ({
     include: ['resources/js/tests/**/*.test.{js,ts}'],
     exclude: [...configDefaults.exclude],
   },
-}));
+}))

@@ -55,16 +55,16 @@ export function formatRelative(date) {
   const d = new Date(date)
   if (isNaN(d)) return '—'
 
-  const diffMs      = Date.now() - d.getTime()
+  const diffMs = Date.now() - d.getTime()
   const diffSeconds = Math.floor(diffMs / 1000)
   const diffMinutes = Math.floor(diffSeconds / 60)
-  const diffHours   = Math.floor(diffMinutes / 60)
-  const diffDays    = Math.floor(diffHours / 24)
+  const diffHours = Math.floor(diffMinutes / 60)
+  const diffDays = Math.floor(diffHours / 24)
 
-  if (diffSeconds < 60)  return 'Baru saja'
-  if (diffMinutes < 60)  return `${diffMinutes} menit lalu`
-  if (diffHours < 24)    return `${diffHours} jam lalu`
-  if (diffDays <= 30)    return `${diffDays} hari lalu`
+  if (diffSeconds < 60) return 'Baru saja'
+  if (diffMinutes < 60) return `${diffMinutes} menit lalu`
+  if (diffHours < 24) return `${diffHours} jam lalu`
+  if (diffDays <= 30) return `${diffDays} hari lalu`
 
   return formatDate(d)
 }

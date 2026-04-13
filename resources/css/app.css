@@ -64,7 +64,7 @@ html {
   gap: 0 !important;
 }
 .p-toast-message-icon {
-  margin: .25rem !important;
+  margin: 0.25rem !important;
 }
 
 /* Form error message */
@@ -115,8 +115,8 @@ html {
 
 /* Prose styling inside the editor */
 .prose p {
-  margin-top: .0em;
-  margin-bottom: .0em;
+  margin-top: 0em;
+  margin-bottom: 0em;
 }
 
 .prose hr {
@@ -174,21 +174,34 @@ html {
   @apply text-slate-700;
 }
 
-.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-  @apply text-slate-900 font-bold;
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  @apply font-bold text-slate-900;
 }
 
-.prose h1 { @apply text-3xl mt-8 mb-4; }
-.prose h2 { @apply text-2xl mt-6 mb-4; }
-.prose h3 { @apply text-xl mt-6 mb-3; }
-.prose h4 { @apply text-lg mt-4 mb-2; }
+.prose h1 {
+  @apply mb-4 mt-8 text-3xl;
+}
+.prose h2 {
+  @apply mb-4 mt-6 text-2xl;
+}
+.prose h3 {
+  @apply mb-3 mt-6 text-xl;
+}
+.prose h4 {
+  @apply mb-2 mt-4 text-lg;
+}
 
 .prose p {
   @apply mb-2 leading-relaxed;
 }
 
 .prose a {
-  @apply text-indigo-600 hover:text-indigo-700 font-medium no-underline;
+  @apply font-medium text-indigo-600 no-underline hover:text-indigo-700;
 }
 
 .prose a:hover {
@@ -196,14 +209,15 @@ html {
 }
 
 .prose img {
-  @apply rounded-xl shadow-lg my-8;
+  @apply my-8 rounded-xl shadow-lg;
 }
 
 .prose blockquote {
-  @apply border-l-4 border-indigo-600 pl-4 italic my-6 text-slate-600;
+  @apply my-6 border-l-4 border-indigo-600 pl-4 italic text-slate-600;
 }
 
-.prose ul, .prose ol {
+.prose ul,
+.prose ol {
   @apply my-4 pl-6;
 }
 
@@ -212,15 +226,15 @@ html {
 }
 
 .prose code {
-  @apply bg-slate-100 text-indigo-600 px-1 py-0.5 rounded text-sm;
+  @apply rounded bg-slate-100 px-1 py-0.5 text-sm text-indigo-600;
 }
 
 .prose pre {
-  @apply bg-slate-900 text-slate-100 p-4 rounded-xl my-6 overflow-x-auto;
+  @apply my-6 overflow-x-auto rounded-xl bg-slate-900 p-4 text-slate-100;
 }
 
 .prose pre code {
-  @apply bg-transparent text-slate-100 p-0;
+  @apply bg-transparent p-0 text-slate-100;
 }
 
 .prose strong {

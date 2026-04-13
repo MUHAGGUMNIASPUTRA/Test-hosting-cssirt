@@ -264,14 +264,19 @@ const isLink = (path) =>
                   <a
                     v-if="data.official_file_path"
                     :href="route('documents.view', data.slug)"
-                    :target="isLink(data.official_file_path) ? '_blank' : '_blank'"
+                    :target="
+                      isLink(data.official_file_path) ? '_blank' : '_blank'
+                    "
                     class="rounded-lg bg-indigo-50 p-2 text-indigo-600 transition-colors duration-200 hover:bg-indigo-200"
                     title="Lihat Dokumen"
                   >
                     <IconEye size="16" />
                   </a>
                   <a
-                    v-if="data.official_file_path && !isLink(data.official_file_path)"
+                    v-if="
+                      data.official_file_path &&
+                      !isLink(data.official_file_path)
+                    "
                     :href="route('documents.download', data.slug)"
                     class="rounded-lg bg-blue-50 p-2 text-blue-600 transition-colors duration-200 hover:bg-blue-200"
                     title="Download Dokumen"

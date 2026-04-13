@@ -29,9 +29,11 @@ defineProps({
 </script>
 
 <template>
-  <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-4">
+  <div
+    class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between"
+  >
     <div>
-      <h2 class="text-xl lg:text-2xl font-bold text-slate-900">{{ title }}</h2>
+      <h2 class="text-xl font-bold text-slate-900 lg:text-2xl">{{ title }}</h2>
       <p v-if="description" class="text-slate-600">{{ description }}</p>
     </div>
     <div v-if="$slots.action" class="w-full sm:w-auto">

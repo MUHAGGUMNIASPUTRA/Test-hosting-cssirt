@@ -57,37 +57,57 @@ const priorityBadge = (priority) => {
   }
 }
 
-const hasAttachment = computed(() => Boolean(incident.value?.attachment?.filename))
+const hasAttachment = computed(() =>
+  Boolean(incident.value?.attachment?.filename),
+)
 </script>
 
 <template>
   <AppLayout :title="`Detail Tiket ${incident?.case_id || ''}`">
-
     <!-- Hero Section -->
-    <section ref="heroRef" class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+    <section
+      ref="heroRef"
+      class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900"
+    >
       <div class="absolute inset-0 z-0">
-        <vue-particles id="tsparticles" :options="minimalParticlesOptions" class="w-full h-full"/>
+        <vue-particles
+          id="tsparticles"
+          :options="minimalParticlesOptions"
+          class="h-full w-full"
+        />
       </div>
 
       <div class="sm:pt-16"></div>
 
       <!-- Background Pattern -->
       <div class="absolute inset-0 opacity-10">
-        <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+        <div
+          class="bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] absolute inset-0"
+        ></div>
       </div>
 
       <div class="relative z-10 px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div class="container max-w-4xl text-center">
           <div class="animate-fade-in-up">
-            <h1 class="text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl mb-6 leading-tight">
-              Detail <span class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">Tiket</span>
+            <h1
+              class="mb-6 text-5xl font-extrabold leading-tight tracking-tight text-white sm:text-6xl lg:text-7xl"
+            >
+              Detail
+              <span
+                class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent"
+                >Tiket</span
+              >
             </h1>
 
-            <p class="mx-auto mt-6 max-w-3xl text-xl sm:text-2xl text-slate-300 mb-8">
+            <p
+              class="mx-auto mb-8 mt-6 max-w-3xl text-xl text-slate-300 sm:text-2xl"
+            >
               Detail informasi insiden keamanan siber yang telah dilaporkan
             </p>
 
-            <p class="font-mono text-xl sm:text-2xl text-slate-300 max-w-3xl mx-auto inline-flex px-3 py-1 rounded-lg border border-white/20 bg-white/10 text-white/90">
+            <p
+              class="mx-auto inline-flex max-w-3xl rounded-lg border border-white/20 bg-white/10 px-3 py-1 font-mono text-xl text-slate-300 text-white/90 sm:text-2xl"
+            >
               {{ incident.case_id }}
             </p>
           </div>
@@ -96,31 +116,36 @@ const hasAttachment = computed(() => Boolean(incident.value?.attachment?.filenam
     </section>
 
     <!-- Main -->
-    <section class="py-10 sm:py-14 bg-white">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+    <section class="bg-white py-10 sm:py-14">
+      <div
+        class="mx-auto max-w-5xl space-y-6 px-4 sm:space-y-8 sm:px-6 lg:px-8"
+      >
         <!-- Summary Card -->
         <div
-          class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 lg:p-8"
+          class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:p-8"
         >
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div
+            class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+          >
             <div>
-              <h2 class="text-xl sm:text-2xl font-bold text-slate-900">
+              <h2 class="text-xl font-bold text-slate-900 sm:text-2xl">
                 Tiket {{ incident.case_id }}
               </h2>
               <p class="text-slate-600">
-                Dilaporkan: <strong>{{ formatDateTime(incident.reported_at) }}</strong>
+                Dilaporkan:
+                <strong>{{ formatDateTime(incident.reported_at) }}</strong>
               </p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <span
-                class="inline-flex items-center px-2.5 py-1 rounded-md text-sm border"
+                class="inline-flex items-center rounded-md border px-2.5 py-1 text-sm"
                 :class="statusBadge(incident.status)"
               >
                 <IconAlertCircle class="mr-1.5" size="14" />
                 {{ incident.status }}
               </span>
               <span
-                class="inline-flex items-center px-2.5 py-1 rounded-md text-sm border"
+                class="inline-flex items-center rounded-md border px-2.5 py-1 text-sm"
                 :class="priorityBadge(incident.priority)"
               >
                 <IconBolt class="mr-1.5" size="14" />
@@ -130,43 +155,51 @@ const hasAttachment = computed(() => Boolean(incident.value?.attachment?.filenam
           </div>
 
           <!-- Meta -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-6">
-            <div class="bg-slate-50 rounded-xl border border-slate-200 p-4">
+          <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
               <div class="flex items-start">
-                <div class="w-10 h-10 rounded-lg bg-blue-100 border border-blue-200 flex items-center justify-center mr-3">
+                <div
+                  class="mr-3 flex h-10 w-10 items-center justify-center rounded-lg border border-blue-200 bg-blue-100"
+                >
                   <IconTicTac class="text-blue-600" size="18" />
                 </div>
                 <div>
-                  <p class="text-slate-500 text-sm">Kategori Insiden</p>
-                  <p class="text-slate-900 text-base/5 font-medium">
+                  <p class="text-sm text-slate-500">Kategori Insiden</p>
+                  <p class="text-base/5 font-medium text-slate-900">
                     {{ incident.incident_type?.name || '-' }}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div class="bg-slate-50 rounded-xl border border-slate-200 p-4">
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
               <div class="flex items-start">
-                <div class="w-10 h-10 rounded-lg bg-orange-100 border border-orange-200 flex items-center justify-center mr-3">
+                <div
+                  class="mr-3 flex h-10 w-10 items-center justify-center rounded-lg border border-orange-200 bg-orange-100"
+                >
                   <IconClock class="text-orange-600" size="18" />
                 </div>
                 <div>
-                  <p class="text-slate-500 text-sm">Waktu Kejadian</p>
-                  <p class="text-slate-900 text-base/5 font-medium">
+                  <p class="text-sm text-slate-500">Waktu Kejadian</p>
+                  <p class="text-base/5 font-medium text-slate-900">
                     {{ formatDateTime(incident.incident_at) || '-' }}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div class="bg-slate-50 rounded-xl border border-slate-200 p-4">
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
               <div class="flex items-start">
-                <div class="w-10 h-10 rounded-lg bg-emerald-100 border border-emerald-200 flex items-center justify-center mr-3">
+                <div
+                  class="mr-3 flex h-10 w-10 items-center justify-center rounded-lg border border-emerald-200 bg-emerald-100"
+                >
                   <IconShieldCheck class="text-emerald-600" size="18" />
                 </div>
                 <div>
-                  <p class="text-slate-500 text-sm">ID Tiket</p>
-                  <p class="text-slate-900 text-sm/5 font-medium font-mono">{{ incident.case_id }}</p>
+                  <p class="text-sm text-slate-500">ID Tiket</p>
+                  <p class="font-mono text-sm/5 font-medium text-slate-900">
+                    {{ incident.case_id }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -174,12 +207,18 @@ const hasAttachment = computed(() => Boolean(incident.value?.attachment?.filenam
         </div>
 
         <!-- Description -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 lg:p-8">
-          <div class="flex items-center mb-3">
-            <div class="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center mr-3">
+        <div
+          class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:p-8"
+        >
+          <div class="mb-3 flex items-center">
+            <div
+              class="mr-3 flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-100"
+            >
               <IconFileDescription class="text-slate-700" size="18" />
             </div>
-            <h3 class="text-lg sm:text-xl font-semibold text-slate-900">Deskripsi Insiden</h3>
+            <h3 class="text-lg font-semibold text-slate-900 sm:text-xl">
+              Deskripsi Insiden
+            </h3>
           </div>
           <p class="whitespace-pre-wrap leading-relaxed text-slate-800">
             {{ incident.description }}
@@ -189,21 +228,27 @@ const hasAttachment = computed(() => Boolean(incident.value?.attachment?.filenam
         <!-- Attachment -->
         <div
           v-if="hasAttachment"
-          class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 lg:p-8"
+          class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:p-8"
         >
-          <div class="flex items-center mb-3">
-            <div class="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center mr-3">
+          <div class="mb-3 flex items-center">
+            <div
+              class="mr-3 flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-100"
+            >
               <IconPaperclip class="text-slate-700" size="18" />
             </div>
-            <h3 class="text-lg sm:text-xl font-semibold text-slate-900">Lampiran</h3>
+            <h3 class="text-lg font-semibold text-slate-900 sm:text-xl">
+              Lampiran
+            </h3>
           </div>
 
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
+          <div
+            class="flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
+          >
             <div class="min-w-0">
-              <p class="text-slate-800 font-medium truncate">
+              <p class="truncate font-medium text-slate-800">
                 {{ incident.attachment.filename }}
               </p>
-              <p class="text-slate-500 text-sm">
+              <p class="text-sm text-slate-500">
                 {{ incident.attachment.file_size }}
               </p>
             </div>
@@ -211,7 +256,7 @@ const hasAttachment = computed(() => Boolean(incident.value?.attachment?.filenam
               :href="incident.attachment.download_url"
               target="_blank"
               rel="noopener"
-              class="inline-flex items-center justify-center px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white transition"
+              class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
             >
               <IconDownload class="mr-2" size="16" />
               Unduh Lampiran
@@ -220,16 +265,24 @@ const hasAttachment = computed(() => Boolean(incident.value?.attachment?.filenam
         </div>
 
         <!-- Logs Timeline -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 lg:p-8">
-          <div class="flex items-center mb-4">
-            <div class="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center mr-3">
+        <div
+          class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:p-8"
+        >
+          <div class="mb-4 flex items-center">
+            <div
+              class="mr-3 flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-100"
+            >
               <IconTimeline class="text-slate-700" size="18" />
             </div>
-            <h3 class="text-lg sm:text-xl font-semibold text-slate-900">Riwayat Penanganan</h3>
+            <h3 class="text-lg font-semibold text-slate-900 sm:text-xl">
+              Riwayat Penanganan
+            </h3>
           </div>
 
           <div v-if="incident.logs?.length" class="relative">
-            <div class="absolute left-3 sm:left-4 top-0 bottom-0 w-px bg-slate-200"></div>
+            <div
+              class="absolute bottom-0 left-3 top-0 w-px bg-slate-200 sm:left-4"
+            ></div>
             <div class="space-y-5">
               <div
                 v-for="(log, idx) in incident.logs"
@@ -237,11 +290,11 @@ const hasAttachment = computed(() => Boolean(incident.value?.attachment?.filenam
                 class="relative pl-8 sm:pl-10"
               >
                 <div
-                  class="absolute left-1.5 sm:left-2.5 mt-1.5 w-3 h-3 rounded-full bg-slate-500 ring-2 ring-white border border-slate-200"
+                  class="absolute left-1.5 mt-1.5 h-3 w-3 rounded-full border border-slate-200 bg-slate-500 ring-2 ring-white sm:left-2.5"
                 ></div>
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
                   <p class="text-slate-800">{{ log.message }}</p>
-                  <p class="text-slate-500 text-sm">
+                  <p class="text-sm text-slate-500">
                     {{ formatDateTime(log.created_at) }}
                   </p>
                 </div>

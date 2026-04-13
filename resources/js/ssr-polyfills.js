@@ -17,18 +17,18 @@ export function setupSSRPolyfills() {
       getAttribute: () => null,
       hasAttribute: () => false,
       removeAttribute: () => {},
-      appendChild: function(child) {
-        this.children.push(child);
-        child.parentNode = this;
-        return child;
+      appendChild: function (child) {
+        this.children.push(child)
+        child.parentNode = this
+        return child
       },
-      removeChild: function(child) {
-        const index = this.children.indexOf(child);
+      removeChild: function (child) {
+        const index = this.children.indexOf(child)
         if (index > -1) {
-          this.children.splice(index, 1);
-          child.parentNode = null;
+          this.children.splice(index, 1)
+          child.parentNode = null
         }
-        return child;
+        return child
       },
       addEventListener: () => {},
       removeEventListener: () => {},
@@ -48,9 +48,14 @@ export function setupSSRPolyfills() {
       scrollWidth: 0,
       scrollHeight: 0,
       getBoundingClientRect: () => ({
-        top: 0, left: 0, bottom: 0, right: 0, width: 0, height: 0
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        width: 0,
+        height: 0,
       }),
-    });
+    })
 
     global.window = {
       document: {
@@ -94,10 +99,10 @@ export function setupSSRPolyfills() {
       clearTimeout: clearTimeout,
       setInterval: setInterval,
       clearInterval: clearInterval,
-    };
+    }
 
-    global.document = global.window.document;
-    global.navigator = global.window.navigator;
-    global.location = global.window.location;
+    global.document = global.window.document
+    global.navigator = global.window.navigator
+    global.location = global.window.location
   }
 }

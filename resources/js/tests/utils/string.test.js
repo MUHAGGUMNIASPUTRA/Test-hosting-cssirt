@@ -15,15 +15,16 @@ describe('truncate', () => {
   })
 
   it('truncates and appends ellipsis when over limit', () => {
-    const long   = 'Ini adalah kalimat yang sangat panjang sekali dan perlu dipotong'
+    const long =
+      'Ini adalah kalimat yang sangat panjang sekali dan perlu dipotong'
     const result = truncate(long, 20)
     expect(result.length).toBeLessThanOrEqual(21) // 20 chars + "…"
     expect(result).toEndWith('…')
   })
 
   it('uses default maxLength of 80', () => {
-    const str80  = 'a'.repeat(80)
-    const str81  = 'a'.repeat(81)
+    const str80 = 'a'.repeat(80)
+    const str81 = 'a'.repeat(81)
     expect(truncate(str80)).toBe(str80)
     expect(truncate(str81)).toEndWith('…')
   })
@@ -52,7 +53,9 @@ describe('slugify', () => {
   })
 
   it('handles a typical article title', () => {
-    expect(slugify('Panduan Keamanan Siber 2026')).toBe('panduan-keamanan-siber-2026')
+    expect(slugify('Panduan Keamanan Siber 2026')).toBe(
+      'panduan-keamanan-siber-2026',
+    )
   })
 })
 

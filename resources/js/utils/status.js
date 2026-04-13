@@ -10,24 +10,24 @@
 /** @type {Record<string, Record<string, string>>} */
 const SEVERITY_MAP = {
   'incident-status': {
-    Baru:               'info',
-    Diverifikasi:       'primary',
+    Baru: 'info',
+    Diverifikasi: 'primary',
     'Dalam Penyelidikan': 'warn',
-    Selesai:            'success',
-    Ditutup:            'secondary',
+    Selesai: 'success',
+    Ditutup: 'secondary',
   },
   priority: {
-    Rendah:  'success',
-    Sedang:  'info',
-    Tinggi:  'warn',
+    Rendah: 'success',
+    Sedang: 'info',
+    Tinggi: 'warn',
     Kritikal: 'danger',
   },
   'post-status': {
     Published: 'success',
-    Draft:     'warn',
+    Draft: 'warn',
   },
   published: {
-    true:  'success',
+    true: 'success',
     false: 'secondary',
   },
 }
@@ -36,10 +36,10 @@ const SEVERITY_MAP = {
 const LABEL_MAP = {
   'post-status': {
     Published: 'Diterbitkan',
-    Draft:     'Draft',
+    Draft: 'Draft',
   },
   published: {
-    true:  'Diterbitkan',
+    true: 'Diterbitkan',
     false: 'Draft',
   },
 }

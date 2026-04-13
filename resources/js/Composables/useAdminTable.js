@@ -40,11 +40,15 @@ export function useAdminTable(paginatedData, routeName, filterRefs = {}) {
   }
 
   const navigate = (page = lazyParams.value.page) => {
-    router.get(buildUrl(page), {}, {
-      preserveState: true,
-      preserveScroll: true,
-      replace: true,
-    })
+    router.get(
+      buildUrl(page),
+      {},
+      {
+        preserveState: true,
+        preserveScroll: true,
+        replace: true,
+      },
+    )
   }
 
   /** Dipanggil saat filter berubah — tetap di halaman saat ini (seperti perilaku asli) */
@@ -53,8 +57,8 @@ export function useAdminTable(paginatedData, routeName, filterRefs = {}) {
   /** Dipanggil oleh event @page dari PrimeVue DataTable */
   const onPage = (event) => {
     lazyParams.value.first = event.first
-    lazyParams.value.rows  = event.rows
-    lazyParams.value.page  = Math.floor(event.first / event.rows) + 1
+    lazyParams.value.rows = event.rows
+    lazyParams.value.page = Math.floor(event.first / event.rows) + 1
     navigate()
   }
 
@@ -63,7 +67,7 @@ export function useAdminTable(paginatedData, routeName, filterRefs = {}) {
     for (const filterRef of Object.values(filterRefs)) {
       filterRef.value = ''
     }
-    lazyParams.value.page  = 1
+    lazyParams.value.page = 1
     lazyParams.value.first = 0
     navigate(1)
   }
@@ -73,14 +77,22 @@ export function useAdminTable(paginatedData, routeName, filterRefs = {}) {
     ...dtConfig(),
     lazy: true,
     totalRecords: paginatedData.value?.total,
-    first: (paginatedData.value?.current_page - 1) * paginatedData.value?.per_page,
+    first:
+      (paginatedData.value?.current_page - 1) * paginatedData.value?.per_page,
     rows: paginatedData.value?.per_page,
   }))
 
   /** true jika ada filter aktif */
   const hasActiveFilters = computed(() =>
-    Object.values(filterRefs).some(f => !!f.value)
+    Object.values(filterRefs).some((f) => !!f.value),
   )
 
-  return { lazyParams, serverSideConfig, applyFilters, onPage, clearFilters, hasActiveFilters }
+  return {
+    lazyParams,
+    serverSideConfig,
+    applyFilters,
+    onPage,
+    clearFilters,
+    hasActiveFilters,
+  }
 }
