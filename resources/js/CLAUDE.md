@@ -12,6 +12,7 @@ Tabler Icons: `<IconNamaIcon>` auto-import.
 Lucide: `<i-lucide-nama-icon>` auto-import.
 
 **Yang TIDAK auto-import (harus import eksplisit):**
+
 - `import { formatDate } from '@/utils/date'` — utils functions
 - `import { useAdminTable } from '@/Composables/useAdminTable'` — composables
 - `import { router } from '@inertiajs/vue3'` — Inertia router
@@ -26,15 +27,20 @@ Lucide: `<i-lucide-nama-icon>` auto-import.
 ```js
 import { useAdminTable } from '@/Composables/useAdminTable'
 
-const searchQuery  = ref(props.filters?.search || '')
+const searchQuery = ref(props.filters?.search || '')
 const selectedRole = ref(props.filters?.role || '')
 const paginatedData = computed(() => props.users)
 
-const { serverSideConfig, applyFilters, onPage, clearFilters, hasActiveFilters } =
-  useAdminTable(paginatedData, 'admin.users.index', {
-    search: searchQuery,
-    role:   selectedRole,
-  })
+const {
+  serverSideConfig,
+  applyFilters,
+  onPage,
+  clearFilters,
+  hasActiveFilters,
+} = useAdminTable(paginatedData, 'admin.users.index', {
+  search: searchQuery,
+  role: selectedRole,
+})
 ```
 
 **JANGAN** buat `lazyParams`, `buildUrl`, atau `navigate` manual di page. `useAdminTable` sudah handle ini semua.
@@ -44,7 +50,10 @@ const { serverSideConfig, applyFilters, onPage, clearFilters, hasActiveFilters }
 ### 2. Gunakan `AdminPageHeader` untuk header
 
 ```vue
-<AdminPageHeader title="Daftar Pengguna" description="Kelola akun pengguna sistem.">
+<AdminPageHeader
+  title="Daftar Pengguna"
+  description="Kelola akun pengguna sistem."
+>
   <template #action>
     <Button @click="openCreateDialog">Tambah Pengguna</Button>
   </template>
@@ -115,14 +124,15 @@ const handleDelete = () => {
 
 Fungsi pure (non-reaktif) untuk operasi berulang. **Jangan taruh di Composables.**
 
-| File | Fungsi |
-|------|--------|
-| `utils/date.js` | `formatDate(date)`, `formatDatetime(date)`, `formatRelative(date)` |
-| `utils/status.js` | `getSeverity(type, value)`, `getStatusLabel(type, value)` |
-| `utils/string.js` | `truncate(str, len)`, `slugify(str)` |
-| `utils/file.js` | `isExternalUrl(path)`, `getFileExtension(path)`, `formatFileSize(bytes)` |
+| File              | Fungsi                                                                   |
+| ----------------- | ------------------------------------------------------------------------ |
+| `utils/date.js`   | `formatDate(date)`, `formatDatetime(date)`, `formatRelative(date)`       |
+| `utils/status.js` | `getSeverity(type, value)`, `getStatusLabel(type, value)`                |
+| `utils/string.js` | `truncate(str, len)`, `slugify(str)`                                     |
+| `utils/file.js`   | `isExternalUrl(path)`, `getFileExtension(path)`, `formatFileSize(bytes)` |
 
 **Contoh penggunaan di template:**
+
 ```js
 import { formatDate } from '@/utils/date'
 import { isExternalUrl } from '@/utils/file'
@@ -132,26 +142,26 @@ import { isExternalUrl } from '@/utils/file'
 
 ## Komponen Admin yang Tersedia
 
-| Komponen | Props | Slot/Event |
-|----------|-------|-----------|
-| `AdminPageHeader` | `title` (req), `description` | `#action` |
-| `AdminFilterBar` | `hasActiveFilters`, `title` | `#default`, `@clear` |
-| `AdminDataTable` | `value`, `serverConfig` | `default` (columns), `#empty`, `@page` |
-| `StatCard` | `label`, `value`, `color`, `layout`, `subtext` | `#default { iconClass, iconSize }` |
-| `StatusBadge` | `type`, `value` | — |
-| `DeleteConfirmDialog` | `v-model:visible`, `entityLabel`, `deleteLabel` | `#item-info`, `@confirm` |
-| `RichTextEditor` | `v-model` | — |
-| `PostImage` | `src`, `alt` | — |
+| Komponen              | Props                                           | Slot/Event                             |
+| --------------------- | ----------------------------------------------- | -------------------------------------- |
+| `AdminPageHeader`     | `title` (req), `description`                    | `#action`                              |
+| `AdminFilterBar`      | `hasActiveFilters`, `title`                     | `#default`, `@clear`                   |
+| `AdminDataTable`      | `value`, `serverConfig`                         | `default` (columns), `#empty`, `@page` |
+| `StatCard`            | `label`, `value`, `color`, `layout`, `subtext`  | `#default { iconClass, iconSize }`     |
+| `StatusBadge`         | `type`, `value`                                 | —                                      |
+| `DeleteConfirmDialog` | `v-model:visible`, `entityLabel`, `deleteLabel` | `#item-info`, `@confirm`               |
+| `RichTextEditor`      | `v-model`                                       | —                                      |
+| `PostImage`           | `src`, `alt`                                    | —                                      |
 
 ---
 
 ## Composables
 
-| File | Return |
-|------|--------|
+| File                                  | Return                                                                           |
+| ------------------------------------- | -------------------------------------------------------------------------------- |
 | `useAdminTable(data, route, filters)` | `serverSideConfig`, `applyFilters`, `onPage`, `clearFilters`, `hasActiveFilters` |
-| `useResponsive()` | `isMobile`, `dtConfig()` |
-| `useParticles()` | `initParticles` |
+| `useResponsive()`                     | `isMobile`, `dtConfig()`                                                         |
+| `useParticles()`                      | `initParticles`                                                                  |
 
 ---
 
@@ -159,13 +169,13 @@ import { isExternalUrl } from '@/utils/file'
 
 File Vue/JS yang melebihi batas baris berikut adalah sinyal bahwa file tersebut **perlu di-refactor**:
 
-| Tipe File | Batas | Aksi jika melebihi |
-|-----------|-------|---------------------|
-| Vue Page (`Pages/Admin/*/Index.vue`) | **250 baris** | Ekstrak section ke komponen terpisah |
-| Vue Page (`Pages/Admin/*/Create.vue`) | **250 baris** | Pecah form menjadi komponen form terpisah |
-| Vue Component (`Components/`) | **150 baris** | Pecah menjadi sub-komponen atau composable |
-| Composable (`Composables/`) | **150 baris** | Pecah ke composable yang lebih kecil |
-| Utils (`utils/`) | **80 baris** | Pecah ke file utils yang lebih spesifik |
+| Tipe File                             | Batas         | Aksi jika melebihi                         |
+| ------------------------------------- | ------------- | ------------------------------------------ |
+| Vue Page (`Pages/Admin/*/Index.vue`)  | **250 baris** | Ekstrak section ke komponen terpisah       |
+| Vue Page (`Pages/Admin/*/Create.vue`) | **250 baris** | Pecah form menjadi komponen form terpisah  |
+| Vue Component (`Components/`)         | **150 baris** | Pecah menjadi sub-komponen atau composable |
+| Composable (`Composables/`)           | **150 baris** | Pecah ke composable yang lebih kecil       |
+| Utils (`utils/`)                      | **80 baris**  | Pecah ke file utils yang lebih spesifik    |
 
 > Hitung baris template + script + style secara keseluruhan di SFC. File yang mendekati batas bukan berarti harus langsung refactor — gunakan sebagai **sinyal awal**.
 
@@ -179,6 +189,7 @@ Konfigurasi aktif: [`.prettierrc.json`](../../.prettierrc.json) (singleQuote, se
 File yang diabaikan: [`.prettierignore`](../../.prettierignore) (vendor, node_modules, public, storage, bootstrap).
 
 Jalankan manual jika perlu:
+
 ```bash
 npm run format                          # format semua file
 npx prettier --write resources/js/      # format folder JS saja

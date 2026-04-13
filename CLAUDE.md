@@ -6,20 +6,21 @@ Referensi cepat proyek untuk AI. Baca ini sebelum menyentuh kode apapun.
 
 ## Stack
 
-| Layer | Teknologi |
-|-------|-----------|
-| Backend | Laravel 11, PHP 8.2 |
-| Frontend SPA | Vue 3 (Composition API `<script setup>`) + Inertia.js 2.0 |
-| Build | Vite 6, SSR diaktifkan (`npm run build` → client + SSR bundle) |
-| Styling | Tailwind CSS 3 + `@tailwindcss/forms` + `@tailwindcss/typography` |
-| UI Library | PrimeVue 4 (Noir preset, auto-import) |
-| Icons | Tabler Icons Vue (`Icon` prefix, auto-import) + Lucide (`i-lucide-*`) |
-| Rich Text | Tiptap 3 |
-| Auth | Laravel Breeze + Sanctum |
-| Routing JS | Ziggy (`route()` tersedia global di Vue) |
-| HTTP Client | Axios (via `bootstrap.js`) |
+| Layer        | Teknologi                                                             |
+| ------------ | --------------------------------------------------------------------- |
+| Backend      | Laravel 11, PHP 8.2                                                   |
+| Frontend SPA | Vue 3 (Composition API `<script setup>`) + Inertia.js 2.0             |
+| Build        | Vite 6, SSR diaktifkan (`npm run build` → client + SSR bundle)        |
+| Styling      | Tailwind CSS 3 + `@tailwindcss/forms` + `@tailwindcss/typography`     |
+| UI Library   | PrimeVue 4 (Noir preset, auto-import)                                 |
+| Icons        | Tabler Icons Vue (`Icon` prefix, auto-import) + Lucide (`i-lucide-*`) |
+| Rich Text    | Tiptap 3                                                              |
+| Auth         | Laravel Breeze + Sanctum                                              |
+| Routing JS   | Ziggy (`route()` tersedia global di Vue)                              |
+| HTTP Client  | Axios (via `bootstrap.js`)                                            |
 
 **Dev command:**
+
 - `composer dev:herd` — untuk Windows + Laravel Herd (queue + Vite; server di-handle Herd via domain `.test`)
 - `composer dev` — untuk Linux/macOS/Docker (server + queue + Pail log viewer + Vite; butuh ekstensi `pcntl`)
 
@@ -28,6 +29,7 @@ Referensi cepat proyek untuk AI. Baca ini sebelum menyentuh kode apapun.
 ## Auto-Import (jangan tulis import manual untuk ini)
 
 Vite dikonfigurasi via `unplugin-vue-components` untuk auto-import:
+
 - Semua komponen di `resources/js/Components/` dan `resources/js/Layouts/`
 - Semua komponen PrimeVue (misal `<DataTable>`, `<Button>`, `<Dialog>`, `<Tag>`, `<Select>`)
 - Tabler Icons: `<IconNamaIcon>` (misal `<IconTrash>`, `<IconEdit>`)
@@ -90,18 +92,19 @@ Detail lengkap (enum cases, method service, konvensi request, pola controller) �
 
 ## Layout
 
-| Layout | Dipakai di |
-|--------|-----------|
-| `AppLayout.vue` | Semua halaman publik |
-| `AdminLayout.vue` | Semua halaman `/admin/*` |
+| Layout            | Dipakai di                     |
+| ----------------- | ------------------------------ |
+| `AppLayout.vue`   | Semua halaman publik           |
+| `AdminLayout.vue` | Semua halaman `/admin/*`       |
 | `GuestLayout.vue` | Halaman auth (login, register) |
-| `SEOLayout.vue` | Halaman SEO (Pages/SEO*.vue) |
+| `SEOLayout.vue`   | Halaman SEO (Pages/SEO\*.vue)  |
 
 ---
 
 ## Routing
 
 ### Publik (`routes/web.php`)
+
 ```
 GET  /                      landing
 GET  /services              services.index
@@ -120,6 +123,7 @@ GET  /documents/{slug}/download documents.download  (hanya berlaku untuk file, b
 ```
 
 ### Admin (`/admin`, middleware: `auth`, `verified`)
+
 ```
 GET    /admin               admin.dashboard
 resource incidents          admin.incidents.*   (+management.update, +logs.store)
@@ -192,26 +196,27 @@ documents       id, title, slug, description,
 
 ## Controllers Admin
 
-| Controller | Route prefix | Catatan |
-|-----------|-------------|---------|
-| `DashboardController` | `admin/` | Kirim stats + recentIncidents/Posts/Users |
-| `IncidentController` | `admin/incidents` | Full CRUD + management update + log tambah |
-| `PostController` | `admin/posts` | CRUD + AI excerpt via `ExcerptController` |
-| `TaxonomyController` | `admin/taxonomy` | Kelola Category + Tag dalam satu halaman |
-| `ServiceController` | `admin/services` | Full CRUD |
-| `FaqController` | `admin/faqs` | CRUD via dialog inline (no dedicated create/edit page) |
-| `AnnouncementController` | `admin/announcements` | CRUD via dialog inline |
-| `UserController` | `admin/users` | CRUD, hanya bisa diakses role `admin` |
-| `DocumentAreaController` | `admin/document-areas` | Full CRUD area/kategori dokumen |
-| `DocumentController` (Admin) | `admin/documents` | Full CRUD + toggle-visibility; `official_file_path` bisa file upload atau link |
-| `ImageUploadController` | `admin/images/upload` | Upload gambar untuk Tiptap editor |
-| `ExcerptController` | `admin/generate-excerpt` | Generate excerpt artikel via AI |
+| Controller                   | Route prefix             | Catatan                                                                        |
+| ---------------------------- | ------------------------ | ------------------------------------------------------------------------------ |
+| `DashboardController`        | `admin/`                 | Kirim stats + recentIncidents/Posts/Users                                      |
+| `IncidentController`         | `admin/incidents`        | Full CRUD + management update + log tambah                                     |
+| `PostController`             | `admin/posts`            | CRUD + AI excerpt via `ExcerptController`                                      |
+| `TaxonomyController`         | `admin/taxonomy`         | Kelola Category + Tag dalam satu halaman                                       |
+| `ServiceController`          | `admin/services`         | Full CRUD                                                                      |
+| `FaqController`              | `admin/faqs`             | CRUD via dialog inline (no dedicated create/edit page)                         |
+| `AnnouncementController`     | `admin/announcements`    | CRUD via dialog inline                                                         |
+| `UserController`             | `admin/users`            | CRUD, hanya bisa diakses role `admin`                                          |
+| `DocumentAreaController`     | `admin/document-areas`   | Full CRUD area/kategori dokumen                                                |
+| `DocumentController` (Admin) | `admin/documents`        | Full CRUD + toggle-visibility; `official_file_path` bisa file upload atau link |
+| `ImageUploadController`      | `admin/images/upload`    | Upload gambar untuk Tiptap editor                                              |
+| `ExcerptController`          | `admin/generate-excerpt` | Generate excerpt artikel via AI                                                |
 
 ---
 
 ## Pola Inertia
 
 Controller mengembalikan `Inertia::render('PageName', [...data])`.
+
 - Nama page = path dari `resources/js/Pages/` tanpa ekstensi
 - Data otomatis jadi `props` di `defineProps()` Vue
 - Flash messages: `session()->flash('success', '...')` → tersedia di `$page.props.flash`
@@ -224,20 +229,21 @@ Controller mengembalikan `Inertia::render('PageName', [...data])`.
 
 ### Batas Panjang File (sinyal refactor, bukan aturan absolut)
 
-| Tipe File | Batas |
-|-----------|-------|
-| PHP Controller | 150 baris |
-| PHP Service | 300 baris |
-| PHP Model | 200 baris |
-| Vue Page (Index/Create) | 250 baris |
-| Vue Component | 150 baris |
-| JS Composable / Utils | 80–150 baris |
+| Tipe File               | Batas        |
+| ----------------------- | ------------ |
+| PHP Controller          | 150 baris    |
+| PHP Service             | 300 baris    |
+| PHP Model               | 200 baris    |
+| Vue Page (Index/Create) | 250 baris    |
+| Vue Component           | 150 baris    |
+| JS Composable / Utils   | 80–150 baris |
 
 File yang melebihi batas → ekstrak ke service/komponen/composable. Detail per jenis file ada di `app/CLAUDE.md` dan `resources/js/CLAUDE.md`.
 
 ### Auto-Format via Hook
 
 Setiap file yang ditulis/diedit Claude otomatis diformat setelah tool call selesai:
+
 - **PHP** → Laravel Pint (`./vendor/bin/pint <file>`)
 - **JS / Vue / TS / CSS / JSON** → Prettier (`npx prettier --write <file>`, menggunakan `.prettierrc.json`)
 
@@ -247,7 +253,7 @@ Setiap file yang ditulis/diedit Claude otomatis diformat setelah tool call seles
 
 - **Jangan** buat import manual untuk komponen, PrimeVue, atau Tabler Icons — semua auto-import.
 - **Gambar** artikel disimpan di `storage/app/public/` dan diakses via `/storage/`.
-- **SSR pages** (SEO*.vue) adalah versi terpisah untuk server-side rendering SEO, jangan modifikasi bersama halaman reguler.
+- **SSR pages** (SEO\*.vue) adalah versi terpisah untuk server-side rendering SEO, jangan modifikasi bersama halaman reguler.
 - **Middleware `admin`**: hanya user dengan `role === 'admin'` yang bisa akses `admin/users`.
 - **`case_id`** insiden digenerate otomatis (format: `INC-YYYYMMDD-XXXX`).
 - **Pagination** di halaman admin selalu server-side via `useAdminTable` composable.

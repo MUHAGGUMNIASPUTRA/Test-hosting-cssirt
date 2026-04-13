@@ -7,7 +7,9 @@ import { createReadStream } from 'fs'
 let payload = ''
 
 process.stdin.setEncoding('utf8')
-process.stdin.on('data', (chunk) => { payload += chunk })
+process.stdin.on('data', (chunk) => {
+  payload += chunk
+})
 process.stdin.on('end', () => {
   let data = {}
   try {
@@ -36,9 +38,9 @@ process.stdin.on('end', () => {
   if (affected) {
     console.log(
       '\n[CLAUDE.md REMINDER] File struktural berubah — periksa apakah CLAUDE.md perlu diperbarui:\n' +
-      '  - CLAUDE.md (root)          — routing, model, controller list\n' +
-      '  - app/CLAUDE.md             — services, enums, form requests, controller pattern\n' +
-      '  - resources/js/CLAUDE.md    — komponen baru, composable, utils, pola delete\n'
+        '  - CLAUDE.md (root)          — routing, model, controller list\n' +
+        '  - app/CLAUDE.md             — services, enums, form requests, controller pattern\n' +
+        '  - resources/js/CLAUDE.md    — komponen baru, composable, utils, pola delete\n',
     )
   }
 

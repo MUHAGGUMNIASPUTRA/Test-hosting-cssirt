@@ -5,7 +5,7 @@
 import { spawnSync } from 'child_process'
 
 const JS_EXTS = new Set(['js', 'vue', 'ts', 'mjs', 'cjs', 'css', 'json'])
-const isWin   = process.platform === 'win32'
+const isWin = process.platform === 'win32'
 
 function run(cmd, args) {
   return spawnSync(cmd, args, { stdio: 'inherit', shell: true })
@@ -13,31 +13,47 @@ function run(cmd, args) {
 
 let raw = ''
 process.stdin.setEncoding('utf8')
-process.stdin.on('data', (chunk) => { raw += chunk })
+process.stdin.on('data', (chunk) => {
+  raw += chunk
+})
 process.stdin.on('end', () => {
   let data = {}
-  try { data = JSON.parse(raw) } catch { process.exit(0) }
+  try {
+    data = JSON.parse(raw)
+  } catch {
+    process.exit(0)
+  }
 
   const filePath = data?.tool_input?.file_path
   if (!filePath) process.exit(0)
 
   // Skip vendor/, node_modules/, bootstrap/, public/, storage/
-  if (/[\\/](vendor|node_modules|bootstrap|public|storage)[\\/]/.test(filePath)) {
+  if (
+    /[\\/](vendor|node_modules|bootstrap|public|storage)[\\/]/.test(filePath)
+  ) {
     process.exit(0)
   }
 
   const ext = filePath.split('.').pop()?.toLowerCase()
 
   if (ext === 'php') {
-    const pint   = isWin ? 'vendor\\bin\\pint.bat' : './vendor/bin/pint'
+    const pint = isWin ? 'vendor\\bin\\pint.bat' : './vendor/bin/pint'
     const result = run(pint, [filePath])
     if (result.status !== 0) {
       console.warn(`[format-on-save] Pint returned non-zero for: ${filePath}`)
     }
   } else if (JS_EXTS.has(ext)) {
-    const result = run('npx', ['prettier', '--write', '--log-level', 'warn', filePath])
+    const result = run('npx', [
+      'prettier',
+      '--write',
+      '--log-level',
+      'warn',
+      filePath,
+    ])
     if (result.status !== 0) {
-      console.warn(`[format-on-save] Prettier returned non-zero for: ${filePath}`)
+      console.warn(
+        `[format-on-save] Prettier returned non-zero for: ${filePath}`,
+      )
     }
   }
 
