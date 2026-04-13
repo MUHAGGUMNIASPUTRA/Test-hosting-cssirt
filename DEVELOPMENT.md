@@ -115,6 +115,35 @@ Atau menggunakan PM2 (lihat `ecosystem.config.js`):
 pm2 start ecosystem.config.js
 ```
 
+## Testing
+
+### PHP Tests
+
+Membutuhkan database PostgreSQL yang dikonfigurasi untuk testing. Pastikan sudah ada `.env.testing` atau variabel `DB_*` sudah mengarah ke database test.
+
+```bash
+# Semua test
+php artisan test
+
+# Hanya unit test
+php artisan test --filter Unit
+```
+
+### JS Tests
+
+```bash
+npm run test:js        # run once
+npm run test:js:watch  # watch mode
+```
+
+### Jalankan Semua Test Sekaligus
+
+```bash
+composer test
+```
+
+> Perintah ini menjalankan PHP test (`php artisan test`) diikuti JS test (`npm run test:js`).
+
 ## Troubleshooting
 
 ### Halaman blank setelah build
