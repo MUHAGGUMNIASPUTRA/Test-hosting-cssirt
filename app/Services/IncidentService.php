@@ -30,10 +30,10 @@ class IncidentService
             ->first();
 
         return [
-            'total'       => (int) $stats->total,
+            'total' => (int) $stats->total,
             'in_progress' => (int) $stats->in_progress,
-            'critical'    => (int) $stats->critical,
-            'completed'   => (int) $stats->completed,
+            'critical' => (int) $stats->critical,
+            'completed' => (int) $stats->completed,
         ];
     }
 
@@ -50,24 +50,24 @@ class IncidentService
         );
 
         $incident = Incident::create([
-            'case_id'          => Incident::generateCaseId(),
-            'access_token'     => Str::random(64),
-            'reporter_name'    => $validated['reporter_name'],
-            'reporter_email'   => $validated['reporter_email'],
-            'reporter_phone'   => $validated['reporter_phone'] ?? null,
+            'case_id' => Incident::generateCaseId(),
+            'access_token' => Str::random(64),
+            'reporter_name' => $validated['reporter_name'],
+            'reporter_email' => $validated['reporter_email'],
+            'reporter_phone' => $validated['reporter_phone'] ?? null,
             'incident_type_id' => $validated['incident_type_id'],
-            'incident_at'      => $validated['incident_at'],
-            'description'      => $validated['description'],
-            'status'           => $validated['status'],
-            'priority'         => $validated['priority'],
-            'assigned_to'      => $validated['assigned_to'] ?? null,
-            'attachment'       => $attachmentValue,
-            'reported_at'      => now(),
+            'incident_at' => $validated['incident_at'],
+            'description' => $validated['description'],
+            'status' => $validated['status'],
+            'priority' => $validated['priority'],
+            'assigned_to' => $validated['assigned_to'] ?? null,
+            'attachment' => $attachmentValue,
+            'reported_at' => now(),
         ]);
 
         $incident->incidentLogs()->create([
             'log_message' => 'Tiket insiden dibuat',
-            'user_id'     => $actorId,
+            'user_id' => $actorId,
         ]);
 
         return $incident;
@@ -90,16 +90,16 @@ class IncidentService
         );
 
         $coreData = [
-            'reporter_name'    => $validated['reporter_name'],
-            'reporter_email'   => $validated['reporter_email'],
-            'reporter_phone'   => $validated['reporter_phone'] ?? null,
+            'reporter_name' => $validated['reporter_name'],
+            'reporter_email' => $validated['reporter_email'],
+            'reporter_phone' => $validated['reporter_phone'] ?? null,
             'incident_type_id' => $validated['incident_type_id'],
-            'incident_at'      => $validated['incident_at'],
-            'description'      => $validated['description'],
-            'status'           => $validated['status'],
-            'priority'         => $validated['priority'],
-            'assigned_to'      => $validated['assigned_to'] ?? null,
-            'attachment'       => $attachmentValue,
+            'incident_at' => $validated['incident_at'],
+            'description' => $validated['description'],
+            'status' => $validated['status'],
+            'priority' => $validated['priority'],
+            'assigned_to' => $validated['assigned_to'] ?? null,
+            'attachment' => $attachmentValue,
         ];
 
         $this->logChanges($incident, $coreData, $actorId);
@@ -128,11 +128,12 @@ class IncidentService
             if ($file !== null) {
                 return $file->store('attachments', 'public');
             }
+
             return $existing;
         }
 
         // type === 'link'
-        return !empty($links) ? $links : null;
+        return ! empty($links) ? $links : null;
     }
 
     /**
@@ -140,15 +141,15 @@ class IncidentService
      */
     public function logChanges(Incident $incident, array $newData, int $actorId): void
     {
-        $changes      = [];
+        $changes = [];
         $originalData = $incident->getOriginal();
-        $normalized   = $this->normalizeDataForComparison($originalData, $newData);
+        $normalized = $this->normalizeDataForComparison($originalData, $newData);
 
         // Prefetch reference names to avoid N+1
-        $typeIds   = collect([$originalData['incident_type_id'] ?? null, $newData['incident_type_id'] ?? null])->filter()->unique()->values();
+        $typeIds = collect([$originalData['incident_type_id'] ?? null, $newData['incident_type_id'] ?? null])->filter()->unique()->values();
         $typesById = $typeIds->isEmpty() ? collect() : IncidentType::whereIn('id', $typeIds)->get(['id', 'name'])->keyBy('id');
 
-        $userIds   = collect([$originalData['assigned_to'] ?? null, $newData['assigned_to'] ?? null])->filter()->unique()->values();
+        $userIds = collect([$originalData['assigned_to'] ?? null, $newData['assigned_to'] ?? null])->filter()->unique()->values();
         $usersById = $userIds->isEmpty() ? collect() : User::whereIn('id', $userIds)->get(['id', 'name'])->keyBy('id');
 
         foreach ($newData as $key => $value) {
@@ -164,17 +165,17 @@ class IncidentService
                     $changes[] = "Email pelapor diubah dari '{$originalData[$key]}' menjadi '{$value}'.";
                     break;
                 case 'reporter_phone':
-                    $oldPhone  = $originalData[$key] ?: 'Tidak ada';
-                    $newPhone  = $value ?: 'Tidak ada';
+                    $oldPhone = $originalData[$key] ?: 'Tidak ada';
+                    $newPhone = $value ?: 'Tidak ada';
                     $changes[] = "Nomor telepon pelapor diubah dari '{$oldPhone}' menjadi '{$newPhone}'.";
                     break;
                 case 'incident_type_id':
-                    $oldType   = $originalData[$key] ? optional($typesById->get((int) $originalData[$key]))->name : 'Tidak ada';
-                    $newType   = $value ? optional($typesById->get((int) $value))->name : 'Tidak ada';
+                    $oldType = $originalData[$key] ? optional($typesById->get((int) $originalData[$key]))->name : 'Tidak ada';
+                    $newType = $value ? optional($typesById->get((int) $value))->name : 'Tidak ada';
                     $changes[] = "Kategori insiden diubah dari '{$oldType}' menjadi '{$newType}'.";
                     break;
                 case 'description':
-                    $changes[] = "Deskripsi insiden diperbarui.";
+                    $changes[] = 'Deskripsi insiden diperbarui.';
                     break;
                 case 'status':
                     $changes[] = "Status diubah dari '{$originalData[$key]}' menjadi '{$value}'.";
@@ -183,16 +184,16 @@ class IncidentService
                     $changes[] = "Prioritas diubah dari '{$originalData[$key]}' menjadi '{$value}'.";
                     break;
                 case 'assigned_to':
-                    $oldName   = $originalData[$key] ? (optional($usersById->get((int) $originalData[$key]))->name ?? 'Belum Ditugaskan') : 'Belum Ditugaskan';
-                    $newName   = $value ? (optional($usersById->get((int) $value))->name ?? 'Belum Ditugaskan') : 'Belum Ditugaskan';
+                    $oldName = $originalData[$key] ? (optional($usersById->get((int) $originalData[$key]))->name ?? 'Belum Ditugaskan') : 'Belum Ditugaskan';
+                    $newName = $value ? (optional($usersById->get((int) $value))->name ?? 'Belum Ditugaskan') : 'Belum Ditugaskan';
                     $changes[] = "Insiden ditugaskan dari '{$oldName}' ke '{$newName}'.";
                     break;
                 case 'attachment':
                     if ($value) {
-                        $changes[] = "Lampiran insiden diperbarui.";
+                        $changes[] = 'Lampiran insiden diperbarui.';
                     } else {
-                        $changes[] = "Lampiran insiden dihapus.";
-                        if ($incident->attachment && !str_starts_with($incident->attachment, 'http')
+                        $changes[] = 'Lampiran insiden dihapus.';
+                        if ($incident->attachment && ! str_starts_with($incident->attachment, 'http')
                             && Storage::disk('public')->exists($incident->attachment)) {
                             Storage::disk('public')->delete($incident->attachment);
                         }
@@ -204,7 +205,7 @@ class IncidentService
         foreach ($changes as $message) {
             $incident->incidentLogs()->create([
                 'log_message' => $message,
-                'user_id'     => $actorId,
+                'user_id' => $actorId,
             ]);
         }
     }
@@ -221,13 +222,13 @@ class IncidentService
         foreach ($newData as $key => $value) {
             if ($key === 'incident_at') {
                 $normalized['original'][$key] = $originalData[$key] ? Carbon::parse($originalData[$key])->format('Y-m-d H:i:s') : null;
-                $normalized['new'][$key]      = $value ? Carbon::parse($value)->format('Y-m-d H:i:s') : null;
+                $normalized['new'][$key] = $value ? Carbon::parse($value)->format('Y-m-d H:i:s') : null;
             } elseif ($key === 'incident_type_id' || $key === 'assigned_to') {
                 $normalized['original'][$key] = (string) ($originalData[$key] ?? '');
-                $normalized['new'][$key]      = (string) ($value ?? '');
+                $normalized['new'][$key] = (string) ($value ?? '');
             } else {
                 $normalized['original'][$key] = $originalData[$key] ?? null;
-                $normalized['new'][$key]      = $value;
+                $normalized['new'][$key] = $value;
             }
         }
 

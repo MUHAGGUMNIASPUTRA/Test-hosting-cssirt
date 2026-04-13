@@ -27,7 +27,7 @@ class DocumentServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new DocumentService();
+        $this->service = new DocumentService;
     }
 
     // -------------------------------------------------------------------------
@@ -66,7 +66,7 @@ class DocumentServiceTest extends TestCase
     {
         Storage::fake('public');
 
-        $existing             = new Document();
+        $existing = new Document;
         $existing->official_file_path = 'https://old-link.example.com/file.pdf';
 
         $validated = [
@@ -83,7 +83,7 @@ class DocumentServiceTest extends TestCase
     {
         Storage::fake('public');
 
-        $file      = UploadedFile::fake()->create('peraturan.pdf', 200, 'application/pdf');
+        $file = UploadedFile::fake()->create('peraturan.pdf', 200, 'application/pdf');
         $validated = ['official_file_type' => 'file'];
 
         $result = $this->service->resolveOfficialFile($validated, $file, null);
@@ -99,10 +99,10 @@ class DocumentServiceTest extends TestCase
 
         // Seed an existing stored file
         Storage::disk('public')->put('documents/official/old.pdf', 'old content');
-        $existing                      = new Document();
-        $existing->official_file_path  = 'documents/official/old.pdf';
+        $existing = new Document;
+        $existing->official_file_path = 'documents/official/old.pdf';
 
-        $file      = UploadedFile::fake()->create('new.pdf', 100, 'application/pdf');
+        $file = UploadedFile::fake()->create('new.pdf', 100, 'application/pdf');
         $validated = ['official_file_type' => 'file'];
 
         $result = $this->service->resolveOfficialFile($validated, $file, $existing);
@@ -115,10 +115,10 @@ class DocumentServiceTest extends TestCase
     {
         Storage::fake('public');
 
-        $existing                     = new Document();
+        $existing = new Document;
         $existing->official_file_path = 'https://external.example.com/file.pdf';
 
-        $file      = UploadedFile::fake()->create('new.pdf', 100, 'application/pdf');
+        $file = UploadedFile::fake()->create('new.pdf', 100, 'application/pdf');
         $validated = ['official_file_type' => 'file'];
 
         // Should not throw; external URL cannot be deleted from disk
@@ -132,7 +132,7 @@ class DocumentServiceTest extends TestCase
         Storage::fake('public');
         Storage::disk('public')->put('documents/official/existing.pdf', 'content');
 
-        $existing                     = new Document();
+        $existing = new Document;
         $existing->official_file_path = 'documents/official/existing.pdf';
 
         $validated = ['official_file_type' => 'file'];
@@ -148,7 +148,7 @@ class DocumentServiceTest extends TestCase
 
     public function test_get_document_status_returns_draft_when_no_published_at(): void
     {
-        $document               = new Document();
+        $document = new Document;
         $document->published_at = null;
 
         $this->assertSame('Draft', $this->service->getDocumentStatus($document));
@@ -156,7 +156,7 @@ class DocumentServiceTest extends TestCase
 
     public function test_get_document_status_returns_scheduled_when_published_at_is_in_future(): void
     {
-        $document               = new Document();
+        $document = new Document;
         $document->published_at = now()->addDays(7);
 
         $this->assertSame('Scheduled', $this->service->getDocumentStatus($document));
@@ -164,7 +164,7 @@ class DocumentServiceTest extends TestCase
 
     public function test_get_document_status_returns_published_when_published_at_is_in_past(): void
     {
-        $document               = new Document();
+        $document = new Document;
         $document->published_at = now()->subDay();
 
         $this->assertSame('Published', $this->service->getDocumentStatus($document));
@@ -179,20 +179,20 @@ class DocumentServiceTest extends TestCase
         Storage::fake('public');
 
         $validated = [
-            'title'              => 'Panduan Keamanan Siber',
-            'description'        => 'Panduan umum',
+            'title' => 'Panduan Keamanan Siber',
+            'description' => 'Panduan umum',
             'official_file_type' => 'link',
             'official_file_link' => 'https://example.go.id/panduan.pdf',
-            'is_public'          => true,
-            'published_at'       => null,
+            'is_public' => true,
+            'published_at' => null,
         ];
 
         $document = $this->service->create($validated, null, null);
 
         $this->assertInstanceOf(Document::class, $document);
         $this->assertDatabaseHas('documents', [
-            'title'              => 'Panduan Keamanan Siber',
-            'slug'               => 'panduan-keamanan-siber',
+            'title' => 'Panduan Keamanan Siber',
+            'slug' => 'panduan-keamanan-siber',
             'official_file_path' => 'https://example.go.id/panduan.pdf',
         ]);
     }
@@ -201,13 +201,13 @@ class DocumentServiceTest extends TestCase
     {
         Storage::fake('public');
 
-        $file      = UploadedFile::fake()->create('peraturan.pdf', 300, 'application/pdf');
+        $file = UploadedFile::fake()->create('peraturan.pdf', 300, 'application/pdf');
         $validated = [
-            'title'              => 'Peraturan Daerah',
-            'description'        => null,
+            'title' => 'Peraturan Daerah',
+            'description' => null,
             'official_file_type' => 'file',
-            'is_public'          => false,
-            'published_at'       => null,
+            'is_public' => false,
+            'published_at' => null,
         ];
 
         $document = $this->service->create($validated, null, $file);

@@ -6,17 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-  public function up(): void
-  {
-    Schema::table('incident_types', function (Blueprint $table) {
-      $table->text('guide')->nullable()->after('description');
-    });
-  }
+    public function up(): void
+    {
+        Schema::table('incident_types', function (Blueprint $table) {
+            $table->text('guide')->nullable()->after('description');
+        });
+    }
 
-  public function down(): void
-  {
-    Schema::table('incident_types', function (Blueprint $table) {
-      $table->dropColumn('guide');
-    });
-  }
+    public function down(): void
+    {
+        Schema::table('incident_types', function (Blueprint $table) {
+            $table->dropColumn('guide');
+        });
+    }
 };

@@ -4,8 +4,8 @@ namespace App\Enums;
 
 enum AnnouncementLevel: string
 {
-    case Info     = 'info';
-    case Warning  = 'warning';
+    case Info = 'info';
+    case Warning = 'warning';
     case Critical = 'critical';
 
     /** @return string[] */
@@ -17,8 +17,8 @@ enum AnnouncementLevel: string
     public function label(): string
     {
         return match ($this) {
-            self::Info     => 'Info',
-            self::Warning  => 'Peringatan',
+            self::Info => 'Info',
+            self::Warning => 'Peringatan',
             self::Critical => 'Kritis',
         };
     }

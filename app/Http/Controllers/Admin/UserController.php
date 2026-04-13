@@ -22,7 +22,7 @@ class UserController extends Controller
             $search = $request->get('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'ilike', "%{$search}%")
-                  ->orWhere('email', 'ilike', "%{$search}%");
+                    ->orWhere('email', 'ilike', "%{$search}%");
             });
         }
 
@@ -31,15 +31,15 @@ class UserController extends Controller
         }
 
         return Inertia::render('Admin/Users/Index', [
-            'users'       => $query->orderBy('name')->paginate(10)->withQueryString(),
+            'users' => $query->orderBy('name')->paginate(10)->withQueryString(),
             'roleOptions' => User::getRoleOptions(),
-            'filters'     => $request->only(['search', 'role']),
+            'filters' => $request->only(['search', 'role']),
         ]);
     }
 
     public function store(StoreUserRequest $request): RedirectResponse
     {
-        $data             = $request->validated();
+        $data = $request->validated();
         $data['password'] = Hash::make($data['password']);
 
         User::create($data);
@@ -51,17 +51,17 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        if (!Hash::check($data['current_password'], $user->password)) {
+        if (! Hash::check($data['current_password'], $user->password)) {
             return back()->withErrors(['current_password' => 'Password saat ini salah.']);
         }
 
         $updateData = [
-            'name'  => $data['name'],
+            'name' => $data['name'],
             'email' => $data['email'],
-            'role'  => $data['role'],
+            'role' => $data['role'],
         ];
 
-        if (!empty($data['password'])) {
+        if (! empty($data['password'])) {
             $updateData['password'] = Hash::make($data['password']);
         }
 
@@ -77,6 +77,7 @@ class UserController extends Controller
         }
 
         $user->delete();
+
         return redirect()->back()->with('success', 'Pengguna berhasil dihapus.');
     }
 }

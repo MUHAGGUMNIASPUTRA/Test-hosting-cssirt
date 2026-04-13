@@ -26,35 +26,40 @@ class DocumentController extends Controller
             $search = $request->get('search');
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'ilike', "%{$search}%")
-                  ->orWhere('description', 'ilike', "%{$search}%")
-                  ->orWhere('version', 'ilike', "%{$search}%");
+                    ->orWhere('description', 'ilike', "%{$search}%")
+                    ->orWhere('version', 'ilike', "%{$search}%");
             });
         }
 
         if ($request->filled('areas')) {
-            $areas         = (array) $request->get('areas');
+            $areas = (array) $request->get('areas');
             $includeNoArea = \in_array('0', $areas) || \in_array(0, $areas);
-            $areaIds       = array_values(array_filter($areas, fn ($a) => $a != '0' && $a != 0));
+            $areaIds = array_values(array_filter($areas, fn ($a) => $a != '0' && $a != 0));
 
             $query->where(function ($q) use ($areaIds, $includeNoArea) {
-                if ($areaIds) $q->whereIn('document_area_id', $areaIds);
-                if ($includeNoArea) $q->orWhereNull('document_area_id');
+                if ($areaIds) {
+                    $q->whereIn('document_area_id', $areaIds);
+                }
+                if ($includeNoArea) {
+                    $q->orWhereNull('document_area_id');
+                }
             });
         }
 
         $documents = $query->paginate(10)->withQueryString();
 
         $documents->getCollection()->transform(function (Document $document) {
-            $document->file_size   = $document->fileSize();
+            $document->file_size = $document->fileSize();
             $document->file_exists = $document->fileExists();
-            $document->status      = $this->documentService->getDocumentStatus($document);
+            $document->status = $this->documentService->getDocumentStatus($document);
+
             return $document;
         });
 
         return Inertia::render('Admin/Documents/Index', [
-            'documents'     => $documents,
+            'documents' => $documents,
             'documentAreas' => DocumentArea::orderBy('name')->get(['id', 'name']),
-            'filters'       => $request->only(['search', 'areas']),
+            'filters' => $request->only(['search', 'areas']),
         ]);
     }
 
@@ -79,11 +84,11 @@ class DocumentController extends Controller
 
     public function edit(Document $document): Response
     {
-        $document->file_size   = $document->fileSize();
+        $document->file_size = $document->fileSize();
         $document->file_exists = $document->fileExists();
 
         return Inertia::render('Admin/Documents/Create', [
-            'document'      => $document,
+            'document' => $document,
             'documentAreas' => DocumentArea::orderBy('name')->get(['id', 'name']),
         ]);
     }
@@ -103,7 +108,7 @@ class DocumentController extends Controller
 
     public function destroy(Document $document): RedirectResponse
     {
-        if ($document->official_file_path && !str_starts_with($document->official_file_path, 'http')) {
+        if ($document->official_file_path && ! str_starts_with($document->official_file_path, 'http')) {
             Storage::disk('public')->delete($document->official_file_path);
         }
 
@@ -115,7 +120,7 @@ class DocumentController extends Controller
 
     public function toggleVisibility(Document $document): RedirectResponse
     {
-        $document->update(['is_public' => !$document->is_public]);
+        $document->update(['is_public' => ! $document->is_public]);
 
         $status = $document->is_public ? 'dipublikasikan' : 'disembunyikan dari publik';
 

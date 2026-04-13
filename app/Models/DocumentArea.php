@@ -7,16 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class DocumentArea extends Model
 {
-  use HasFactory;
+    use HasFactory;
 
-  protected $fillable = [
-    'name',
-    'slug',
-    'description',
-  ];
+    protected $fillable = [
+        'name',
+        'slug',
+        'description',
+    ];
 
-  public function documents()
-  {
-    return $this->hasMany(Document::class);
-  }
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
 }

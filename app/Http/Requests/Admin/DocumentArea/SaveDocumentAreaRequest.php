@@ -17,7 +17,7 @@ class SaveDocumentAreaRequest extends FormRequest
         $documentArea = $this->route('documentArea');
 
         return [
-            'name'        => [
+            'name' => [
                 'required', 'string', 'max:255',
                 Rule::unique('document_areas', 'name')->ignore($documentArea),
             ],
@@ -29,7 +29,7 @@ class SaveDocumentAreaRequest extends FormRequest
     {
         return [
             'name.required' => 'Nama area dokumen wajib diisi.',
-            'name.unique'   => 'Nama area dokumen sudah digunakan.',
+            'name.unique' => 'Nama area dokumen sudah digunakan.',
         ];
     }
 }

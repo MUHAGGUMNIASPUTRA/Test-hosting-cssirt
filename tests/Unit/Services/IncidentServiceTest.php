@@ -30,7 +30,7 @@ class IncidentServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new IncidentService();
+        $this->service = new IncidentService;
     }
 
     // -------------------------------------------------------------------------
@@ -70,7 +70,7 @@ class IncidentServiceTest extends TestCase
     {
         Storage::fake('public');
 
-        $file   = UploadedFile::fake()->create('report.pdf', 100, 'application/pdf');
+        $file = UploadedFile::fake()->create('report.pdf', 100, 'application/pdf');
         $result = $this->service->resolveAttachment($file, 'file', null, null);
 
         $this->assertNotNull($result);
@@ -103,31 +103,31 @@ class IncidentServiceTest extends TestCase
         $type = IncidentType::create(['name' => 'Phishing', 'slug' => 'phishing', 'description' => '']);
 
         $base = [
-            'reporter_name'    => 'Pelapor',
-            'reporter_email'   => 'pelapor@test.com',
+            'reporter_name' => 'Pelapor',
+            'reporter_email' => 'pelapor@test.com',
             'incident_type_id' => $type->id,
-            'incident_at'      => now(),
-            'description'      => 'Test',
-            'reported_at'      => now(),
-            'access_token'     => 'tok1',
+            'incident_at' => now(),
+            'description' => 'Test',
+            'reported_at' => now(),
+            'access_token' => 'tok1',
         ];
 
         // 2 in-progress (Baru)
         Incident::create(array_merge($base, [
-            'case_id'  => 'CSIRT-2026-04-001',
-            'status'   => IncidentStatus::Baru->value,
+            'case_id' => 'CSIRT-2026-04-001',
+            'status' => IncidentStatus::Baru->value,
             'priority' => IncidentPriority::Sedang->value,
         ]));
         Incident::create(array_merge($base, [
-            'case_id'  => 'CSIRT-2026-04-002',
-            'status'   => IncidentStatus::Diverifikasi->value,
+            'case_id' => 'CSIRT-2026-04-002',
+            'status' => IncidentStatus::Diverifikasi->value,
             'priority' => IncidentPriority::Kritikal->value,
             'access_token' => 'tok2',
         ]));
         // 1 completed (Selesai)
         Incident::create(array_merge($base, [
-            'case_id'  => 'CSIRT-2026-04-003',
-            'status'   => IncidentStatus::Selesai->value,
+            'case_id' => 'CSIRT-2026-04-003',
+            'status' => IncidentStatus::Selesai->value,
             'priority' => IncidentPriority::Rendah->value,
             'access_token' => 'tok3',
         ]));
@@ -150,15 +150,15 @@ class IncidentServiceTest extends TestCase
         $type = IncidentType::create(['name' => 'Malware', 'slug' => 'malware', 'description' => '']);
 
         $validated = [
-            'reporter_name'    => 'Budi',
-            'reporter_email'   => 'budi@test.com',
-            'reporter_phone'   => '08123456789',
+            'reporter_name' => 'Budi',
+            'reporter_email' => 'budi@test.com',
+            'reporter_phone' => '08123456789',
             'incident_type_id' => $type->id,
-            'incident_at'      => now()->toDateTimeString(),
-            'description'      => 'Komputer terinfeksi malware',
-            'status'           => IncidentStatus::Baru->value,
-            'priority'         => IncidentPriority::Tinggi->value,
-            'attachment_type'  => 'link',
+            'incident_at' => now()->toDateTimeString(),
+            'description' => 'Komputer terinfeksi malware',
+            'status' => IncidentStatus::Baru->value,
+            'priority' => IncidentPriority::Tinggi->value,
+            'attachment_type' => 'link',
             'attachment_links' => 'https://screenshot.example.com',
         ];
 
@@ -166,15 +166,15 @@ class IncidentServiceTest extends TestCase
 
         $this->assertInstanceOf(Incident::class, $incident);
         $this->assertDatabaseHas('incidents', [
-            'reporter_name'  => 'Budi',
+            'reporter_name' => 'Budi',
             'reporter_email' => 'budi@test.com',
-            'attachment'     => 'https://screenshot.example.com',
+            'attachment' => 'https://screenshot.example.com',
         ]);
 
         // Initial log should be created
         $this->assertDatabaseHas('incident_logs', [
             'incident_id' => $incident->id,
-            'user_id'     => $user->id,
+            'user_id' => $user->id,
             'log_message' => 'Tiket insiden dibuat',
         ]);
     }
@@ -185,19 +185,19 @@ class IncidentServiceTest extends TestCase
 
     public function test_log_changes_creates_log_entry_for_status_change(): void
     {
-        $user     = User::factory()->create();
-        $type     = IncidentType::create(['name' => 'DDoS', 'slug' => 'ddos', 'description' => '']);
+        $user = User::factory()->create();
+        $type = IncidentType::create(['name' => 'DDoS', 'slug' => 'ddos', 'description' => '']);
         $incident = Incident::create([
-            'case_id'          => 'CSIRT-2026-04-TEST',
-            'access_token'     => 'tokentest',
-            'reporter_name'    => 'Ali',
-            'reporter_email'   => 'ali@test.com',
+            'case_id' => 'CSIRT-2026-04-TEST',
+            'access_token' => 'tokentest',
+            'reporter_name' => 'Ali',
+            'reporter_email' => 'ali@test.com',
             'incident_type_id' => $type->id,
-            'incident_at'      => now(),
-            'description'      => 'Test DDoS',
-            'status'           => IncidentStatus::Baru->value,
-            'priority'         => IncidentPriority::Sedang->value,
-            'reported_at'      => now(),
+            'incident_at' => now(),
+            'description' => 'Test DDoS',
+            'status' => IncidentStatus::Baru->value,
+            'priority' => IncidentPriority::Sedang->value,
+            'reported_at' => now(),
         ]);
 
         // Reload fresh from DB so getOriginal() returns DB values
@@ -209,26 +209,26 @@ class IncidentServiceTest extends TestCase
 
         $this->assertDatabaseHas('incident_logs', [
             'incident_id' => $incident->id,
-            'user_id'     => $user->id,
+            'user_id' => $user->id,
             'log_message' => "Status diubah dari 'Baru' menjadi 'Selesai'.",
         ]);
     }
 
     public function test_log_changes_skips_unchanged_fields(): void
     {
-        $user     = User::factory()->create();
-        $type     = IncidentType::create(['name' => 'Defacement', 'slug' => 'defacement', 'description' => '']);
+        $user = User::factory()->create();
+        $type = IncidentType::create(['name' => 'Defacement', 'slug' => 'defacement', 'description' => '']);
         $incident = Incident::create([
-            'case_id'          => 'CSIRT-2026-04-SKP',
-            'access_token'     => 'tokenskip',
-            'reporter_name'    => 'Siti',
-            'reporter_email'   => 'siti@test.com',
+            'case_id' => 'CSIRT-2026-04-SKP',
+            'access_token' => 'tokenskip',
+            'reporter_name' => 'Siti',
+            'reporter_email' => 'siti@test.com',
             'incident_type_id' => $type->id,
-            'incident_at'      => now(),
-            'description'      => 'Test',
-            'status'           => IncidentStatus::Baru->value,
-            'priority'         => IncidentPriority::Rendah->value,
-            'reported_at'      => now(),
+            'incident_at' => now(),
+            'description' => 'Test',
+            'status' => IncidentStatus::Baru->value,
+            'priority' => IncidentPriority::Rendah->value,
+            'reported_at' => now(),
         ]);
 
         $incident = Incident::find($incident->id);
@@ -236,7 +236,7 @@ class IncidentServiceTest extends TestCase
 
         // Pass same values — nothing should be logged
         $this->service->logChanges($incident, [
-            'status'   => IncidentStatus::Baru->value,   // unchanged
+            'status' => IncidentStatus::Baru->value,   // unchanged
             'priority' => IncidentPriority::Rendah->value, // unchanged
         ], $user->id);
 

@@ -4,11 +4,11 @@ namespace App\Enums;
 
 enum IncidentStatus: string
 {
-    case Baru              = 'Baru';
-    case Diverifikasi      = 'Diverifikasi';
+    case Baru = 'Baru';
+    case Diverifikasi = 'Diverifikasi';
     case DalamPenyelidikan = 'Dalam Penyelidikan';
-    case Selesai           = 'Selesai';
-    case Ditutup           = 'Ditutup';
+    case Selesai = 'Selesai';
+    case Ditutup = 'Ditutup';
 
     /** @return string[] */
     public static function values(): array

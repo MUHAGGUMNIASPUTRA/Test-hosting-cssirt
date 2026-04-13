@@ -1,8 +1,9 @@
 <?php
+
 // filepath: config/inertia.php
 
 return [
-  /*
+    /*
   |--------------------------------------------------------------------------
   | Server Side Rendering
   |--------------------------------------------------------------------------
@@ -12,12 +13,12 @@ return [
   |
   */
 
-  'ssr' => [
-    'enabled' => env('INERTIA_SSR_ENABLED', false),
-    'url' => env('INERTIA_SSR_URL', 'http://127.0.0.1:13714'),
-  ],
+    'ssr' => [
+        'enabled' => env('INERTIA_SSR_ENABLED', false),
+        'url' => env('INERTIA_SSR_URL', 'http://127.0.0.1:13714'),
+    ],
 
-  /*
+    /*
   |--------------------------------------------------------------------------
   | Testing
   |--------------------------------------------------------------------------
@@ -29,14 +30,14 @@ return [
   |
   */
 
-  'testing' => [
-    'ensure_pages_exist' => true,
-    'page_paths' => [
-      resource_path('js/Pages'),
+    'testing' => [
+        'ensure_pages_exist' => true,
+        'page_paths' => [
+            resource_path('js/Pages'),
+        ],
+        'page_extensions' => [
+            'js',
+            'vue',
+        ],
     ],
-    'page_extensions' => [
-      'js',
-      'vue',
-    ],
-  ],
 ];

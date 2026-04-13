@@ -29,7 +29,7 @@ class PostServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new PostService();
+        $this->service = new PostService;
     }
 
     // -------------------------------------------------------------------------
@@ -50,7 +50,7 @@ class PostServiceTest extends TestCase
         Storage::fake('public');
         Storage::disk('public')->put('posts/old.jpg', 'old image content');
 
-        $file      = UploadedFile::fake()->image('new.jpg');
+        $file = UploadedFile::fake()->image('new.jpg');
         $validated = ['image_type' => 'file'];
 
         $result = $this->service->resolveImage($validated, $file, 'posts/old.jpg');
@@ -64,7 +64,7 @@ class PostServiceTest extends TestCase
     {
         Storage::fake('public');
 
-        $file      = UploadedFile::fake()->image('new.jpg');
+        $file = UploadedFile::fake()->image('new.jpg');
         $validated = ['image_type' => 'file'];
 
         // External URL should not be passed to Storage::delete
@@ -78,7 +78,7 @@ class PostServiceTest extends TestCase
     {
         $validated = [
             'image_type' => 'link',
-            'image_url'  => 'https://cdn.example.com/image.jpg',
+            'image_url' => 'https://cdn.example.com/image.jpg',
         ];
 
         $result = $this->service->resolveImage($validated, null, null);
@@ -90,7 +90,7 @@ class PostServiceTest extends TestCase
     {
         $validated = [
             'image_type' => 'link',
-            'image_url'  => '',
+            'image_url' => '',
         ];
 
         $result = $this->service->resolveImage($validated, null, 'posts/existing.jpg');
@@ -105,11 +105,11 @@ class PostServiceTest extends TestCase
     public function test_sync_taxonomy_attaches_categories_and_tags_to_post(): void
     {
         $post = Post::create([
-            'title'   => 'Test Post',
-            'slug'    => 'test-post',
+            'title' => 'Test Post',
+            'slug' => 'test-post',
             'excerpt' => 'Excerpt',
-            'body'    => 'Body content',
-            'status'  => 'Draft',
+            'body' => 'Body content',
+            'status' => 'Draft',
         ]);
 
         $cat1 = Category::create(['name' => 'Keamanan', 'slug' => 'keamanan']);
@@ -119,7 +119,7 @@ class PostServiceTest extends TestCase
 
         $this->service->syncTaxonomy($post, [
             'categories' => [$cat1->id, $cat2->id],
-            'tags'       => [$tag1->id, $tag2->id],
+            'tags' => [$tag1->id, $tag2->id],
         ]);
 
         $this->assertCount(2, $post->fresh()->categories);
@@ -131,11 +131,11 @@ class PostServiceTest extends TestCase
     public function test_sync_taxonomy_removes_old_categories_on_re_sync(): void
     {
         $post = Post::create([
-            'title'   => 'Re-sync Post',
-            'slug'    => 're-sync-post',
+            'title' => 'Re-sync Post',
+            'slug' => 're-sync-post',
             'excerpt' => 'Excerpt',
-            'body'    => 'Body',
-            'status'  => 'Draft',
+            'body' => 'Body',
+            'status' => 'Draft',
         ]);
 
         $cat1 = Category::create(['name' => 'Cat A', 'slug' => 'cat-a']);
@@ -155,11 +155,11 @@ class PostServiceTest extends TestCase
     public function test_sync_taxonomy_accepts_empty_tags(): void
     {
         $post = Post::create([
-            'title'   => 'No Tags Post',
-            'slug'    => 'no-tags-post',
+            'title' => 'No Tags Post',
+            'slug' => 'no-tags-post',
             'excerpt' => 'Excerpt',
-            'body'    => 'Body',
-            'status'  => 'Draft',
+            'body' => 'Body',
+            'status' => 'Draft',
         ]);
 
         $cat = Category::create(['name' => 'Solo', 'slug' => 'solo']);
@@ -181,12 +181,12 @@ class PostServiceTest extends TestCase
         Storage::disk('public')->put('posts/cover.jpg', 'image data');
 
         $post = Post::create([
-            'title'   => 'Delete Me',
-            'slug'    => 'delete-me',
+            'title' => 'Delete Me',
+            'slug' => 'delete-me',
             'excerpt' => 'Excerpt',
-            'body'    => 'Body',
-            'status'  => 'Draft',
-            'image'   => 'posts/cover.jpg',
+            'body' => 'Body',
+            'status' => 'Draft',
+            'image' => 'posts/cover.jpg',
         ]);
 
         $this->service->deleteWithAssets($post);
@@ -200,12 +200,12 @@ class PostServiceTest extends TestCase
         Storage::fake('public');
 
         $post = Post::create([
-            'title'   => 'External Image Post',
-            'slug'    => 'external-image-post',
+            'title' => 'External Image Post',
+            'slug' => 'external-image-post',
             'excerpt' => 'Excerpt',
-            'body'    => 'Body',
-            'status'  => 'Draft',
-            'image'   => 'https://external.example.com/cover.jpg',
+            'body' => 'Body',
+            'status' => 'Draft',
+            'image' => 'https://external.example.com/cover.jpg',
         ]);
 
         // Should not throw even though we can't delete the external URL

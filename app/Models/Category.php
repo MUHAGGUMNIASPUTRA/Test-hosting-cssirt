@@ -1,4 +1,5 @@
 <?php
+
 // File: app/Models/Category.php
 
 namespace App\Models;
@@ -9,23 +10,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Category extends Model
 {
-  use HasFactory;
+    use HasFactory;
 
-  /**
-   * The attributes that are mass assignable.
-   *
-   * @var array
-   */
-  protected $fillable = [
-    'name',
-    'slug',
-  ];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'slug',
+    ];
 
-  /**
-   * The posts that belong to the Category.
-   */
-  public function posts(): BelongsToMany
-  {
-    return $this->belongsToMany(Post::class);
-  }
+    /**
+     * The posts that belong to the Category.
+     */
+    public function posts(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class);
+    }
 }

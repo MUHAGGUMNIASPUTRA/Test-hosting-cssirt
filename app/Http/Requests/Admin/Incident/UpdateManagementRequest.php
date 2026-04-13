@@ -17,8 +17,8 @@ class UpdateManagementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status'      => ['required', Rule::enum(IncidentStatus::class)],
-            'priority'    => ['required', Rule::enum(IncidentPriority::class)],
+            'status' => ['required', Rule::enum(IncidentStatus::class)],
+            'priority' => ['required', Rule::enum(IncidentPriority::class)],
             'assigned_to' => ['nullable', 'exists:users,id'],
         ];
     }

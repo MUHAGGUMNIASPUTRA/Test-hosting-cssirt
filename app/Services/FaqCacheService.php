@@ -1,4 +1,5 @@
 <?php
+
 // File: app/Services/FaqCacheService.php
 
 namespace App\Services;
@@ -8,57 +9,59 @@ use Illuminate\Support\Facades\Cache;
 
 class FaqCacheService
 {
-  public const int    CACHE_DURATION           = 60 * 60 * 24; // 24 hours
-  public const string FAQ_CACHE_KEY            = 'faqs.published';
-  public const string FAQ_CATEGORIES_CACHE_KEY = 'faq.categories';
+    public const CACHE_DURATION = 60 * 60 * 24; // 24 hours
 
-  /**
-   * Get cached FAQ data
-   */
-  /** @return \Illuminate\Support\Collection<string, \Illuminate\Support\Collection> */
-  public static function getFaqs(): \Illuminate\Support\Collection
-  {
-    return Cache::remember(self::FAQ_CACHE_KEY, self::CACHE_DURATION, function () {
-      return Faq::published()
-        ->orderBy('id')
-        ->get()
-        ->groupBy('category');
-    });
-  }
+    public const FAQ_CACHE_KEY = 'faqs.published';
 
-  /**
-   * Get cached categories
-   *
-   * @return string[]
-   */
-  public static function getCategories(): array
-  {
-    return Cache::remember(self::FAQ_CATEGORIES_CACHE_KEY, self::CACHE_DURATION, function () {
-      return Faq::published()
-        ->select('category', 'id')
-        ->distinct()
-        ->orderBy('id')
-        ->pluck('category')
-        ->toArray();
-    });
-  }
+    public const FAQ_CATEGORIES_CACHE_KEY = 'faq.categories';
 
-  /**
-   * Clear all FAQ caches
-   */
-  public static function clearAll(): void
-  {
-    Cache::forget(self::FAQ_CACHE_KEY);
-    Cache::forget(self::FAQ_CATEGORIES_CACHE_KEY);
-  }
+    /**
+     * Get cached FAQ data
+     */
+    /** @return \Illuminate\Support\Collection<string, \Illuminate\Support\Collection> */
+    public static function getFaqs(): \Illuminate\Support\Collection
+    {
+        return Cache::remember(self::FAQ_CACHE_KEY, self::CACHE_DURATION, function () {
+            return Faq::published()
+                ->orderBy('id')
+                ->get()
+                ->groupBy('category');
+        });
+    }
 
-  /**
-   * Refresh cache
-   */
-  public static function refresh(): void
-  {
-    self::clearAll();
-    self::getFaqs();
-    self::getCategories();
-  }
+    /**
+     * Get cached categories
+     *
+     * @return string[]
+     */
+    public static function getCategories(): array
+    {
+        return Cache::remember(self::FAQ_CATEGORIES_CACHE_KEY, self::CACHE_DURATION, function () {
+            return Faq::published()
+                ->select('category', 'id')
+                ->distinct()
+                ->orderBy('id')
+                ->pluck('category')
+                ->toArray();
+        });
+    }
+
+    /**
+     * Clear all FAQ caches
+     */
+    public static function clearAll(): void
+    {
+        Cache::forget(self::FAQ_CACHE_KEY);
+        Cache::forget(self::FAQ_CATEGORIES_CACHE_KEY);
+    }
+
+    /**
+     * Refresh cache
+     */
+    public static function refresh(): void
+    {
+        self::clearAll();
+        self::getFaqs();
+        self::getCategories();
+    }
 }

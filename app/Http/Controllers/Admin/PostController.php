@@ -33,7 +33,7 @@ class PostController extends Controller
         }
 
         return Inertia::render('Admin/Posts/Index', [
-            'posts'   => $query->latest()->paginate(10)->withQueryString(),
+            'posts' => $query->latest()->paginate(10)->withQueryString(),
             'filters' => $request->only(['search', 'status']),
         ]);
     }
@@ -42,7 +42,7 @@ class PostController extends Controller
     {
         return Inertia::render('Admin/Posts/Create', [
             'categories' => Category::orderBy('name', 'asc')->get(['id', 'name']),
-            'tags'       => Tag::orderBy('name', 'asc')->get(['id', 'name']),
+            'tags' => Tag::orderBy('name', 'asc')->get(['id', 'name']),
         ]);
     }
 
@@ -61,9 +61,9 @@ class PostController extends Controller
     public function edit(Post $post): Response
     {
         return Inertia::render('Admin/Posts/Create', [
-            'post'       => $post->load(['categories', 'tags']),
+            'post' => $post->load(['categories', 'tags']),
             'categories' => Category::orderBy('name', 'asc')->get(['id', 'name']),
-            'tags'       => Tag::orderBy('name', 'asc')->get(['id', 'name']),
+            'tags' => Tag::orderBy('name', 'asc')->get(['id', 'name']),
         ]);
     }
 

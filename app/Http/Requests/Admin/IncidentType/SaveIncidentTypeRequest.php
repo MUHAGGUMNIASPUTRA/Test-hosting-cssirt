@@ -17,12 +17,12 @@ class SaveIncidentTypeRequest extends FormRequest
         $incidentType = $this->route('incidentType');
 
         return [
-            'name'        => [
+            'name' => [
                 'required', 'string', 'max:255',
                 Rule::unique('incident_types', 'name')->ignore($incidentType),
             ],
             'description' => ['nullable', 'string'],
-            'guide'       => ['nullable', 'string'],
+            'guide' => ['nullable', 'string'],
         ];
     }
 
@@ -30,7 +30,7 @@ class SaveIncidentTypeRequest extends FormRequest
     {
         return [
             'name.required' => 'Nama jenis insiden wajib diisi.',
-            'name.unique'   => 'Nama jenis insiden sudah digunakan.',
+            'name.unique' => 'Nama jenis insiden sudah digunakan.',
         ];
     }
 }

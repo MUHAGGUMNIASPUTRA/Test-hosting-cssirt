@@ -23,17 +23,19 @@ class DocumentService
             if ($file !== null) {
                 // Delete old stored file if it's not a URL
                 $old = $existing?->official_file_path;
-                if ($old && !str_starts_with($old, 'http')) {
+                if ($old && ! str_starts_with($old, 'http')) {
                     Storage::disk('public')->delete($old);
                 }
+
                 return $file->store('documents/official', 'public');
             }
+
             // No new upload — keep existing
             return $existing?->official_file_path;
         }
 
         // mode link
-        return !empty($validated['official_file_link'])
+        return ! empty($validated['official_file_link'])
             ? $validated['official_file_link']
             : $existing?->official_file_path;
     }
@@ -43,7 +45,7 @@ class DocumentService
      */
     public function getDocumentStatus(Document $document): string
     {
-        if (!$document->published_at) {
+        if (! $document->published_at) {
             return 'Draft';
         }
 
@@ -65,14 +67,14 @@ class DocumentService
         $officialFilePath = $this->resolveOfficialFile($validated, $officialFile);
 
         return Document::create([
-            'title'            => $validated['title'],
-            'slug'             => Str::slug($validated['title']),
-            'description'      => $validated['description'] ?? null,
-            'file_path'        => $validated['doc_file_link'] ?? null,
+            'title' => $validated['title'],
+            'slug' => Str::slug($validated['title']),
+            'description' => $validated['description'] ?? null,
+            'file_path' => $validated['doc_file_link'] ?? null,
             'official_file_path' => $officialFilePath,
-            'version'          => $validated['version'] ?? null,
-            'published_at'     => $validated['published_at'] ?? null,
-            'is_public'        => $validated['is_public'] ?? false,
+            'version' => $validated['version'] ?? null,
+            'published_at' => $validated['published_at'] ?? null,
+            'is_public' => $validated['is_public'] ?? false,
             'document_area_id' => $validated['document_area_id'] ?? null,
         ]);
     }
@@ -89,14 +91,14 @@ class DocumentService
         $officialFilePath = $this->resolveOfficialFile($validated, $officialFile, $document);
 
         $document->update([
-            'title'            => $validated['title'],
-            'slug'             => Str::slug($validated['title']),
-            'description'      => $validated['description'] ?? null,
-            'file_path'        => $validated['doc_file_link'] ?? null,
+            'title' => $validated['title'],
+            'slug' => Str::slug($validated['title']),
+            'description' => $validated['description'] ?? null,
+            'file_path' => $validated['doc_file_link'] ?? null,
             'official_file_path' => $officialFilePath,
-            'version'          => $validated['version'] ?? null,
-            'published_at'     => $validated['published_at'] ?? null,
-            'is_public'        => $validated['is_public'] ?? false,
+            'version' => $validated['version'] ?? null,
+            'published_at' => $validated['published_at'] ?? null,
+            'is_public' => $validated['is_public'] ?? false,
             'document_area_id' => $validated['document_area_id'] ?? null,
         ]);
     }

@@ -52,43 +52,42 @@ Route::get('/incidents/{caseId}/attachment', [IncidentController::class, 'downlo
 Route::get('/incidents/{caseId}', [IncidentController::class, 'showWithToken'])->middleware('throttle:incident-search')->name('incident.show');
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
-  Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-  Route::resource('incidents', AdminIncidentController::class);
-  Route::put('/incidents/{incident}/management', [AdminIncidentController::class, 'updateManagement'])->name('incidents.management.update');
-  Route::post('/incidents/{incident}/logs', [AdminIncidentController::class, 'addLog'])->name('incidents.logs.store');
-  Route::resource('incident-types', IncidentTypeController::class);
+    Route::resource('incidents', AdminIncidentController::class);
+    Route::put('/incidents/{incident}/management', [AdminIncidentController::class, 'updateManagement'])->name('incidents.management.update');
+    Route::post('/incidents/{incident}/logs', [AdminIncidentController::class, 'addLog'])->name('incidents.logs.store');
+    Route::resource('incident-types', IncidentTypeController::class);
 
-  Route::resource('posts', AdminPostController::class)->except(['show']);
-  Route::post('/images/upload', [ImageUploadController::class, 'store'])->name('images.upload');
-  Route::post('/generate-excerpt', [ExcerptController::class, 'generate'])->name('generate-excerpt');
+    Route::resource('posts', AdminPostController::class)->except(['show']);
+    Route::post('/images/upload', [ImageUploadController::class, 'store'])->name('images.upload');
+    Route::post('/generate-excerpt', [ExcerptController::class, 'generate'])->name('generate-excerpt');
 
-  Route::get('/taxonomy', [TaxonomyController::class, 'index'])->name('taxonomy.index');
-  Route::post('/categories', [TaxonomyController::class, 'storeCategory'])->name('categories.store');
-  Route::put('/categories/{category}', [TaxonomyController::class, 'updateCategory'])->name('categories.update');
-  Route::delete('/categories/{category}', [TaxonomyController::class, 'destroyCategory'])->name('categories.destroy');
-  Route::post('/tags', [TaxonomyController::class, 'storeTag'])->name('tags.store');
-  Route::put('/tags/{tag}', [TaxonomyController::class, 'updateTag'])->name('tags.update');
-  Route::delete('/tags/{tag}', [TaxonomyController::class, 'destroyTag'])->name('tags.destroy');
+    Route::get('/taxonomy', [TaxonomyController::class, 'index'])->name('taxonomy.index');
+    Route::post('/categories', [TaxonomyController::class, 'storeCategory'])->name('categories.store');
+    Route::put('/categories/{category}', [TaxonomyController::class, 'updateCategory'])->name('categories.update');
+    Route::delete('/categories/{category}', [TaxonomyController::class, 'destroyCategory'])->name('categories.destroy');
+    Route::post('/tags', [TaxonomyController::class, 'storeTag'])->name('tags.store');
+    Route::put('/tags/{tag}', [TaxonomyController::class, 'updateTag'])->name('tags.update');
+    Route::delete('/tags/{tag}', [TaxonomyController::class, 'destroyTag'])->name('tags.destroy');
 
-  Route::resource('document-areas', DocumentAreaController::class);
-  Route::patch('/documents/{document}/toggle-visibility', [AdminDocumentController::class, 'toggleVisibility'])->name('documents.toggle-visibility');
-  Route::resource('documents', AdminDocumentController::class);
-  Route::resource('services', AdminServiceController::class);
-  Route::resource('faqs', AdminFaqController::class)->except(['show', 'create', 'edit']);
-  Route::resource('announcements', AnnouncementController::class)->except(['show', 'create', 'edit']);
-  Route::resource('users', AdminUserController::class)->except(['show', 'create', 'edit'])->middleware('admin');
+    Route::resource('document-areas', DocumentAreaController::class);
+    Route::patch('/documents/{document}/toggle-visibility', [AdminDocumentController::class, 'toggleVisibility'])->name('documents.toggle-visibility');
+    Route::resource('documents', AdminDocumentController::class);
+    Route::resource('services', AdminServiceController::class);
+    Route::resource('faqs', AdminFaqController::class)->except(['show', 'create', 'edit']);
+    Route::resource('announcements', AnnouncementController::class)->except(['show', 'create', 'edit']);
+    Route::resource('users', AdminUserController::class)->except(['show', 'create', 'edit'])->middleware('admin');
 });
 
 Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(function () {
-  Route::get('/notifications/incidents', [NotificationController::class, 'getIncidentNotifications'])->name('notifications.incidents');
-  Route::post('/notifications/{incident}/mark-read', [NotificationController::class, 'markAsRead'])->name('incidents.mark-read');
-  Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+    Route::get('/notifications/incidents', [NotificationController::class, 'getIncidentNotifications'])->name('notifications.incidents');
+    Route::post('/notifications/{incident}/mark-read', [NotificationController::class, 'markAsRead'])->name('incidents.mark-read');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
 });
 
 Route::middleware('auth')->group(function () {
-  Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
-
 
 require __DIR__.'/auth.php';

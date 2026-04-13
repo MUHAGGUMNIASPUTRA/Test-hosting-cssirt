@@ -19,11 +19,11 @@ class UpdateUserRequest extends FormRequest
         $user = $this->route('user');
 
         return [
-            'name'             => ['required', 'string', 'max:255'],
-            'email'            => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user)],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user)],
             'current_password' => ['required', 'string'],
-            'password'         => ['nullable', 'confirmed', Rules\Password::min(8)],
-            'role'             => ['required', Rule::enum(UserRole::class)],
+            'password' => ['nullable', 'confirmed', Rules\Password::min(8)],
+            'role' => ['required', Rule::enum(UserRole::class)],
         ];
     }
 }

@@ -33,9 +33,9 @@ class IncidentController extends Controller
             $search = $request->get('search');
             $query->where(function ($q) use ($search) {
                 $q->where('case_id', 'ilike', "%{$search}%")
-                  ->orWhere('reporter_name', 'ilike', "%{$search}%")
-                  ->orWhere('reporter_email', 'ilike', "%{$search}%")
-                  ->orWhere('description', 'ilike', "%{$search}%");
+                    ->orWhere('reporter_name', 'ilike', "%{$search}%")
+                    ->orWhere('reporter_email', 'ilike', "%{$search}%")
+                    ->orWhere('description', 'ilike', "%{$search}%");
             });
         }
 
@@ -53,8 +53,8 @@ class IncidentController extends Controller
 
         return Inertia::render('Admin/Incidents/Index', [
             'incidents' => $query->latest('reported_at')->paginate(10)->withQueryString(),
-            'filters'   => $request->only(['search', 'status', 'priority', 'category']),
-            'stats'     => $this->incidentService->getGlobalStats(),
+            'filters' => $request->only(['search', 'status', 'priority', 'category']),
+            'stats' => $this->incidentService->getGlobalStats(),
         ]);
     }
 
@@ -65,7 +65,7 @@ class IncidentController extends Controller
     {
         return Inertia::render('Admin/Incidents/Create', [
             'incidentTypes' => IncidentType::orderBy('name')->get(['id', 'name', 'description', 'guide']),
-            'staffUsers'    => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
+            'staffUsers' => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
         ]);
     }
 
@@ -89,7 +89,7 @@ class IncidentController extends Controller
      */
     public function show(Incident $incident): Response
     {
-        if (!$incident->is_read) {
+        if (! $incident->is_read) {
             $incident->update([
                 'is_read' => true,
                 'read_by' => Auth::id(),
@@ -98,7 +98,7 @@ class IncidentController extends Controller
         }
 
         return Inertia::render('Admin/Incidents/Show', [
-            'incident'   => $incident->load(['incidentType', 'assignedUser', 'incidentLogs.user']),
+            'incident' => $incident->load(['incidentType', 'assignedUser', 'incidentLogs.user']),
             'staffUsers' => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
         ]);
     }
@@ -115,9 +115,9 @@ class IncidentController extends Controller
         $incident->file_size = $incident->fileSize();
 
         return Inertia::render('Admin/Incidents/Create', [
-            'incident'      => $incident,
+            'incident' => $incident,
             'incidentTypes' => IncidentType::all(['id', 'name', 'description', 'guide']),
-            'staffUsers'    => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
+            'staffUsers' => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
         ]);
     }
 
@@ -166,7 +166,7 @@ class IncidentController extends Controller
 
         $incident->incidentLogs()->create([
             'log_message' => $request->validated('log_message'),
-            'user_id'     => Auth::id(),
+            'user_id' => Auth::id(),
         ]);
 
         return back()->with('success', 'Catatan berhasil ditambahkan.');
@@ -179,16 +179,17 @@ class IncidentController extends Controller
     {
         try {
             $incident->delete();
+
             return back()->with('success', [
-                'title'   => 'Berhasil',
+                'title' => 'Berhasil',
                 'message' => 'Insiden berhasil dihapus.',
-                'icon'    => 'success',
+                'icon' => 'success',
             ]);
         } catch (\Exception $e) {
             return back()->with('error', [
-                'title'   => 'Gagal',
+                'title' => 'Gagal',
                 'message' => 'Gagal menghapus insiden. Pastikan tidak ada data terkait yang menghalangi penghapusan.',
-                'icon'    => 'error',
+                'icon' => 'error',
             ]);
         }
     }

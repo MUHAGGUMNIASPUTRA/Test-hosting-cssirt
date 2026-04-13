@@ -22,17 +22,19 @@ class PostService
         if (($validated['image_type'] ?? 'file') === 'file') {
             if ($image !== null) {
                 // Delete old stored image if it's not a URL
-                if ($existing && !str_starts_with($existing, 'http')) {
+                if ($existing && ! str_starts_with($existing, 'http')) {
                     Storage::disk('public')->delete($existing);
                 }
+
                 return $image->store('posts', 'public');
             }
+
             return $existing;
         }
 
         // mode link
         if (($validated['image_type'] ?? null) === 'link') {
-            return !empty($validated['image_url']) ? $validated['image_url'] : null;
+            return ! empty($validated['image_url']) ? $validated['image_url'] : null;
         }
 
         return $existing;
@@ -55,12 +57,12 @@ class PostService
         $path = $this->resolveImage($validated, $image);
 
         $post = Post::create([
-            'title'        => $validated['title'],
-            'slug'         => Str::slug($validated['title']),
-            'body'         => $validated['body'],
-            'excerpt'      => $validated['excerpt'],
-            'image'        => $path,
-            'status'       => $validated['status'],
+            'title' => $validated['title'],
+            'slug' => Str::slug($validated['title']),
+            'body' => $validated['body'],
+            'excerpt' => $validated['excerpt'],
+            'image' => $path,
+            'status' => $validated['status'],
             'published_by' => $authorName,
             'published_at' => $validated['status'] === 'Published' ? now() : null,
         ]);
@@ -75,7 +77,7 @@ class PostService
      */
     public function deleteWithAssets(Post $post): void
     {
-        if ($post->image && !str_starts_with($post->image, 'http')) {
+        if ($post->image && ! str_starts_with($post->image, 'http')) {
             Storage::disk('public')->delete($post->image);
         }
 
@@ -92,12 +94,12 @@ class PostService
         $path = $this->resolveImage($validated, $image, $post->image);
 
         $post->update([
-            'title'        => $validated['title'],
-            'slug'         => Str::slug($validated['title']),
-            'body'         => $validated['body'],
-            'excerpt'      => $validated['excerpt'],
-            'image'        => $path,
-            'status'       => $validated['status'],
+            'title' => $validated['title'],
+            'slug' => Str::slug($validated['title']),
+            'body' => $validated['body'],
+            'excerpt' => $validated['excerpt'],
+            'image' => $path,
+            'status' => $validated['status'],
             'published_by' => $authorName,
             'published_at' => $validated['status'] === 'Published'
                 ? ($post->published_at ?? now())

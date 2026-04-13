@@ -4,9 +4,9 @@ namespace App\Enums;
 
 enum IncidentPriority: string
 {
-    case Rendah   = 'Rendah';
-    case Sedang   = 'Sedang';
-    case Tinggi   = 'Tinggi';
+    case Rendah = 'Rendah';
+    case Sedang = 'Sedang';
+    case Tinggi = 'Tinggi';
     case Kritikal = 'Kritikal';
 
     /** @return string[] */
