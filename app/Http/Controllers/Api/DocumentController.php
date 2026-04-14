@@ -16,6 +16,8 @@ class DocumentController extends Controller
         $filters = [
             'search' => $request->input('search'),
             'areas' => $request->input('areas', []),
+            'stage' => $request->input('stage'),
+            'is_public' => $request->input('is_public', ''),
             'per_page' => max(1, min(100, (int) $request->input('per_page', 10))),
             'page' => max(1, (int) $request->input('page', 1)),
         ];

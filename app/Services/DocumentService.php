@@ -90,6 +90,14 @@ class DocumentService
             });
         }
 
+        if (! empty($filters['stage'])) {
+            $query->where('stage', $filters['stage']);
+        }
+
+        if (isset($filters['is_public']) && $filters['is_public'] !== '') {
+            $query->where('is_public', (bool) $filters['is_public']);
+        }
+
         $documents = $query->paginate(
             $filters['per_page'] ?? 10,
             ['*'],

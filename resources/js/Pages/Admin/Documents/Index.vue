@@ -19,12 +19,28 @@ const documentAreasOptions = computed(() => [
   ...(props.documentAreas ?? []),
 ])
 
+const stageOptions = [
+  'Perlu Dibuat',
+  'Telah Dibuat',
+  'Perlu Review',
+  'Telah Direview',
+  'Perlu TTD',
+  'Final',
+]
+
+const visibilityOptions = [
+  { label: 'Publik', value: '1' },
+  { label: 'Privat', value: '0' },
+]
+
 // Inisialisasi dengan struktur default agar template tidak error sebelum data tiba
 const documents = ref({ data: [], current_page: 1, per_page: 10, total: 0 })
 const loading = ref(false)
 
 const searchQuery = ref('')
 const selectedAreas = ref([])
+const selectedStage = ref('')
+const selectedVisibility = ref('')
 
 const paginatedData = computed(() => documents.value)
 
@@ -35,6 +51,9 @@ const fetchDocuments = async (page = 1) => {
     const params = new URLSearchParams()
     if (searchQuery.value) params.set('search', searchQuery.value)
     selectedAreas.value.forEach((area) => params.append('areas[]', area.id))
+    if (selectedStage.value) params.set('stage', selectedStage.value)
+    if (selectedVisibility.value !== '')
+      params.set('is_public', selectedVisibility.value)
     params.set('per_page', perPage)
     if (page > 1) params.set('page', page)
     const qs = params.toString()
@@ -63,11 +82,17 @@ const onPage = (event) => {
 const clearFilters = () => {
   searchQuery.value = ''
   selectedAreas.value = []
+  selectedStage.value = ''
+  selectedVisibility.value = ''
   fetchDocuments(1)
 }
 
 const hasActiveFilters = computed(
-  () => !!searchQuery.value || selectedAreas.value.length > 0,
+  () =>
+    !!searchQuery.value ||
+    selectedAreas.value.length > 0 ||
+    !!selectedStage.value ||
+    selectedVisibility.value !== '',
 )
 
 const serverSideConfig = computed(() => ({
@@ -142,7 +167,7 @@ const stageSeverity = (stage) => getSeverity('document-stage', stage)
         :has-active-filters="hasActiveFilters"
         @clear="clearFilters"
       >
-        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <IconField>
             <InputIcon><i class="pi pi-search" /></InputIcon>
             <InputText
@@ -161,6 +186,24 @@ const stageSeverity = (stage) => getSeverity('document-stage', stage)
             class="w-full"
             :maxSelectedLabels="2"
             selectedItemsLabel="{0} area dipilih"
+            @change="applyFilters"
+          />
+          <Select
+            v-model="selectedStage"
+            :options="stageOptions"
+            placeholder="Filter Stage"
+            class="w-full"
+            showClear
+            @change="applyFilters"
+          />
+          <Select
+            v-model="selectedVisibility"
+            :options="visibilityOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Filter Visibilitas"
+            class="w-full"
+            showClear
             @change="applyFilters"
           />
         </div>
