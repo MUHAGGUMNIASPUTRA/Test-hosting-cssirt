@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\DocumentStage;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Document\StoreDocumentRequest;
 use App\Http\Requests\Admin\Document\UpdateDocumentRequest;
@@ -28,6 +29,7 @@ class DocumentController extends Controller
     {
         return Inertia::render('Admin/Documents/Create', [
             'documentAreas' => DocumentArea::orderBy('name')->get(['id', 'name']),
+            'stageOptions' => DocumentStage::values(),
         ]);
     }
 
@@ -35,7 +37,6 @@ class DocumentController extends Controller
     {
         $this->documentService->create(
             $request->validated(),
-            $request->file('doc_file'),
             $request->file('official_file')
         );
 
@@ -51,6 +52,7 @@ class DocumentController extends Controller
         return Inertia::render('Admin/Documents/Create', [
             'document' => $document,
             'documentAreas' => DocumentArea::orderBy('name')->get(['id', 'name']),
+            'stageOptions' => DocumentStage::values(),
         ]);
     }
 
@@ -59,7 +61,6 @@ class DocumentController extends Controller
         $this->documentService->update(
             $document,
             $request->validated(),
-            $request->file('doc_file'),
             $request->file('official_file')
         );
 

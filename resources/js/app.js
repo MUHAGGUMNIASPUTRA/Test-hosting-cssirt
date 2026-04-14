@@ -12,6 +12,7 @@ import 'primeicons/primeicons.css'
 
 import ConfirmationService from 'primevue/confirmationservice'
 import ToastService from 'primevue/toastservice'
+import Tooltip from 'primevue/tooltip'
 
 import Particles from '@tsparticles/vue3'
 import { loadSlim } from '@tsparticles/slim'
@@ -42,6 +43,7 @@ createInertiaApp({
       })
       .use(ConfirmationService)
       .use(ToastService)
+      .directive('tooltip', Tooltip)
       .use(Particles, {
         init: async (engine) => {
           await loadSlim(engine)

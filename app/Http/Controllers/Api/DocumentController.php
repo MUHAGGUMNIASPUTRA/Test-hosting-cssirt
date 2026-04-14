@@ -16,6 +16,8 @@ class DocumentController extends Controller
         $filters = [
             'search' => $request->input('search'),
             'areas' => $request->input('areas', []),
+            'per_page' => max(1, min(100, (int) $request->input('per_page', 10))),
+            'page' => max(1, (int) $request->input('page', 1)),
         ];
 
         $paginator = $this->documentService->list($filters);

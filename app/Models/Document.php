@@ -4,6 +4,7 @@
 
 namespace App\Models;
 
+use App\Enums\DocumentStage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,12 +16,14 @@ use Illuminate\Support\Facades\Storage;
  * @property string|null $description
  * @property string|null $draft_file_path
  * @property string|null $official_file_path
+ * @property string|null $reference_number
+ * @property DocumentStage|null $stage
  * @property string|null $version
  * @property bool $is_public
  * @property int|null $document_area_id
- * @property string|null $file_size Virtual — set in controller/collection transform
- * @property bool|null $file_exists Virtual — set in controller/collection transform
- * @property string|null $status Virtual — set in controller/collection transform
+ * @property string|null $file_size Virtual — set in service transform
+ * @property bool|null $file_exists Virtual — set in service transform
+ * @property string|null $pub_status Virtual — set in service transform
  */
 class Document extends Model
 {
@@ -37,6 +40,8 @@ class Document extends Model
         'description',
         'draft_file_path',
         'official_file_path',
+        'reference_number',
+        'stage',
         'version',
         'published_at',
         'is_public',
@@ -51,6 +56,7 @@ class Document extends Model
     protected $casts = [
         'published_at' => 'datetime',
         'is_public' => 'boolean',
+        'stage' => DocumentStage::class,
     ];
 
     public function documentArea(): BelongsTo

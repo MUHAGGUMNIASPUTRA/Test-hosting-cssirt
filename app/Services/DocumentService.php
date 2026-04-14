@@ -90,12 +90,17 @@ class DocumentService
             });
         }
 
-        $documents = $query->paginate(10);
+        $documents = $query->paginate(
+            $filters['per_page'] ?? 10,
+            ['*'],
+            'page',
+            $filters['page'] ?? 1
+        );
 
         $documents->getCollection()->transform(function (Document $document) {
             $document->file_size = $document->fileSize();
             $document->file_exists = $document->fileExists();
-            $document->status = $this->getDocumentStatus($document);
+            $document->pub_status = $this->getDocumentStatus($document);
 
             return $document;
         });
@@ -108,7 +113,6 @@ class DocumentService
      */
     public function create(
         array $validated,
-        ?UploadedFile $docFile,
         ?UploadedFile $officialFile
     ): Document {
         $officialFilePath = $this->resolveOfficialFile($validated, $officialFile);
@@ -119,6 +123,8 @@ class DocumentService
             'description' => $validated['description'] ?? null,
             'draft_file_path' => $validated['doc_file_link'] ?? null,
             'official_file_path' => $officialFilePath,
+            'reference_number' => $validated['reference_number'] ?? null,
+            'stage' => $validated['stage'] ?? null,
             'version' => $validated['version'] ?? null,
             'published_at' => $validated['published_at'] ?? null,
             'is_public' => $validated['is_public'] ?? false,
@@ -132,7 +138,6 @@ class DocumentService
     public function update(
         Document $document,
         array $validated,
-        ?UploadedFile $docFile,
         ?UploadedFile $officialFile
     ): void {
         $officialFilePath = $this->resolveOfficialFile($validated, $officialFile, $document);
@@ -143,6 +148,8 @@ class DocumentService
             'description' => $validated['description'] ?? null,
             'draft_file_path' => $validated['doc_file_link'] ?? null,
             'official_file_path' => $officialFilePath,
+            'reference_number' => $validated['reference_number'] ?? null,
+            'stage' => $validated['stage'] ?? null,
             'version' => $validated['version'] ?? null,
             'published_at' => $validated['published_at'] ?? null,
             'is_public' => $validated['is_public'] ?? false,

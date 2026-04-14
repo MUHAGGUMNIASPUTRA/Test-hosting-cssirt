@@ -1,6 +1,7 @@
 <script setup>
 import { useResponsive } from '@/Composables/useResponsive'
 import { formatDate } from '@/utils/date'
+import { getSeverity } from '@/utils/status'
 import { Link, router } from '@inertiajs/vue3'
 import { IconFileTypePdf } from '@tabler/icons-vue'
 import axios from 'axios'
@@ -18,7 +19,8 @@ const documentAreasOptions = computed(() => [
   ...(props.documentAreas ?? []),
 ])
 
-const documents = ref(null)
+// Inisialisasi dengan struktur default agar template tidak error sebelum data tiba
+const documents = ref({ data: [], current_page: 1, per_page: 10, total: 0 })
 const loading = ref(false)
 
 const searchQuery = ref('')
@@ -29,15 +31,21 @@ const paginatedData = computed(() => documents.value)
 const fetchDocuments = async (page = 1) => {
   loading.value = true
   try {
+    const perPage = paginatedData.value?.per_page ?? 10
     const params = new URLSearchParams()
     if (searchQuery.value) params.set('search', searchQuery.value)
     selectedAreas.value.forEach((area) => params.append('areas[]', area.id))
+    params.set('per_page', perPage)
     if (page > 1) params.set('page', page)
     const qs = params.toString()
     const { data } = await axios.get(
       route('api.admin.documents.index') + (qs ? '?' + qs : ''),
     )
-    documents.value = data.data
+    if (data?.data) {
+      documents.value = data.data
+    }
+  } catch {
+    // Biarkan data tetap di state terakhir yang valid
   } finally {
     loading.value = false
   }
@@ -66,8 +74,9 @@ const serverSideConfig = computed(() => ({
   ...dtConfig(),
   lazy: true,
   totalRecords: paginatedData.value?.total ?? 0,
-  first: paginatedData.value
-    ? (paginatedData.value.current_page - 1) * paginatedData.value.per_page
+  first: paginatedData.value?.current_page
+    ? (paginatedData.value.current_page - 1) *
+      (paginatedData.value.per_page ?? 10)
     : 0,
   rows: paginatedData.value?.per_page ?? 10,
 }))
@@ -105,24 +114,19 @@ const toggleVisibility = (doc) => {
 
 const isUrl = (path) =>
   path && (path.startsWith('http://') || path.startsWith('https://'))
+
+const stageSeverity = (stage) => getSeverity('document-stage', stage)
 </script>
 
 <template>
   <AdminLayout title="Panduan & Dokumen">
     <div class="space-y-4 sm:space-y-6">
       <!-- Header -->
-      <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div
-          class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-        >
-          <div>
-            <h2 class="text-xl font-bold text-slate-900 sm:text-2xl">
-              Panduan & Dokumen
-            </h2>
-            <p class="text-slate-600">
-              Kelola dokumen panduan dan file referensi
-            </p>
-          </div>
+      <AdminPageHeader
+        title="Panduan & Dokumen"
+        description="Kelola dokumen panduan dan file referensi"
+      >
+        <template #action>
           <Link
             :href="route('admin.documents.create')"
             class="inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
@@ -130,23 +134,14 @@ const isUrl = (path) =>
             <IconPlus size="16" />
             Tambah Dokumen
           </Link>
-        </div>
-      </div>
+        </template>
+      </AdminPageHeader>
 
       <!-- Filter -->
-      <div
-        class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6"
+      <AdminFilterBar
+        :has-active-filters="hasActiveFilters"
+        @clear="clearFilters"
       >
-        <div class="mb-4 flex items-center justify-between">
-          <h3 class="font-semibold text-slate-900">Filter & Pencarian</h3>
-          <button
-            v-if="hasActiveFilters"
-            @click="clearFilters"
-            class="text-sm font-medium text-blue-600 hover:text-blue-800"
-          >
-            Reset
-          </button>
-        </div>
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <IconField>
             <InputIcon><i class="pi pi-search" /></InputIcon>
@@ -169,62 +164,59 @@ const isUrl = (path) =>
             @change="applyFilters"
           />
         </div>
-      </div>
+      </AdminFilterBar>
 
       <!-- Table -->
-      <div
-        class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+      <AdminDataTable
+        :value="documents?.data ?? []"
+        :serverConfig="serverSideConfig"
+        @page="onPage"
       >
-        <AdminDataTable
-          :value="documents?.data ?? []"
-          :serverConfig="serverSideConfig"
-          @page="onPage"
-        >
-          <Column field="title" header="Judul">
-            <template #body="{ data }">
-              <div class="font-medium text-slate-900">{{ data.title }}</div>
-              <div
-                v-if="data.description"
-                class="max-w-xs truncate text-sm text-slate-500"
-              >
-                {{ data.description }}
-              </div>
-            </template>
-          </Column>
+        <Column field="title" header="Judul">
+          <template #body="{ data }">
+            <div class="font-medium text-slate-900">{{ data.title }}</div>
+            <div
+              v-if="data.description"
+              class="max-w-xs truncate text-sm text-slate-500"
+            >
+              {{ data.description }}
+            </div>
+          </template>
+        </Column>
 
-          <Column header="Area Dokumen" v-if="!isMobile">
-            <template #body="{ data }">
-              <span v-if="data.document_area" class="text-sm text-slate-700">
-                {{ data.document_area.name }}
-              </span>
-              <span v-else class="text-slate-400">-</span>
-            </template>
-          </Column>
+        <Column header="Area Dokumen" v-if="!isMobile">
+          <template #body="{ data }">
+            <span v-if="data.document_area" class="text-sm text-slate-700">
+              {{ data.document_area.name }}
+            </span>
+            <span v-else class="text-slate-400">-</span>
+          </template>
+        </Column>
 
-          <Column header="File Draft" v-if="!isMobile" style="width: 90px">
-            <template #body="{ data }">
+        <Column header="File Draft" v-if="!isMobile" style="width: 90px">
+          <template #body="{ data }">
+            <a
+              v-if="data.draft_file_path"
+              :href="
+                isUrl(data.draft_file_path)
+                  ? data.draft_file_path
+                  : `/storage/${data.draft_file_path}`
+              "
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center text-blue-600 hover:text-blue-800"
+              v-tooltip.top="'Buka File Draft'"
+            >
+              <IconExternalLink size="18" />
+            </a>
+            <span v-else class="text-slate-400">-</span>
+          </template>
+        </Column>
+
+        <Column header="File Sah" v-if="!isMobile" style="width: 130px">
+          <template #body="{ data }">
+            <div v-if="data.official_file_path" class="space-y-1">
               <a
-                v-if="data.draft_file_path"
-                :href="
-                  isUrl(data.draft_file_path)
-                    ? data.draft_file_path
-                    : `/storage/${data.draft_file_path}`
-                "
-                target="_blank"
-                rel="noopener"
-                class="inline-flex items-center text-blue-600 hover:text-blue-800"
-                v-tooltip.top="'Buka File Draft'"
-              >
-                <IconExternalLink size="18" />
-              </a>
-              <span v-else class="text-slate-400">-</span>
-            </template>
-          </Column>
-
-          <Column header="File Sah" v-if="!isMobile" style="width: 110px">
-            <template #body="{ data }">
-              <a
-                v-if="data.official_file_path"
                 :href="
                   isUrl(data.official_file_path)
                     ? data.official_file_path
@@ -247,86 +239,102 @@ const isUrl = (path) =>
                   class="text-xs"
                 />
               </a>
-              <span v-else class="text-slate-400">-</span>
-            </template>
-          </Column>
+            </div>
+            <span v-else class="text-slate-400">-</span>
+            <div v-if="data.reference_number" class="text-xs text-slate-500">
+              {{ data.reference_number }}
+            </div>
+            <span v-else class="text-slate-400">-</span>
+          </template>
+        </Column>
 
-          <Column header="Visibilitas" v-if="!isMobile" style="width: 100px">
-            <template #body="{ data }">
-              <Tag
-                :value="data.is_public ? 'Publik' : 'Privat'"
+        <Column header="Stage" v-if="!isMobile" style="width: 120px">
+          <template #body="{ data }">
+            <Tag
+              v-if="data.stage"
+              :value="data.stage"
+              :severity="stageSeverity(data.stage)"
+              class="text-xs"
+            />
+            <span v-else class="text-slate-400">-</span>
+          </template>
+        </Column>
+
+        <Column header="Visibilitas" v-if="!isMobile" style="width: 100px">
+          <template #body="{ data }">
+            <Tag
+              :value="data.is_public ? 'Publik' : 'Privat'"
+              :severity="data.is_public ? 'success' : 'secondary'"
+            />
+          </template>
+        </Column>
+
+        <Column header="Terbit" v-if="!isMobile">
+          <template #body="{ data }">
+            <span class="text-sm text-slate-600">{{
+              formatDate(data.published_at)
+            }}</span>
+          </template>
+        </Column>
+
+        <Column header="Aksi" style="width: 120px">
+          <template #body="{ data }">
+            <div class="flex items-center gap-1">
+              <!-- Toggle Visibility -->
+              <Button
+                :icon="data.is_public ? 'pi pi-eye' : 'pi pi-eye-slash'"
+                size="small"
                 :severity="data.is_public ? 'success' : 'secondary'"
+                text
+                rounded
+                :v-tooltip="
+                  data.is_public ? 'Sembunyikan dari publik' : 'Publikasikan'
+                "
+                @click="toggleVisibility(data)"
               />
-            </template>
-          </Column>
 
-          <Column header="Terbit" v-if="!isMobile">
-            <template #body="{ data }">
-              <span class="text-sm text-slate-600">{{
-                formatDate(data.published_at)
-              }}</span>
-            </template>
-          </Column>
-
-          <Column header="Aksi" style="width: 120px">
-            <template #body="{ data }">
-              <div class="flex items-center gap-1">
-                <!-- Toggle Visibility -->
+              <Link :href="route('admin.documents.edit', data.id)">
                 <Button
-                  :icon="data.is_public ? 'pi pi-eye' : 'pi pi-eye-slash'"
+                  icon="pi pi-pencil"
                   size="small"
-                  :severity="data.is_public ? 'success' : 'secondary'"
+                  severity="secondary"
                   text
                   rounded
-                  :v-tooltip="
-                    data.is_public ? 'Sembunyikan dari publik' : 'Publikasikan'
-                  "
-                  @click="toggleVisibility(data)"
+                  v-tooltip="'Edit'"
                 />
-
-                <Link :href="route('admin.documents.edit', data.id)">
-                  <Button
-                    icon="pi pi-pencil"
-                    size="small"
-                    severity="secondary"
-                    text
-                    rounded
-                    v-tooltip="'Edit'"
-                  />
-                </Link>
-                <Button
-                  icon="pi pi-trash"
-                  size="small"
-                  severity="danger"
-                  text
-                  rounded
-                  v-tooltip="'Hapus'"
-                  @click="confirmDelete(data)"
-                />
-              </div>
-            </template>
-          </Column>
-
-          <template #empty>
-            <div class="py-8 text-center text-slate-500">
-              <template v-if="loading">
-                <IconLoader2
-                  size="40"
-                  class="mx-auto mb-3 animate-spin text-slate-300"
-                />
-                <p>Memuat data...</p>
-              </template>
-              <template v-else>
-                <IconFileDescription
-                  size="40"
-                  class="mx-auto mb-3 text-slate-300"
-                />
-                <p>Belum ada panduan atau dokumen.</p>
-              </template>
+              </Link>
+              <Button
+                icon="pi pi-trash"
+                size="small"
+                severity="danger"
+                text
+                rounded
+                v-tooltip="'Hapus'"
+                @click="confirmDelete(data)"
+              />
             </div>
           </template>
-        </AdminDataTable>
-      </div>
+        </Column>
+
+        <template #empty>
+          <div class="py-8 text-center text-slate-500">
+            <template v-if="loading">
+              <IconLoader2
+                size="40"
+                class="mx-auto mb-3 animate-spin text-slate-300"
+              />
+              <p>Memuat data...</p>
+            </template>
+            <template v-else>
+              <IconFileDescription
+                size="40"
+                class="mx-auto mb-3 text-slate-300"
+              />
+              <p>Belum ada panduan atau dokumen.</p>
+            </template>
+          </div>
+        </template>
+      </AdminDataTable>
     </div>
 
     <!-- Delete Dialog -->

@@ -30,6 +30,14 @@ const SEVERITY_MAP = {
     true: 'success',
     false: 'secondary',
   },
+  'document-stage': {
+    'Perlu Dibuat': 'secondary',
+    'Telah Dibuat': 'info',
+    'Perlu Review': 'warn',
+    'Telah Direview': 'info',
+    'Perlu TTD': 'warn',
+    Final: 'success',
+  },
 }
 
 /** @type {Record<string, Record<string, string>>} */

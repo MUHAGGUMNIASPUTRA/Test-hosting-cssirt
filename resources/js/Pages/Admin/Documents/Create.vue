@@ -12,10 +12,15 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  stageOptions: {
+    type: Array,
+    default: () => [],
+  },
 })
 
 const { isMobile } = useResponsive()
 const isEditMode = computed(() => !!props.document)
+const isStageFinal = computed(() => form.stage === 'Final')
 
 // Deteksi mode file existing untuk File Dokumen Sah
 const detectOfficialFileMode = () => {
@@ -46,6 +51,9 @@ const form = useForm({
     (detectOfficialFileMode() === 'link'
       ? props.document?.official_file_path
       : '') || '',
+  // Kolom baru
+  reference_number: props.document?.reference_number || '',
+  stage: props.document?.stage || null,
 })
 
 // Uploader ref untuk File Dokumen Sah
@@ -276,11 +284,8 @@ const submit = () => {
               <div class="ml-3">
                 <h3 class="font-semibold text-slate-900">File Dokumen Sah</h3>
                 <p class="text-xs text-slate-600 sm:text-base">
-                  File PDF resmi — wajib diisi
+                  File PDF resmi
                 </p>
-              </div>
-              <div class="ml-auto">
-                <Tag value="Wajib" severity="danger" size="small" />
               </div>
             </div>
 
@@ -403,6 +408,20 @@ const submit = () => {
                 </template>
               </FileUpload>
               <small
+                v-if="
+                  isStageFinal &&
+                  !form.official_file &&
+                  !(
+                    isEditMode &&
+                    document.official_file_path &&
+                    !document.official_file_path.startsWith('http')
+                  )
+                "
+                class="mt-1 block text-amber-600"
+              >
+                File PDF Dokumen Sah wajib diupload untuk stage Final.
+              </small>
+              <small
                 v-if="form.errors.official_file"
                 class="p-error mt-1 block"
                 >{{ form.errors.official_file }}</small
@@ -411,20 +430,63 @@ const submit = () => {
 
             <!-- Link Input -->
             <div v-else class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                Link PDF
+                <span v-if="isStageFinal" class="text-red-500">*</span>
+                <span v-else class="font-normal text-slate-400"
+                  >(Opsional)</span
+                >
+              </label>
               <InputText
                 v-model="form.official_file_link"
                 class="w-full"
                 :class="{ 'p-invalid': form.errors.official_file_link }"
                 placeholder="https://example.com/dokumen-sah.pdf"
+                :required="isStageFinal"
               />
               <p class="text-sm text-slate-500">
                 <IconInfoCircle size="13" class="mr-1 inline" />
                 Pastikan link mengarah ke file PDF yang dapat diakses.
               </p>
               <small
+                v-if="isStageFinal && !form.official_file_link"
+                class="block text-amber-600"
+              >
+                File Dokumen Sah wajib diisi untuk stage Final.
+              </small>
+              <small
                 v-if="form.errors.official_file_link"
                 class="p-error block"
                 >{{ form.errors.official_file_link }}</small
+              >
+            </div>
+
+            <!-- Nomor Referensi -->
+            <div class="mt-4 space-y-2 border-t border-slate-100 pt-4">
+              <label class="block text-sm font-medium text-gray-700">
+                Nomor Referensi
+                <span v-if="isStageFinal" class="text-red-500">*</span>
+                <span v-else class="font-normal text-slate-400"
+                  >(Opsional)</span
+                >
+              </label>
+              <InputText
+                v-model="form.reference_number"
+                class="w-full"
+                :class="{ 'p-invalid': form.errors.reference_number }"
+                placeholder="Contoh: No. 001/CSIRT/BPN/2024"
+                :required="isStageFinal"
+              />
+              <small
+                v-if="isStageFinal && !form.reference_number"
+                class="block text-amber-600"
+              >
+                Nomor Referensi wajib diisi untuk stage Final.
+              </small>
+              <small
+                v-if="form.errors.reference_number"
+                class="p-error block"
+                >{{ form.errors.reference_number }}</small
               >
             </div>
           </div>
@@ -532,6 +594,45 @@ const submit = () => {
                 class="p-error mt-1 block"
                 >{{ form.errors.document_area_id }}</small
               >
+            </div>
+          </div>
+
+          <!-- Stage -->
+          <div
+            class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+          >
+            <div class="mb-5 flex items-center">
+              <div
+                class="flex h-10 w-10 items-center justify-center rounded-lg border border-orange-200 bg-orange-50 sm:h-12 sm:w-12"
+              >
+                <IconCircleCheck
+                  class="text-orange-600"
+                  :size="isMobile ? 18 : undefined"
+                />
+              </div>
+              <div class="ml-3">
+                <h3 class="font-semibold text-slate-900">Stage</h3>
+                <p class="text-xs text-slate-600 sm:text-base">
+                  Tahap pengerjaan dokumen
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <label class="mb-2 block font-medium text-gray-700">
+                Pilih Stage
+                <span class="font-normal text-slate-400">(Opsional)</span>
+              </label>
+              <Select
+                v-model="form.stage"
+                :options="stageOptions"
+                placeholder="— Belum Ditentukan —"
+                class="w-full"
+                showClear
+              />
+              <small v-if="form.errors.stage" class="p-error mt-1 block">{{
+                form.errors.stage
+              }}</small>
             </div>
           </div>
 
