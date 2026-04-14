@@ -1,18 +1,76 @@
 <?php
 
-namespace Database\Seeders;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
-use App\Models\IncidentType;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
-
-class IncidentTypeSeeder extends Seeder
+return new class extends Migration
 {
-    public function run(): void
+    public function up(): void
     {
-        $types = [
+        Schema::table('incident_types', function (Blueprint $table) {
+            $table->integer('sort_order')->default(99)->after('guide');
+        });
+
+        // Kosongkan tabel dan isi ulang dengan data lengkap
+        DB::table('incident_types')->truncate();
+
+        DB::table('incident_types')->insert([
+            [
+                'name' => 'Belum Mengetahui',
+                'slug' => 'belum-mengetahui',
+                'sort_order' => 1,
+                'description' => 'Pelapor belum dapat mengidentifikasi jenis insiden yang terjadi. Pilih kategori ini jika Anda tidak yakin dengan jenis ancaman yang sedang dihadapi.',
+                'guide' => '<h3>Panduan Pelaporan Insiden yang Belum Diketahui Jenisnya</h3>
+<p>Tidak apa-apa jika Anda belum tahu jenis insiden yang terjadi. Yang terpenting, laporkan secepatnya. Sertakan informasi berikut:</p>
+<ul>
+  <li><strong>Gejala yang dialami:</strong> Apa yang tidak berjalan normal? (sistem lambat, file hilang, muncul pesan aneh, dll.)</li>
+  <li><strong>Kapan pertama kali muncul:</strong> Waktu dan tanggal kejadian pertama kali diketahui</li>
+  <li><strong>Perangkat/sistem terdampak:</strong> Komputer, server, aplikasi, atau jaringan apa yang bermasalah</li>
+  <li><strong>Perubahan terakhir:</strong> Apakah ada software yang baru diinstal, email yang diklik, atau akses ke website baru?</li>
+  <li><strong>Screenshot/foto:</strong> Tangkap layar kondisi yang mencurigakan sebagai bukti</li>
+</ul>
+<p><strong>Tindakan segera:</strong></p>
+<ol>
+  <li>Jangan matikan perangkat jika ada data penting yang mungkin terdampak</li>
+  <li>Cabut dari jaringan (cabut kabel LAN atau matikan WiFi) jika dirasa sudah terinfeksi</li>
+  <li>Segera hubungi tim CSIRT dengan informasi sebanyak mungkin</li>
+  <li>Jangan hapus file atau log apapun sebelum investigasi dilakukan</li>
+</ol>',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Bug Hunter',
+                'slug' => 'bug-hunter',
+                'sort_order' => 2,
+                'description' => 'Pelaporan temuan celah keamanan (vulnerability) pada sistem atau aplikasi milik Pemerintah Kabupaten Bojonegoro oleh peneliti keamanan atau bug hunter.',
+                'guide' => '<h3>Panduan Pelaporan Temuan Celah Keamanan (Bug Bounty)</h3>
+<p>Terima kasih atas kontribusi Anda dalam menjaga keamanan sistem kami. Untuk mempercepat penanganan, sertakan informasi berikut:</p>
+<ul>
+  <li><strong>URL/endpoint yang rentan:</strong> Alamat lengkap halaman atau API yang memiliki celah</li>
+  <li><strong>Jenis kerentanan:</strong> XSS, SQL Injection, IDOR, RCE, CSRF, dll.</li>
+  <li><strong>Langkah reproduksi (PoC):</strong> Cara langkah demi langkah untuk mereproduksi celah</li>
+  <li><strong>Dampak potensial:</strong> Apa yang bisa dilakukan penyerang jika memanfaatkan celah ini</li>
+  <li><strong>Screenshot/video:</strong> Bukti visual celah keamanan</li>
+  <li><strong>Tools yang digunakan:</strong> Burp Suite, OWASP ZAP, atau tools lainnya</li>
+</ul>
+<p><strong>Ketentuan pelaporan:</strong></p>
+<ol>
+  <li>Laporkan segera setelah ditemukan — jangan dieksploitasi lebih lanjut</li>
+  <li>Jangan akses, modifikasi, atau hapus data milik orang lain</li>
+  <li>Jangan melakukan serangan DoS atau merusak layanan</li>
+  <li>Berikan waktu yang cukup (minimal 90 hari) sebelum mengungkap ke publik</li>
+  <li>Temuan yang valid dan bertanggung jawab akan mendapat pengakuan resmi</li>
+</ol>',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
             [
                 'name' => 'Phishing',
+                'slug' => 'phishing',
+                'sort_order' => 3,
                 'description' => 'Upaya penipuan untuk mencuri informasi sensitif seperti username, password, atau data keuangan dengan menyamar sebagai entitas terpercaya melalui email, SMS, atau situs web palsu.',
                 'guide' => '<h3>Panduan Pelaporan Insiden Phishing</h3>
 <p>Saat melaporkan insiden phishing, harap sertakan informasi berikut:</p>
@@ -30,9 +88,13 @@ class IncidentTypeSeeder extends Seeder
   <li>Laporkan email phishing ke admin IT instansi Anda</li>
   <li>Aktifkan autentikasi dua faktor (2FA) jika belum aktif</li>
 </ol>',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Malware',
+                'slug' => 'malware',
+                'sort_order' => 4,
                 'description' => 'Infeksi perangkat lunak berbahaya seperti virus, worm, trojan, ransomware, atau spyware yang dapat merusak sistem, mencuri data, atau mengenkripsi file.',
                 'guide' => '<h3>Panduan Pelaporan Insiden Malware</h3>
 <p>Untuk membantu penanganan lebih cepat, sertakan:</p>
@@ -51,9 +113,13 @@ class IncidentTypeSeeder extends Seeder
   <li>Jangan bayar tebusan tanpa konsultasi dengan tim CSIRT</li>
   <li>Dokumentasikan semua bukti sebelum melakukan pembersihan</li>
 </ol>',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Defacement',
+                'slug' => 'defacement',
+                'sort_order' => 5,
                 'description' => 'Perubahan tampilan halaman web secara tidak sah oleh peretas, biasanya mengganti konten asli dengan pesan dari penyerang.',
                 'guide' => '<h3>Panduan Pelaporan Insiden Defacement</h3>
 <p>Sertakan informasi berikut dalam laporan Anda:</p>
@@ -72,9 +138,13 @@ class IncidentTypeSeeder extends Seeder
   <li>Jangan langsung melakukan pemulihan sebelum investigasi selesai</li>
   <li>Hubungi penyedia hosting atau tim IT untuk akses server</li>
 </ol>',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Serangan DDoS',
+                'slug' => 'serangan-ddos',
+                'sort_order' => 6,
                 'description' => 'Serangan Distributed Denial of Service yang membuat layanan online tidak dapat diakses oleh pengguna dengan cara membanjiri server dengan trafik yang berlebihan.',
                 'guide' => '<h3>Panduan Pelaporan Insiden Serangan DDoS</h3>
 <p>Informasi yang diperlukan untuk penanganan:</p>
@@ -94,9 +164,13 @@ class IncidentTypeSeeder extends Seeder
   <li>Pertimbangkan pengalihan trafik ke layanan anti-DDoS</li>
   <li>Dokumentasikan semua log selama serangan berlangsung</li>
 </ol>',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Kebocoran Data',
+                'slug' => 'kebocoran-data',
+                'sort_order' => 7,
                 'description' => 'Terungkapnya data rahasia atau pribadi ke pihak yang tidak berwenang, baik melalui serangan siber, kelalaian internal, maupun kesalahan konfigurasi sistem.',
                 'guide' => '<h3>Panduan Pelaporan Insiden Kebocoran Data</h3>
 <p>Detail yang perlu disertakan dalam laporan:</p>
@@ -116,18 +190,18 @@ class IncidentTypeSeeder extends Seeder
   <li>Pertimbangkan notifikasi kepada individu yang datanya bocor sesuai regulasi</li>
   <li>Laporkan ke DPO (Data Protection Officer) instansi jika ada</li>
 </ol>',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
-        ];
-
-        foreach ($types as $type) {
-            IncidentType::updateOrCreate(
-                ['slug' => Str::slug($type['name'])],
-                [
-                    'name' => $type['name'],
-                    'description' => $type['description'],
-                    'guide' => $type['guide'],
-                ]
-            );
-        }
+        ]);
     }
-}
+
+    public function down(): void
+    {
+        DB::table('incident_types')->truncate();
+
+        Schema::table('incident_types', function (Blueprint $table) {
+            $table->dropColumn('sort_order');
+        });
+    }
+};

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin\Incident;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddLogRequest extends FormRequest
+class UpdateLogRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -16,7 +16,7 @@ class AddLogRequest extends FormRequest
         return [
             'log_message' => ['required', 'string'],
             'is_public' => ['nullable', 'boolean'],
-            'attachment_type' => ['nullable', 'string', 'in:file,link'],
+            'attachment_type' => ['nullable', 'string', 'in:file,link,none'],
             'attachment' => ['nullable', 'file', 'max:5120'],
             'attachment_link' => ['nullable', 'string', 'url', 'max:2000'],
         ];

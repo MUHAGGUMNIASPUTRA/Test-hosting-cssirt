@@ -58,6 +58,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('incidents', AdminIncidentController::class);
     Route::put('/incidents/{incident}/management', [AdminIncidentController::class, 'updateManagement'])->name('incidents.management.update');
     Route::post('/incidents/{incident}/logs', [AdminIncidentController::class, 'addLog'])->name('incidents.logs.store');
+    Route::put('/incidents/{incident}/logs/{log}', [AdminIncidentController::class, 'updateLog'])->name('incidents.logs.update');
+    Route::delete('/incidents/{incident}/logs/{log}', [AdminIncidentController::class, 'destroyLog'])->name('incidents.logs.destroy');
     Route::resource('incident-types', IncidentTypeController::class);
 
     Route::resource('posts', AdminPostController::class)->except(['show']);

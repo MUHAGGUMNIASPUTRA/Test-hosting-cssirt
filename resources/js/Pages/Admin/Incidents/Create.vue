@@ -623,9 +623,7 @@ const formatDateTime = (date) => {
                                   {{ files[0].name }}
                                 </p>
                                 <p class="text-xs text-slate-500">
-                                  {{
-                                    (files[0].size / 1024 / 1024).toFixed(2)
-                                  }}
+                                  {{ (files[0].size / 1024 / 1024).toFixed(2) }}
                                   MB
                                 </p>
                               </div>

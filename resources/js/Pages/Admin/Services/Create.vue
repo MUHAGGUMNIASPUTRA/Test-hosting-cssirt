@@ -372,9 +372,7 @@ watch(() => form.icon, filterIconSuggestions)
                         {{ shortDescWordCount }}/{{ shortDescWordLimit }} kata
                       </p>
                       <p class="text-xs text-slate-400">
-                        {{ shortDescCharCount }}/{{
-                          shortDescCharLimit
-                        }}
+                        {{ shortDescCharCount }}/{{ shortDescCharLimit }}
                         karakter
                       </p>
                     </div>

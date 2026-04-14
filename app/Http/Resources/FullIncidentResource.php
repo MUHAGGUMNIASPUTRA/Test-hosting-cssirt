@@ -39,12 +39,21 @@ class FullIncidentResource extends JsonResource
                 ];
             }),
             'logs' => $this->whenLoaded('incidentLogs', function () {
-                return $this->incidentLogs->map(function ($log) {
-                    return [
-                        'message' => $log->log_message,
-                        'created_at' => $log->created_at,
-                    ];
-                });
+                return $this->incidentLogs
+                    ->filter(fn ($log) => $log->is_public)
+                    ->values()
+                    ->map(function ($log) {
+                        $isEdited = $log->updated_at->gt($log->created_at);
+
+                        return [
+                            'message' => $log->log_message,
+                            'created_at' => $log->created_at,
+                            'is_edited' => $isEdited,
+                            'edited_at' => $isEdited ? $log->updated_at : null,
+                            'attachment' => $log->attachment,
+                            'attachment_type' => $log->attachment_type,
+                        ];
+                    });
             }),
         ];
     }

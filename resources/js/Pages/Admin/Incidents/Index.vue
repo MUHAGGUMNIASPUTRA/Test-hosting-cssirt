@@ -1,7 +1,7 @@
 <script setup>
 // filepath: resources/js/Pages/Admin/Incidents/Index.vue
 
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
 import { useAdminTable } from '@/Composables/useAdminTable'
 import { useResponsive } from '@/Composables/useResponsive'
@@ -10,6 +10,8 @@ const props = defineProps({
   incidents: Object,
   filters: Object,
   stats: Object,
+  incidentTypes: Array,
+  staffUsers: Array,
 })
 
 const { isMobile } = useResponsive()
@@ -19,6 +21,7 @@ const searchQuery = ref(props.filters?.search || '')
 const selectedCategory = ref(props.filters?.category || '')
 const selectedStatus = ref(props.filters?.status || '')
 const selectedPriority = ref(props.filters?.priority || '')
+const selectedAssignedTo = ref(props.filters?.assigned_to || '')
 
 // --- Server-side DataTable + pagination ---
 const paginatedData = computed(() => props.incidents)
@@ -34,7 +37,36 @@ const {
   category: selectedCategory,
   status: selectedStatus,
   priority: selectedPriority,
+  assigned_to: selectedAssignedTo,
 })
+
+// --- Computed options ---
+const categoryOptions = computed(() =>
+  (props.incidentTypes ?? []).map((t) => ({ label: t.name, value: t.id })),
+)
+
+const staffUserOptions = computed(() => [
+  { label: 'Belum Ditugaskan', value: 'none' },
+  ...(props.staffUsers ?? []).map((u) => ({
+    label: u.name,
+    value: String(u.id),
+  })),
+])
+
+const statusOptions = [
+  { label: 'Baru', value: 'Baru' },
+  { label: 'Diverifikasi', value: 'Diverifikasi' },
+  { label: 'Dalam Penyelidikan', value: 'Dalam Penyelidikan' },
+  { label: 'Selesai', value: 'Selesai' },
+  { label: 'Ditutup', value: 'Ditutup' },
+]
+
+const priorityOptions = [
+  { label: 'Rendah', value: 'Rendah' },
+  { label: 'Sedang', value: 'Sedang' },
+  { label: 'Tinggi', value: 'Tinggi' },
+  { label: 'Kritikal', value: 'Kritikal' },
+]
 
 // --- Delete dialog ---
 const showDeleteDialog = ref(false)
@@ -65,29 +97,6 @@ const formatDate = (dateString) => {
     minute: '2-digit',
   })
 }
-
-const categoryOptions = [
-  { label: 'Phishing', value: 1 },
-  { label: 'Malware', value: 2 },
-  { label: 'Defacement', value: 3 },
-  { label: 'Serangan DDoS', value: 4 },
-  { label: 'Kebocoran Data', value: 5 },
-]
-
-const statusOptions = [
-  { label: 'Baru', value: 'Baru' },
-  { label: 'Diverifikasi', value: 'Diverifikasi' },
-  { label: 'Dalam Penyelidikan', value: 'Dalam Penyelidikan' },
-  { label: 'Selesai', value: 'Selesai' },
-  { label: 'Ditutup', value: 'Ditutup' },
-]
-
-const priorityOptions = [
-  { label: 'Rendah', value: 'Rendah' },
-  { label: 'Sedang', value: 'Sedang' },
-  { label: 'Tinggi', value: 'Tinggi' },
-  { label: 'Kritikal', value: 'Kritikal' },
-]
 
 // Action menu handling
 const actionMenu = ref()
@@ -231,7 +240,9 @@ const actionMenuItems = computed(() => {
           </button>
         </div>
 
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+        >
           <div>
             <label class="mb-2 block font-medium text-slate-700"
               >Cari Insiden</label
@@ -242,7 +253,7 @@ const actionMenuItems = computed(() => {
               </InputIcon>
               <InputText
                 v-model="searchQuery"
-                placeholder="Cari berdasarkan ID, deskripsi, pelapor..."
+                placeholder="ID, deskripsi, pelapor..."
                 class="w-full"
                 @keyup.enter="applyFilters"
               />
@@ -251,14 +262,14 @@ const actionMenuItems = computed(() => {
 
           <div>
             <label class="mb-2 block font-medium text-slate-700"
-              >Filter Kategori</label
+              >Kategori</label
             >
             <Select
               v-model="selectedCategory"
               :options="categoryOptions"
               optionLabel="label"
               optionValue="value"
-              placeholder="Pilih Kategori"
+              placeholder="Semua Kategori"
               class="w-full"
               showClear
               @change="applyFilters"
@@ -266,15 +277,13 @@ const actionMenuItems = computed(() => {
           </div>
 
           <div>
-            <label class="mb-2 block font-medium text-slate-700"
-              >Filter Status</label
-            >
+            <label class="mb-2 block font-medium text-slate-700">Status</label>
             <Select
               v-model="selectedStatus"
               :options="statusOptions"
               optionLabel="label"
               optionValue="value"
-              placeholder="Pilih Status"
+              placeholder="Semua Status"
               class="w-full"
               showClear
               @change="applyFilters"
@@ -283,14 +292,28 @@ const actionMenuItems = computed(() => {
 
           <div>
             <label class="mb-2 block font-medium text-slate-700"
-              >Filter Prioritas</label
+              >Prioritas</label
             >
             <Select
               v-model="selectedPriority"
               :options="priorityOptions"
               optionLabel="label"
               optionValue="value"
-              placeholder="Pilih Prioritas"
+              placeholder="Semua Prioritas"
+              class="w-full"
+              showClear
+              @change="applyFilters"
+            />
+          </div>
+
+          <div>
+            <label class="mb-2 block font-medium text-slate-700">Petugas</label>
+            <Select
+              v-model="selectedAssignedTo"
+              :options="staffUserOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Semua Petugas"
               class="w-full"
               showClear
               @change="applyFilters"
@@ -390,6 +413,18 @@ const actionMenuItems = computed(() => {
         >
           <template #body="{ data }">
             <StatusBadge type="priority" :value="data.priority" />
+          </template>
+        </Column>
+
+        <Column header="Ditugaskan ke" class="hidden xl:table-cell">
+          <template #body="{ data }">
+            <span
+              v-if="data.assigned_user"
+              class="text-sm font-medium text-slate-700"
+            >
+              {{ data.assigned_user.name }}
+            </span>
+            <span v-else class="text-sm text-slate-400">—</span>
           </template>
         </Column>
 

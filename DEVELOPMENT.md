@@ -215,10 +215,10 @@ Project sudah menyertakan konfigurasi `.vscode/` untuk format otomatis saat file
 
 Install dua ekstensi berikut (VS Code akan menyarankan otomatis saat membuka project):
 
-| Ekstensi | ID | Fungsi |
-|----------|----|--------|
-| Run on Save | `emeraldwalk.runonsave` | Menjalankan Pint otomatis saat file PHP disimpan |
-| Prettier | `esbenp.prettier-vscode` | Memformat JS / Vue / TS / CSS / JSON saat disimpan |
+| Ekstensi    | ID                       | Fungsi                                             |
+| ----------- | ------------------------ | -------------------------------------------------- |
+| Run on Save | `emeraldwalk.runonsave`  | Menjalankan Pint otomatis saat file PHP disimpan   |
+| Prettier    | `esbenp.prettier-vscode` | Memformat JS / Vue / TS / CSS / JSON saat disimpan |
 
 ### Cara Install
 

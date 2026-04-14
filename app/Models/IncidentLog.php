@@ -21,6 +21,9 @@ class IncidentLog extends Model
         'incident_id',
         'user_id',
         'log_message',
+        'is_public',
+        'attachment',
+        'attachment_type',
     ];
 
     /**

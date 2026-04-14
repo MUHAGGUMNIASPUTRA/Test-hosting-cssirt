@@ -7,14 +7,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Incident\AddLogRequest;
 use App\Http\Requests\Admin\Incident\StoreIncidentRequest;
 use App\Http\Requests\Admin\Incident\UpdateIncidentRequest;
+use App\Http\Requests\Admin\Incident\UpdateLogRequest;
 use App\Http\Requests\Admin\Incident\UpdateManagementRequest;
 use App\Models\Incident;
+use App\Models\IncidentLog;
 use App\Models\IncidentType;
 use App\Models\User;
 use App\Services\IncidentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -51,10 +54,20 @@ class IncidentController extends Controller
             $query->where('status', $request->get('status'));
         }
 
+        if ($request->filled('assigned_to')) {
+            if ($request->get('assigned_to') === 'none') {
+                $query->whereNull('assigned_to');
+            } else {
+                $query->where('assigned_to', $request->get('assigned_to'));
+            }
+        }
+
         return Inertia::render('Admin/Incidents/Index', [
             'incidents' => $query->latest('reported_at')->paginate(10)->withQueryString(),
-            'filters' => $request->only(['search', 'status', 'priority', 'category']),
+            'filters' => $request->only(['search', 'status', 'priority', 'category', 'assigned_to']),
             'stats' => $this->incidentService->getGlobalStats(),
+            'incidentTypes' => IncidentType::orderBy('sort_order')->get(['id', 'name']),
+            'staffUsers' => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
         ]);
     }
 
@@ -64,7 +77,7 @@ class IncidentController extends Controller
     public function create(): Response
     {
         return Inertia::render('Admin/Incidents/Create', [
-            'incidentTypes' => IncidentType::orderBy('name')->get(['id', 'name', 'description', 'guide']),
+            'incidentTypes' => IncidentType::orderBy('sort_order')->get(['id', 'name', 'description', 'guide']),
             'staffUsers' => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
         ]);
     }
@@ -116,7 +129,7 @@ class IncidentController extends Controller
 
         return Inertia::render('Admin/Incidents/Create', [
             'incident' => $incident,
-            'incidentTypes' => IncidentType::all(['id', 'name', 'description', 'guide']),
+            'incidentTypes' => IncidentType::orderBy('sort_order')->get(['id', 'name', 'description', 'guide']),
             'staffUsers' => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
         ]);
     }
@@ -164,12 +177,86 @@ class IncidentController extends Controller
             return back()->with('error', 'Tidak dapat menambahkan log pada insiden yang sudah ditutup.');
         }
 
+        $validated = $request->validated();
+        $attachment = null;
+        $attachmentType = null;
+
+        if (($validated['attachment_type'] ?? null) === 'file' && $request->hasFile('attachment')) {
+            $attachment = $request->file('attachment')->store('incidents/logs', 'public');
+            $attachmentType = 'file';
+        } elseif (($validated['attachment_type'] ?? null) === 'link' && ! empty($validated['attachment_link'])) {
+            $attachment = $validated['attachment_link'];
+            $attachmentType = 'link';
+        }
+
         $incident->incidentLogs()->create([
-            'log_message' => $request->validated('log_message'),
+            'log_message' => $validated['log_message'],
             'user_id' => Auth::id(),
+            'is_public' => (bool) ($validated['is_public'] ?? false),
+            'attachment' => $attachment,
+            'attachment_type' => $attachmentType,
         ]);
 
         return back()->with('success', 'Catatan berhasil ditambahkan.');
+    }
+
+    /**
+     * Update an existing log entry.
+     */
+    public function updateLog(UpdateLogRequest $request, Incident $incident, IncidentLog $log): RedirectResponse
+    {
+        abort_if($log->incident_id !== $incident->id, 404);
+
+        $validated = $request->validated();
+        $attachment = $log->attachment;
+        $attachmentType = $log->attachment_type;
+
+        if (($validated['attachment_type'] ?? null) === 'file' && $request->hasFile('attachment')) {
+            // Delete old stored file if applicable
+            if ($log->attachment && $log->attachment_type === 'file') {
+                Storage::disk('public')->delete($log->attachment);
+            }
+            $attachment = $request->file('attachment')->store('incidents/logs', 'public');
+            $attachmentType = 'file';
+        } elseif (($validated['attachment_type'] ?? null) === 'link') {
+            // Delete old stored file if switching from file to link
+            if ($log->attachment_type === 'file' && $log->attachment) {
+                Storage::disk('public')->delete($log->attachment);
+            }
+            $attachment = $validated['attachment_link'] ?? null;
+            $attachmentType = $attachment ? 'link' : null;
+        } elseif (($validated['attachment_type'] ?? null) === 'none') {
+            if ($log->attachment_type === 'file' && $log->attachment) {
+                Storage::disk('public')->delete($log->attachment);
+            }
+            $attachment = null;
+            $attachmentType = null;
+        }
+
+        $log->update([
+            'log_message' => $validated['log_message'],
+            'is_public' => (bool) ($validated['is_public'] ?? false),
+            'attachment' => $attachment,
+            'attachment_type' => $attachmentType,
+        ]);
+
+        return back()->with('success', 'Catatan berhasil diperbarui.');
+    }
+
+    /**
+     * Delete a log entry.
+     */
+    public function destroyLog(Incident $incident, IncidentLog $log): RedirectResponse
+    {
+        abort_if($log->incident_id !== $incident->id, 404);
+
+        if ($log->attachment && $log->attachment_type === 'file') {
+            Storage::disk('public')->delete($log->attachment);
+        }
+
+        $log->delete();
+
+        return back()->with('success', 'Catatan berhasil dihapus.');
     }
 
     /**

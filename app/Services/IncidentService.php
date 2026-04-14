@@ -6,6 +6,7 @@ use App\Models\Incident;
 use App\Models\IncidentType;
 use App\Models\User;
 use Carbon\Carbon;
+use Fruitcake\LaravelDebugbar\Facades\Debugbar;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -157,6 +158,13 @@ class IncidentService
                 continue;
             }
 
+            Debugbar::info([
+                "Field '{$key}' changed:",
+                'original' => $normalized['original'][$key],
+                'new' => $normalized['new'][$key],
+            ]);
+            Debugbar::info($normalized['original'][$key]);
+
             switch ($key) {
                 case 'reporter_name':
                     $changes[] = "Nama pelapor diubah dari '{$originalData[$key]}' menjadi '{$value}'.";
@@ -178,10 +186,10 @@ class IncidentService
                     $changes[] = 'Deskripsi insiden diperbarui.';
                     break;
                 case 'status':
-                    $changes[] = "Status diubah dari '{$originalData[$key]}' menjadi '{$value}'.";
+                    $changes[] = "Status diubah dari '{$originalData[$key]->value}' menjadi '{$value}'.";
                     break;
                 case 'priority':
-                    $changes[] = "Prioritas diubah dari '{$originalData[$key]}' menjadi '{$value}'.";
+                    $changes[] = "Prioritas diubah dari '{$originalData[$key]->value}' menjadi '{$value}'.";
                     break;
                 case 'assigned_to':
                     $oldName = $originalData[$key] ? (optional($usersById->get((int) $originalData[$key]))->name ?? 'Belum Ditugaskan') : 'Belum Ditugaskan';
@@ -202,12 +210,10 @@ class IncidentService
             }
         }
 
-        foreach ($changes as $message) {
-            $incident->incidentLogs()->create([
-                'log_message' => $message,
-                'user_id' => $actorId,
-            ]);
-        }
+        $incident->incidentLogs()->create([
+            'log_message' => implode('\n', $changes),
+            'user_id' => $actorId,
+        ]);
     }
 
     /**
@@ -225,6 +231,9 @@ class IncidentService
                 $normalized['new'][$key] = $value ? Carbon::parse($value)->format('Y-m-d H:i:s') : null;
             } elseif ($key === 'incident_type_id' || $key === 'assigned_to') {
                 $normalized['original'][$key] = (string) ($originalData[$key] ?? '');
+                $normalized['new'][$key] = (string) ($value ?? '');
+            } elseif ($key === 'status' || $key === 'priority') {
+                $normalized['original'][$key] = (string) ($originalData[$key]->value ?? '');
                 $normalized['new'][$key] = (string) ($value ?? '');
             } else {
                 $normalized['original'][$key] = $originalData[$key] ?? null;

@@ -60,13 +60,28 @@ const priorityBadge = (priority) => {
 const hasAttachment = computed(() =>
   Boolean(incident.value?.attachment?.filename),
 )
+
+const isExternalUrl = (path) =>
+  path && (path.startsWith('http://') || path.startsWith('https://'))
+
+const logAttachmentUrl = (log) => {
+  if (!log.attachment) return null
+  if (log.attachment_type === 'link' || isExternalUrl(log.attachment))
+    return log.attachment
+  return `/storage/${log.attachment}`
+}
+
+const logAttachmentFilename = (log) => {
+  if (!log.attachment) return ''
+  if (log.attachment_type === 'link') return 'Buka Link'
+  return log.attachment.split('/').pop()
+}
 </script>
 
 <template>
   <AppLayout :title="`Detail Tiket ${incident?.case_id || ''}`">
     <!-- Hero Section -->
     <section
-      ref="heroRef"
       class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900"
     >
       <div class="absolute inset-0 z-0">
@@ -79,7 +94,6 @@ const hasAttachment = computed(() =>
 
       <div class="sm:pt-16"></div>
 
-      <!-- Background Pattern -->
       <div class="absolute inset-0 opacity-10">
         <div
           class="bg-[url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] absolute inset-0"
@@ -106,7 +120,7 @@ const hasAttachment = computed(() =>
             </p>
 
             <p
-              class="mx-auto inline-flex max-w-3xl rounded-lg border border-white/20 bg-white/10 px-3 py-1 font-mono text-xl text-slate-300 text-white/90 sm:text-2xl"
+              class="mx-auto inline-flex max-w-3xl rounded-lg border border-white/20 bg-white/10 px-3 py-1 font-mono text-xl text-white/90 sm:text-2xl"
             >
               {{ incident.case_id }}
             </p>
@@ -225,7 +239,7 @@ const hasAttachment = computed(() =>
           </p>
         </div>
 
-        <!-- Attachment -->
+        <!-- Attachment (incident) -->
         <div
           v-if="hasAttachment"
           class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:p-8"
@@ -268,15 +282,20 @@ const hasAttachment = computed(() =>
         <div
           class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:p-8"
         >
-          <div class="mb-4 flex items-center">
+          <div class="mb-5 flex items-center">
             <div
-              class="mr-3 flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-slate-100"
+              class="mr-3 flex h-10 w-10 items-center justify-center rounded-lg border border-purple-200 bg-purple-100"
             >
-              <IconTimeline class="text-slate-700" size="18" />
+              <IconTimeline class="text-purple-700" size="18" />
             </div>
-            <h3 class="text-lg font-semibold text-slate-900 sm:text-xl">
-              Riwayat Penanganan
-            </h3>
+            <div>
+              <h3 class="text-lg font-semibold text-slate-900 sm:text-xl">
+                Riwayat Penanganan
+              </h3>
+              <p class="text-sm text-slate-500">
+                Pembaruan dari tim CSIRT Bojonegoro
+              </p>
+            </div>
           </div>
 
           <div v-if="incident.logs?.length" class="relative">
@@ -290,19 +309,55 @@ const hasAttachment = computed(() =>
                 class="relative pl-8 sm:pl-10"
               >
                 <div
-                  class="absolute left-1.5 mt-1.5 h-3 w-3 rounded-full border border-slate-200 bg-slate-500 ring-2 ring-white sm:left-2.5"
+                  class="absolute left-1.5 mt-2 h-3 w-3 rounded-full border-2 border-white bg-blue-500 ring-2 ring-blue-200 sm:left-2.5"
                 ></div>
+
                 <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <p class="text-slate-800">{{ log.message }}</p>
-                  <p class="text-sm text-slate-500">
-                    {{ formatDateTime(log.created_at) }}
+                  <!-- Message -->
+                  <p class="whitespace-pre-wrap leading-relaxed text-slate-800">
+                    {{ log.message }}
                   </p>
+
+                  <!-- Attachment in log -->
+                  <div v-if="log.attachment" class="mt-3">
+                    <a
+                      :href="logAttachmentUrl(log)"
+                      target="_blank"
+                      rel="noopener"
+                      class="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm text-blue-600 transition hover:bg-blue-50 hover:text-blue-800"
+                    >
+                      <IconExternalLink
+                        v-if="log.attachment_type === 'link'"
+                        size="14"
+                      />
+                      <IconPaperclip v-else size="14" />
+                      {{ logAttachmentFilename(log) }}
+                    </a>
+                  </div>
+
+                  <!-- Footer: timestamps -->
+                  <div
+                    class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-400"
+                  >
+                    <span>{{ formatDateTime(log.created_at) }}</span>
+                    <span v-if="log.is_edited" class="italic text-slate-400">
+                      · Diedit {{ formatDateTime(log.edited_at) }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <p v-else class="text-slate-600">Belum ada riwayat.</p>
+          <div v-else class="py-8 text-center">
+            <IconClockHour4 class="mx-auto mb-3 text-slate-300" size="40" />
+            <p class="font-medium text-slate-500">
+              Belum ada riwayat penanganan publik
+            </p>
+            <p class="mt-1 text-sm text-slate-400">
+              Tim CSIRT sedang memproses laporan Anda
+            </p>
+          </div>
         </div>
       </div>
     </section>
