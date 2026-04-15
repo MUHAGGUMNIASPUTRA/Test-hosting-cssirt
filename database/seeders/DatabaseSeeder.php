@@ -26,12 +26,10 @@ class DatabaseSeeder extends Seeder
             TagSeeder::class,
             PostSeeder::class,
             AnnouncementSeeder::class,
-            IncidentTypeSeeder::class,
             IncidentSeeder::class,
             IncidentLogSeeder::class,
             DocumentSeeder::class,
             ServiceSeeder::class,
-            FaqSeeder::class,
         ]);
     }
 }

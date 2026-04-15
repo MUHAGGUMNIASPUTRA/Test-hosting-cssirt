@@ -1,9 +1,9 @@
 <script setup>
 // filepath: resources/js/pages/Incidents/Show.vue
 
-import { computed } from 'vue'
-import { usePage } from '@inertiajs/vue3'
 import { useParticles } from '@/Composables/useParticles'
+import { usePage } from '@inertiajs/vue3'
+import { computed } from 'vue'
 
 const page = usePage()
 const props = defineProps({
@@ -262,11 +262,25 @@ const logAttachmentFilename = (log) => {
               <p class="truncate font-medium text-slate-800">
                 {{ incident.attachment.filename }}
               </p>
-              <p class="text-sm text-slate-500">
+              <p
+                v-if="incident.attachment.type === 'file'"
+                class="text-sm text-slate-500"
+              >
                 {{ incident.attachment.file_size }}
               </p>
             </div>
             <a
+              v-if="incident.attachment.type === 'link'"
+              :href="incident.attachment.url"
+              target="_blank"
+              rel="noopener"
+              class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
+            >
+              <IconExternalLink class="mr-2" size="16" />
+              Buka Link
+            </a>
+            <a
+              v-else
               :href="incident.attachment.download_url"
               target="_blank"
               rel="noopener"

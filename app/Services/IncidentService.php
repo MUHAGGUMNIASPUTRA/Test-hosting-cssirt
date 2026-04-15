@@ -143,6 +143,7 @@ class IncidentService
     public function logChanges(Incident $incident, array $newData, int $actorId): void
     {
         $changes = [];
+        $isPublic = false;
         $originalData = $incident->getOriginal();
         $normalized = $this->normalizeDataForComparison($originalData, $newData);
 
@@ -186,9 +187,11 @@ class IncidentService
                     $changes[] = 'Deskripsi insiden diperbarui.';
                     break;
                 case 'status':
+                    $isPublic = true;
                     $changes[] = "Status diubah dari '{$originalData[$key]->value}' menjadi '{$value}'.";
                     break;
                 case 'priority':
+                    $isPublic = true;
                     $changes[] = "Prioritas diubah dari '{$originalData[$key]->value}' menjadi '{$value}'.";
                     break;
                 case 'assigned_to':
@@ -211,8 +214,9 @@ class IncidentService
         }
 
         $incident->incidentLogs()->create([
-            'log_message' => implode('\n', $changes),
+            'log_message' => implode("\n", $changes),
             'user_id' => $actorId,
+            'is_public' => $isPublic,
         ]);
     }
 

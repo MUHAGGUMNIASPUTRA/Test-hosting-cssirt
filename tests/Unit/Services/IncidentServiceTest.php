@@ -214,6 +214,96 @@ class IncidentServiceTest extends TestCase
         ]);
     }
 
+    public function test_log_changes_marks_log_public_when_status_changes(): void
+    {
+        $user = User::factory()->create();
+        $type = IncidentType::create(['name' => 'Ransomware', 'slug' => 'ransomware', 'description' => '']);
+        $incident = Incident::create([
+            'case_id' => 'CSIRT-2026-04-PUB1',
+            'access_token' => 'tokenpub1',
+            'reporter_name' => 'Rina',
+            'reporter_email' => 'rina@test.com',
+            'incident_type_id' => $type->id,
+            'incident_at' => now(),
+            'description' => 'Test public status',
+            'status' => IncidentStatus::Baru->value,
+            'priority' => IncidentPriority::Sedang->value,
+            'reported_at' => now(),
+        ]);
+
+        $incident = Incident::find($incident->id);
+
+        $this->service->logChanges($incident, [
+            'status' => IncidentStatus::DalamPenyelidikan->value,
+        ], $user->id);
+
+        $this->assertDatabaseHas('incident_logs', [
+            'incident_id' => $incident->id,
+            'user_id' => $user->id,
+            'is_public' => true,
+        ]);
+    }
+
+    public function test_log_changes_marks_log_public_when_priority_changes(): void
+    {
+        $user = User::factory()->create();
+        $type = IncidentType::create(['name' => 'Brute Force', 'slug' => 'brute-force', 'description' => '']);
+        $incident = Incident::create([
+            'case_id' => 'CSIRT-2026-04-PUB2',
+            'access_token' => 'tokenpub2',
+            'reporter_name' => 'Deni',
+            'reporter_email' => 'deni@test.com',
+            'incident_type_id' => $type->id,
+            'incident_at' => now(),
+            'description' => 'Test public priority',
+            'status' => IncidentStatus::Baru->value,
+            'priority' => IncidentPriority::Rendah->value,
+            'reported_at' => now(),
+        ]);
+
+        $incident = Incident::find($incident->id);
+
+        $this->service->logChanges($incident, [
+            'priority' => IncidentPriority::Kritikal->value,
+        ], $user->id);
+
+        $this->assertDatabaseHas('incident_logs', [
+            'incident_id' => $incident->id,
+            'user_id' => $user->id,
+            'is_public' => true,
+        ]);
+    }
+
+    public function test_log_changes_does_not_mark_log_public_for_non_status_priority_changes(): void
+    {
+        $user = User::factory()->create();
+        $type = IncidentType::create(['name' => 'Spam', 'slug' => 'spam', 'description' => '']);
+        $incident = Incident::create([
+            'case_id' => 'CSIRT-2026-04-PRIV',
+            'access_token' => 'tokenpriv',
+            'reporter_name' => 'Tono',
+            'reporter_email' => 'tono@test.com',
+            'incident_type_id' => $type->id,
+            'incident_at' => now(),
+            'description' => 'Test not public',
+            'status' => IncidentStatus::Baru->value,
+            'priority' => IncidentPriority::Sedang->value,
+            'reported_at' => now(),
+        ]);
+
+        $incident = Incident::find($incident->id);
+
+        $this->service->logChanges($incident, [
+            'reporter_name' => 'Tono Updated',
+        ], $user->id);
+
+        $this->assertDatabaseHas('incident_logs', [
+            'incident_id' => $incident->id,
+            'user_id' => $user->id,
+            'is_public' => false,
+        ]);
+    }
+
     public function test_log_changes_skips_unchanged_fields(): void
     {
         $user = User::factory()->create();

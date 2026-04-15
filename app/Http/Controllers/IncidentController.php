@@ -10,6 +10,7 @@ use App\Mail\IncidentReportMail;
 use App\Models\Incident;
 use App\Models\IncidentType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -82,10 +83,11 @@ class IncidentController extends Controller
             'reported_at' => now(),
         ]);
 
-        // Log creation
+        // Log creation — user_id null jika laporan dari publik (tamu), terisi jika admin/staff
         $incident->incidentLogs()->create([
             'log_message' => 'Tiket insiden dibuat',
-            'user_id' => 1,
+            'is_public' => true,
+            'user_id' => Auth::id(),
         ]);
 
         try {
@@ -153,7 +155,7 @@ class IncidentController extends Controller
             }
         }
 
-        $incident = Incident::with(['incidentType'])
+        $incident = Incident::with(['incidentType', 'incidentLogs'])
             ->where('case_id', $validated['case_id'])
             ->where('reporter_email', $validated['email'])
             ->first();
