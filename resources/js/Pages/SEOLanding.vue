@@ -257,7 +257,34 @@
           </p>
         </div>
 
-        <div class="mx-auto grid max-w-4xl gap-12 md:grid-cols-2">
+        <div class="mx-auto grid max-w-6xl gap-8 md:grid-cols-3">
+          <!-- Lapor Insiden -->
+          <div
+            class="rounded-xl bg-gradient-to-br from-red-600 to-red-800 p-8 text-center text-white"
+          >
+            <div
+              class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-white/20"
+            >
+              <svg class="h-7 w-7" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fill-rule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+            <h3 class="mb-3 text-2xl font-bold">Lapor Insiden</h3>
+            <p class="mb-6 text-red-100">
+              Buat laporan insiden keamanan siber baru secara online
+            </p>
+            <a
+              href="/incident"
+              class="inline-flex items-center rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-red-700 transition-colors hover:bg-red-50"
+            >
+              Buat Tiket Sekarang →
+            </a>
+          </div>
+
           <div class="rounded-xl bg-slate-800 p-8">
             <h3 class="mb-6 text-2xl font-bold text-white">Kontak Darurat</h3>
             <div class="space-y-6">
