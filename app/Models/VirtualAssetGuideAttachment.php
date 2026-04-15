@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class VirtualAssetGuideAttachment extends Model
+{
+    protected $fillable = [
+        'virtual_asset_guide_id',
+        'attachment_id',
+        'sort_order',
+    ];
+
+    public function guide(): BelongsTo
+    {
+        return $this->belongsTo(VirtualAssetGuide::class, 'virtual_asset_guide_id');
+    }
+
+    public function attachment(): BelongsTo
+    {
+        return $this->belongsTo(Attachment::class);
+    }
+}

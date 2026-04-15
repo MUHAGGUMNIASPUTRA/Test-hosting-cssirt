@@ -81,6 +81,27 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('faqs', AdminFaqController::class)->except(['show', 'create', 'edit']);
     Route::resource('announcements', AnnouncementController::class)->except(['show', 'create', 'edit']);
     Route::resource('users', AdminUserController::class)->except(['show', 'create', 'edit'])->middleware('admin');
+
+    // Assets — SDM
+    Route::resource('organizations', AssetOrganizationController::class)->except(['show', 'create', 'edit']);
+    Route::resource('departments', AssetDepartmentController::class)->except(['show', 'create', 'edit']);
+    Route::resource('positions', AssetPositionController::class)->except(['show', 'create', 'edit']);
+    Route::resource('locations', AssetLocationController::class)->except(['show', 'create', 'edit']);
+    Route::resource('employees', AssetEmployeeController::class)->except(['show']);
+    Route::resource('vendors', AssetVendorController::class)->except(['show']);
+
+    // Assets — Virtual
+    Route::resource('tech-stack-categories', AssetTechStackCategoryController::class)->except(['show', 'create', 'edit']);
+    Route::resource('tech-stacks', AssetTechStackController::class)->except(['show']);
+    Route::resource('virtual-asset-guides', AssetGuideController::class)->except(['show']);
+    Route::resource('web-applications', AssetWebAppController::class)->except(['show']);
+    Route::resource('mobile-applications', AssetMobileAppController::class)->except(['show']);
+    Route::resource('licenses', AssetLicenseController::class)->except(['show']);
+
+    // Assets — Audit Logs (embedded)
+    Route::post('/assets/{assetType}/{assetId}/audit-logs', [AssetAuditLogController::class, 'store'])->name('assets.audit-logs.store');
+    Route::put('/assets/audit-logs/{auditLog}', [AssetAuditLogController::class, 'update'])->name('assets.audit-logs.update');
+    Route::delete('/assets/audit-logs/{auditLog}', [AssetAuditLogController::class, 'destroy'])->name('assets.audit-logs.destroy');
 });
 
 Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(function () {

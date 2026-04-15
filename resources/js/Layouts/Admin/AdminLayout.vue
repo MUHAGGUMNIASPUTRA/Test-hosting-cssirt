@@ -31,6 +31,24 @@ import {
   IconMoon,
   IconMenu2,
   IconChevronDown,
+  // Assets
+  IconCloud,
+  IconWorldWww,
+  IconDeviceMobile,
+  IconKey,
+  IconCode,
+  IconUser,
+  IconBriefcase,
+  IconMapPin,
+  IconBuilding,
+  IconTruck,
+  IconServer,
+  IconDatabase,
+  IconStack2,
+  IconBookOpen,
+  IconList,
+  IconPlus,
+  IconTag,
 } from '@tabler/icons-vue'
 
 defineProps({
@@ -173,6 +191,100 @@ const sidebarItems = ref([
     icon: IconSpeakerphone,
     route: 'admin.announcements.index',
   },
+  { separator: true },
+  {
+    label: 'Aset Virtual',
+    icon: IconCloud,
+    items: [
+      {
+        label: 'Aplikasi Web',
+        icon: IconWorldWww,
+        subItems: [
+          {
+            label: 'Daftar Aplikasi Web',
+            icon: IconList,
+            route: 'admin.web-applications.index',
+          },
+          {
+            label: 'Tambah Aplikasi Web',
+            icon: IconPlus,
+            route: 'admin.web-applications.create',
+          },
+        ],
+      },
+      {
+        label: 'Aplikasi Mobile',
+        icon: IconDeviceMobile,
+        subItems: [
+          {
+            label: 'Daftar Aplikasi Mobile',
+            icon: IconList,
+            route: 'admin.mobile-applications.index',
+          },
+          {
+            label: 'Tambah Aplikasi Mobile',
+            icon: IconPlus,
+            route: 'admin.mobile-applications.create',
+          },
+        ],
+      },
+      {
+        label: 'Lisensi',
+        icon: IconKey,
+        subItems: [
+          {
+            label: 'Daftar Lisensi',
+            icon: IconList,
+            route: 'admin.licenses.index',
+          },
+          {
+            label: 'Pengajuan Lisensi',
+            icon: IconPlus,
+            route: 'admin.licenses.create',
+          },
+        ],
+      },
+      {
+        label: 'Pengembangan',
+        icon: IconCode,
+        subItems: [
+          {
+            label: 'Daftar Tech Stack',
+            icon: IconStack2,
+            route: 'admin.tech-stacks.index',
+          },
+          {
+            label: 'Kategori Tech Stack',
+            icon: IconTag,
+            route: 'admin.tech-stack-categories.index',
+          },
+          {
+            label: 'Panduan Aset Virtual',
+            icon: IconBookOpen,
+            route: 'admin.virtual-asset-guides.index',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    label: 'Aset SDM',
+    icon: IconUsers,
+    items: [
+      { label: 'Pegawai', icon: IconUser, route: 'admin.employees.index' },
+      { label: 'Jabatan', icon: IconBriefcase, route: 'admin.positions.index' },
+      { label: 'Lokasi', icon: IconMapPin, route: 'admin.locations.index' },
+      { label: 'Bidang', icon: IconBuilding, route: 'admin.departments.index' },
+      {
+        label: 'Organisasi',
+        icon: IconUsers,
+        route: 'admin.organizations.index',
+      },
+      { label: 'Vendor', icon: IconTruck, route: 'admin.vendors.index' },
+    ],
+  },
+  { label: 'Aset Fisik', icon: IconServer },
+  { label: 'Aset Informasi', icon: IconDatabase },
 ])
 
 // User menu items
@@ -395,30 +507,72 @@ watch(
                   />{{ item.label }}
                 </div>
                 <div class="ml-6 space-y-1">
-                  <Link
-                    v-for="subItem in item.items"
-                    :key="subItem.label"
-                    :href="route(subItem.route)"
-                    @click="closeSidebarOnMobile"
-                    class="flex items-center rounded-md px-3 py-2 transition-colors"
-                    :class="
-                      isCurrentRoute(subItem.route)
-                        ? 'border-r-2 border-indigo-500 bg-indigo-50 font-medium text-indigo-700'
-                        : 'font-normal text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                    "
-                  >
-                    <component
-                      :is="subItem.icon"
-                      size="18"
-                      stroke-width="1.75"
-                      class="mr-3"
+                  <template v-for="subItem in item.items" :key="subItem.label">
+                    <!-- Sub-item dengan nested subItems (2-level) -->
+                    <div v-if="subItem.subItems" class="space-y-0.5">
+                      <div
+                        class="flex items-center px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400"
+                      >
+                        <component
+                          :is="subItem.icon"
+                          size="14"
+                          stroke-width="1.75"
+                          class="mr-2"
+                        />{{ subItem.label }}
+                      </div>
+                      <div class="ml-4 space-y-0.5">
+                        <Link
+                          v-for="leaf in subItem.subItems"
+                          :key="leaf.label"
+                          :href="route(leaf.route)"
+                          @click="closeSidebarOnMobile"
+                          class="flex items-center rounded-md px-3 py-1.5 text-sm transition-colors"
+                          :class="
+                            isCurrentRoute(leaf.route)
+                              ? 'border-r-2 border-indigo-500 bg-indigo-50 font-medium text-indigo-700'
+                              : 'font-normal text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                          "
+                        >
+                          <component
+                            :is="leaf.icon"
+                            size="15"
+                            stroke-width="1.75"
+                            class="mr-2.5"
+                            :class="
+                              isCurrentRoute(leaf.route)
+                                ? 'text-indigo-500'
+                                : 'text-slate-400'
+                            "
+                          />{{ leaf.label }}
+                        </Link>
+                      </div>
+                    </div>
+
+                    <!-- Sub-item biasa (link langsung) -->
+                    <Link
+                      v-else
+                      :href="route(subItem.route)"
+                      @click="closeSidebarOnMobile"
+                      class="flex items-center rounded-md px-3 py-2 transition-colors"
                       :class="
                         isCurrentRoute(subItem.route)
-                          ? 'text-indigo-500'
-                          : 'text-slate-400'
+                          ? 'border-r-2 border-indigo-500 bg-indigo-50 font-medium text-indigo-700'
+                          : 'font-normal text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                       "
-                    />{{ subItem.label }}
-                  </Link>
+                    >
+                      <component
+                        :is="subItem.icon"
+                        size="18"
+                        stroke-width="1.75"
+                        class="mr-3"
+                        :class="
+                          isCurrentRoute(subItem.route)
+                            ? 'text-indigo-500'
+                            : 'text-slate-400'
+                        "
+                      />{{ subItem.label }}
+                    </Link>
+                  </template>
                 </div>
               </div>
 
