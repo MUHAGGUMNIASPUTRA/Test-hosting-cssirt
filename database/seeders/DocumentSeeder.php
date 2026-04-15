@@ -26,7 +26,7 @@ class DocumentSeeder extends Seeder
             fn () => null,
         ];
 
-        for ($i = 1; $i <= 30; $i++) {
+        for ($i = 1; $i <= 15; $i++) {
             $title = rtrim($faker->sentence(rand(3, 6)), '.');
             $hasOfficialFile = $faker->boolean(70);
             $hasDraftLink = $faker->boolean(40);
