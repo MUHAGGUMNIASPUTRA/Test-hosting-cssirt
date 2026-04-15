@@ -124,19 +124,74 @@ const handleDelete = () => {
 
 Fungsi pure (non-reaktif) untuk operasi berulang. **Jangan taruh di Composables.**
 
-| File              | Fungsi                                                                   |
-| ----------------- | ------------------------------------------------------------------------ |
-| `utils/date.js`   | `formatDate(date)`, `formatDatetime(date)`, `formatRelative(date)`       |
-| `utils/status.js` | `getSeverity(type, value)`, `getStatusLabel(type, value)`                |
-| `utils/string.js` | `truncate(str, len)`, `slugify(str)`                                     |
-| `utils/file.js`   | `isExternalUrl(path)`, `getFileExtension(path)`, `formatFileSize(bytes)` |
+| File              | Fungsi                                                             |
+| ----------------- | ------------------------------------------------------------------ |
+| `utils/date.js`   | `formatDate(date)`, `formatDatetime(date)`, `formatRelative(date)` |
+| `utils/status.js` | `getSeverity(type, value)`, `getStatusLabel(type, value)`          |
+| `utils/string.js` | `truncate(str, len)`, `slugify(str)`                               |
+| `utils/file.js`   | `getFileExtension(path)`, `formatFileSize(bytes)`                  |
+
+> **Catatan**: `isExternalUrl()` sudah tidak dipakai untuk deteksi tipe attachment — gunakan `attachment?.type === 'link'` dari objek `Attachment`.
 
 **Contoh penggunaan di template:**
 
 ```js
 import { formatDate } from '@/utils/date'
-import { isExternalUrl } from '@/utils/file'
 ```
+
+---
+
+## Sistem Attachment — Shape Objek dari API
+
+Semua attachment (incident, log, document, post) menggunakan shape objek yang sama dari `AttachmentResource`:
+
+```js
+// type = 'file'
+{
+  type: 'file',
+  filename: 'laporan.pdf',
+  extension: 'PDF',          // uppercase
+  file_size: '1.23 MB',      // formatted string
+  url: '/storage/incidents/logs/laporan.pdf'  // null jika disk 'local'
+}
+
+// type = 'link'
+{
+  type: 'link',
+  filename: null,
+  extension: null,
+  file_size: null,
+  url: 'https://drive.google.com/...'
+}
+```
+
+**Pola konsumsi di komponen:**
+
+```vue
+<!-- Cek ada attachment -->
+<div v-if="item.attachment">
+
+<!-- Deteksi tipe — JANGAN cek prefix 'http' pada string -->
+<IconExternalLink v-if="item.attachment.type === 'link'" />
+<IconPaperclip v-else />
+
+<!-- URL sudah siap pakai -->
+<a :href="item.attachment.url">{{ item.attachment.filename }}</a>
+```
+
+**Pre-populate form edit:**
+
+```js
+// Deteksi mode dari objek attachment (bukan string)
+const detectMode = () => props.item?.attachment?.type ?? 'file'
+
+// Pre-populate link value
+const form = useForm({
+  attachment_link: detectMode() === 'link' ? props.item?.attachment?.url : '',
+})
+```
+
+**Catatan khusus incident dari form publik**: Attachment disimpan di disk `local` (private). URL-nya adalah signed route dengan TTL 15 menit — tetap bisa dipakai di `<a :href>` seperti biasa.
 
 ---
 

@@ -145,17 +145,20 @@ POST   /admin/generate-excerpt admin.generate-excerpt
 
 ```
 User          role: admin|staff|user
-Post          belongsToMany Category, Tag | hasMany Rating
+Post          belongsToMany Category, Tag | hasMany Rating | belongsTo Attachment (image_id)
 Category      belongsToMany Post
 Tag           belongsToMany Post
 Incident      belongsTo IncidentType | belongsTo User (assigned_to) | hasMany IncidentLog
+              | belongsTo Attachment (attachment_id)
 IncidentType  hasMany Incident
-IncidentLog   belongsTo Incident, User
+IncidentLog   belongsTo Incident, User | belongsTo Attachment (attachment_id)
+Attachment    type: file|link — dipakai oleh Incident, IncidentLog, Document (official), Post (image)
 Announcement  (standalone)
 Service       (standalone)
 Faq           (standalone)
 Rating        belongsTo Post, User
-Document      belongsTo DocumentArea | official_file_path bisa berupa storage path (PDF) atau URL eksternal
+Document      belongsTo DocumentArea | belongsTo Attachment (official_attachment_id)
+              | draft_file_path: string URL plain (Word doc, admin-only)
 DocumentArea  hasMany Document
 ```
 
@@ -165,32 +168,38 @@ DocumentArea  hasMany Document
 
 ```sql
 users           id, name, email, password, role(admin|staff|user)
-posts           id, title, slug, image, excerpt, body, status(Draft|Published),
-                views_count, published_at, published_by, rating, ratings_count
+attachments     id, type(file|link), disk(local|public), path, url, filename,
+                file_size(bytes), mime_type
+posts           id, title, slug, image_id(FK attachments), excerpt, body,
+                status(Draft|Published), views_count, published_at, published_by,
+                rating, ratings_count
 categories      id, name, slug
 tags            id, name, slug
 category_post   post_id, category_id
 post_tag        post_id, tag_id
 ratings         id, post_id, user_id, ip_address, rating(1-5)
 incidents       id, case_id, reporter_name, reporter_email, reporter_phone,
-                incident_type_id, description, attachment, incident_at,
+                incident_type_id, description, attachment_id(FK attachments), incident_at,
                 status(Baru|Diverifikasi|Dalam Penyelidikan|Selesai|Ditutup),
                 priority(Rendah|Sedang|Tinggi|Kritikal),
                 assigned_to(FK users), reported_at, resolved_at
 incident_types  id, name, slug, description
-incident_logs   id, incident_id, user_id, log_message
+incident_logs   id, incident_id, user_id, log_message, is_public,
+                attachment_id(FK attachments)
 announcements   id, title, content, level(info|warning|critical),
                 start_date, end_date, is_active
 services        id, name, slug, icon, short_description, full_description, is_active
 faqs            id, question, answer, category, is_published
 document_areas  id, name, slug, description
 documents       id, title, slug, description,
-                file_path (link Word doc — hanya admin),
-                official_file_path (PDF upload path ATAU URL eksternal),
+                draft_file_path (URL string — link Word doc, hanya admin),
+                official_attachment_id(FK attachments),
                 version, published_at, is_public, document_area_id(FK document_areas)
 ```
 
-> **Catatan `official_file_path`**: Jika nilai diawali `http://` atau `https://`, berarti dokumen berupa tautan eksternal (view=redirect, download=ditolak). Jika tidak, berarti path file di `storage/public/` (view=inline PDF, download=tersedia).
+> **Sistem Attachment Terpadu**: Semua attachment (file upload maupun link eksternal) disimpan di tabel `attachments`. Parent table cukup menyimpan `attachment_id` nullable. Tidak ada lagi pendeteksian tipe dari prefix `http` pada string. Satu-satunya pengecualian adalah `documents.draft_file_path` yang tetap berupa URL string biasa karena selalu link dan tidak perlu join.
+>
+> Disk `local` (private) dipakai khusus untuk attachment incident dari form publik — file tidak bisa diakses langsung, download via signed route 15 menit (`incident.attachment.download`). Semua attachment lain menggunakan disk `public` dan diakses via `/storage/`.
 
 ---
 
@@ -207,7 +216,7 @@ documents       id, title, slug, description,
 | `AnnouncementController`     | `admin/announcements`    | CRUD via dialog inline                                                         |
 | `UserController`             | `admin/users`            | CRUD, hanya bisa diakses role `admin`                                          |
 | `DocumentAreaController`     | `admin/document-areas`   | Full CRUD area/kategori dokumen                                                |
-| `DocumentController` (Admin) | `admin/documents`        | Full CRUD + toggle-visibility; `official_file_path` bisa file upload atau link |
+| `DocumentController` (Admin) | `admin/documents`        | Full CRUD + toggle-visibility; official attachment via `AttachmentService`     |
 | `ImageUploadController`      | `admin/images/upload`    | Upload gambar untuk Tiptap editor                                              |
 | `ExcerptController`          | `admin/generate-excerpt` | Generate excerpt artikel via AI                                                |
 

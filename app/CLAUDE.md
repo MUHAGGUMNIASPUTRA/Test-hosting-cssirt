@@ -56,6 +56,7 @@ Lokasi: `app/Enums/`. Semua adalah backed string enum.
 | `UserRole`          | Form Requests, UserController                      |
 | `PostStatus`        | Form Requests, PostService                         |
 | `AnnouncementLevel` | Form Requests, AnnouncementController              |
+| `AttachmentType`    | AttachmentService, Attachment model                |
 
 **Validasi dengan Enum:**
 
@@ -80,20 +81,49 @@ IncidentStatus::values()              // ['Baru', 'Diverifikasi', ...]
 
 Lokasi: `app/Services/`. Inject via constructor di controller.
 
-| Service           | Tanggung Jawab                                                                    | Return Types                                |
-| ----------------- | --------------------------------------------------------------------------------- | ------------------------------------------- |
-| `IncidentService` | `create()`, `update()`, `logChanges()`, `resolveAttachment()`, `getGlobalStats()` | `Incident`, `void`, `?string`, `array{...}` |
-| `DocumentService` | `create()`, `update()`, `resolveOfficialFile()`, `getDocumentStatus()`            | `Document`, `void`, `?string`, `string`     |
-| `PostService`     | `create()`, `update()`, `resolveImage()`, `syncTaxonomy()`                        | `Post`, `void`, `?string`, `void`           |
-| `FaqCacheService` | Cache publik FAQ (static methods)                                                 | `Collection`, `array`, `void`               |
-| `SeoService`      | SSR SEO rendering                                                                 | `string`, `bool`, `?string`                 |
+| Service             | Tanggung Jawab                                                      | Return Types                                |
+| ------------------- | ------------------------------------------------------------------- | ------------------------------------------- |
+| `AttachmentService` | `storeFile()`, `storeLink()`, `resolve()`, `delete()`               | `Attachment`, `Attachment`, `?Attachment`, `void` |
+| `IncidentService`   | `create()`, `update()`, `logChanges()`, `getGlobalStats()`          | `Incident`, `void`, `void`, `array{...}`    |
+| `DocumentService`   | `create()`, `update()`, `getDocumentStatus()`                       | `Document`, `void`, `string`                |
+| `PostService`       | `create()`, `update()`, `deleteWithAssets()`, `syncTaxonomy()`      | `Post`, `void`, `void`, `void`              |
+| `FaqCacheService`   | Cache publik FAQ (static methods)                                   | `Collection`, `array`, `void`               |
+| `SeoService`        | SSR SEO rendering                                                   | `string`, `bool`, `?string`                 |
+
+**`AttachmentService` — Pola Penggunaan:**
+
+```php
+// Resolve dari form (buat baru / pertahankan existing / hapus)
+$attachment = $this->attachmentService->resolve(
+    file: $request->file('attachment'),      // UploadedFile|null
+    type: $validated['attachment_type'],     // 'file'|'link'|null
+    linkValue: $validated['attachment_link'] ?? null,
+    existing: $model->attachment,            // Attachment|null (lama)
+    disk: 'public',                          // 'local' untuk incident publik
+    directory: 'incidents/logs',
+);
+$model->update(['attachment_id' => $attachment?->id]);
+
+// Hapus attachment beserta file dari storage
+$this->attachmentService->delete($model->attachment);
+```
+
+**Disk per Konteks:**
+
+| Konteks                  | Disk     | Directory          |
+| ------------------------ | -------- | ------------------ |
+| Incident (form publik)   | `local`  | `incidents/`       |
+| Incident (admin)         | `public` | `attachments/`     |
+| IncidentLog              | `public` | `incidents/logs/`  |
+| Document official        | `public` | `documents/official/` |
+| Post image               | `public` | `posts/`           |
 
 **Aturan penting untuk service:**
 
 - Jangan gunakan `Auth::id()` atau `auth()` di service — terima `int $actorId` sebagai parameter
 - Jangan akses `request()` helper di service — terima data sebagai parameter
-- File storage: selalu gunakan disk `public`, simpan path relatif (bukan absolute)
-- Sebelum hapus file lama: `if (!str_starts_with($oldPath, 'http')) Storage::disk('public')->delete($oldPath)`
+- **Jangan** hapus file storage manual — gunakan `AttachmentService::delete()` yang handle file + record DB
+- Disk `local` (private) khusus untuk attachment incident dari form publik — download via signed route
 
 ---
 
