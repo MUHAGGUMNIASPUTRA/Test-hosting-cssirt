@@ -43,7 +43,8 @@ Vite dikonfigurasi via `unplugin-vue-components` untuk auto-import:
 app/
   Http/
     Controllers/
-      Admin/          # 10 controller admin (lihat bawah)
+      Admin/          # Controller admin (lihat bawah)
+        Assets/       # Controller asset SDM & virtual
       Auth/           # Laravel Breeze auth controllers
       *.php           # Controller publik
     Middleware/
@@ -137,6 +138,27 @@ resource document-areas     admin.document-areas.*
 resource documents          admin.documents.*   (+toggle-visibility)
 POST   /admin/images/upload admin.images.upload
 POST   /admin/generate-excerpt admin.generate-excerpt
+
+// Assets — SDM
+resource organizations          admin.organizations.*         (kecuali show, create, edit)
+resource departments            admin.departments.*           (kecuali show, create, edit)
+resource positions              admin.positions.*             (kecuali show, create, edit)
+resource locations              admin.locations.*             (kecuali show, create, edit)
+resource employees              admin.employees.*             (kecuali show)
+resource vendors                admin.vendors.*               (kecuali show)
+
+// Assets — Virtual
+resource tech-stack-categories  admin.tech-stack-categories.* (kecuali show, create, edit)
+resource tech-stacks            admin.tech-stacks.*           (kecuali show)
+resource virtual-asset-guides   admin.virtual-asset-guides.*  (kecuali show)
+resource web-applications       admin.web-applications.*      (kecuali show)
+resource mobile-applications    admin.mobile-applications.*   (kecuali show)
+resource licenses               admin.licenses.*              (kecuali show)
+
+// Assets — Audit Logs (embedded)
+POST   /admin/assets/{assetType}/{assetId}/audit-logs  assets.audit-logs.store
+PUT    /admin/assets/audit-logs/{auditLog}             assets.audit-logs.update
+DELETE /admin/assets/audit-logs/{auditLog}             assets.audit-logs.destroy
 ```
 
 ---
@@ -219,6 +241,24 @@ documents       id, title, slug, description,
 | `DocumentController` (Admin) | `admin/documents`        | Full CRUD + toggle-visibility; official attachment via `AttachmentService`     |
 | `ImageUploadController`      | `admin/images/upload`    | Upload gambar untuk Tiptap editor                                              |
 | `ExcerptController`          | `admin/generate-excerpt` | Generate excerpt artikel via AI                                                |
+
+### Controllers Asset (`Admin/Assets/`)
+
+| Controller                   | Route prefix                       | Catatan                                                   |
+| ---------------------------- | ---------------------------------- | --------------------------------------------------------- |
+| `OrganizationController`     | `admin/organizations`              | CRUD organisasi; inline dialog (no create/edit page)      |
+| `DepartmentController`       | `admin/departments`                | CRUD departemen; inline dialog                            |
+| `PositionController`         | `admin/positions`                  | CRUD jabatan; inline dialog                               |
+| `LocationController`         | `admin/locations`                  | CRUD lokasi; inline dialog                                |
+| `EmployeeController`         | `admin/employees`                  | Full CRUD pegawai (ada create/edit page, no show)         |
+| `VendorController`           | `admin/vendors`                    | Full CRUD vendor (ada create/edit page, no show)          |
+| `TechStackCategoryController`| `admin/tech-stack-categories`      | CRUD kategori tech stack; inline dialog                   |
+| `TechStackController`        | `admin/tech-stacks`                | Full CRUD tech stack (ada create/edit page, no show)      |
+| `VirtualAssetGuideController`| `admin/virtual-asset-guides`       | Full CRUD panduan aset virtual (ada create/edit page)     |
+| `WebApplicationController`   | `admin/web-applications`           | Full CRUD aplikasi web (ada create/edit page, no show)    |
+| `MobileApplicationController`| `admin/mobile-applications`        | Full CRUD aplikasi mobile (ada create/edit page, no show) |
+| `LicenseController`          | `admin/licenses`                   | Full CRUD lisensi (ada create/edit page, no show)         |
+| `AssetAuditLogController`    | `admin/assets/{type}/{id}/audit-logs` | Tambah/edit/hapus audit log; embedded di halaman detail aset |
 
 ---
 

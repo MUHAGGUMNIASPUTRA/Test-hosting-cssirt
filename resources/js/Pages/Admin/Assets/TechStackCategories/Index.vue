@@ -1,7 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { router, useForm } from '@inertiajs/vue3'
 import { useAdminTable } from '@/Composables/useAdminTable'
+import { router, useForm } from '@inertiajs/vue3'
+import { computed, ref } from 'vue'
 
 const props = defineProps({
   categories: Object,

@@ -1,54 +1,54 @@
 <script setup>
 // filepath: resources/js/Layouts/Admin/AdminLayout.vue
 
-import { computed, ref, onMounted, nextTick, watch } from 'vue'
-import { Head, Link, router, usePage } from '@inertiajs/vue3'
-import { useResponsive } from '@/Composables/useResponsive'
-import { useToast } from 'primevue/usetoast'
-import Toast from 'primevue/toast'
 import NotificationPanel from '@/Components/NotificationPanel.vue'
+import { useResponsive } from '@/Composables/useResponsive'
+import { Head, Link, router, usePage } from '@inertiajs/vue3'
+import Toast from 'primevue/toast'
+import { useToast } from 'primevue/usetoast'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 
 import {
-  IconWorldCheck,
-  IconLayoutBoard,
-  IconUrgent,
-  IconMailExclamation,
-  IconBellPlus,
-  IconTicTac,
-  IconNews,
   IconArticle,
-  IconTextPlus,
+  IconBellPlus,
+  IconBookDownload,
   IconBookmarks,
+  IconBriefcase,
+  IconBuilding,
+  IconChevronDown,
+  // Assets
+  IconCloud,
+  IconCode,
+  IconDatabase,
+  IconDeviceMobile,
   IconFileDescription,
   IconFilePlus,
   IconFolders,
   IconHeartHandshake,
   IconHelp,
-  IconSpeakerphone,
-  IconUsers,
-  IconLogout,
-  IconSun,
-  IconMoon,
-  IconMenu2,
-  IconChevronDown,
-  // Assets
-  IconCloud,
-  IconWorldWww,
-  IconDeviceMobile,
   IconKey,
-  IconCode,
-  IconUser,
-  IconBriefcase,
-  IconMapPin,
-  IconBuilding,
-  IconTruck,
-  IconServer,
-  IconDatabase,
-  IconStack2,
-  IconBookOpen,
+  IconLayoutBoard,
   IconList,
+  IconLogout,
+  IconMailExclamation,
+  IconMapPin,
+  IconMenu2,
+  IconMoon,
+  IconNews,
   IconPlus,
+  IconServer,
+  IconSpeakerphone,
+  IconStack2,
+  IconSun,
   IconTag,
+  IconTextPlus,
+  IconTicTac,
+  IconTruck,
+  IconUrgent,
+  IconUser,
+  IconUsers,
+  IconWorldCheck,
+  IconWorldWww,
 } from '@tabler/icons-vue'
 
 defineProps({
@@ -260,7 +260,7 @@ const sidebarItems = ref([
           },
           {
             label: 'Panduan Aset Virtual',
-            icon: IconBookOpen,
+            icon: IconBookDownload,
             route: 'admin.virtual-asset-guides.index',
           },
         ],

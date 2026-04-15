@@ -1,6 +1,19 @@
 <?php
 
 use App\Http\Controllers\Admin\AnnouncementController;
+use App\Http\Controllers\Admin\Assets\AssetAuditLogController;
+use App\Http\Controllers\Admin\Assets\DepartmentController as AssetDepartmentController;
+use App\Http\Controllers\Admin\Assets\EmployeeController as AssetEmployeeController;
+use App\Http\Controllers\Admin\Assets\LicenseController as AssetLicenseController;
+use App\Http\Controllers\Admin\Assets\LocationController as AssetLocationController;
+use App\Http\Controllers\Admin\Assets\MobileApplicationController as AssetMobileAppController;
+use App\Http\Controllers\Admin\Assets\OrganizationController as AssetOrganizationController;
+use App\Http\Controllers\Admin\Assets\PositionController as AssetPositionController;
+use App\Http\Controllers\Admin\Assets\TechStackCategoryController as AssetTechStackCategoryController;
+use App\Http\Controllers\Admin\Assets\TechStackController as AssetTechStackController;
+use App\Http\Controllers\Admin\Assets\VendorController as AssetVendorController;
+use App\Http\Controllers\Admin\Assets\VirtualAssetGuideController as AssetGuideController;
+use App\Http\Controllers\Admin\Assets\WebApplicationController as AssetWebAppController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DocumentAreaController;
 use App\Http\Controllers\Admin\DocumentController as AdminDocumentController;

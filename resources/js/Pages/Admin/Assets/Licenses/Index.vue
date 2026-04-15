@@ -1,8 +1,8 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { router } from '@inertiajs/vue3'
 import { useAdminTable } from '@/Composables/useAdminTable'
 import { formatDate } from '@/utils/date'
+import { Link, router } from '@inertiajs/vue3'
+import { computed, ref } from 'vue'
 
 const props = defineProps({
   licenses: Object,
