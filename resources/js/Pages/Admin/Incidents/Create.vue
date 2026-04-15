@@ -40,12 +40,9 @@ const submitButtonText = computed(() =>
   isEditing.value ? 'Update Laporan' : 'Simpan Laporan',
 )
 
-// Detect attachment type from existing value (URL or file path)
+// Detect attachment type from existing attachment object
 const detectExistingAttachmentMode = () => {
-  if (!props.incident?.attachment) return 'file'
-  const val = props.incident.attachment
-  if (val.startsWith('http://') || val.startsWith('https://')) return 'link'
-  return 'file'
+  return props.incident?.attachment?.type ?? 'file'
 }
 
 const attachmentMode = ref(detectExistingAttachmentMode())
@@ -73,7 +70,7 @@ const form = useForm({
   attachment: null,
   attachment_links:
     (detectExistingAttachmentMode() === 'link'
-      ? props.incident?.attachment
+      ? props.incident?.attachment?.url
       : '') || '',
 })
 
@@ -579,7 +576,7 @@ const formatDateTime = (date) => {
                     <div class="min-w-0 flex-1">
                       <p class="text-sm text-slate-600">Lampiran saat ini:</p>
                       <p class="truncate text-sm font-medium text-blue-600">
-                        {{ incident.attachment }}
+                        {{ incident.attachment.filename }}
                       </p>
                     </div>
                     <p class="text-xs text-slate-400">
@@ -819,7 +816,9 @@ const formatDateTime = (date) => {
                   }}</span>
                 </div>
                 <div
-                  v-if="form.attachment || (isEditing && incident?.attachment)"
+                  v-if="
+                    form.attachment || (isEditing && incident?.attachment?.url)
+                  "
                   class="flex items-center justify-between"
                 >
                   <span class="text-slate-500">Lampiran:</span>

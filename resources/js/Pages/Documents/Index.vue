@@ -59,9 +59,6 @@ const onPage = (event) => {
   lazyParams.value.page = event.page + 1
   applyFilters()
 }
-
-const isLink = (path) =>
-  path && (path.startsWith('http://') || path.startsWith('https://'))
 </script>
 
 <template>
@@ -223,7 +220,7 @@ const isLink = (path) =>
                       {{ data.document_area.name }}
                     </span>
                     <span
-                      v-if="!data.official_file_path"
+                      v-if="!data.official_attachment"
                       class="hidden items-center rounded-lg bg-red-100 px-2 py-1 text-xs font-medium text-red-700 sm:inline-flex"
                     >
                       File Hilang
@@ -243,7 +240,7 @@ const isLink = (path) =>
                       {{ data.document_area.name }}
                     </span>
                     <span
-                      v-if="!data.official_file_path"
+                      v-if="!data.official_attachment"
                       class="inline-flex items-center text-xs font-medium text-red-600"
                     >
                       File Hilang
@@ -262,21 +259,16 @@ const isLink = (path) =>
               <template #body="{ data }">
                 <div class="flex items-center justify-end gap-2">
                   <a
-                    v-if="data.official_file_path"
+                    v-if="data.official_attachment"
                     :href="route('documents.view', data.slug)"
-                    :target="
-                      isLink(data.official_file_path) ? '_blank' : '_blank'
-                    "
+                    target="_blank"
                     class="rounded-lg bg-indigo-50 p-2 text-indigo-600 transition-colors duration-200 hover:bg-indigo-200"
                     title="Lihat Dokumen"
                   >
                     <IconEye size="16" />
                   </a>
                   <a
-                    v-if="
-                      data.official_file_path &&
-                      !isLink(data.official_file_path)
-                    "
+                    v-if="data.official_attachment?.type === 'file'"
                     :href="route('documents.download', data.slug)"
                     class="rounded-lg bg-blue-50 p-2 text-blue-600 transition-colors duration-200 hover:bg-blue-200"
                     title="Download Dokumen"

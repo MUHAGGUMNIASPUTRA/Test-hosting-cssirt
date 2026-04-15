@@ -28,10 +28,10 @@ const startEdit = () => {
   editForm.log_message = props.log.log_message
   editForm.is_public = props.log.is_public
   editForm.attachment = null
-  if (props.log.attachment_type === 'link') {
+  if (props.log.attachment?.type === 'link') {
     editAttachmentMode.value = 'link'
-    editForm.attachment_link = props.log.attachment
-  } else if (props.log.attachment_type === 'file') {
+    editForm.attachment_link = props.log.attachment.url ?? ''
+  } else if (props.log.attachment?.type === 'file') {
     editAttachmentMode.value = 'file'
     editForm.attachment_link = ''
   } else {
@@ -76,19 +76,12 @@ const isEdited = (log) =>
   log.created_at &&
   new Date(log.updated_at) > new Date(log.created_at)
 
-const isExternalUrl = (path) =>
-  path && (path.startsWith('http://') || path.startsWith('https://'))
-
-const logAttachmentUrl = (log) => {
-  if (!log.attachment) return null
-  if (log.attachment_type === 'link' || isExternalUrl(log.attachment))
-    return log.attachment
-  return `/storage/${log.attachment}`
-}
+const logAttachmentUrl = (log) => log.attachment?.url ?? null
 
 const logAttachmentLabel = (log) => {
-  if (log.attachment_type === 'link') return 'Buka Link'
-  return log.attachment ? log.attachment.split('/').pop() : 'Lihat Lampiran'
+  if (!log.attachment) return ''
+  if (log.attachment.type === 'link') return 'Buka Link'
+  return log.attachment.filename || 'Lihat Lampiran'
 }
 </script>
 
@@ -239,7 +232,7 @@ const logAttachmentLabel = (log) => {
           rel="noopener"
           class="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2 py-1 text-xs text-blue-600 hover:text-blue-800"
         >
-          <IconExternalLink v-if="log.attachment_type === 'link'" size="12" />
+          <IconExternalLink v-if="log.attachment.type === 'link'" size="12" />
           <IconPaperclip v-else size="12" />
           {{ logAttachmentLabel(log) }}
         </a>

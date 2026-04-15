@@ -16,6 +16,17 @@ class FullIncidentResource extends JsonResource
      */
     public function toArray($request)
     {
+        $attachmentData = null;
+        if ($this->attachment) {
+            $attachmentData = (new AttachmentResource($this->attachment))->toArray($request);
+
+            if ($this->attachment->isFile() && $this->attachment->disk === 'local') {
+                $attachmentData['url'] = URL::signedRoute('incident.attachment.download', [
+                    'caseId' => $this->case_id,
+                ], now()->addMinutes(15));
+            }
+        }
+
         return [
             'case_id' => $this->case_id,
             'status' => $this->status,
@@ -28,21 +39,12 @@ class FullIncidentResource extends JsonResource
                 ];
             }),
             'description' => $this->description,
-            'attachment' => $this->when($this->attachment, function () {
-                return [
-                    'filename' => basename($this->attachment),
-                    'extension' => strtoupper(pathinfo($this->attachment, PATHINFO_EXTENSION)),
-                    'file_size' => method_exists($this->resource, 'fileSize') ? $this->resource->fileSize() : null,
-                    'download_url' => URL::signedRoute('incident.attachment.download', [
-                        'caseId' => $this->case_id,
-                    ], now()->addMinutes(15)),
-                ];
-            }),
-            'logs' => $this->whenLoaded('incidentLogs', function () {
+            'attachment' => $attachmentData,
+            'logs' => $this->whenLoaded('incidentLogs', function () use ($request) {
                 return $this->incidentLogs
                     ->filter(fn ($log) => $log->is_public)
                     ->values()
-                    ->map(function ($log) {
+                    ->map(function ($log) use ($request) {
                         $isEdited = $log->updated_at->gt($log->created_at);
 
                         return [
@@ -50,8 +52,9 @@ class FullIncidentResource extends JsonResource
                             'created_at' => $log->created_at,
                             'is_edited' => $isEdited,
                             'edited_at' => $isEdited ? $log->updated_at : null,
-                            'attachment' => $log->attachment,
-                            'attachment_type' => $log->attachment_type,
+                            'attachment' => $log->attachment
+                                ? (new AttachmentResource($log->attachment))->toArray($request)
+                                : null,
                         ];
                     });
             }),

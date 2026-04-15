@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\DocumentStage;
+use App\Models\Attachment;
 use App\Models\Document;
 use App\Models\DocumentArea;
 use Faker\Factory as Faker;
@@ -36,6 +37,14 @@ class DocumentSeeder extends Seeder
             $refFn = $faker->randomElement($referenceFormats);
             $referenceNumber = $refFn($i);
 
+            $officialAttachment = null;
+            if ($hasOfficialFile) {
+                $officialAttachment = Attachment::create([
+                    'type' => 'link',
+                    'url' => 'https://drive.google.com/file/d/'.$faker->uuid().'/view',
+                ]);
+            }
+
             Document::create([
                 'title' => $title,
                 'slug' => Str::slug($title).'-'.Str::random(4),
@@ -43,9 +52,7 @@ class DocumentSeeder extends Seeder
                 'draft_file_path' => $hasDraftLink
                     ? 'https://docs.google.com/document/d/'.$faker->uuid()
                     : null,
-                'official_file_path' => $hasOfficialFile
-                    ? 'https://drive.google.com/file/d/'.$faker->uuid().'/view'
-                    : null,
+                'official_attachment_id' => $officialAttachment?->id,
                 'reference_number' => $referenceNumber,
                 'stage' => $faker->randomElement([...$stages, null]),
                 'version' => $faker->randomElement($versions),

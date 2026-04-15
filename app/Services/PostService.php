@@ -4,41 +4,11 @@ namespace App\Services;
 
 use App\Models\Post;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PostService
 {
-    /**
-     * Resolve which image path to store.
-     * Returns a storage path (relative) for uploads, a URL for external links,
-     * or the existing path if no new image is provided.
-     */
-    public function resolveImage(
-        array $validated,
-        ?UploadedFile $image,
-        ?string $existing = null
-    ): ?string {
-        if (($validated['image_type'] ?? 'file') === 'file') {
-            if ($image !== null) {
-                // Delete old stored image if it's not a URL
-                if ($existing && ! str_starts_with($existing, 'http')) {
-                    Storage::disk('public')->delete($existing);
-                }
-
-                return $image->store('posts', 'public');
-            }
-
-            return $existing;
-        }
-
-        // mode link
-        if (($validated['image_type'] ?? null) === 'link') {
-            return ! empty($validated['image_url']) ? $validated['image_url'] : null;
-        }
-
-        return $existing;
-    }
+    public function __construct(private readonly AttachmentService $attachmentService) {}
 
     /**
      * Sync categories and tags for a post.
@@ -54,14 +24,21 @@ class PostService
      */
     public function create(array $validated, ?UploadedFile $image, string $authorName): Post
     {
-        $path = $this->resolveImage($validated, $image);
+        $attachment = $this->attachmentService->resolve(
+            $image,
+            $validated['image_type'] ?? null,
+            $validated['image_url'] ?? null,
+            null,
+            'public',
+            'posts',
+        );
 
         $post = Post::create([
             'title' => $validated['title'],
             'slug' => Str::slug($validated['title']),
             'body' => $validated['body'],
             'excerpt' => $validated['excerpt'],
-            'image' => $path,
+            'image_id' => $attachment?->id,
             'status' => $validated['status'],
             'published_by' => $authorName,
             'published_at' => $validated['status'] === 'Published' ? now() : null,
@@ -73,13 +50,11 @@ class PostService
     }
 
     /**
-     * Delete a post along with its stored image and taxonomy relations.
+     * Delete a post along with its image attachment and taxonomy relations.
      */
     public function deleteWithAssets(Post $post): void
     {
-        if ($post->image && ! str_starts_with($post->image, 'http')) {
-            Storage::disk('public')->delete($post->image);
-        }
+        $this->attachmentService->delete($post->image);
 
         $post->categories()->detach();
         $post->tags()->detach();
@@ -91,14 +66,23 @@ class PostService
      */
     public function update(Post $post, array $validated, ?UploadedFile $image, string $authorName): void
     {
-        $path = $this->resolveImage($validated, $image, $post->image);
+        $post->loadMissing('image');
+
+        $attachment = $this->attachmentService->resolve(
+            $image,
+            $validated['image_type'] ?? null,
+            $validated['image_url'] ?? null,
+            $post->image,
+            'public',
+            'posts',
+        );
 
         $post->update([
             'title' => $validated['title'],
             'slug' => Str::slug($validated['title']),
             'body' => $validated['body'],
             'excerpt' => $validated['excerpt'],
-            'image' => $path,
+            'image_id' => $attachment?->id,
             'status' => $validated['status'],
             'published_by' => $authorName,
             'published_at' => $validated['status'] === 'Published'

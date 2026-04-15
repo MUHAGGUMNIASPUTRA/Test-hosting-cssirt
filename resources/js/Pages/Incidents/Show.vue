@@ -57,24 +57,14 @@ const priorityBadge = (priority) => {
   }
 }
 
-const hasAttachment = computed(() =>
-  Boolean(incident.value?.attachment?.filename),
-)
+const hasAttachment = computed(() => Boolean(incident.value?.attachment))
 
-const isExternalUrl = (path) =>
-  path && (path.startsWith('http://') || path.startsWith('https://'))
-
-const logAttachmentUrl = (log) => {
-  if (!log.attachment) return null
-  if (log.attachment_type === 'link' || isExternalUrl(log.attachment))
-    return log.attachment
-  return `/storage/${log.attachment}`
-}
+const logAttachmentUrl = (log) => log.attachment?.url ?? null
 
 const logAttachmentFilename = (log) => {
   if (!log.attachment) return ''
-  if (log.attachment_type === 'link') return 'Buka Link'
-  return log.attachment.split('/').pop()
+  if (log.attachment.type === 'link') return 'Buka Link'
+  return log.attachment.filename || 'Lihat Lampiran'
 }
 </script>
 
@@ -263,31 +253,32 @@ const logAttachmentFilename = (log) => {
                 {{ incident.attachment.filename }}
               </p>
               <p
-                v-if="incident.attachment.type === 'file'"
+                v-if="
+                  incident.attachment.type === 'file' &&
+                  incident.attachment.file_size
+                "
                 class="text-sm text-slate-500"
               >
                 {{ incident.attachment.file_size }}
               </p>
             </div>
             <a
-              v-if="incident.attachment.type === 'link'"
               :href="incident.attachment.url"
               target="_blank"
               rel="noopener"
               class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
             >
-              <IconExternalLink class="mr-2" size="16" />
-              Buka Link
-            </a>
-            <a
-              v-else
-              :href="incident.attachment.download_url"
-              target="_blank"
-              rel="noopener"
-              class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
-            >
-              <IconDownload class="mr-2" size="16" />
-              Unduh Lampiran
+              <IconExternalLink
+                v-if="incident.attachment.type === 'link'"
+                class="mr-2"
+                size="16"
+              />
+              <IconDownload v-else class="mr-2" size="16" />
+              {{
+                incident.attachment.type === 'link'
+                  ? 'Buka Link'
+                  : 'Unduh Lampiran'
+              }}
             </a>
           </div>
         </div>
@@ -341,7 +332,7 @@ const logAttachmentFilename = (log) => {
                       class="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm text-blue-600 transition hover:bg-blue-50 hover:text-blue-800"
                     >
                       <IconExternalLink
-                        v-if="log.attachment_type === 'link'"
+                        v-if="log.attachment?.type === 'link'"
                         size="14"
                       />
                       <IconPaperclip v-else size="14" />

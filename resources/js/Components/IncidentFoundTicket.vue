@@ -52,15 +52,7 @@ const getFileIcon = (filename) => {
   return iconMap[ext] || [IconFile, 'bg-slate-100', 'text-slate-600']
 }
 
-const isExternalUrl = (path) =>
-  path && (path.startsWith('http://') || path.startsWith('https://'))
-
-const logAttachmentUrl = (log) => {
-  if (!log.attachment) return null
-  if (log.attachment_type === 'link' || isExternalUrl(log.attachment))
-    return log.attachment
-  return `/storage/${log.attachment}`
-}
+const logAttachmentUrl = (log) => log.attachment?.url ?? null
 </script>
 
 <template>
@@ -165,7 +157,7 @@ const logAttachmentUrl = (log) => {
             <!-- File type: download -->
             <a
               v-else
-              :href="ticket.attachment.download_url"
+              :href="ticket.attachment.url"
               target="_blank"
               rel="noopener"
             >
@@ -228,12 +220,12 @@ const logAttachmentUrl = (log) => {
                   class="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2 py-1 text-xs text-blue-600 hover:text-blue-800"
                 >
                   <IconExternalLink
-                    v-if="log.attachment_type === 'link'"
+                    v-if="log.attachment?.type === 'link'"
                     size="12"
                   />
                   <IconPaperclip v-else size="12" />
                   {{
-                    log.attachment_type === 'link'
+                    log.attachment?.type === 'link'
                       ? 'Buka Link'
                       : 'Lihat Lampiran'
                   }}

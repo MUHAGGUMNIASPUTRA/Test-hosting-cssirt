@@ -11,10 +11,9 @@ class UpdateDocumentRequest extends StoreDocumentRequest
         $rules = parent::rules();
 
         // Saat edit: official_file hanya wajib jika stage Final, mode file,
-        // DAN belum ada file tersimpan di DB (official_file_path kosong atau berupa link eksternal).
+        // DAN belum ada file tersimpan di DB (officialAttachment bertipe file).
         $document = $this->route('document');
-        $hasExistingFile = $document?->official_file_path &&
-            ! str_starts_with($document->official_file_path, 'http');
+        $hasExistingFile = $document?->officialAttachment?->isFile();
 
         $isFinalFileMode = $this->input('stage') === DocumentStage::Final->value
             && $this->input('official_file_type') === 'file';

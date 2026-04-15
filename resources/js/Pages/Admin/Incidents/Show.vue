@@ -125,11 +125,16 @@ const handleDeleteLog = () => {
               <div
                 class="flex h-10 w-10 items-center justify-center rounded-lg border border-purple-200 bg-purple-50"
               >
-                <IconTimeline class="text-purple-600" size="20" />
+                <IconTimeline
+                  class="text-purple-600"
+                  :size="!isDesktop ? 18 : undefined"
+                />
               </div>
               <div class="ml-3">
-                <h3 class="font-semibold text-slate-900">Riwayat Penanganan</h3>
-                <p class="text-xs text-slate-500">
+                <h3 class="text-xl/6 font-semibold text-slate-900">
+                  Riwayat Penanganan
+                </h3>
+                <p class="text-xs text-slate-600 lg:text-sm">
                   {{ incident.incident_logs.length }} catatan
                 </p>
               </div>

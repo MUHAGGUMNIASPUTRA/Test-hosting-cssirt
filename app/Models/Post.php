@@ -7,14 +7,15 @@ namespace App\Models;
 use App\Enums\PostStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
+ * @property \App\Models\Attachment|null $image
+ * @property PostStatus $status
  * @property string $title
  * @property string $slug
- * @property string|null $image
- * @property PostStatus $status
  * @property string $excerpt
  * @property string $body
  * @property string|null $published_by
@@ -23,15 +24,10 @@ class Post extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'title',
         'slug',
-        'image',
+        'image_id',
         'status',
         'excerpt',
         'body',
@@ -42,15 +38,18 @@ class Post extends Model
         'ratings_count',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
     protected $casts = [
         'published_at' => 'datetime',
         'status' => PostStatus::class,
     ];
+
+    /**
+     * Get the featured image attachment for the post.
+     */
+    public function image(): BelongsTo
+    {
+        return $this->belongsTo(Attachment::class, 'image_id');
+    }
 
     /**
      * The categories that belong to the Post.

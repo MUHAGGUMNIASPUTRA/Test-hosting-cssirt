@@ -9,15 +9,19 @@ use App\Mail\IncidentConfirmationMail;
 use App\Mail\IncidentReportMail;
 use App\Models\Incident;
 use App\Models\IncidentType;
+use App\Services\AttachmentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class IncidentController extends Controller
 {
     use HandlesSeoRequests;
+
+    public function __construct(private readonly AttachmentService $attachmentService) {}
 
     public function create()
     {
@@ -58,16 +62,17 @@ class IncidentController extends Controller
             return back()->withErrors(['captcha_answer' => 'Jawaban captcha tidak sesuai.'])->withInput();
         }
 
-        // Handle attachment: file (stored privately) or link
-        $attachmentValue = null;
+        // Public submissions store files privately on 'local' disk so they are
+        // not directly web-accessible. Downloads are served via signed route.
+        $attachment = $this->attachmentService->resolve(
+            $request->hasFile('attachment') ? $request->file('attachment') : null,
+            $validated['attachment_type'] ?? null,
+            $validated['attachment_links'] ?? null,
+            null,
+            'local',
+            'incidents',
+        );
 
-        if (($validated['attachment_type'] ?? 'file') === 'file' && $request->hasFile('attachment')) {
-            $attachmentValue = $request->file('attachment')->store('incidents', 'local');
-        } elseif (($validated['attachment_type'] ?? null) === 'link' && ! empty($validated['attachment_links'])) {
-            $attachmentValue = $validated['attachment_links'];
-        }
-
-        // Create incident with auto-generated case ID (safe monthly sequence) and access token for reporter
         $incident = Incident::create([
             'case_id' => Incident::generateCaseId(),
             'access_token' => Str::random(64),
@@ -78,12 +83,11 @@ class IncidentController extends Controller
             'description' => $validated['description'],
             'status' => 'Baru',
             'priority' => $validated['priority'],
-            'attachment' => $attachmentValue,
+            'attachment_id' => $attachment?->id,
             'incident_at' => $validated['incident_at'],
             'reported_at' => now(),
         ]);
 
-        // Log creation — user_id null jika laporan dari publik (tamu), terisi jika admin/staff
         $incident->incidentLogs()->create([
             'log_message' => 'Tiket insiden dibuat',
             'is_public' => true,
@@ -91,17 +95,13 @@ class IncidentController extends Controller
         ]);
 
         try {
-            // Send email to CSIRT team
             Mail::to(config('mail.csirt_email', 'ttis@bojonegorokab.go.id'))
                 ->send(new IncidentReportMail($incident));
 
-            // Send confirmation email to reporter
             Mail::to($validated['reporter_email'])
                 ->send(new IncidentConfirmationMail($incident));
-
         } catch (\Exception $e) {
             Log::error('Incident email sending failed: '.$e->getMessage());
-            // Don't fail the request if email fails
         }
 
         return back()->with('success', [
@@ -112,7 +112,7 @@ class IncidentController extends Controller
     }
 
     /**
-     * Search for an incident by case ID and email
+     * Search for an incident by case ID and email.
      */
     public function search(Request $request)
     {
@@ -134,7 +134,7 @@ class IncidentController extends Controller
             $rules['captcha_expected'] = 'required|string';
             $messages['captcha_answer.required'] = 'Jawaban captcha wajib diisi.';
         }
-        // Use validator so we can flash captcha_required on 422
+
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
             if ($captchaRequired) {
@@ -155,7 +155,7 @@ class IncidentController extends Controller
             }
         }
 
-        $incident = Incident::with(['incidentType', 'incidentLogs'])
+        $incident = Incident::with(['incidentType', 'incidentLogs', 'incidentLogs.attachment', 'attachment'])
             ->where('case_id', $validated['case_id'])
             ->where('reporter_email', $validated['email'])
             ->first();
@@ -169,8 +169,6 @@ class IncidentController extends Controller
             ])->with('captcha_required', $newCount >= 3)->withInput();
         }
 
-        // Centralized serialization for public response
-        // Reset fail counter on success
         $request->session()->put('search_fail_count', 0);
         $resource = new PublicIncidentResource($incident->load('incidentType'));
 
@@ -182,20 +180,21 @@ class IncidentController extends Controller
      */
     public function downloadAttachment(Request $request, string $caseId)
     {
-        // Optional: verify email query param matches the incident reporter to add another check
         $email = $request->query('email');
-        $incident = Incident::where('case_id', $caseId)
+        $incident = Incident::with('attachment')
+            ->where('case_id', $caseId)
             ->when($email, fn ($q) => $q->where('reporter_email', $email))
             ->firstOrFail();
 
-        if (! $incident->attachment) {
+        if (! $incident->attachment || ! $incident->attachment->isFile()) {
             abort(404);
         }
 
-        // Stream the file from the private 'local' disk
-        return response()->streamDownload(function () use ($incident) {
-            echo \Illuminate\Support\Facades\Storage::disk('local')->get($incident->attachment);
-        }, basename($incident->attachment));
+        $attachment = $incident->attachment;
+
+        return response()->streamDownload(function () use ($attachment) {
+            echo Storage::disk($attachment->disk)->get($attachment->path);
+        }, $attachment->filename ?? basename($attachment->path));
     }
 
     /**
@@ -208,7 +207,7 @@ class IncidentController extends Controller
             abort(404);
         }
 
-        $incident = Incident::with(['incidentType', 'incidentLogs'])
+        $incident = Incident::with(['incidentType', 'incidentLogs', 'incidentLogs.attachment', 'attachment'])
             ->where('case_id', $caseId)
             ->where('access_token', $token)
             ->firstOrFail();

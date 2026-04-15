@@ -14,18 +14,10 @@ const props = defineProps({
 })
 
 const imageUrl = computed(() => {
-  // If the post has no image, return a default placeholder
-  if (!props.post.image) {
+  if (!props.post.image?.url) {
     return `https://placehold.co/800x400/e2e8f0/4a5568?text=Gambar+Tidak+Tersedia`
   }
-
-  // If the image path is a full URL (starts with http), use it directly
-  if (props.post.image.startsWith('http')) {
-    return props.post.image
-  }
-
-  // Otherwise, it's a local file, so prepend the /storage/ path
-  return `/storage/${props.post.image}`
+  return props.post.image.url
 })
 </script>
 

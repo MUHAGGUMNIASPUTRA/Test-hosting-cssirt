@@ -24,11 +24,7 @@ const isStageFinal = computed(() => form.stage === 'Final')
 
 // Deteksi mode file existing untuk File Dokumen Sah
 const detectOfficialFileMode = () => {
-  if (!props.document?.official_file_path) return 'file'
-  const val = props.document.official_file_path
-  return val.startsWith('http://') || val.startsWith('https://')
-    ? 'link'
-    : 'file'
+  return props.document?.officialAttachment?.type ?? 'file'
 }
 
 const officialFileMode = ref(detectOfficialFileMode())
@@ -49,7 +45,7 @@ const form = useForm({
   official_file: null,
   official_file_link:
     (detectOfficialFileMode() === 'link'
-      ? props.document?.official_file_path
+      ? props.document?.officialAttachment?.url
       : '') || '',
   // Kolom baru
   reference_number: props.document?.reference_number || '',
@@ -325,7 +321,7 @@ const submit = () => {
             <div
               v-if="
                 isEditMode &&
-                document.official_file_path &&
+                document.officialAttachment &&
                 !form.official_file &&
                 officialFileMode === 'file'
               "
@@ -338,7 +334,7 @@ const submit = () => {
               <div class="min-w-0 flex-1">
                 <p class="text-sm text-slate-600">File saat ini:</p>
                 <p class="truncate text-sm font-medium text-blue-600">
-                  {{ document.official_file_path }}
+                  {{ document.officialAttachment.filename }}
                 </p>
               </div>
               <p class="flex-shrink-0 text-xs text-slate-400">
@@ -411,11 +407,7 @@ const submit = () => {
                 v-if="
                   isStageFinal &&
                   !form.official_file &&
-                  !(
-                    isEditMode &&
-                    document.official_file_path &&
-                    !document.official_file_path.startsWith('http')
-                  )
+                  !(isEditMode && document.officialAttachment?.type === 'file')
                 "
                 class="mt-1 block text-amber-600"
               >

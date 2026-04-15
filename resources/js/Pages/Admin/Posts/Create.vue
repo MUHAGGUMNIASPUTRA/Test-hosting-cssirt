@@ -5,12 +5,9 @@ import { ref, computed, watch } from 'vue'
 import { router, useForm } from '@inertiajs/vue3'
 import { useResponsive } from '@/Composables/useResponsive'
 
-// Detect existing image type (URL or file path)
+// Detect existing image type from attachment object
 const detectExistingImageMode = (post) => {
-  if (!post?.image) return 'file'
-  const val = post.image
-  if (val.startsWith('http://') || val.startsWith('https://')) return 'link'
-  return 'file'
+  return post?.image?.type ?? 'file'
 }
 
 const props = defineProps({
@@ -39,8 +36,9 @@ const form = useForm({
   image: null,
   image_type: detectExistingImageMode(props.post),
   image_url:
-    (detectExistingImageMode(props.post) === 'link' ? props.post?.image : '') ||
-    '',
+    (detectExistingImageMode(props.post) === 'link'
+      ? props.post?.image?.url
+      : '') || '',
   status: props.post?.status || 'Draft',
   categories: props.post?.categories?.map((c) => c.id) || [],
   tags: props.post?.tags?.map((t) => t.id) || [],
@@ -536,14 +534,16 @@ const submit = () => {
                   <template v-if="imageMode === 'file'">
                     <!-- Current Image Preview (Edit Mode) -->
                     <div
-                      v-if="isEditMode && props.post?.image && !imagePreview"
+                      v-if="
+                        isEditMode && props.post?.image?.url && !imagePreview
+                      "
                       class="mb-3"
                     >
                       <div
                         class="relative inline-block h-32 w-full overflow-hidden rounded-lg"
                       >
                         <Image
-                          :src="`/storage/${props.post.image}`"
+                          :src="props.post.image.url"
                           :alt="props.post.title"
                           class="h-full w-full object-cover"
                           :pt="{
@@ -627,14 +627,16 @@ const submit = () => {
                   <template v-else>
                     <!-- Preview current image URL (edit mode) -->
                     <div
-                      v-if="isEditMode && props.post?.image && !form.image_url"
+                      v-if="
+                        isEditMode && props.post?.image?.url && !form.image_url
+                      "
                       class="mb-3"
                     >
                       <div
                         class="relative h-32 w-full overflow-hidden rounded-lg"
                       >
                         <img
-                          :src="props.post.image"
+                          :src="props.post.image.url"
                           :alt="props.post.title"
                           class="h-full w-full object-cover"
                         />

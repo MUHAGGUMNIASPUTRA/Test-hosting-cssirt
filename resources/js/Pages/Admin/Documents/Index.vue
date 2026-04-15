@@ -137,9 +137,6 @@ const toggleVisibility = (doc) => {
   )
 }
 
-const isUrl = (path) =>
-  path && (path.startsWith('http://') || path.startsWith('https://'))
-
 const stageSeverity = (stage) => getSeverity('document-stage', stage)
 </script>
 
@@ -240,11 +237,7 @@ const stageSeverity = (stage) => getSeverity('document-stage', stage)
           <template #body="{ data }">
             <a
               v-if="data.draft_file_path"
-              :href="
-                isUrl(data.draft_file_path)
-                  ? data.draft_file_path
-                  : `/storage/${data.draft_file_path}`
-              "
+              :href="data.draft_file_path"
               target="_blank"
               rel="noopener"
               class="inline-flex items-center text-blue-600 hover:text-blue-800"
@@ -258,26 +251,26 @@ const stageSeverity = (stage) => getSeverity('document-stage', stage)
 
         <Column header="File Sah" v-if="!isMobile" style="width: 130px">
           <template #body="{ data }">
-            <div v-if="data.official_file_path" class="space-y-1">
+            <div v-if="data.official_attachment" class="space-y-1">
               <a
-                :href="
-                  isUrl(data.official_file_path)
-                    ? data.official_file_path
-                    : `/storage/${data.official_file_path}`
-                "
+                :href="data.official_attachment.url"
                 target="_blank"
                 rel="noopener"
                 class="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800"
               >
                 <IconExternalLink
-                  v-if="isUrl(data.official_file_path)"
+                  v-if="data.official_attachment.type === 'link'"
                   size="16"
                 />
                 <IconFileTypePdf v-else size="16" />
                 <Tag
-                  :value="isUrl(data.official_file_path) ? 'Link' : 'PDF'"
+                  :value="
+                    data.official_attachment.type === 'link' ? 'Link' : 'PDF'
+                  "
                   :severity="
-                    isUrl(data.official_file_path) ? 'info' : 'success'
+                    data.official_attachment.type === 'link'
+                      ? 'info'
+                      : 'success'
                   "
                   class="text-xs"
                 />

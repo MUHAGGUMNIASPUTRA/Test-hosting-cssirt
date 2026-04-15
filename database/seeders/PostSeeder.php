@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Attachment;
 use App\Models\Post;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -211,10 +212,15 @@ class PostSeeder extends Seeder
             $status = 'Published';
             $publishedAt = $status === 'Published' ? now()->subDays(rand(1, 30)) : null;
 
+            $imageAttachment = Attachment::create([
+                'type' => 'link',
+                'url' => 'https://picsum.photos/640/480?random='.fake()->unique()->numberBetween(1, 9999),
+            ]);
+
             $newPost = Post::create([
                 'title' => $post['title'],
                 'slug' => Str::slug($post['title']),
-                'image' => 'https://picsum.photos/640/480?random='.fake()->unique()->numberBetween(1, 9999),
+                'image_id' => $imageAttachment->id,
                 'excerpt' => $post['excerpt'],
                 'body' => $post['body'],
                 'status' => $status,

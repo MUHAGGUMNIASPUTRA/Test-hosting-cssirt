@@ -13,17 +13,20 @@ use App\Models\Incident;
 use App\Models\IncidentLog;
 use App\Models\IncidentType;
 use App\Models\User;
+use App\Services\AttachmentService;
 use App\Services\IncidentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class IncidentController extends Controller
 {
-    public function __construct(private readonly IncidentService $incidentService) {}
+    public function __construct(
+        private readonly IncidentService $incidentService,
+        private readonly AttachmentService $attachmentService,
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -90,7 +93,7 @@ class IncidentController extends Controller
         $this->incidentService->create(
             $request->validated(),
             $request->file('attachment'),
-            Auth::id()
+            Auth::id(),
         );
 
         return redirect()->route('admin.incidents.index')
@@ -111,7 +114,7 @@ class IncidentController extends Controller
         }
 
         return Inertia::render('Admin/Incidents/Show', [
-            'incident' => $incident->load(['incidentType', 'assignedUser', 'incidentLogs.user']),
+            'incident' => $incident->load(['incidentType', 'assignedUser', 'incidentLogs.user', 'incidentLogs.attachment', 'attachment']),
             'staffUsers' => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
         ]);
     }
@@ -125,10 +128,8 @@ class IncidentController extends Controller
             return back()->with('error', 'Insiden sudah ditutup dan tidak dapat diubah.');
         }
 
-        $incident->file_size = $incident->fileSize();
-
         return Inertia::render('Admin/Incidents/Create', [
-            'incident' => $incident,
+            'incident' => $incident->load('attachment'),
             'incidentTypes' => IncidentType::orderBy('sort_order')->get(['id', 'name', 'description', 'guide']),
             'staffUsers' => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
         ]);
@@ -143,11 +144,13 @@ class IncidentController extends Controller
             return back()->with('error', 'Insiden sudah ditutup dan tidak dapat diubah.');
         }
 
+        $incident->loadMissing('attachment');
+
         $this->incidentService->update(
             $incident,
             $request->validated(),
             $request->file('attachment'),
-            Auth::id()
+            Auth::id(),
         );
 
         return redirect()->route('admin.incidents.show', $incident)
@@ -178,23 +181,21 @@ class IncidentController extends Controller
         }
 
         $validated = $request->validated();
-        $attachment = null;
-        $attachmentType = null;
 
-        if (($validated['attachment_type'] ?? null) === 'file' && $request->hasFile('attachment')) {
-            $attachment = $request->file('attachment')->store('incidents/logs', 'public');
-            $attachmentType = 'file';
-        } elseif (($validated['attachment_type'] ?? null) === 'link' && ! empty($validated['attachment_link'])) {
-            $attachment = $validated['attachment_link'];
-            $attachmentType = 'link';
-        }
+        $attachment = $this->attachmentService->resolve(
+            $request->hasFile('attachment') ? $request->file('attachment') : null,
+            $validated['attachment_type'] ?? null,
+            $validated['attachment_link'] ?? null,
+            null,
+            'public',
+            'incidents/logs',
+        );
 
         $incident->incidentLogs()->create([
             'log_message' => $validated['log_message'],
             'user_id' => Auth::id(),
             'is_public' => (bool) ($validated['is_public'] ?? false),
-            'attachment' => $attachment,
-            'attachment_type' => $attachmentType,
+            'attachment_id' => $attachment?->id,
         ]);
 
         return back()->with('success', 'Catatan berhasil ditambahkan.');
@@ -208,36 +209,28 @@ class IncidentController extends Controller
         abort_if($log->incident_id !== $incident->id, 404);
 
         $validated = $request->validated();
-        $attachment = $log->attachment;
-        $attachmentType = $log->attachment_type;
+        $log->loadMissing('attachment');
 
-        if (($validated['attachment_type'] ?? null) === 'file' && $request->hasFile('attachment')) {
-            // Delete old stored file if applicable
-            if ($log->attachment && $log->attachment_type === 'file') {
-                Storage::disk('public')->delete($log->attachment);
-            }
-            $attachment = $request->file('attachment')->store('incidents/logs', 'public');
-            $attachmentType = 'file';
-        } elseif (($validated['attachment_type'] ?? null) === 'link') {
-            // Delete old stored file if switching from file to link
-            if ($log->attachment_type === 'file' && $log->attachment) {
-                Storage::disk('public')->delete($log->attachment);
-            }
-            $attachment = $validated['attachment_link'] ?? null;
-            $attachmentType = $attachment ? 'link' : null;
-        } elseif (($validated['attachment_type'] ?? null) === 'none') {
-            if ($log->attachment_type === 'file' && $log->attachment) {
-                Storage::disk('public')->delete($log->attachment);
-            }
-            $attachment = null;
-            $attachmentType = null;
+        $newAttachment = $log->attachment;
+
+        if (($validated['attachment_type'] ?? null) === 'none') {
+            $this->attachmentService->delete($log->attachment);
+            $newAttachment = null;
+        } else {
+            $newAttachment = $this->attachmentService->resolve(
+                $request->hasFile('attachment') ? $request->file('attachment') : null,
+                $validated['attachment_type'] ?? null,
+                $validated['attachment_link'] ?? null,
+                $log->attachment,
+                'public',
+                'incidents/logs',
+            );
         }
 
         $log->update([
             'log_message' => $validated['log_message'],
             'is_public' => (bool) ($validated['is_public'] ?? false),
-            'attachment' => $attachment,
-            'attachment_type' => $attachmentType,
+            'attachment_id' => $newAttachment?->id,
         ]);
 
         return back()->with('success', 'Catatan berhasil diperbarui.');
@@ -250,10 +243,8 @@ class IncidentController extends Controller
     {
         abort_if($log->incident_id !== $incident->id, 404);
 
-        if ($log->attachment && $log->attachment_type === 'file') {
-            Storage::disk('public')->delete($log->attachment);
-        }
-
+        $log->loadMissing('attachment');
+        $this->attachmentService->delete($log->attachment);
         $log->delete();
 
         return back()->with('success', 'Catatan berhasil dihapus.');
@@ -265,6 +256,8 @@ class IncidentController extends Controller
     public function destroy(Incident $incident): RedirectResponse
     {
         try {
+            $incident->loadMissing('attachment');
+            $this->attachmentService->delete($incident->attachment);
             $incident->delete();
 
             return back()->with('success', [

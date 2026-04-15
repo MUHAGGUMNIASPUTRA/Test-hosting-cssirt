@@ -11,12 +11,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * @property IncidentStatus $status
  * @property IncidentPriority $priority
- * @property string|null $file_size Virtual property set in controller for edit view
+ * @property \App\Models\Attachment|null $attachment
  */
 class Incident extends Model
 {
@@ -35,7 +34,7 @@ class Incident extends Model
         'reporter_phone',
         'incident_type_id',
         'description',
-        'attachment',
+        'attachment_id',
         'incident_at',
         'status',
         'priority',
@@ -63,6 +62,14 @@ class Incident extends Model
     ];
 
     /**
+     * Get the attachment for the incident.
+     */
+    public function attachment(): BelongsTo
+    {
+        return $this->belongsTo(Attachment::class);
+    }
+
+    /**
      * Get the type of the incident.
      */
     public function incidentType(): BelongsTo
@@ -85,33 +92,6 @@ class Incident extends Model
     {
         // An incident has many logs. Order by oldest first for timeline.
         return $this->hasMany(IncidentLog::class)->orderBy('created_at', 'desc');
-    }
-
-    /**
-     * Get the file size in human readable format
-     */
-    public function fileSize(): string
-    {
-        if ($this->attachment !== null && Storage::disk('local')->exists($this->attachment)) {
-            $bytes = Storage::disk('local')->size($this->attachment);
-
-            return $this->formatBytes($bytes);
-        }
-
-        return 'N/A';
-    }
-
-    /**
-     * Format bytes to human readable format
-     */
-    private function formatBytes(int $bytes, int $precision = 2): string
-    {
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        for ($i = 0; $bytes > 1024; $i++) {
-            $bytes /= 1024;
-        }
-
-        return round($bytes, $precision).' '.$units[$i];
     }
 
     /**

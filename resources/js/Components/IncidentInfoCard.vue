@@ -7,9 +7,6 @@ const props = defineProps({
 })
 
 const { isDesktop } = useResponsive()
-
-const isExternalUrl = (path) =>
-  path && (path.startsWith('http://') || path.startsWith('https://'))
 </script>
 
 <template>
@@ -133,23 +130,22 @@ const isExternalUrl = (path) =>
         <label class="mb-2 block font-medium text-slate-700">Lampiran</label>
         <div class="rounded-lg border border-slate-200 bg-slate-50 p-2">
           <a
-            v-if="isExternalUrl(incident.attachment)"
-            :href="incident.attachment"
+            :href="incident.attachment.url"
             target="_blank"
             rel="noopener"
             class="inline-flex items-center font-medium text-blue-600 hover:text-blue-700"
           >
-            <IconExternalLink size="18" class="mr-2" />
-            Buka Link
-          </a>
-          <a
-            v-else
-            :href="`/storage/${incident.attachment}`"
-            target="_blank"
-            class="inline-flex items-center font-medium text-blue-600 hover:text-blue-700"
-          >
-            <IconPaperclip size="18" class="mr-2" />
-            Lihat Lampiran
+            <IconExternalLink
+              v-if="incident.attachment.type === 'link'"
+              size="18"
+              class="mr-2"
+            />
+            <IconPaperclip v-else size="18" class="mr-2" />
+            {{
+              incident.attachment.type === 'link'
+                ? 'Buka Link'
+                : incident.attachment.filename || 'Lihat Lampiran'
+            }}
           </a>
         </div>
       </div>

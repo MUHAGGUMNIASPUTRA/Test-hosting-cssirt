@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Attachment;
 use App\Models\Incident;
 use App\Models\IncidentType;
 use App\Models\User;
@@ -9,11 +10,11 @@ use Carbon\Carbon;
 use Fruitcake\LaravelDebugbar\Facades\Debugbar;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class IncidentService
 {
+    public function __construct(private readonly AttachmentService $attachmentService) {}
+
     /**
      * Get global statistics for all incidents.
      *
@@ -41,18 +42,20 @@ class IncidentService
     /**
      * Create a new incident and log the creation.
      */
-    public function create(array $validated, ?UploadedFile $attachment, int $actorId): Incident
+    public function create(array $validated, ?UploadedFile $file, int $actorId, string $disk = 'public', string $directory = 'attachments'): Incident
     {
-        $attachmentValue = $this->resolveAttachment(
-            $attachment,
+        $attachment = $this->attachmentService->resolve(
+            $file,
             $validated['attachment_type'] ?? null,
             $validated['attachment_links'] ?? null,
-            null
+            null,
+            $disk,
+            $directory,
         );
 
         $incident = Incident::create([
             'case_id' => Incident::generateCaseId(),
-            'access_token' => Str::random(64),
+            'access_token' => \Illuminate\Support\Str::random(64),
             'reporter_name' => $validated['reporter_name'],
             'reporter_email' => $validated['reporter_email'],
             'reporter_phone' => $validated['reporter_phone'] ?? null,
@@ -62,7 +65,7 @@ class IncidentService
             'status' => $validated['status'],
             'priority' => $validated['priority'],
             'assigned_to' => $validated['assigned_to'] ?? null,
-            'attachment' => $attachmentValue,
+            'attachment_id' => $attachment?->id,
             'reported_at' => now(),
         ]);
 
@@ -80,14 +83,18 @@ class IncidentService
     public function update(
         Incident $incident,
         array $validated,
-        ?UploadedFile $attachment,
-        int $actorId
+        ?UploadedFile $file,
+        int $actorId,
+        string $disk = 'public',
+        string $directory = 'attachments',
     ): void {
-        $attachmentValue = $this->resolveAttachment(
-            $attachment,
+        $attachment = $this->attachmentService->resolve(
+            $file,
             $validated['attachment_type'] ?? null,
             $validated['attachment_links'] ?? null,
-            $incident->attachment
+            $incident->attachment,
+            $disk,
+            $directory,
         );
 
         $coreData = [
@@ -100,10 +107,10 @@ class IncidentService
             'status' => $validated['status'],
             'priority' => $validated['priority'],
             'assigned_to' => $validated['assigned_to'] ?? null,
-            'attachment' => $attachmentValue,
+            'attachment_id' => $attachment?->id,
         ];
 
-        $this->logChanges($incident, $coreData, $actorId);
+        $this->logChanges($incident, $coreData, $actorId, $attachment);
         $incident->update($coreData);
     }
 
@@ -117,30 +124,9 @@ class IncidentService
     }
 
     /**
-     * Resolve which attachment value to store based on type, file upload, or link.
-     */
-    public function resolveAttachment(
-        ?UploadedFile $file,
-        ?string $type,
-        ?string $links,
-        ?string $existing
-    ): ?string {
-        if (($type ?? 'file') === 'file') {
-            if ($file !== null) {
-                return $file->store('attachments', 'public');
-            }
-
-            return $existing;
-        }
-
-        // type === 'link'
-        return ! empty($links) ? $links : null;
-    }
-
-    /**
      * Log changes to an incident compared to its current state.
      */
-    public function logChanges(Incident $incident, array $newData, int $actorId): void
+    public function logChanges(Incident $incident, array $newData, int $actorId, ?Attachment $newAttachment = null): void
     {
         $changes = [];
         $isPublic = false;
@@ -164,7 +150,6 @@ class IncidentService
                 'original' => $normalized['original'][$key],
                 'new' => $normalized['new'][$key],
             ]);
-            Debugbar::info($normalized['original'][$key]);
 
             switch ($key) {
                 case 'reporter_name':
@@ -199,16 +184,10 @@ class IncidentService
                     $newName = $value ? (optional($usersById->get((int) $value))->name ?? 'Belum Ditugaskan') : 'Belum Ditugaskan';
                     $changes[] = "Insiden ditugaskan dari '{$oldName}' ke '{$newName}'.";
                     break;
-                case 'attachment':
-                    if ($value) {
-                        $changes[] = 'Lampiran insiden diperbarui.';
-                    } else {
-                        $changes[] = 'Lampiran insiden dihapus.';
-                        if ($incident->attachment && ! str_starts_with($incident->attachment, 'http')
-                            && Storage::disk('public')->exists($incident->attachment)) {
-                            Storage::disk('public')->delete($incident->attachment);
-                        }
-                    }
+                case 'attachment_id':
+                    $changes[] = $newAttachment
+                        ? 'Lampiran insiden diperbarui.'
+                        : 'Lampiran insiden dihapus.';
                     break;
             }
         }
@@ -233,7 +212,7 @@ class IncidentService
             if ($key === 'incident_at') {
                 $normalized['original'][$key] = $originalData[$key] ? Carbon::parse($originalData[$key])->format('Y-m-d H:i:s') : null;
                 $normalized['new'][$key] = $value ? Carbon::parse($value)->format('Y-m-d H:i:s') : null;
-            } elseif ($key === 'incident_type_id' || $key === 'assigned_to') {
+            } elseif ($key === 'incident_type_id' || $key === 'assigned_to' || $key === 'attachment_id') {
                 $normalized['original'][$key] = (string) ($originalData[$key] ?? '');
                 $normalized['new'][$key] = (string) ($value ?? '');
             } elseif ($key === 'status' || $key === 'priority') {

@@ -8,15 +8,18 @@ use App\Http\Requests\Admin\Document\StoreDocumentRequest;
 use App\Http\Requests\Admin\Document\UpdateDocumentRequest;
 use App\Models\Document;
 use App\Models\DocumentArea;
+use App\Services\AttachmentService;
 use App\Services\DocumentService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DocumentController extends Controller
 {
-    public function __construct(private readonly DocumentService $documentService) {}
+    public function __construct(
+        private readonly DocumentService $documentService,
+        private readonly AttachmentService $attachmentService,
+    ) {}
 
     public function index(): Response
     {
@@ -46,11 +49,8 @@ class DocumentController extends Controller
 
     public function edit(Document $document): Response
     {
-        $document->file_size = $document->fileSize();
-        $document->file_exists = $document->fileExists();
-
         return Inertia::render('Admin/Documents/Create', [
-            'document' => $document,
+            'document' => $document->load('officialAttachment'),
             'documentAreas' => DocumentArea::orderBy('name')->get(['id', 'name']),
             'stageOptions' => DocumentStage::values(),
         ]);
@@ -70,10 +70,8 @@ class DocumentController extends Controller
 
     public function destroy(Document $document): RedirectResponse
     {
-        if ($document->official_file_path && ! str_starts_with($document->official_file_path, 'http')) {
-            Storage::disk('public')->delete($document->official_file_path);
-        }
-
+        $document->loadMissing('officialAttachment');
+        $this->attachmentService->delete($document->officialAttachment);
         $document->delete();
 
         return redirect()->route('admin.documents.index')

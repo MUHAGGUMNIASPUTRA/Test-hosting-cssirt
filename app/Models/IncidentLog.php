@@ -22,8 +22,7 @@ class IncidentLog extends Model
         'user_id',
         'log_message',
         'is_public',
-        'attachment',
-        'attachment_type',
+        'attachment_id',
     ];
 
     /**
@@ -40,5 +39,13 @@ class IncidentLog extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the attachment for this log entry.
+     */
+    public function attachment(): BelongsTo
+    {
+        return $this->belongsTo(Attachment::class);
     }
 }

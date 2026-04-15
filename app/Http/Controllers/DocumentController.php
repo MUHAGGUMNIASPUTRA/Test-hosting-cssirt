@@ -18,7 +18,7 @@ class DocumentController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Document::with('documentArea:id,name')
+        $query = Document::with(['documentArea:id,name', 'officialAttachment'])
             ->published()
             ->where(function ($q) {
                 $q->where('version', '!=', 'RFC2350');
@@ -47,23 +47,26 @@ class DocumentController extends Controller
      */
     public function download(Request $request, Document $document)
     {
-        $path = $document->official_file_path;
+        $document->loadMissing('officialAttachment');
+        $attachment = $document->officialAttachment;
 
-        if (! $path) {
+        if (! $attachment) {
             abort(404, 'File tidak ditemukan');
         }
 
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+        if ($attachment->isLink()) {
             abort(400, 'Dokumen ini berupa tautan eksternal dan tidak dapat diunduh');
         }
 
-        if (! Storage::disk('public')->exists($path)) {
+        if (! Storage::disk($attachment->disk)->exists($attachment->path)) {
             abort(404, 'File tidak ditemukan');
         }
 
-        return response()->download(Storage::disk('public')->path($path), $document->title.'.pdf', [
-            'Content-Type' => 'application/pdf',
-        ]);
+        return response()->download(
+            Storage::disk($attachment->disk)->path($attachment->path),
+            $document->title.'.pdf',
+            ['Content-Type' => 'application/pdf'],
+        );
     }
 
     /**
@@ -71,21 +74,22 @@ class DocumentController extends Controller
      */
     public function view(Request $request, Document $document)
     {
-        $path = $document->official_file_path;
+        $document->loadMissing('officialAttachment');
+        $attachment = $document->officialAttachment;
 
-        if (! $path) {
+        if (! $attachment) {
             abort(404, 'File tidak ditemukan');
         }
 
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-            return redirect($path);
+        if ($attachment->isLink()) {
+            return redirect($attachment->url);
         }
 
-        if (! Storage::disk('public')->exists($path)) {
+        if (! Storage::disk($attachment->disk)->exists($attachment->path)) {
             abort(404, 'File tidak ditemukan');
         }
 
-        return response()->file(Storage::disk('public')->path($path), [
+        return response()->file(Storage::disk($attachment->disk)->path($attachment->path), [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="'.$document->title.'.pdf"',
         ]);
