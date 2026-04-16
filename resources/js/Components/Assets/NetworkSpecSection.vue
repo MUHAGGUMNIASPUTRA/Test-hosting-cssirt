@@ -67,12 +67,13 @@ const updateNetwork = (index, key, val) => {
             >
             <Tag
               v-if="index === 0"
-              value="Production"
+              value="Utama"
               severity="info"
               class="!text-xs"
             />
           </div>
           <Button
+            v-if="index != 0"
             type="button"
             size="small"
             severity="danger"

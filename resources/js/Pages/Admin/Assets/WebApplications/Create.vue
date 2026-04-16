@@ -1,6 +1,6 @@
 <script setup>
+import { Link, useForm } from '@inertiajs/vue3'
 import { computed } from 'vue'
-import { useForm, Link } from '@inertiajs/vue3'
 
 const props = defineProps({
   webApplication: { type: Object, default: null },

@@ -132,65 +132,6 @@ const sidebarItems = ref([
       },
     ],
   },
-  {
-    label: 'Insiden',
-    icon: IconUrgent,
-    items: [
-      {
-        label: 'Daftar Insiden',
-        icon: IconMailExclamation,
-        route: 'admin.incidents.index',
-      },
-      {
-        label: 'Lapor Insiden Baru',
-        icon: IconBellPlus,
-        route: 'admin.incidents.create',
-      },
-      {
-        label: 'Kategori Insiden',
-        icon: IconTicTac,
-        route: 'admin.incident-types.index',
-      },
-    ],
-  },
-  { separator: true },
-  {
-    label: 'Konten',
-    icon: IconNews,
-    items: [
-      {
-        label: 'Daftar Artikel',
-        icon: IconArticle,
-        route: 'admin.posts.index',
-      },
-      {
-        label: 'Tambah Artikel',
-        icon: IconTextPlus,
-        route: 'admin.posts.create',
-      },
-      {
-        label: 'Kategori & Tag',
-        icon: IconBookmarks,
-        route: 'admin.taxonomy.index',
-      },
-    ],
-  },
-  { separator: true },
-  {
-    label: 'Layanan',
-    icon: IconHeartHandshake,
-    route: 'admin.services.index',
-  },
-  {
-    label: 'FAQ',
-    icon: IconHelp,
-    route: 'admin.faqs.index',
-  },
-  {
-    label: 'Pengumuman',
-    icon: IconSpeakerphone,
-    route: 'admin.announcements.index',
-  },
   { separator: true },
   {
     label: 'Aset Virtual',
@@ -285,6 +226,66 @@ const sidebarItems = ref([
   },
   { label: 'Aset Fisik', icon: IconServer },
   { label: 'Aset Informasi', icon: IconDatabase },
+  { separator: true },
+  {
+    label: 'Insiden',
+    icon: IconUrgent,
+    items: [
+      {
+        label: 'Daftar Insiden',
+        icon: IconMailExclamation,
+        route: 'admin.incidents.index',
+      },
+      {
+        label: 'Lapor Insiden Baru',
+        icon: IconBellPlus,
+        route: 'admin.incidents.create',
+      },
+      {
+        label: 'Kategori Insiden',
+        icon: IconTicTac,
+        route: 'admin.incident-types.index',
+      },
+    ],
+  },
+  { separator: true },
+  {
+    label: 'Konten',
+    icon: IconNews,
+    items: [
+      {
+        label: 'Daftar Artikel',
+        icon: IconArticle,
+        route: 'admin.posts.index',
+      },
+      {
+        label: 'Tambah Artikel',
+        icon: IconTextPlus,
+        route: 'admin.posts.create',
+      },
+      {
+        label: 'Kategori & Tag',
+        icon: IconBookmarks,
+        route: 'admin.taxonomy.index',
+      },
+    ],
+  },
+  { separator: true },
+  {
+    label: 'Layanan',
+    icon: IconHeartHandshake,
+    route: 'admin.services.index',
+  },
+  {
+    label: 'FAQ',
+    icon: IconHelp,
+    route: 'admin.faqs.index',
+  },
+  {
+    label: 'Pengumuman',
+    icon: IconSpeakerphone,
+    route: 'admin.announcements.index',
+  },
 ])
 
 // User menu items
