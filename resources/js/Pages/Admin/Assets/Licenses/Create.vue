@@ -1,6 +1,6 @@
 <script setup>
+import { Link, useForm } from '@inertiajs/vue3'
 import { computed } from 'vue'
-import { useForm, Link } from '@inertiajs/vue3'
 
 const props = defineProps({
   license: { type: Object, default: null },
@@ -59,120 +59,159 @@ const submit = () => {
 
 <template>
   <AdminLayout :title="isEdit ? 'Edit Lisensi' : 'Tambah Lisensi'">
-    <div class="space-y-4">
-      <AdminPageHeader
+    <form @submit.prevent="submit" class="space-y-4">
+      <AdminFormHeader
         :title="isEdit ? 'Edit Lisensi' : 'Tambah Lisensi'"
-        description="Kelola data lisensi perangkat lunak."
-      />
-
-      <form @submit.prevent="submit">
-        <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <div class="space-y-4 lg:col-span-2">
-            <div
-              class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
-            >
-              <h3 class="mb-4 font-semibold text-slate-800">
-                Informasi Lisensi
-              </h3>
-              <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div class="sm:col-span-2">
-                  <label class="mb-1 block text-sm font-medium text-slate-700"
-                    >Nama Lisensi <span class="text-red-500">*</span></label
-                  >
-                  <InputText
-                    v-model="form.name"
-                    class="w-full"
-                    placeholder="Nama lisensi"
-                    required
-                  />
-                  <p v-if="form.errors.name" class="mt-1 text-xs text-red-600">
-                    {{ form.errors.name }}
-                  </p>
-                </div>
-                <div>
-                  <label class="mb-1 block text-sm font-medium text-slate-700"
-                    >Versi</label
-                  >
-                  <InputText
-                    v-model="form.version"
-                    class="w-full"
-                    placeholder="Contoh: 2024.1"
-                  />
-                </div>
-                <div>
-                  <label class="mb-1 block text-sm font-medium text-slate-700"
-                    >Tanggal Kedaluwarsa</label
-                  >
-                  <InputText
-                    v-model="form.expired_at"
-                    class="w-full"
-                    type="date"
-                  />
-                  <p
-                    v-if="form.errors.expired_at"
-                    class="mt-1 text-xs text-red-600"
-                  >
-                    {{ form.errors.expired_at }}
-                  </p>
-                </div>
-                <div class="sm:col-span-2">
-                  <label class="mb-1 block text-sm font-medium text-slate-700"
-                    >Deskripsi</label
-                  >
-                  <Textarea
-                    v-model="form.description"
-                    class="w-full"
-                    rows="3"
-                    placeholder="Deskripsi lisensi..."
-                  />
-                </div>
-              </div>
-            </div>
-
-            <OwnerContactSection
-              :organizations="organizations"
-              :locations="locations"
-              :employees="employees"
-              :vendors="null"
-              :model-value="ownerData"
-              :errors="form.errors"
-              @update:model-value="updateOwner"
+        :description="
+          isEdit
+            ? 'Perbarui data lisensi perangkat lunak.'
+            : 'Tambahkan data lisensi perangkat lunak baru.'
+        "
+        back-route="admin.licenses.index"
+        :processing="form.processing"
+      >
+        <template #actions>
+          <Link
+            :href="route('admin.licenses.index')"
+            class="inline-flex items-center justify-center gap-2 rounded-md bg-slate-100 px-4 py-2 text-slate-600 transition hover:bg-slate-200"
+          >
+            <IconArrowLeft size="16" />
+            Kembali
+          </Link>
+          <button
+            type="submit"
+            :disabled="form.processing"
+            class="inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700 disabled:opacity-50"
+          >
+            <IconLoader3
+              v-if="form.processing"
+              class="animate-spin"
+              size="16"
             />
-          </div>
+            <IconDeviceFloppy v-else size="16" />
+            {{
+              form.processing ? 'Menyimpan...' : isEdit ? 'Update' : 'Simpan'
+            }}
+          </button>
+        </template>
+      </AdminFormHeader>
 
-          <div class="space-y-4">
-            <div
-              class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
-            >
-              <h3 class="mb-4 font-semibold text-slate-800">Status</h3>
-              <div class="flex items-center justify-between">
-                <span class="text-sm text-slate-700">Lisensi Aktif</span>
-                <ToggleSwitch v-model="form.is_active" />
-              </div>
-            </div>
-
-            <div class="flex gap-3">
-              <Link :href="route('admin.licenses.index')" class="flex-1">
-                <Button
-                  severity="secondary"
-                  variant="outlined"
-                  class="w-full"
-                  :disabled="form.processing"
-                  >Batal</Button
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div class="space-y-4 lg:col-span-2">
+          <!-- Informasi Lisensi -->
+          <AdminFormSection
+            title="Informasi Lisensi"
+            description="Nama, versi, dan tanggal kedaluwarsa"
+            color="purple"
+          >
+            <template #icon="{ iconClass }">
+              <IconKey :class="iconClass" />
+            </template>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div class="sm:col-span-2">
+                <label class="mb-1 block text-sm font-medium text-slate-700"
+                  >Nama Lisensi <span class="text-red-500">*</span></label
                 >
-              </Link>
-              <Button type="submit" class="flex-1" :loading="form.processing">
-                {{ isEdit ? 'Simpan' : 'Tambah' }}
-              </Button>
+                <InputText
+                  v-model="form.name"
+                  class="w-full"
+                  placeholder="Nama lisensi"
+                  required
+                />
+                <p v-if="form.errors.name" class="mt-1 text-xs text-red-600">
+                  {{ form.errors.name }}
+                </p>
+              </div>
+              <div>
+                <label class="mb-1 block text-sm font-medium text-slate-700"
+                  >Versi</label
+                >
+                <InputText
+                  v-model="form.version"
+                  class="w-full"
+                  placeholder="Contoh: 2024.1"
+                />
+              </div>
+              <div>
+                <label class="mb-1 block text-sm font-medium text-slate-700"
+                  >Tanggal Kedaluwarsa</label
+                >
+                <InputText
+                  v-model="form.expired_at"
+                  class="w-full"
+                  type="date"
+                />
+                <p
+                  v-if="form.errors.expired_at"
+                  class="mt-1 text-xs text-red-600"
+                >
+                  {{ form.errors.expired_at }}
+                </p>
+              </div>
+              <div class="sm:col-span-2">
+                <label class="mb-1 block text-sm font-medium text-slate-700"
+                  >Deskripsi</label
+                >
+                <Textarea
+                  v-model="form.description"
+                  class="w-full"
+                  rows="3"
+                  placeholder="Deskripsi lisensi..."
+                />
+              </div>
             </div>
+          </AdminFormSection>
 
-            <SecurityClassificationForm
-              :model-value="form.security"
-              @update:model-value="(v) => (form.security = v)"
-            />
-          </div>
+          <!-- Penempatan & Kepemilikan -->
+          <OwnerContactSection
+            :organizations="organizations"
+            :locations="locations"
+            :employees="employees"
+            :vendors="null"
+            :model-value="ownerData"
+            :errors="form.errors"
+            @update:model-value="updateOwner"
+          />
         </div>
-      </form>
-    </div>
+
+        <div class="space-y-4">
+          <!-- Status -->
+          <AdminFormSection
+            title="Status"
+            description="Aktif / tidak aktif"
+            color="teal"
+          >
+            <template #icon="{ iconClass }">
+              <IconCircleCheck :class="iconClass" />
+            </template>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-slate-700">Lisensi Aktif</span>
+              <ToggleSwitch v-model="form.is_active" />
+            </div>
+          </AdminFormSection>
+
+          <!-- Aksi mobile -->
+          <div class="flex gap-3 lg:hidden">
+            <Link :href="route('admin.licenses.index')" class="flex-1">
+              <Button
+                severity="secondary"
+                variant="outlined"
+                class="w-full"
+                :disabled="form.processing"
+                >Batal</Button
+              >
+            </Link>
+            <Button type="submit" class="flex-1" :loading="form.processing">
+              {{ isEdit ? 'Simpan' : 'Tambah' }}
+            </Button>
+          </div>
+
+          <SecurityClassificationForm
+            :model-value="form.security"
+            @update:model-value="(v) => (form.security = v)"
+          />
+        </div>
+      </div>
+    </form>
   </AdminLayout>
 </template>

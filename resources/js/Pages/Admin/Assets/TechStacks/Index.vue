@@ -1,6 +1,6 @@
 <script setup>
 import { useAdminTable } from '@/Composables/useAdminTable'
-import { Link, router } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 
 const props = defineProps({
@@ -28,6 +28,21 @@ const categoryOptions = computed(() =>
   props.categories.map((c) => ({ label: c.name, value: c.id })),
 )
 
+// Dialog
+const dialogVisible = ref(false)
+const selectedTechStack = ref(null)
+
+const openCreate = () => {
+  selectedTechStack.value = null
+  dialogVisible.value = true
+}
+
+const openEdit = (item) => {
+  selectedTechStack.value = item
+  dialogVisible.value = true
+}
+
+// Delete
 const showDeleteDialog = ref(false)
 const toDelete = ref(null)
 
@@ -56,17 +71,21 @@ const handleDelete = () => {
       <template #item-info>{{ toDelete?.name }}</template>
     </DeleteConfirmDialog>
 
+    <TechStackFormDialog
+      v-model:visible="dialogVisible"
+      :tech-stack="selectedTechStack"
+      :categories="categories"
+    />
+
     <div class="space-y-4">
       <AdminPageHeader
         title="Daftar Tech Stack"
         description="Kelola teknologi yang digunakan dalam pengembangan aset."
       >
         <template #action>
-          <Link :href="route('admin.tech-stacks.create')">
-            <Button
-              ><IconPlus size="16" class="mr-1" />Tambah Tech Stack</Button
-            >
-          </Link>
+          <Button @click="openCreate"
+            ><IconPlus size="16" class="mr-1" />Tambah Tech Stack</Button
+          >
         </template>
       </AdminPageHeader>
 
@@ -148,11 +167,13 @@ const handleDelete = () => {
         <Column header="Aksi" :pt="{ columnHeaderContent: 'justify-end' }">
           <template #body="{ data }">
             <div class="flex justify-end gap-1">
-              <Link :href="route('admin.tech-stacks.edit', data.id)">
-                <Button size="small" severity="secondary" variant="outlined"
-                  ><IconEdit size="15"
-                /></Button>
-              </Link>
+              <Button
+                size="small"
+                severity="secondary"
+                variant="outlined"
+                @click="openEdit(data)"
+                ><IconEdit size="15"
+              /></Button>
               <Button
                 size="small"
                 severity="danger"

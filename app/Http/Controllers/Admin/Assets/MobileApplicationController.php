@@ -49,8 +49,8 @@ class MobileApplicationController extends Controller
         return Inertia::render('Admin/Assets/MobileApplications/Index', [
             'mobileApplications' => $mobileApplications,
             'organizations' => $organizations,
-            'stageOptions' => AssetStage::cases(),
-            'appStatusOptions' => AppStatus::cases(),
+            'stageOptions' => collect(AssetStage::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
+            'appStatusOptions' => collect(AppStatus::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
             'filters' => $request->only(['search', 'stage', 'app_status', 'owner_org_id']),
         ]);
     }
@@ -106,8 +106,8 @@ class MobileApplicationController extends Controller
             'employees' => Employee::where('is_active', true)->orderBy('name')->get(['id', 'name']),
             'techStacks' => TechStack::with('category')->orderBy('name')->get(['id', 'name', 'category_id']),
             'guides' => VirtualAssetGuide::where('type', 'mobile')->orderBy('name')->get(['id', 'name']),
-            'stageOptions' => AssetStage::cases(),
-            'appStatusOptions' => AppStatus::cases(),
+            'stageOptions' => collect(AssetStage::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
+            'appStatusOptions' => collect(AppStatus::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
         ];
     }
 }

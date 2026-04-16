@@ -37,10 +37,12 @@ class EmployeeController extends Controller
 
         $employees = $query->paginate(15)->withQueryString();
         $organizations = Organization::orderBy('name')->get(['id', 'name']);
+        $positions = Position::orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('Admin/Assets/Employees/Index', [
             'employees' => $employees,
             'organizations' => $organizations,
+            'positions' => $positions,
             'filters' => $request->only(['search', 'organization_id', 'status']),
         ]);
     }

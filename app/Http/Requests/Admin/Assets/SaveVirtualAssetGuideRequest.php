@@ -21,8 +21,10 @@ class SaveVirtualAssetGuideRequest extends FormRequest
             'type' => ['required', Rule::enum(VirtualGuideType::class)],
             'attachments' => ['nullable', 'array'],
             'attachments.*' => ['file', 'max:10240'],
-            'existing_attachment_ids' => ['nullable', 'array'],
-            'existing_attachment_ids.*' => ['integer'],
+            'ordered_existing_ids' => ['nullable', 'array'],
+            'ordered_existing_ids.*' => ['integer'],
+            'new_links' => ['nullable', 'array'],
+            'new_links.*' => ['nullable', 'url', 'max:1000'],
         ];
     }
 }

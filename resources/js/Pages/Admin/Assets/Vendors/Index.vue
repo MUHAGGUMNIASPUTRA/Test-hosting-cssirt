@@ -1,6 +1,6 @@
 <script setup>
 import { useAdminTable } from '@/Composables/useAdminTable'
-import { Link, router } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 
 const props = defineProps({
@@ -19,6 +19,21 @@ const {
   hasActiveFilters,
 } = useAdminTable(paginatedData, 'admin.vendors.index', { search: searchQuery })
 
+// Dialog
+const dialogVisible = ref(false)
+const selectedVendor = ref(null)
+
+const openCreate = () => {
+  selectedVendor.value = null
+  dialogVisible.value = true
+}
+
+const openEdit = (item) => {
+  selectedVendor.value = item
+  dialogVisible.value = true
+}
+
+// Delete
 const showDeleteDialog = ref(false)
 const toDelete = ref(null)
 
@@ -47,15 +62,20 @@ const handleDelete = () => {
       <template #item-info>{{ toDelete?.company_name }}</template>
     </DeleteConfirmDialog>
 
+    <VendorFormDialog
+      v-model:visible="dialogVisible"
+      :vendor="selectedVendor"
+    />
+
     <div class="space-y-4">
       <AdminPageHeader
         title="Daftar Vendor"
         description="Kelola data vendor pengembang aset."
       >
         <template #action>
-          <Link :href="route('admin.vendors.create')">
-            <Button><IconPlus size="16" class="mr-1" />Tambah Vendor</Button>
-          </Link>
+          <Button @click="openCreate"
+            ><IconPlus size="16" class="mr-1" />Tambah Vendor</Button
+          >
         </template>
       </AdminPageHeader>
 
@@ -110,11 +130,13 @@ const handleDelete = () => {
         <Column header="Aksi" :pt="{ columnHeaderContent: 'justify-end' }">
           <template #body="{ data }">
             <div class="flex justify-end gap-1">
-              <Link :href="route('admin.vendors.edit', data.id)">
-                <Button size="small" severity="secondary" variant="outlined"
-                  ><IconEdit size="15"
-                /></Button>
-              </Link>
+              <Button
+                size="small"
+                severity="secondary"
+                variant="outlined"
+                @click="openEdit(data)"
+                ><IconEdit size="15"
+              /></Button>
               <Button
                 size="small"
                 severity="danger"

@@ -57,9 +57,9 @@ class WebApplicationController extends Controller
         return Inertia::render('Admin/Assets/WebApplications/Index', [
             'webApplications' => $webApplications,
             'organizations' => $organizations,
-            'stageOptions' => AssetStage::cases(),
-            'appStatusOptions' => AppStatus::cases(),
-            'httpsStatusOptions' => HttpsStatus::cases(),
+            'stageOptions' => collect(AssetStage::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
+            'appStatusOptions' => collect(AppStatus::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
+            'httpsStatusOptions' => collect(HttpsStatus::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
             'filters' => $request->only(['search', 'stage', 'app_status', 'https_status', 'owner_org_id']),
         ]);
     }
@@ -115,9 +115,9 @@ class WebApplicationController extends Controller
             'employees' => Employee::where('is_active', true)->orderBy('name')->get(['id', 'name']),
             'techStacks' => TechStack::with('category')->orderBy('name')->get(['id', 'name', 'category_id']),
             'guides' => VirtualAssetGuide::where('type', 'web')->orderBy('name')->get(['id', 'name']),
-            'stageOptions' => AssetStage::cases(),
-            'appStatusOptions' => AppStatus::cases(),
-            'httpsStatusOptions' => HttpsStatus::cases(),
+            'stageOptions' => collect(AssetStage::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
+            'appStatusOptions' => collect(AppStatus::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
+            'httpsStatusOptions' => collect(HttpsStatus::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
         ];
     }
 }

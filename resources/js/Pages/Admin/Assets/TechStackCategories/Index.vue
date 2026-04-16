@@ -1,6 +1,6 @@
 <script setup>
 import { useAdminTable } from '@/Composables/useAdminTable'
-import { router, useForm } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 
 const props = defineProps({
@@ -23,42 +23,16 @@ const {
 
 // Dialog
 const dialogVisible = ref(false)
-const isEditing = ref(false)
-const current = ref(null)
-
-const form = useForm({ name: '', description: '' })
+const selectedCategory = ref(null)
 
 const openCreate = () => {
-  isEditing.value = false
-  current.value = null
-  form.reset()
+  selectedCategory.value = null
   dialogVisible.value = true
 }
 
 const openEdit = (item) => {
-  isEditing.value = true
-  current.value = item
-  form.name = item.name
-  form.description = item.description ?? ''
+  selectedCategory.value = item
   dialogVisible.value = true
-}
-
-const closeDialog = () => {
-  dialogVisible.value = false
-  form.reset()
-  form.clearErrors()
-}
-
-const submit = () => {
-  const opts = { onSuccess: closeDialog }
-  if (isEditing.value) {
-    form.put(
-      route('admin.tech-stack-categories.update', current.value.id),
-      opts,
-    )
-  } else {
-    form.post(route('admin.tech-stack-categories.store'), opts)
-  }
 }
 
 // Delete
@@ -115,6 +89,11 @@ const menuItems = computed(() => {
     >
       <template #item-info>{{ toDelete?.name }}</template>
     </DeleteConfirmDialog>
+
+    <TechStackCategoryFormDialog
+      v-model:visible="dialogVisible"
+      :category="selectedCategory"
+    />
 
     <div class="space-y-4">
       <AdminPageHeader
@@ -198,61 +177,5 @@ const menuItems = computed(() => {
         </Column>
       </AdminDataTable>
     </div>
-
-    <Dialog
-      v-model:visible="dialogVisible"
-      :modal="true"
-      :closable="false"
-      class="w-full max-w-md"
-    >
-      <template #container="{ closeCallback }">
-        <div class="rounded-xl border border-slate-200 bg-white shadow-2xl">
-          <div class="border-b border-slate-200 p-5">
-            <h3 class="text-lg font-semibold text-slate-900">
-              {{ isEditing ? 'Edit Kategori' : 'Tambah Kategori' }}
-            </h3>
-          </div>
-          <form @submit.prevent="submit" class="space-y-4 p-5">
-            <div>
-              <label class="mb-1 block text-sm font-medium text-slate-700"
-                >Nama <span class="text-red-500">*</span></label
-              >
-              <InputText
-                v-model="form.name"
-                class="w-full"
-                placeholder="Nama kategori"
-                required
-              />
-              <p v-if="form.errors.name" class="mt-1 text-xs text-red-600">
-                {{ form.errors.name }}
-              </p>
-            </div>
-            <div>
-              <label class="mb-1 block text-sm font-medium text-slate-700"
-                >Deskripsi</label
-              >
-              <Textarea
-                v-model="form.description"
-                class="w-full"
-                rows="2"
-                placeholder="Deskripsi singkat (opsional)"
-              />
-            </div>
-            <div class="flex justify-end gap-3 border-t border-slate-100 pt-4">
-              <Button
-                severity="secondary"
-                variant="outlined"
-                :disabled="form.processing"
-                @click="closeCallback"
-                >Batal</Button
-              >
-              <Button type="submit" :loading="form.processing">{{
-                isEditing ? 'Simpan' : 'Tambah'
-              }}</Button>
-            </div>
-          </form>
-        </div>
-      </template>
-    </Dialog>
   </AdminLayout>
 </template>

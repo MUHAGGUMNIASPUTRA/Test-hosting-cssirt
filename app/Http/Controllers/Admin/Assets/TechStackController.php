@@ -18,7 +18,7 @@ class TechStackController extends Controller
 
     public function index(Request $request): Response
     {
-        $query = TechStack::with('category')->latest();
+        $query = TechStack::with(['category', 'logoAttachment'])->latest();
 
         if ($request->filled('search')) {
             $query->where('name', 'ilike', '%'.$request->search.'%');

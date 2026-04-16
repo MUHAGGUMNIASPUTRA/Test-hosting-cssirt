@@ -55,6 +55,18 @@ const form = useForm({
   },
 })
 
+const statusData = computed(() => ({
+  stage: form.stage,
+  app_status: form.app_status,
+  https_status: form.https_status,
+}))
+
+const updateStatus = (val) => {
+  form.stage = val.stage
+  form.app_status = val.app_status
+  form.https_status = val.https_status
+}
+
 const ownerData = computed(() => ({
   location_id: form.location_id,
   provider_org_id: form.provider_org_id,
@@ -78,182 +90,168 @@ const submit = () => {
 
 <template>
   <AdminLayout :title="isEdit ? 'Edit Aplikasi Web' : 'Tambah Aplikasi Web'">
-    <div class="space-y-4">
-      <AdminPageHeader
+    <form @submit.prevent="submit" class="space-y-4">
+      <AdminFormHeader
         :title="isEdit ? 'Edit Aplikasi Web' : 'Tambah Aplikasi Web'"
-        description="Kelola data dan spesifikasi aplikasi web."
-      />
+        :description="
+          isEdit
+            ? 'Perbarui data dan spesifikasi aplikasi web.'
+            : 'Tambahkan data aplikasi web baru.'
+        "
+        back-route="admin.web-applications.index"
+        :processing="form.processing"
+      >
+        <template #actions>
+          <Link
+            :href="route('admin.web-applications.index')"
+            class="inline-flex items-center justify-center gap-2 rounded-md bg-slate-100 px-4 py-2 text-slate-600 transition hover:bg-slate-200"
+          >
+            <IconArrowLeft size="16" />
+            Kembali
+          </Link>
+          <button
+            type="submit"
+            :disabled="form.processing"
+            class="inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700 disabled:opacity-50"
+          >
+            <IconLoader3
+              v-if="form.processing"
+              class="animate-spin"
+              size="16"
+            />
+            <IconDeviceFloppy v-else size="16" />
+            {{
+              form.processing ? 'Menyimpan...' : isEdit ? 'Update' : 'Simpan'
+            }}
+          </button>
+        </template>
+      </AdminFormHeader>
 
-      <form @submit.prevent="submit">
-        <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
-          <div class="space-y-4 xl:col-span-2">
-            <!-- Informasi Utama -->
-            <div
-              class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
-            >
-              <h3 class="mb-4 font-semibold text-slate-800">Informasi Utama</h3>
-              <div class="space-y-4">
-                <div>
-                  <label class="mb-1 block text-sm font-medium text-slate-700"
-                    >Nama Aplikasi <span class="text-red-500">*</span></label
-                  >
-                  <InputText
-                    v-model="form.name"
-                    class="w-full"
-                    placeholder="Nama aplikasi web"
-                    required
-                  />
-                  <p v-if="form.errors.name" class="mt-1 text-xs text-red-600">
-                    {{ form.errors.name }}
-                  </p>
-                </div>
-                <div>
-                  <label class="mb-1 block text-sm font-medium text-slate-700"
-                    >Deskripsi</label
-                  >
-                  <Textarea
-                    v-model="form.description"
-                    class="w-full"
-                    rows="3"
-                    placeholder="Deskripsi singkat aplikasi..."
-                  />
-                </div>
+      <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
+        <div class="space-y-4 xl:col-span-2">
+          <!-- Informasi Utama -->
+          <AdminFormSection
+            title="Informasi Utama"
+            description="Nama dan deskripsi aplikasi web"
+            color="blue"
+          >
+            <template #icon="{ iconClass }">
+              <IconWorldWww :class="iconClass" />
+            </template>
+            <div class="space-y-4">
+              <div>
+                <label class="mb-1 block text-sm font-medium text-slate-700"
+                  >Nama Aplikasi <span class="text-red-500">*</span></label
+                >
+                <InputText
+                  v-model="form.name"
+                  class="w-full"
+                  placeholder="Nama aplikasi web"
+                  required
+                />
+                <p v-if="form.errors.name" class="mt-1 text-xs text-red-600">
+                  {{ form.errors.name }}
+                </p>
+              </div>
+              <div>
+                <label class="mb-1 block text-sm font-medium text-slate-700"
+                  >Deskripsi</label
+                >
+                <Textarea
+                  v-model="form.description"
+                  class="w-full"
+                  rows="3"
+                  placeholder="Deskripsi singkat aplikasi..."
+                />
               </div>
             </div>
+          </AdminFormSection>
 
-            <!-- Status & Tahap -->
-            <div
-              class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
-            >
-              <h3 class="mb-4 font-semibold text-slate-800">
-                Status & Kondisi
-              </h3>
-              <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div>
-                  <label class="mb-1 block text-sm font-medium text-slate-700"
-                    >Tahap <span class="text-red-500">*</span></label
-                  >
-                  <Select
-                    v-model="form.stage"
-                    :options="stageOptions"
-                    option-label="name"
-                    option-value="value"
-                    placeholder="Pilih tahap"
-                    class="w-full"
-                  />
-                  <p v-if="form.errors.stage" class="mt-1 text-xs text-red-600">
-                    {{ form.errors.stage }}
-                  </p>
-                </div>
-                <div>
-                  <label class="mb-1 block text-sm font-medium text-slate-700"
-                    >Status Aplikasi <span class="text-red-500">*</span></label
-                  >
-                  <Select
-                    v-model="form.app_status"
-                    :options="appStatusOptions"
-                    option-label="name"
-                    option-value="value"
-                    placeholder="Status"
-                    class="w-full"
-                  />
-                </div>
-                <div>
-                  <label class="mb-1 block text-sm font-medium text-slate-700"
-                    >Status HTTPS <span class="text-red-500">*</span></label
-                  >
-                  <Select
-                    v-model="form.https_status"
-                    :options="httpsStatusOptions"
-                    option-label="name"
-                    option-value="value"
-                    placeholder="HTTPS"
-                    class="w-full"
-                  />
-                </div>
-              </div>
-            </div>
+          <!-- Status & Kondisi -->
+          <AppStatusSection
+            :model-value="statusData"
+            :stage-options="stageOptions"
+            :app-status-options="appStatusOptions"
+            :https-status-options="httpsStatusOptions"
+            :show-https="true"
+            :errors="form.errors"
+            @update:model-value="updateStatus"
+          />
 
-            <!-- Penempatan & Kepemilikan -->
-            <OwnerContactSection
-              :organizations="organizations"
-              :locations="locations"
-              :employees="employees"
-              :vendors="vendors"
-              :model-value="ownerData"
-              :errors="form.errors"
-              @update:model-value="updateOwner"
-            />
+          <!-- Penempatan & Kepemilikan -->
+          <OwnerContactSection
+            :organizations="organizations"
+            :locations="locations"
+            :employees="employees"
+            :vendors="vendors"
+            :model-value="ownerData"
+            :errors="form.errors"
+            @update:model-value="updateOwner"
+          />
 
-            <!-- VM Specs -->
-            <VmSpecSection
-              :model-value="form.vms"
-              @update:model-value="(v) => (form.vms = v)"
-            />
+          <!-- VM Specs -->
+          <VmSpecSection
+            :model-value="form.vms"
+            @update:model-value="(v) => (form.vms = v)"
+          />
 
-            <!-- Network Specs -->
-            <NetworkSpecSection
-              :model-value="form.networks"
-              :errors="form.errors"
-              @update:model-value="(v) => (form.networks = v)"
-            />
+          <!-- Network Specs -->
+          <NetworkSpecSection
+            :model-value="form.networks"
+            :errors="form.errors"
+            @update:model-value="(v) => (form.networks = v)"
+          />
 
-            <!-- Tech Stack -->
-            <TechStackSection
-              :model-value="form.tech_stacks"
-              :tech-stacks="techStacks"
-              @update:model-value="(v) => (form.tech_stacks = v)"
-            />
+          <!-- Tech Stack -->
+          <TechStackSection
+            :model-value="form.tech_stacks"
+            :tech-stacks="techStacks"
+            @update:model-value="(v) => (form.tech_stacks = v)"
+          />
+        </div>
+
+        <div class="space-y-4">
+          <!-- Aksi mobile -->
+          <div class="flex gap-3 xl:hidden">
+            <Link :href="route('admin.web-applications.index')" class="flex-1">
+              <Button
+                severity="secondary"
+                variant="outlined"
+                class="w-full"
+                :disabled="form.processing"
+                >Batal</Button
+              >
+            </Link>
+            <Button type="submit" class="flex-1" :loading="form.processing">
+              {{ isEdit ? 'Simpan' : 'Tambah' }}
+            </Button>
           </div>
 
-          <div class="space-y-4">
-            <!-- Aksi -->
-            <div class="flex gap-3">
-              <Link
-                :href="route('admin.web-applications.index')"
-                class="flex-1"
+          <!-- Keamanan -->
+          <SecurityClassificationForm
+            :model-value="form.security"
+            @update:model-value="(v) => (form.security = v)"
+          />
+
+          <!-- Panduan Referensi -->
+          <div
+            v-if="guides?.length"
+            class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+          >
+            <h3 class="mb-3 font-semibold text-slate-800">Panduan Referensi</h3>
+            <ul class="space-y-2">
+              <li
+                v-for="guide in guides"
+                :key="guide.id"
+                class="flex items-center gap-2 text-sm text-slate-600"
               >
-                <Button
-                  severity="secondary"
-                  variant="outlined"
-                  class="w-full"
-                  :disabled="form.processing"
-                  >Batal</Button
-                >
-              </Link>
-              <Button type="submit" class="flex-1" :loading="form.processing">
-                {{ isEdit ? 'Simpan' : 'Tambah' }}
-              </Button>
-            </div>
-
-            <!-- Keamanan -->
-            <SecurityClassificationForm
-              :model-value="form.security"
-              @update:model-value="(v) => (form.security = v)"
-            />
-
-            <!-- Panduan Referensi -->
-            <div
-              v-if="guides?.length"
-              class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
-            >
-              <h3 class="mb-3 font-semibold text-slate-800">
-                Panduan Referensi
-              </h3>
-              <ul class="space-y-2">
-                <li
-                  v-for="guide in guides"
-                  :key="guide.id"
-                  class="flex items-center gap-2 text-sm text-slate-600"
-                >
-                  <IconBook size="14" class="flex-shrink-0 text-slate-400" />
-                  {{ guide.name }}
-                </li>
-              </ul>
-            </div>
+                <IconBook size="14" class="flex-shrink-0 text-slate-400" />
+                {{ guide.name }}
+              </li>
+            </ul>
           </div>
         </div>
-      </form>
-    </div>
+      </div>
+    </form>
   </AdminLayout>
 </template>

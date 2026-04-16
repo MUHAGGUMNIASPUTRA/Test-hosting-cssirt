@@ -80,23 +80,43 @@ class VirtualAssetGuideController extends Controller
 
     private function syncAttachments(VirtualAssetGuide $guide, Request $request): void
     {
-        $keepIds = $request->input('existing_attachment_ids', []);
+        $keepIds = $request->input('ordered_existing_ids', $request->input('existing_attachment_ids', []));
 
-        foreach ($guide->guideAttachments as $guideAttachment) {
-            if (! in_array($guideAttachment->attachment_id, $keepIds)) {
-                $this->attachmentService->delete($guideAttachment->attachment);
-                $guideAttachment->delete();
+        // Delete removed attachments
+        foreach ($guide->guideAttachments as $ga) {
+            if (! in_array($ga->attachment_id, $keepIds)) {
+                $this->attachmentService->delete($ga->attachment);
+                $ga->delete();
             }
         }
 
+        // Reorder existing attachments by position in keepIds array
+        foreach ($keepIds as $index => $id) {
+            $guide->guideAttachments()->where('attachment_id', $id)->update(['sort_order' => $index + 1]);
+        }
+
+        $nextSort = count($keepIds);
+
+        // Append new file attachments
         if ($request->hasFile('attachments')) {
-            $sort = $guide->guideAttachments()->max('sort_order') ?? 0;
             foreach ($request->file('attachments') as $file) {
                 $attachment = $this->attachmentService->storeFile($file, 'public', 'guides/attachments');
                 VirtualAssetGuideAttachment::create([
                     'virtual_asset_guide_id' => $guide->id,
                     'attachment_id' => $attachment->id,
-                    'sort_order' => ++$sort,
+                    'sort_order' => ++$nextSort,
+                ]);
+            }
+        }
+
+        // Append new link attachments
+        foreach ($request->input('new_links', []) as $url) {
+            if ($url) {
+                $attachment = $this->attachmentService->storeLink($url);
+                VirtualAssetGuideAttachment::create([
+                    'virtual_asset_guide_id' => $guide->id,
+                    'attachment_id' => $attachment->id,
+                    'sort_order' => ++$nextSort,
                 ]);
             }
         }
