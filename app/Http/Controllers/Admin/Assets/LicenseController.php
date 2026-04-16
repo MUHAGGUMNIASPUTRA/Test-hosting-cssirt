@@ -20,7 +20,7 @@ class LicenseController extends Controller
 
     public function index(Request $request): Response
     {
-        $query = License::with('ownerOrg')->latest();
+        $query = License::with('ownerOrg');
 
         if ($request->filled('search')) {
             $query->where('name', 'ilike', '%'.$request->search.'%');
@@ -34,7 +34,7 @@ class LicenseController extends Controller
             $query->where('owner_org_id', $request->owner_org_id);
         }
 
-        $licenses = $query->paginate(15)->withQueryString();
+        $licenses = $query->orderBy('is_active', 'desc')->orderBy('expired_at')->paginate(15)->withQueryString();
         $organizations = Organization::orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('Admin/Assets/Licenses/Index', [
