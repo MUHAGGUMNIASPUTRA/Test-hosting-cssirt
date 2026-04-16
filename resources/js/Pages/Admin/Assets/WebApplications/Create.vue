@@ -1,5 +1,5 @@
 <script setup>
-import { Link, useForm } from '@inertiajs/vue3'
+import { Link, router, useForm } from '@inertiajs/vue3'
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -8,7 +8,8 @@ const props = defineProps({
   locations: Array,
   vendors: Array,
   techStacks: Array,
-  guides: Array,
+  techStackCategories: { type: Array, default: () => [] },
+  guides: { type: Array, default: () => [] },
   stageOptions: Array,
   appStatusOptions: Array,
   httpsStatusOptions: Array,
@@ -51,7 +52,6 @@ const form = useForm({
     confidentiality: wa?.security_classification?.confidentiality ?? null,
     integrity: wa?.security_classification?.integrity ?? null,
     availability: wa?.security_classification?.availability ?? null,
-    notes: wa?.security_classification?.notes ?? '',
   },
 })
 
@@ -180,6 +180,8 @@ const submit = () => {
             :model-value="ownerData"
             :errors="form.errors"
             @update:model-value="updateOwner"
+            @vendor-saved="router.reload({ only: ['vendors'] })"
+            @vendor-refresh="router.reload({ only: ['vendors'] })"
           />
 
           <!-- VM Specs -->
@@ -199,11 +201,16 @@ const submit = () => {
           <TechStackSection
             :model-value="form.tech_stacks"
             :tech-stacks="techStacks"
+            :categories="techStackCategories"
             @update:model-value="(v) => (form.tech_stacks = v)"
+            @techstack-saved="router.reload({ only: ['techStacks'] })"
+            @refresh="
+              router.reload({ only: ['techStacks', 'techStackCategories'] })
+            "
           />
         </div>
 
-        <div class="space-y-4">
+        <div class="flex flex-col gap-4">
           <!-- Aksi mobile -->
           <div class="flex gap-3 xl:hidden">
             <Link :href="route('admin.web-applications.index')" class="flex-1">
@@ -223,26 +230,18 @@ const submit = () => {
           <!-- Keamanan -->
           <SecurityClassificationForm
             :model-value="form.security"
+            asset-type="web-application"
+            :asset-id="wa?.id ?? null"
+            :security-notes="webApplication?.security_notes ?? []"
             @update:model-value="(v) => (form.security = v)"
           />
 
           <!-- Panduan Referensi -->
-          <div
-            v-if="guides?.length"
-            class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
-          >
-            <h3 class="mb-3 font-semibold text-slate-800">Panduan Referensi</h3>
-            <ul class="space-y-2">
-              <li
-                v-for="guide in guides"
-                :key="guide.id"
-                class="flex items-center gap-2 text-sm text-slate-600"
-              >
-                <IconBook size="14" class="flex-shrink-0 text-slate-400" />
-                {{ guide.name }}
-              </li>
-            </ul>
-          </div>
+          <GuideReferenceSection
+            :guides="guides"
+            asset-type="web-application"
+            :asset-id="wa?.id ?? null"
+          />
         </div>
       </div>
     </form>

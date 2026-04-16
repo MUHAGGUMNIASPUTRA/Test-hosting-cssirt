@@ -148,7 +148,12 @@ const handleDelete = () => {
         </template>
         <Column header="Aplikasi" class="min-w-48">
           <template #body="{ data }">
-            <p class="font-medium text-slate-800">{{ data.name }}</p>
+            <p class="font-medium text-slate-800">
+              {{ data.name }}
+              <Tag v-if="data.current_version" class="text-xs text-slate-500">
+                v{{ data.current_version }}
+              </Tag>
+            </p>
             <p v-if="data.owner_org" class="text-sm text-slate-500">
               {{ data.owner_org.name }}
             </p>
@@ -171,9 +176,6 @@ const handleDelete = () => {
                 :severity="statusSeverity(data.app_status)"
                 class="capitalize"
               />
-              <p v-if="data.current_version" class="text-xs text-slate-500">
-                v{{ data.current_version }}
-              </p>
             </div>
           </template>
         </Column>
@@ -193,6 +195,11 @@ const handleDelete = () => {
         <Column header="Aksi" :pt="{ columnHeaderContent: 'justify-end' }">
           <template #body="{ data }">
             <div class="flex justify-end gap-1">
+              <Link :href="route('admin.mobile-applications.show', data.id)">
+                <Button size="small" severity="info" variant="outlined"
+                  ><IconEye size="15"
+                /></Button>
+              </Link>
               <Link :href="route('admin.mobile-applications.edit', data.id)">
                 <Button size="small" severity="secondary" variant="outlined"
                   ><IconEdit size="15"

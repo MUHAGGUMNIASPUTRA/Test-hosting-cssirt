@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\Assets\AssetAuditLogController;
+use App\Http\Controllers\Admin\Assets\AssetGuideAcknowledgementController;
+use App\Http\Controllers\Admin\Assets\AssetSecurityNoteController;
 use App\Http\Controllers\Admin\Assets\DepartmentController as AssetDepartmentController;
 use App\Http\Controllers\Admin\Assets\EmployeeController as AssetEmployeeController;
 use App\Http\Controllers\Admin\Assets\LicenseController as AssetLicenseController;
@@ -107,14 +109,20 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('tech-stack-categories', AssetTechStackCategoryController::class)->except(['show', 'create', 'edit']);
     Route::resource('tech-stacks', AssetTechStackController::class)->except(['show']);
     Route::resource('virtual-asset-guides', AssetGuideController::class)->except(['show']);
-    Route::resource('web-applications', AssetWebAppController::class)->except(['show']);
-    Route::resource('mobile-applications', AssetMobileAppController::class)->except(['show']);
+    Route::resource('web-applications', AssetWebAppController::class);
+    Route::resource('mobile-applications', AssetMobileAppController::class);
     Route::resource('licenses', AssetLicenseController::class)->except(['show']);
 
     // Assets — Audit Logs (embedded)
     Route::post('/assets/{assetType}/{assetId}/audit-logs', [AssetAuditLogController::class, 'store'])->name('assets.audit-logs.store');
     Route::put('/assets/audit-logs/{auditLog}', [AssetAuditLogController::class, 'update'])->name('assets.audit-logs.update');
     Route::delete('/assets/audit-logs/{auditLog}', [AssetAuditLogController::class, 'destroy'])->name('assets.audit-logs.destroy');
+
+    Route::post('/assets/{assetType}/{assetId}/security-notes', [AssetSecurityNoteController::class, 'store'])->name('assets.security-notes.store');
+    Route::put('/assets/security-notes/{securityNote}', [AssetSecurityNoteController::class, 'update'])->name('assets.security-notes.update');
+    Route::delete('/assets/security-notes/{securityNote}', [AssetSecurityNoteController::class, 'destroy'])->name('assets.security-notes.destroy');
+
+    Route::post('/assets/{assetType}/{assetId}/guides/{guideId}/acknowledge', [AssetGuideAcknowledgementController::class, 'toggle'])->name('assets.guides.acknowledge');
 });
 
 Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(function () {

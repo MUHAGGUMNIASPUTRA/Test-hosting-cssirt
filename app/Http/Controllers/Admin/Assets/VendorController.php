@@ -40,7 +40,7 @@ class VendorController extends Controller
     {
         Vendor::create($request->validated());
 
-        return redirect()->route('admin.vendors.index')
+        return redirect()->back()
             ->with('success', 'Vendor berhasil ditambahkan.');
     }
 
@@ -55,7 +55,7 @@ class VendorController extends Controller
     {
         $vendor->update($request->validated());
 
-        return redirect()->route('admin.vendors.index')
+        return redirect()->back()
             ->with('success', 'Vendor berhasil diperbarui.');
     }
 

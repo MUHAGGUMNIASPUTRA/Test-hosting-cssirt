@@ -11,6 +11,7 @@ use App\Models\Location;
 use App\Models\MobileApplication;
 use App\Models\Organization;
 use App\Models\TechStack;
+use App\Models\TechStackCategory;
 use App\Models\Vendor;
 use App\Models\VirtualAssetGuide;
 use App\Services\Assets\MobileApplicationService;
@@ -59,26 +60,48 @@ class MobileApplicationController extends Controller
     {
         return Inertia::render('Admin/Assets/MobileApplications/Create', [
             ...$this->formData(),
+            'guides' => $this->guidesData(null),
         ]);
     }
 
     public function store(SaveMobileApplicationRequest $request): RedirectResponse
     {
-        $this->service->create($request->validated());
+        $mobileApplication = $this->service->create($request->validated());
 
-        return redirect()->route('admin.mobile-applications.index')
+        return redirect()->route('admin.mobile-applications.show', $mobileApplication)
             ->with('success', 'Aplikasi mobile berhasil ditambahkan.');
+    }
+
+    public function show(MobileApplication $mobileApplication): Response
+    {
+        $mobileApplication->load([
+            'location', 'providerOrg', 'ownerOrg', 'ownerEmployee',
+            'vendor', 'techStacks.techStack.category',
+            'securityClassification',
+            'securityNotes.user', 'securityNotes.attachment',
+            'auditLogs.user', 'auditLogs.attachment',
+        ]);
+
+        return Inertia::render('Admin/Assets/MobileApplications/Show', [
+            'mobileApplication' => $mobileApplication,
+            'guides' => $this->guidesData($mobileApplication),
+        ]);
     }
 
     public function edit(MobileApplication $mobileApplication): Response
     {
+        $mobileApplication->load([
+            'location', 'providerOrg', 'ownerOrg', 'ownerEmployee',
+            'vendor', 'techStacks.techStack',
+            'securityClassification',
+            'securityNotes.user', 'securityNotes.attachment',
+            'auditLogs.user', 'auditLogs.attachment',
+        ]);
+
         return Inertia::render('Admin/Assets/MobileApplications/Create', [
-            'mobileApplication' => $mobileApplication->load([
-                'location', 'providerOrg', 'ownerOrg', 'ownerEmployee',
-                'vendor', 'techStacks.techStack',
-                'securityClassification', 'auditLogs.user', 'auditLogs.attachment',
-            ]),
+            'mobileApplication' => $mobileApplication,
             ...$this->formData(),
+            'guides' => $this->guidesData($mobileApplication),
         ]);
     }
 
@@ -86,7 +109,7 @@ class MobileApplicationController extends Controller
     {
         $this->service->update($mobileApplication, $request->validated());
 
-        return redirect()->route('admin.mobile-applications.index')
+        return redirect()->route('admin.mobile-applications.show', $mobileApplication)
             ->with('success', 'Aplikasi mobile berhasil diperbarui.');
     }
 
@@ -97,6 +120,24 @@ class MobileApplicationController extends Controller
         return redirect()->back()->with('success', 'Aplikasi mobile berhasil dihapus.');
     }
 
+    private function guidesData(?MobileApplication $asset): array
+    {
+        $guides = VirtualAssetGuide::with(['guideAttachments.attachment'])
+            ->where('type', 'mobile')
+            ->orderBy('name')
+            ->get(['id', 'name', 'description']);
+
+        if ($asset === null) {
+            return $guides->map(fn ($g) => array_merge($g->toArray(), ['acknowledged' => false]))->values()->all();
+        }
+
+        $acknowledgedIds = $asset->guideAcknowledgements()->pluck('guide_id')->all();
+
+        return $guides->map(fn ($g) => array_merge($g->toArray(), [
+            'acknowledged' => in_array($g->id, $acknowledgedIds),
+        ]))->values()->all();
+    }
+
     private function formData(): array
     {
         return [
@@ -105,7 +146,7 @@ class MobileApplicationController extends Controller
             'vendors' => Vendor::orderBy('company_name')->get(['id', 'company_name']),
             'employees' => Employee::where('is_active', true)->orderBy('name')->get(['id', 'name']),
             'techStacks' => TechStack::with('category')->orderBy('name')->get(['id', 'name', 'category_id']),
-            'guides' => VirtualAssetGuide::where('type', 'mobile')->orderBy('name')->get(['id', 'name']),
+            'techStackCategories' => TechStackCategory::orderBy('name')->get(['id', 'name']),
             'stageOptions' => collect(AssetStage::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
             'appStatusOptions' => collect(AppStatus::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
         ];

@@ -57,7 +57,7 @@ class TechStackController extends Controller
             'logo_attachment_id' => $attachment?->id,
         ]);
 
-        return redirect()->route('admin.tech-stacks.index')
+        return redirect()->back()
             ->with('success', 'Tech stack berhasil ditambahkan.');
     }
 
@@ -82,7 +82,7 @@ class TechStackController extends Controller
             'logo_attachment_id' => $attachment?->id,
         ]);
 
-        return redirect()->route('admin.tech-stacks.index')
+        return redirect()->back()
             ->with('success', 'Tech stack berhasil diperbarui.');
     }
 

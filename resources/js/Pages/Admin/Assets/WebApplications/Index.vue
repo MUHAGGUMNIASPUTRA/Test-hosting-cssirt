@@ -132,6 +132,16 @@ const handleDelete = () => {
             @change="applyFilters"
           />
           <Select
+            v-model="selectedHttpsStatus"
+            :options="httpsStatusOptions"
+            option-label="name"
+            option-value="value"
+            placeholder="Status HTTPS"
+            class="w-full sm:w-40"
+            show-clear
+            @change="applyFilters"
+          />
+          <Select
             v-model="selectedOwnerOrg"
             :options="orgOptions"
             option-label="label"
@@ -172,20 +182,22 @@ const handleDelete = () => {
             />
           </template>
         </Column>
-        <Column header="Status" class="hidden md:table-cell">
+        <Column header="Status App" class="hidden md:table-cell">
           <template #body="{ data }">
-            <div class="space-y-1">
-              <Tag
-                :value="data.app_status"
-                :severity="statusSeverity(data.app_status)"
-                class="capitalize"
-              />
-              <Tag
-                :value="`HTTPS: ${data.https_status}`"
-                :severity="httpsSeverity(data.https_status)"
-                class="capitalize"
-              />
-            </div>
+            <Tag
+              :value="data.app_status"
+              :severity="statusSeverity(data.app_status)"
+              class="capitalize"
+            />
+          </template>
+        </Column>
+        <Column header="HTTPS" class="hidden md:table-cell">
+          <template #body="{ data }">
+            <Tag
+              :value="data.https_status"
+              :severity="httpsSeverity(data.https_status)"
+              class="capitalize"
+            />
           </template>
         </Column>
         <Column header="Jaringan Utama" class="hidden lg:table-cell">
@@ -204,6 +216,11 @@ const handleDelete = () => {
         <Column header="Aksi" :pt="{ columnHeaderContent: 'justify-end' }">
           <template #body="{ data }">
             <div class="flex justify-end gap-1">
+              <Link :href="route('admin.web-applications.show', data.id)">
+                <Button size="small" severity="info" variant="outlined"
+                  ><IconEye size="15"
+                /></Button>
+              </Link>
               <Link :href="route('admin.web-applications.edit', data.id)">
                 <Button size="small" severity="secondary" variant="outlined"
                   ><IconEdit size="15"

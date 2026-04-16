@@ -11,6 +11,7 @@ use App\Models\Employee;
 use App\Models\Location;
 use App\Models\Organization;
 use App\Models\TechStack;
+use App\Models\TechStackCategory;
 use App\Models\Vendor;
 use App\Models\VirtualAssetGuide;
 use App\Models\WebApplication;
@@ -68,26 +69,48 @@ class WebApplicationController extends Controller
     {
         return Inertia::render('Admin/Assets/WebApplications/Create', [
             ...$this->formData(),
+            'guides' => $this->guidesData(null),
         ]);
     }
 
     public function store(SaveWebApplicationRequest $request): RedirectResponse
     {
-        $this->service->create($request->validated());
+        $webApplication = $this->service->create($request->validated());
 
-        return redirect()->route('admin.web-applications.index')
+        return redirect()->route('admin.web-applications.show', $webApplication)
             ->with('success', 'Aplikasi web berhasil ditambahkan.');
+    }
+
+    public function show(WebApplication $webApplication): Response
+    {
+        $webApplication->load([
+            'location', 'providerOrg', 'ownerOrg', 'ownerEmployee',
+            'vendor', 'vms', 'networks', 'techStacks.techStack.category',
+            'securityClassification',
+            'securityNotes.user', 'securityNotes.attachment',
+            'auditLogs.user', 'auditLogs.attachment',
+        ]);
+
+        return Inertia::render('Admin/Assets/WebApplications/Show', [
+            'webApplication' => $webApplication,
+            'guides' => $this->guidesData($webApplication),
+        ]);
     }
 
     public function edit(WebApplication $webApplication): Response
     {
+        $webApplication->load([
+            'location', 'providerOrg', 'ownerOrg', 'ownerEmployee',
+            'vendor', 'vms', 'networks', 'techStacks.techStack',
+            'securityClassification',
+            'securityNotes.user', 'securityNotes.attachment',
+            'auditLogs.user', 'auditLogs.attachment',
+        ]);
+
         return Inertia::render('Admin/Assets/WebApplications/Create', [
-            'webApplication' => $webApplication->load([
-                'location', 'providerOrg', 'ownerOrg', 'ownerEmployee',
-                'vendor', 'vms', 'networks', 'techStacks.techStack',
-                'securityClassification', 'auditLogs.user', 'auditLogs.attachment',
-            ]),
+            'webApplication' => $webApplication,
             ...$this->formData(),
+            'guides' => $this->guidesData($webApplication),
         ]);
     }
 
@@ -95,7 +118,7 @@ class WebApplicationController extends Controller
     {
         $this->service->update($webApplication, $request->validated());
 
-        return redirect()->route('admin.web-applications.index')
+        return redirect()->route('admin.web-applications.show', $webApplication)
             ->with('success', 'Aplikasi web berhasil diperbarui.');
     }
 
@@ -106,6 +129,24 @@ class WebApplicationController extends Controller
         return redirect()->back()->with('success', 'Aplikasi web berhasil dihapus.');
     }
 
+    private function guidesData(?WebApplication $asset): array
+    {
+        $guides = VirtualAssetGuide::with(['guideAttachments.attachment'])
+            ->where('type', 'web')
+            ->orderBy('name')
+            ->get(['id', 'name', 'description']);
+
+        if ($asset === null) {
+            return $guides->map(fn ($g) => array_merge($g->toArray(), ['acknowledged' => false]))->values()->all();
+        }
+
+        $acknowledgedIds = $asset->guideAcknowledgements()->pluck('guide_id')->all();
+
+        return $guides->map(fn ($g) => array_merge($g->toArray(), [
+            'acknowledged' => in_array($g->id, $acknowledgedIds),
+        ]))->values()->all();
+    }
+
     private function formData(): array
     {
         return [
@@ -114,7 +155,7 @@ class WebApplicationController extends Controller
             'vendors' => Vendor::orderBy('company_name')->get(['id', 'company_name']),
             'employees' => Employee::where('is_active', true)->orderBy('name')->get(['id', 'name']),
             'techStacks' => TechStack::with('category')->orderBy('name')->get(['id', 'name', 'category_id']),
-            'guides' => VirtualAssetGuide::where('type', 'web')->orderBy('name')->get(['id', 'name']),
+            'techStackCategories' => TechStackCategory::orderBy('name')->get(['id', 'name']),
             'stageOptions' => collect(AssetStage::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
             'appStatusOptions' => collect(AppStatus::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
             'httpsStatusOptions' => collect(HttpsStatus::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),

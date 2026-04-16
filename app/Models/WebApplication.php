@@ -93,4 +93,14 @@ class WebApplication extends Model
     {
         return $this->morphMany(AssetAuditLog::class, 'asset')->latest();
     }
+
+    public function securityNotes(): MorphMany
+    {
+        return $this->morphMany(AssetSecurityNote::class, 'asset')->latest();
+    }
+
+    public function guideAcknowledgements(): MorphMany
+    {
+        return $this->morphMany(AssetGuideAcknowledgement::class, 'asset');
+    }
 }

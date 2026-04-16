@@ -1,5 +1,5 @@
 <script setup>
-import { Link, useForm } from '@inertiajs/vue3'
+import { Link, router, useForm } from '@inertiajs/vue3'
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -8,7 +8,8 @@ const props = defineProps({
   locations: Array,
   vendors: Array,
   techStacks: Array,
-  guides: Array,
+  techStackCategories: { type: Array, default: () => [] },
+  guides: { type: Array, default: () => [] },
   stageOptions: Array,
   appStatusOptions: Array,
   employees: { type: Array, default: () => [] },
@@ -39,7 +40,6 @@ const form = useForm({
     confidentiality: ma?.security_classification?.confidentiality ?? null,
     integrity: ma?.security_classification?.integrity ?? null,
     availability: ma?.security_classification?.availability ?? null,
-    notes: ma?.security_classification?.notes ?? '',
   },
 })
 
@@ -207,17 +207,24 @@ const submit = () => {
             :model-value="ownerData"
             :errors="form.errors"
             @update:model-value="updateOwner"
+            @vendor-saved="router.reload({ only: ['vendors'] })"
+            @vendor-refresh="router.reload({ only: ['vendors'] })"
           />
 
           <!-- Tech Stack -->
           <TechStackSection
             :model-value="form.tech_stacks"
             :tech-stacks="techStacks"
+            :categories="techStackCategories"
             @update:model-value="(v) => (form.tech_stacks = v)"
+            @techstack-saved="router.reload({ only: ['techStacks'] })"
+            @refresh="
+              router.reload({ only: ['techStacks', 'techStackCategories'] })
+            "
           />
         </div>
 
-        <div class="space-y-4">
+        <div class="flex flex-col gap-4">
           <!-- Aksi mobile -->
           <div class="flex gap-3 xl:hidden">
             <Link
@@ -237,27 +244,21 @@ const submit = () => {
             </Button>
           </div>
 
+          <!-- Keamanan -->
           <SecurityClassificationForm
             :model-value="form.security"
+            asset-type="mobile-application"
+            :asset-id="ma?.id ?? null"
+            :security-notes="mobileApplication?.security_notes ?? []"
             @update:model-value="(v) => (form.security = v)"
           />
 
-          <div
-            v-if="guides?.length"
-            class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
-          >
-            <h3 class="mb-3 font-semibold text-slate-800">Panduan Referensi</h3>
-            <ul class="space-y-2">
-              <li
-                v-for="guide in guides"
-                :key="guide.id"
-                class="flex items-center gap-2 text-sm text-slate-600"
-              >
-                <IconBook size="14" class="flex-shrink-0 text-slate-400" />
-                {{ guide.name }}
-              </li>
-            </ul>
-          </div>
+          <!-- Panduan Referensi -->
+          <GuideReferenceSection
+            :guides="guides"
+            asset-type="mobile-application"
+            :asset-id="ma?.id ?? null"
+          />
         </div>
       </div>
     </form>

@@ -4,23 +4,28 @@ import { ref, computed } from 'vue'
 const props = defineProps({
   modelValue: { type: Array, default: () => [] }, // [{ tech_stack_id, version }]
   techStacks: { type: Array, default: () => [] }, // all available stacks
+  categories: { type: Array, default: () => [] }, // for TechStackFormDialog
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'techstack-saved', 'refresh'])
 
 const selectedToAdd = ref(null)
+const showAddDialog = ref(false)
 
 const selectedIds = computed(() => props.modelValue.map((s) => s.tech_stack_id))
 
-const availableOptions = computed(() =>
+// PrimeVue grouped Select requires [{ label, items: [{ label, value }] }]
+const groupedOptions = computed(() => {
+  const groups = {}
   props.techStacks
     .filter((ts) => !selectedIds.value.includes(ts.id))
-    .map((ts) => ({
-      label: ts.name,
-      value: ts.id,
-      category: ts.category?.name ?? 'Lainnya',
-    })),
-)
+    .forEach((ts) => {
+      const cat = ts.category?.name ?? 'Lainnya'
+      if (!groups[cat]) groups[cat] = []
+      groups[cat].push({ label: ts.name, value: ts.id })
+    })
+  return Object.entries(groups).map(([label, items]) => ({ label, items }))
+})
 
 const getStackName = (id) =>
   props.techStacks.find((ts) => ts.id === id)?.name ?? id
@@ -46,28 +51,60 @@ const updateVersion = (index, val) => {
   )
   emit('update:modelValue', updated)
 }
+
+const onTechStackSaved = () => {
+  showAddDialog.value = false
+  emit('techstack-saved')
+}
 </script>
 
 <template>
-  <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-    <h3 class="mb-4 font-semibold text-slate-800">Tech Stack</h3>
+  <AdminFormSection
+    title="Tech Stack"
+    description="Framework dan teknologi yang digunakan"
+    color="indigo"
+  >
+    <template #icon="{ iconClass }">
+      <IconCode :class="iconClass" />
+    </template>
 
-    <div class="mb-4 flex gap-2">
+    <div class="mb-3 flex gap-2">
       <Select
         v-model="selectedToAdd"
-        :options="availableOptions"
+        :options="groupedOptions"
         option-label="label"
         option-value="value"
-        option-group-label="category"
+        option-group-label="label"
+        option-group-children="items"
         placeholder="Pilih tech stack..."
         class="flex-1"
         filter
         show-clear
       />
+      <Button
+        type="button"
+        severity="secondary"
+        variant="outlined"
+        v-tooltip="'Refresh daftar'"
+        @click="$emit('refresh')"
+      >
+        <IconRefresh size="15" />
+      </Button>
       <Button type="button" :disabled="!selectedToAdd" @click="addStack">
         <IconPlus size="15" class="mr-1" />Tambah
       </Button>
     </div>
+
+    <p class="mb-3 text-xs text-slate-500">
+      Belum ada tech stack yang diinginkan?
+      <button
+        type="button"
+        class="text-blue-600 hover:underline"
+        @click="showAddDialog = true"
+      >
+        Tambahkan
+      </button>
+    </p>
 
     <div
       v-if="modelValue.length === 0"
@@ -104,5 +141,12 @@ const updateVersion = (index, val) => {
         </Button>
       </div>
     </div>
-  </div>
+
+    <TechStackFormDialog
+      :visible="showAddDialog"
+      :categories="categories"
+      @update:visible="showAddDialog = $event"
+      @saved="onTechStackSaved"
+    />
+  </AdminFormSection>
 </template>

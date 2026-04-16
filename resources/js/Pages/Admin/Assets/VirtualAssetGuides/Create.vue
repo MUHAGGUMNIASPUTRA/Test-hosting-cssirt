@@ -1,5 +1,5 @@
 <script setup>
-import { Link, useForm } from '@inertiajs/vue3'
+import { useForm } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 
 const props = defineProps({
@@ -96,9 +96,7 @@ const removeExisting = (attachmentId) => {
 // --- Submit ---
 const submit = () => {
   if (isEdit.value) {
-    form.post(route('admin.virtual-asset-guides.update', props.guide.id), {
-      _method: 'PUT',
-    })
+    form.put(route('admin.virtual-asset-guides.update', props.guide.id))
   } else {
     form.post(route('admin.virtual-asset-guides.store'))
   }
@@ -387,28 +385,6 @@ const submit = () => {
               </Button>
             </div>
           </AdminFormSection>
-        </div>
-
-        <div class="flex flex-col gap-3">
-          <Link
-            :href="route('admin.virtual-asset-guides.index')"
-            class="block lg:hidden"
-          >
-            <Button
-              severity="secondary"
-              variant="outlined"
-              class="w-full"
-              :disabled="form.processing"
-              >Batal</Button
-            >
-          </Link>
-          <Button
-            type="submit"
-            class="w-full lg:hidden"
-            :loading="form.processing"
-          >
-            {{ isEdit ? 'Simpan Perubahan' : 'Tambah Panduan' }}
-          </Button>
         </div>
       </div>
     </form>
