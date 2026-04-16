@@ -121,13 +121,6 @@ const submit = () => {
         :processing="form.processing"
       >
         <template #actions>
-          <Link
-            :href="route('admin.virtual-asset-guides.index')"
-            class="inline-flex items-center justify-center gap-2 rounded-md bg-slate-100 px-4 py-2 text-slate-600 transition hover:bg-slate-200"
-          >
-            <IconArrowLeft size="16" />
-            Kembali
-          </Link>
           <button
             type="submit"
             :disabled="form.processing"
