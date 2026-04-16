@@ -169,14 +169,7 @@ Semua attachment (incident, log, document, post) menggunakan shape objek yang sa
 
 ```vue
 <!-- Cek ada attachment -->
-<div v-if="item.attachment">
-
-<!-- Deteksi tipe — JANGAN cek prefix 'http' pada string -->
-<IconExternalLink v-if="item.attachment.type === 'link'" />
-<IconPaperclip v-else />
-
-<!-- URL sudah siap pakai -->
-<a :href="item.attachment.url">{{ item.attachment.filename }}</a>
+<div v-if="item.attachment"></div>
 ```
 
 **Pre-populate form edit:**

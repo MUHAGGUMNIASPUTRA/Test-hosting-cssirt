@@ -81,14 +81,14 @@ IncidentStatus::values()              // ['Baru', 'Diverifikasi', ...]
 
 Lokasi: `app/Services/`. Inject via constructor di controller.
 
-| Service             | Tanggung Jawab                                                      | Return Types                                |
-| ------------------- | ------------------------------------------------------------------- | ------------------------------------------- |
-| `AttachmentService` | `storeFile()`, `storeLink()`, `resolve()`, `delete()`               | `Attachment`, `Attachment`, `?Attachment`, `void` |
-| `IncidentService`   | `create()`, `update()`, `logChanges()`, `getGlobalStats()`          | `Incident`, `void`, `void`, `array{...}`    |
-| `DocumentService`   | `create()`, `update()`, `getDocumentStatus()`                       | `Document`, `void`, `string`                |
-| `PostService`       | `create()`, `update()`, `deleteWithAssets()`, `syncTaxonomy()`      | `Post`, `void`, `void`, `void`              |
-| `FaqCacheService`   | Cache publik FAQ (static methods)                                   | `Collection`, `array`, `void`               |
-| `SeoService`        | SSR SEO rendering                                                   | `string`, `bool`, `?string`                 |
+| Service             | Tanggung Jawab                                                 | Return Types                                      |
+| ------------------- | -------------------------------------------------------------- | ------------------------------------------------- |
+| `AttachmentService` | `storeFile()`, `storeLink()`, `resolve()`, `delete()`          | `Attachment`, `Attachment`, `?Attachment`, `void` |
+| `IncidentService`   | `create()`, `update()`, `logChanges()`, `getGlobalStats()`     | `Incident`, `void`, `void`, `array{...}`          |
+| `DocumentService`   | `create()`, `update()`, `getDocumentStatus()`                  | `Document`, `void`, `string`                      |
+| `PostService`       | `create()`, `update()`, `deleteWithAssets()`, `syncTaxonomy()` | `Post`, `void`, `void`, `void`                    |
+| `FaqCacheService`   | Cache publik FAQ (static methods)                              | `Collection`, `array`, `void`                     |
+| `SeoService`        | SSR SEO rendering                                              | `string`, `bool`, `?string`                       |
 
 **`AttachmentService` — Pola Penggunaan:**
 
@@ -110,13 +110,13 @@ $this->attachmentService->delete($model->attachment);
 
 **Disk per Konteks:**
 
-| Konteks                  | Disk     | Directory          |
-| ------------------------ | -------- | ------------------ |
-| Incident (form publik)   | `local`  | `incidents/`       |
-| Incident (admin)         | `public` | `attachments/`     |
-| IncidentLog              | `public` | `incidents/logs/`  |
-| Document official        | `public` | `documents/official/` |
-| Post image               | `public` | `posts/`           |
+| Konteks                | Disk     | Directory             |
+| ---------------------- | -------- | --------------------- |
+| Incident (form publik) | `local`  | `incidents/`          |
+| Incident (admin)       | `public` | `attachments/`        |
+| IncidentLog            | `public` | `incidents/logs/`     |
+| Document official      | `public` | `documents/official/` |
+| Post image             | `public` | `posts/`              |
 
 **Aturan penting untuk service:**
 
