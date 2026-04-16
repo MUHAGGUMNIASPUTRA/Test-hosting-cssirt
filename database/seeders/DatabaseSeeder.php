@@ -30,6 +30,18 @@ class DatabaseSeeder extends Seeder
             IncidentLogSeeder::class,
             DocumentSeeder::class,
             ServiceSeeder::class,
+            OrganizationSeeder::class,
+            DepartmentSeeder::class,
+            PositionSeeder::class,
+            LocationSeeder::class,
+            EmployeeSeeder::class,
+            VendorSeeder::class,
+            TechStackCategorySeeder::class,
+            TechStackSeeder::class,
+            WebApplicationSeeder::class,
+            MobileApplicationSeeder::class,
+            LicenseSeeder::class,
+            VirtualAssetGuideSeeder::class,
         ]);
     }
 }
