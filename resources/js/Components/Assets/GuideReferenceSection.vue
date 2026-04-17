@@ -13,8 +13,6 @@ const activeGuide = ref(null)
 
 const localGuides = ref(props.guides.map((g) => ({ ...g })))
 
-console.log(localGuides.value)
-
 watch(
   () => props.guides,
   (newGuides) => {
