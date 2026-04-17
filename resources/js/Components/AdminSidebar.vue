@@ -1,4 +1,5 @@
 <script setup>
+import { Link, usePage } from '@inertiajs/vue3'
 import {
   IconArticle,
   IconBellPlus,
@@ -36,7 +37,6 @@ import {
   IconWorldCheck,
   IconWorldWww,
 } from '@tabler/icons-vue'
-import { Link, usePage } from '@inertiajs/vue3'
 
 defineProps({
   open: { type: Boolean, default: false },
@@ -101,7 +101,7 @@ const sidebarItems = [
             route: 'admin.web-applications.index',
           },
           {
-            label: 'Tambah Aplikasi Web',
+            label: 'Pengajuan Aplikasi Web',
             icon: IconPlus,
             route: 'admin.web-applications.create',
           },
@@ -117,7 +117,7 @@ const sidebarItems = [
             route: 'admin.mobile-applications.index',
           },
           {
-            label: 'Tambah Aplikasi Mobile',
+            label: 'Pengajuan Aplikasi Mobile',
             icon: IconPlus,
             route: 'admin.mobile-applications.create',
           },
