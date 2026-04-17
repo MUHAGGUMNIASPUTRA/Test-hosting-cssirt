@@ -1,6 +1,6 @@
 <script setup>
-import { router } from '@inertiajs/vue3'
-import { ref } from 'vue'
+import axios from 'axios'
+import { ref, watch } from 'vue'
 
 const props = defineProps({
   guides: { type: Array, default: () => [] },
@@ -11,22 +11,38 @@ const props = defineProps({
 const dialogVisible = ref(false)
 const activeGuide = ref(null)
 
+const localGuides = ref(props.guides.map((g) => ({ ...g })))
+
+console.log(localGuides.value)
+
+watch(
+  () => props.guides,
+  (newGuides) => {
+    localGuides.value = newGuides.map((g) => ({ ...g }))
+  },
+)
+
 const openGuide = (guide) => {
   activeGuide.value = guide
   dialogVisible.value = true
 }
 
-const toggleAck = (guide) => {
+const toggleAck = async (guide) => {
   if (!props.assetId) return
-  router.post(
-    route('admin.assets.guides.acknowledge', {
-      assetType: props.assetType,
-      assetId: props.assetId,
-      guideId: guide.id,
-    }),
-    {},
-    { preserveScroll: true },
-  )
+  const previous = guide.acknowledged
+  guide.acknowledged = !previous
+  try {
+    const { data } = await axios.post(
+      route('admin.assets.guides.acknowledge', {
+        assetType: props.assetType,
+        assetId: props.assetId,
+        guideId: guide.id,
+      }),
+    )
+    guide.acknowledged = data.acknowledged
+  } catch {
+    guide.acknowledged = previous
+  }
 }
 </script>
 
@@ -40,18 +56,18 @@ const toggleAck = (guide) => {
       <IconBook :class="iconClass" />
     </template>
 
-    <div v-if="guides.length === 0" class="py-2 text-sm text-slate-400">
+    <div v-if="localGuides.length === 0" class="py-2 text-sm text-slate-400">
       Belum ada panduan referensi.
     </div>
 
     <ul v-else class="space-y-2">
       <li
-        v-for="guide in guides"
+        v-for="guide in localGuides"
         :key="guide.id"
         class="flex items-center gap-3"
       >
         <Checkbox
-          :model-value="guide.acknowledged"
+          :checked="guide.acknowledged"
           :disabled="!assetId"
           :binary="true"
           v-tooltip="!assetId ? 'Tersedia setelah data disimpan' : undefined"
@@ -96,12 +112,11 @@ const toggleAck = (guide) => {
             />
           </div>
           <div class="p-5">
-            <p
+            <div
               v-if="activeGuide?.description"
+              v-html="activeGuide.description"
               class="mb-4 text-sm leading-relaxed text-slate-600"
-            >
-              {{ activeGuide.description }}
-            </p>
+            ></div>
 
             <div
               v-if="activeGuide?.guide_attachments?.length"
