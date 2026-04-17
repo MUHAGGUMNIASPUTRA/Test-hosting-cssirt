@@ -5,17 +5,18 @@ namespace App\Http\Controllers\Admin\Assets;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Assets\SaveSecurityNoteRequest;
 use App\Models\AssetSecurityNote;
+use App\Models\License;
 use App\Models\MobileApplication;
 use App\Models\WebApplication;
 use App\Services\AttachmentService;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 class AssetSecurityNoteController extends Controller
 {
     public function __construct(private readonly AttachmentService $attachmentService) {}
 
-    public function store(SaveSecurityNoteRequest $request, string $assetType, string $assetId): RedirectResponse
+    public function store(SaveSecurityNoteRequest $request, string $assetType, string $assetId): JsonResponse
     {
         $attachment = null;
         if ($request->filled('attachment_type')) {
@@ -37,10 +38,10 @@ class AssetSecurityNoteController extends Controller
             'attachment_id' => $attachment?->id,
         ]);
 
-        return redirect()->back()->with('success', 'Catatan keamanan berhasil ditambahkan.');
+        return response()->json(['message' => 'Catatan keamanan berhasil ditambahkan.'], 201);
     }
 
-    public function update(SaveSecurityNoteRequest $request, AssetSecurityNote $securityNote): RedirectResponse
+    public function update(SaveSecurityNoteRequest $request, AssetSecurityNote $securityNote): JsonResponse
     {
         $this->authorize('update', $securityNote);
 
@@ -58,17 +59,17 @@ class AssetSecurityNoteController extends Controller
             'attachment_id' => $attachment?->id,
         ]);
 
-        return redirect()->back()->with('success', 'Catatan keamanan berhasil diperbarui.');
+        return response()->json(['message' => 'Catatan keamanan berhasil diperbarui.']);
     }
 
-    public function destroy(AssetSecurityNote $securityNote): RedirectResponse
+    public function destroy(AssetSecurityNote $securityNote): JsonResponse
     {
         $this->authorize('delete', $securityNote);
 
         $this->attachmentService->delete($securityNote->attachment);
         $securityNote->delete();
 
-        return redirect()->back()->with('success', 'Catatan keamanan berhasil dihapus.');
+        return response()->json(['message' => 'Catatan keamanan berhasil dihapus.']);
     }
 
     private function morphType(string $type): string
@@ -76,6 +77,7 @@ class AssetSecurityNoteController extends Controller
         return match ($type) {
             'web-application' => WebApplication::class,
             'mobile-application' => MobileApplication::class,
+            'license' => License::class,
             default => abort(404),
         };
     }

@@ -28,7 +28,7 @@ class VirtualAssetGuideController extends Controller
             $query->where('type', $request->type);
         }
 
-        $guides = $query->orderBy('name')->paginate(15)->withQueryString();
+        $guides = $query->orderBy('type', 'desc')->orderBy('name')->paginate(15)->withQueryString();
 
         return Inertia::render('Admin/Assets/VirtualAssetGuides/Index', [
             'guides' => $guides,

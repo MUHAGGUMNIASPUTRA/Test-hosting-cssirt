@@ -111,7 +111,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('virtual-asset-guides', AssetGuideController::class)->except(['show']);
     Route::resource('web-applications', AssetWebAppController::class);
     Route::resource('mobile-applications', AssetMobileAppController::class);
-    Route::resource('licenses', AssetLicenseController::class)->except(['show']);
+    Route::resource('licenses', AssetLicenseController::class);
 
     // Assets — Audit Logs (embedded)
     Route::post('/assets/{assetType}/{assetId}/audit-logs', [AssetAuditLogController::class, 'store'])->name('assets.audit-logs.store');

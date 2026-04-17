@@ -20,7 +20,7 @@ class LicenseController extends Controller
 
     public function index(Request $request): Response
     {
-        $query = License::with('ownerOrg');
+        $query = License::with(['ownerOrg', 'securityClassification']);
 
         if ($request->filled('search')) {
             $query->where('name', 'ilike', '%'.$request->search.'%');
@@ -53,10 +53,24 @@ class LicenseController extends Controller
 
     public function store(SaveLicenseRequest $request): RedirectResponse
     {
-        $this->service->create($request->validated());
+        $licenses = $this->service->create($request->validated());
 
-        return redirect()->route('admin.licenses.index')
+        return redirect()->route('admin.licenses.show', $licenses)
             ->with('success', 'Lisensi berhasil ditambahkan.');
+    }
+
+    public function show(License $license): Response
+    {
+        $license->load([
+            'location', 'providerOrg', 'ownerOrg', 'ownerEmployee',
+            'securityClassification',
+            'securityNotes.user', 'securityNotes.attachment',
+            'auditLogs.user',
+        ]);
+
+        return Inertia::render('Admin/Assets/Licenses/Show', [
+            'license' => $license,
+        ]);
     }
 
     public function edit(License $license): Response
@@ -64,7 +78,9 @@ class LicenseController extends Controller
         return Inertia::render('Admin/Assets/Licenses/Create', [
             'license' => $license->load([
                 'location', 'providerOrg', 'ownerOrg', 'ownerEmployee',
-                'securityClassification', 'auditLogs.user', 'auditLogs.attachment',
+                'securityClassification',
+                'securityNotes.user', 'securityNotes.attachment',
+                'auditLogs.user', 'auditLogs.attachment',
             ]),
             ...$this->formData(),
         ]);
@@ -74,7 +90,7 @@ class LicenseController extends Controller
     {
         $this->service->update($license, $request->validated());
 
-        return redirect()->route('admin.licenses.index')
+        return redirect()->route('admin.licenses.show', $license)
             ->with('success', 'Lisensi berhasil diperbarui.');
     }
 

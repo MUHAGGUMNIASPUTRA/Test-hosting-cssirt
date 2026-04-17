@@ -57,6 +57,11 @@ class License extends Model
         return $this->morphOne(AssetSecurityClassification::class, 'asset');
     }
 
+    public function securityNotes(): MorphMany
+    {
+        return $this->morphMany(AssetSecurityNote::class, 'asset')->latest();
+    }
+
     public function auditLogs(): MorphMany
     {
         return $this->morphMany(AssetAuditLog::class, 'asset')->latest();
