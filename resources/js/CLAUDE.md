@@ -246,6 +246,41 @@ npx prettier --write resources/js/Pages/Admin/Posts/Index.vue  # satu file
 
 ---
 
+## Layout
+
+| Layout            | Dipakai di                     |
+| ----------------- | ------------------------------ |
+| `AppLayout.vue`   | Semua halaman publik           |
+| `AdminLayout.vue` | Semua halaman `/admin/*`       |
+| `GuestLayout.vue` | Halaman auth (login, register) |
+| `SEOLayout.vue`   | Halaman SEO (Pages/SEO\*.vue)  |
+
+---
+
+## Pola Inertia
+
+Controller mengembalikan `Inertia::render('PageName', [...data])`.
+
+- Nama page = path dari `resources/js/Pages/` tanpa ekstensi
+- Data otomatis jadi `props` di `defineProps()` Vue
+- Flash messages: `session()->flash('success', '...')` → tersedia di `$page.props.flash`
+
+**Navigasi:** Gunakan `<Link :href="route('name')">` atau `router.visit()` / `router.delete()` dari `@inertiajs/vue3`.
+
+---
+
+## Header Doc — Wajib di File Baru/Diubah
+
+Setiap file Vue/JS yang dibuat atau diubah logic utamanya wajib punya header singkat:
+
+```vue
+<!-- Tujuan: [1 kalimat] -->
+<!-- Caller: [page/component induk] -->
+<!-- Side Effects: [Inertia visit / axios call / emit — atau "none"] -->
+```
+
+---
+
 ## Aturan Penting
 
 - **Jangan** tulis import manual untuk komponen, PrimeVue, atau Tabler Icons

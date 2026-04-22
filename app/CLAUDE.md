@@ -199,6 +199,53 @@ Jalankan manual jika perlu:
 
 ---
 
+## Controllers Admin
+
+| Controller                   | Route prefix             | Catatan                                                                    |
+| ---------------------------- | ------------------------ | -------------------------------------------------------------------------- |
+| `DashboardController`        | `admin/`                 | Kirim stats + recentIncidents/Posts/Users                                  |
+| `IncidentController`         | `admin/incidents`        | Full CRUD + management update + log tambah                                 |
+| `PostController`             | `admin/posts`            | CRUD + AI excerpt via `ExcerptController`                                  |
+| `TaxonomyController`         | `admin/taxonomy`         | Kelola Category + Tag dalam satu halaman                                   |
+| `ServiceController`          | `admin/services`         | Full CRUD                                                                  |
+| `FaqController`              | `admin/faqs`             | CRUD via dialog inline (no dedicated create/edit page)                     |
+| `AnnouncementController`     | `admin/announcements`    | CRUD via dialog inline                                                     |
+| `UserController`             | `admin/users`            | CRUD, hanya bisa diakses role `admin`                                      |
+| `DocumentAreaController`     | `admin/document-areas`   | Full CRUD area/kategori dokumen                                            |
+| `DocumentController` (Admin) | `admin/documents`        | Full CRUD + toggle-visibility; official attachment via `AttachmentService` |
+| `ImageUploadController`      | `admin/images/upload`    | Upload gambar untuk Tiptap editor                                          |
+| `ExcerptController`          | `admin/generate-excerpt` | Generate excerpt artikel via AI                                            |
+
+### Controllers Asset (`Admin/Assets/`)
+
+| Controller                    | Route prefix                              | Catatan                                                      |
+| ----------------------------- | ----------------------------------------- | ------------------------------------------------------------ |
+| `OrganizationController`      | `admin/organizations`                     | CRUD organisasi; inline dialog (no create/edit page)         |
+| `DepartmentController`        | `admin/departments`                       | CRUD departemen; inline dialog                               |
+| `PositionController`          | `admin/positions`                         | CRUD jabatan; inline dialog                                  |
+| `LocationController`          | `admin/locations`                         | CRUD lokasi; inline dialog                                   |
+| `EmployeeController`          | `admin/employees`                         | Full CRUD pegawai (ada create/edit page, no show)            |
+| `VendorController`            | `admin/vendors`                           | Full CRUD vendor (ada create/edit page, no show)             |
+| `TechStackCategoryController` | `admin/tech-stack-categories`             | CRUD kategori tech stack; inline dialog                      |
+| `TechStackController`         | `admin/tech-stacks`                       | Full CRUD tech stack (ada create/edit page, no show)         |
+| `VirtualAssetGuideController` | `admin/virtual-asset-guides`              | Full CRUD panduan aset virtual (ada create/edit page)        |
+| `WebApplicationController`    | `admin/web-applications`                  | Full CRUD aplikasi web (ada create/edit page, no show)       |
+| `MobileApplicationController` | `admin/mobile-applications`               | Full CRUD aplikasi mobile (ada create/edit page, no show)    |
+| `LicenseController`           | `admin/licenses`                          | Full CRUD lisensi (ada create/edit/show page)                |
+| `AssetAuditLogController`     | `admin/assets/{type}/{id}/audit-logs`     | Tambah/edit/hapus audit log; embedded di halaman detail aset |
+| `AssetSecurityNoteController` | `admin/assets/{type}/{id}/security-notes` | Store/update/destroy catatan keamanan; embedded di halaman detail aset |
+
+---
+
+## Query Standards
+
+- Selalu eager load relasi yang dipakai di view: `with(['relation'])` — hindari N+1
+- Gunakan `select([...])` jika hanya butuh sebagian kolom dari tabel besar
+- Filter wajib pakai indexed column (`id`, `slug`, `status`, `created_at`)
+- Hindari `->get()` tanpa limit pada tabel yang bisa tumbuh — gunakan `->paginate()`
+
+---
+
 ## Aturan Penting Lainnya
 
 - `case_id` insiden digenerate otomatis — jangan set manual

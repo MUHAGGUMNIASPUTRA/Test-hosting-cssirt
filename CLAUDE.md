@@ -26,17 +26,6 @@ Referensi cepat proyek untuk AI. Baca ini sebelum menyentuh kode apapun.
 
 ---
 
-## Auto-Import (jangan tulis import manual untuk ini)
-
-Vite dikonfigurasi via `unplugin-vue-components` untuk auto-import:
-
-- Semua komponen di `resources/js/Components/` dan `resources/js/Layouts/`
-- Semua komponen PrimeVue (misal `<DataTable>`, `<Button>`, `<Dialog>`, `<Tag>`, `<Select>`)
-- Tabler Icons: `<IconNamaIcon>` (misal `<IconTrash>`, `<IconEdit>`)
-- Lucide Icons: `<i-lucide-nama-icon>` (misal `<i-lucide-user-pen>`)
-
----
-
 ## Struktur Direktori
 
 ```
@@ -91,17 +80,6 @@ Detail lengkap (enum cases, method service, konvensi request, pola controller) �
 
 ---
 
-## Layout
-
-| Layout            | Dipakai di                     |
-| ----------------- | ------------------------------ |
-| `AppLayout.vue`   | Semua halaman publik           |
-| `AdminLayout.vue` | Semua halaman `/admin/*`       |
-| `GuestLayout.vue` | Halaman auth (login, register) |
-| `SEOLayout.vue`   | Halaman SEO (Pages/SEO\*.vue)  |
-
----
-
 ## Routing
 
 ### Publik (`routes/web.php`)
@@ -153,12 +131,17 @@ resource tech-stacks            admin.tech-stacks.*           (kecuali show)
 resource virtual-asset-guides   admin.virtual-asset-guides.*  (kecuali show)
 resource web-applications       admin.web-applications.*      (kecuali show)
 resource mobile-applications    admin.mobile-applications.*   (kecuali show)
-resource licenses               admin.licenses.*              (kecuali show)
+resource licenses               admin.licenses.*
 
 // Assets — Audit Logs (embedded)
-POST   /admin/assets/{assetType}/{assetId}/audit-logs  assets.audit-logs.store
-PUT    /admin/assets/audit-logs/{auditLog}             assets.audit-logs.update
-DELETE /admin/assets/audit-logs/{auditLog}             assets.audit-logs.destroy
+POST   /admin/assets/{assetType}/{assetId}/audit-logs      assets.audit-logs.store
+PUT    /admin/assets/audit-logs/{auditLog}                 assets.audit-logs.update
+DELETE /admin/assets/audit-logs/{auditLog}                 assets.audit-logs.destroy
+
+// Assets — Security Notes (embedded)
+POST   /admin/assets/{assetType}/{assetId}/security-notes  assets.security-notes.store
+PUT    /admin/assets/security-notes/{securityNote}         assets.security-notes.update
+DELETE /admin/assets/security-notes/{securityNote}         assets.security-notes.destroy
 ```
 
 ---
@@ -225,52 +208,11 @@ documents       id, title, slug, description,
 
 ---
 
-## Controllers Admin
+## Controllers & Pola Inertia
 
-| Controller                   | Route prefix             | Catatan                                                                    |
-| ---------------------------- | ------------------------ | -------------------------------------------------------------------------- |
-| `DashboardController`        | `admin/`                 | Kirim stats + recentIncidents/Posts/Users                                  |
-| `IncidentController`         | `admin/incidents`        | Full CRUD + management update + log tambah                                 |
-| `PostController`             | `admin/posts`            | CRUD + AI excerpt via `ExcerptController`                                  |
-| `TaxonomyController`         | `admin/taxonomy`         | Kelola Category + Tag dalam satu halaman                                   |
-| `ServiceController`          | `admin/services`         | Full CRUD                                                                  |
-| `FaqController`              | `admin/faqs`             | CRUD via dialog inline (no dedicated create/edit page)                     |
-| `AnnouncementController`     | `admin/announcements`    | CRUD via dialog inline                                                     |
-| `UserController`             | `admin/users`            | CRUD, hanya bisa diakses role `admin`                                      |
-| `DocumentAreaController`     | `admin/document-areas`   | Full CRUD area/kategori dokumen                                            |
-| `DocumentController` (Admin) | `admin/documents`        | Full CRUD + toggle-visibility; official attachment via `AttachmentService` |
-| `ImageUploadController`      | `admin/images/upload`    | Upload gambar untuk Tiptap editor                                          |
-| `ExcerptController`          | `admin/generate-excerpt` | Generate excerpt artikel via AI                                            |
+Detail lengkap (daftar controller, pola thin controller, return types) → **[`app/CLAUDE.md`](app/CLAUDE.md)**
 
-### Controllers Asset (`Admin/Assets/`)
-
-| Controller                    | Route prefix                          | Catatan                                                      |
-| ----------------------------- | ------------------------------------- | ------------------------------------------------------------ |
-| `OrganizationController`      | `admin/organizations`                 | CRUD organisasi; inline dialog (no create/edit page)         |
-| `DepartmentController`        | `admin/departments`                   | CRUD departemen; inline dialog                               |
-| `PositionController`          | `admin/positions`                     | CRUD jabatan; inline dialog                                  |
-| `LocationController`          | `admin/locations`                     | CRUD lokasi; inline dialog                                   |
-| `EmployeeController`          | `admin/employees`                     | Full CRUD pegawai (ada create/edit page, no show)            |
-| `VendorController`            | `admin/vendors`                       | Full CRUD vendor (ada create/edit page, no show)             |
-| `TechStackCategoryController` | `admin/tech-stack-categories`         | CRUD kategori tech stack; inline dialog                      |
-| `TechStackController`         | `admin/tech-stacks`                   | Full CRUD tech stack (ada create/edit page, no show)         |
-| `VirtualAssetGuideController` | `admin/virtual-asset-guides`          | Full CRUD panduan aset virtual (ada create/edit page)        |
-| `WebApplicationController`    | `admin/web-applications`              | Full CRUD aplikasi web (ada create/edit page, no show)       |
-| `MobileApplicationController` | `admin/mobile-applications`           | Full CRUD aplikasi mobile (ada create/edit page, no show)    |
-| `LicenseController`           | `admin/licenses`                      | Full CRUD lisensi (ada create/edit page, no show)            |
-| `AssetAuditLogController`     | `admin/assets/{type}/{id}/audit-logs` | Tambah/edit/hapus audit log; embedded di halaman detail aset |
-
----
-
-## Pola Inertia
-
-Controller mengembalikan `Inertia::render('PageName', [...data])`.
-
-- Nama page = path dari `resources/js/Pages/` tanpa ekstensi
-- Data otomatis jadi `props` di `defineProps()` Vue
-- Flash messages: `session()->flash('success', '...')` → tersedia di `$page.props.flash`
-
-**Navigasi:** Gunakan `<Link :href="route('name')">` atau `router.visit()` / `router.delete()` dari `@inertiajs/vue3`.
+Detail lengkap (layout, pola Inertia, navigasi Vue) → **[`resources/js/CLAUDE.md`](resources/js/CLAUDE.md)**
 
 ---
 
@@ -298,8 +240,23 @@ Setiap file yang ditulis/diedit Claude otomatis diformat setelah tool call seles
 
 ---
 
+## Header Doc — Wajib di File Baru/Diubah
+
+Setiap file PHP yang dibuat atau diubah logic utamanya wajib punya header singkat:
+
+```php
+// Tujuan: [1 kalimat]
+// Caller: [controller/service pemanggil utama]
+// Side Effects: [DB write / HTTP call / storage I/O — atau "none"]
+```
+
+Format Vue/JS ada di [`resources/js/CLAUDE.md`](resources/js/CLAUDE.md).
+
+---
+
 ## Catatan Penting
 
+- **Sebelum edit**: sebutkan file target + fungsi yang disentuh (1 kalimat) sebelum tool call pertama.
 - **Jangan** buat import manual untuk komponen, PrimeVue, atau Tabler Icons — semua auto-import.
 - **Gambar** artikel disimpan di `storage/app/public/` dan diakses via `/storage/`.
 - **SSR pages** (SEO\*.vue) adalah versi terpisah untuk server-side rendering SEO, jangan modifikasi bersama halaman reguler.
