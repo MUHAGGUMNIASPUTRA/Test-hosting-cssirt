@@ -1,6 +1,9 @@
+<!-- Tujuan: Form tambah/edit Aplikasi Mobile dengan navigasi tab -->
+<!-- Caller: MobileApplicationController@create / edit -->
+<!-- Side Effects: Inertia POST/PUT ke admin.mobile-applications.store/update -->
 <script setup>
-import { Link, router, useForm } from '@inertiajs/vue3'
-import { computed } from 'vue'
+import { router, useForm } from '@inertiajs/vue3'
+import { computed, ref, watch } from 'vue'
 
 const props = defineProps({
   mobileApplication: { type: Object, default: null },
@@ -17,6 +20,28 @@ const props = defineProps({
 
 const isEdit = computed(() => !!props.mobileApplication)
 const ma = props.mobileApplication
+const activeTab = ref('0')
+
+const tabFieldMap = {
+  0: [
+    'name',
+    'description',
+    'stage',
+    'app_status',
+    'current_version',
+    'app_link',
+  ],
+  1: ['tech_stacks'],
+  2: [
+    'location_id',
+    'provider_org_id',
+    'owner_org_id',
+    'owner_employee_id',
+    'vendor_id',
+  ],
+  3: [],
+  4: ['security'],
+}
 
 const form = useForm({
   name: ma?.name ?? '',
@@ -43,11 +68,24 @@ const form = useForm({
   },
 })
 
+watch(
+  () => form.errors,
+  (errors) => {
+    const errorKeys = Object.keys(errors)
+    if (!errorKeys.length) return
+    for (const [tabIndex, fields] of Object.entries(tabFieldMap)) {
+      if (fields.some((f) => errorKeys.some((k) => k.startsWith(f)))) {
+        activeTab.value = String(tabIndex)
+        break
+      }
+    }
+  },
+)
+
 const statusData = computed(() => ({
   stage: form.stage,
   app_status: form.app_status,
 }))
-
 const updateStatus = (val) => {
   form.stage = val.stage
   form.app_status = val.app_status
@@ -61,16 +99,12 @@ const ownerData = computed(() => ({
   owner_employee_id: form.owner_employee_id,
   vendor_id: form.vendor_id,
 }))
-
 const updateOwner = (val) =>
   Object.entries(val).forEach(([k, v]) => (form[k] = v))
 
 const submit = () => {
-  if (isEdit.value) {
-    form.put(route('admin.mobile-applications.update', ma.id))
-  } else {
-    form.post(route('admin.mobile-applications.store'))
-  }
+  if (isEdit.value) form.put(route('admin.mobile-applications.update', ma.id))
+  else form.post(route('admin.mobile-applications.store'))
 }
 </script>
 
@@ -83,7 +117,7 @@ const submit = () => {
         :title="isEdit ? 'Edit Aplikasi Mobile' : 'Tambah Aplikasi Mobile'"
         :description="
           isEdit
-            ? 'Perbarui data dan spesifikasi aplikasi mobile.'
+            ? 'Perbarui data aplikasi mobile.'
             : 'Tambahkan data aplikasi mobile baru.'
         "
         back-route="admin.mobile-applications.index"
@@ -108,159 +142,196 @@ const submit = () => {
         </template>
       </AdminFormHeader>
 
-      <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <div class="space-y-4 xl:col-span-2">
-          <!-- Informasi Utama -->
-          <AdminFormSection
-            title="Informasi Utama"
-            description="Nama dan deskripsi aplikasi mobile"
-            color="blue"
-          >
-            <template #icon="{ iconClass }">
-              <IconDeviceMobile :class="iconClass" />
-            </template>
-            <div class="space-y-4">
-              <div>
-                <label class="mb-1 block text-sm font-medium text-slate-700"
-                  >Nama Aplikasi <span class="text-red-500">*</span></label
-                >
-                <InputText
-                  v-model="form.name"
-                  class="w-full"
-                  placeholder="Nama aplikasi mobile"
-                  required
-                />
-                <p v-if="form.errors.name" class="mt-1 text-xs text-red-600">
-                  {{ form.errors.name }}
-                </p>
-              </div>
-              <div>
-                <label class="mb-1 block text-sm font-medium text-slate-700"
-                  >Deskripsi</label
-                >
-                <Textarea
-                  v-model="form.description"
-                  class="w-full"
-                  rows="3"
-                  placeholder="Deskripsi singkat aplikasi..."
-                />
-              </div>
-            </div>
-          </AdminFormSection>
-
-          <!-- Status & Kondisi -->
-          <AppStatusSection
-            :model-value="statusData"
-            :stage-options="stageOptions"
-            :app-status-options="appStatusOptions"
-            :show-https="false"
-            :errors="form.errors"
-            @update:model-value="updateStatus"
-          />
-
-          <!-- Versi & Link -->
-          <AdminFormSection
-            title="Detail Aplikasi"
-            description="Versi dan tautan unduhan"
-            color="green"
-          >
-            <template #icon="{ iconClass }">
-              <IconInfoCircle :class="iconClass" />
-            </template>
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label class="mb-1 block text-sm font-medium text-slate-700"
-                  >Versi Saat Ini</label
-                >
-                <InputText
-                  v-model="form.current_version"
-                  class="w-full"
-                  placeholder="Contoh: 1.2.0"
-                />
-              </div>
-              <div>
-                <label class="mb-1 block text-sm font-medium text-slate-700"
-                  >Link Aplikasi</label
-                >
-                <InputText
-                  v-model="form.app_link"
-                  class="w-full"
-                  placeholder="https://play.google.com/..."
-                  type="url"
-                />
-                <p
-                  v-if="form.errors.app_link"
-                  class="mt-1 text-xs text-red-600"
-                >
-                  {{ form.errors.app_link }}
-                </p>
-              </div>
-            </div>
-          </AdminFormSection>
-
-          <!-- Penempatan & Kepemilikan -->
-          <OwnerContactSection
-            :organizations="organizations"
-            :locations="locations"
-            :employees="employees"
-            :vendors="vendors"
-            :model-value="ownerData"
-            :errors="form.errors"
-            @update:model-value="updateOwner"
-            @vendor-saved="router.reload({ only: ['vendors'] })"
-            @vendor-refresh="router.reload({ only: ['vendors'] })"
-          />
-
-          <!-- Tech Stack -->
-          <TechStackSection
-            :model-value="form.tech_stacks"
-            :tech-stacks="techStacks"
-            :categories="techStackCategories"
-            @update:model-value="(v) => (form.tech_stacks = v)"
-            @techstack-saved="router.reload({ only: ['techStacks'] })"
-            @refresh="
-              router.reload({ only: ['techStacks', 'techStackCategories'] })
-            "
-          />
-        </div>
-
-        <div class="flex flex-col gap-4">
-          <!-- Aksi mobile -->
-          <div class="flex gap-3 xl:hidden">
-            <Link
-              :href="route('admin.mobile-applications.index')"
-              class="flex-1"
+      <Tabs v-model:value="activeTab">
+        <TabList>
+          <Tab value="0">Utama</Tab>
+          <Tab value="1">Spesifikasi</Tab>
+          <Tab value="2">Kepemilikan</Tab>
+          <Tab value="3">Referensi</Tab>
+          <Tab value="4">Keamanan</Tab>
+        </TabList>
+        <TabPanels>
+          <!-- Tab 0: Utama -->
+          <TabPanel value="0" class="space-y-4">
+            <AdminFormSection
+              title="Informasi Utama"
+              description="Nama dan deskripsi aplikasi mobile"
+              color="blue"
             >
-              <Button
-                severity="secondary"
-                variant="outlined"
-                class="w-full"
-                :disabled="form.processing"
-                >Batal</Button
-              >
-            </Link>
-            <Button type="submit" class="flex-1" :loading="form.processing">
-              {{ isEdit ? 'Simpan' : 'Tambah' }}
-            </Button>
-          </div>
+              <template #icon="{ iconClass }"
+                ><IconDeviceMobile :class="iconClass"
+              /></template>
+              <div class="space-y-4">
+                <div>
+                  <label class="mb-1 block text-sm font-medium text-slate-700"
+                    >Nama Aplikasi <span class="text-red-500">*</span></label
+                  >
+                  <InputText
+                    v-model="form.name"
+                    class="w-full"
+                    placeholder="Nama aplikasi mobile"
+                    required
+                  />
+                  <p v-if="form.errors.name" class="mt-1 text-xs text-red-600">
+                    {{ form.errors.name }}
+                  </p>
+                </div>
+                <div>
+                  <label class="mb-1 block text-sm font-medium text-slate-700"
+                    >Deskripsi</label
+                  >
+                  <Textarea
+                    v-model="form.description"
+                    class="w-full"
+                    rows="3"
+                    placeholder="Deskripsi singkat aplikasi..."
+                  />
+                </div>
+              </div>
+            </AdminFormSection>
+            <AppStatusSection
+              :model-value="statusData"
+              :stage-options="stageOptions"
+              :app-status-options="appStatusOptions"
+              :show-https="false"
+              :errors="form.errors"
+              @update:model-value="updateStatus"
+            />
+            <AdminFormSection
+              title="Detail Aplikasi"
+              description="Versi dan tautan unduhan"
+              color="green"
+            >
+              <template #icon="{ iconClass }"
+                ><IconInfoCircle :class="iconClass"
+              /></template>
+              <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label class="mb-1 block text-sm font-medium text-slate-700"
+                    >Versi Saat Ini</label
+                  >
+                  <InputText
+                    v-model="form.current_version"
+                    class="w-full"
+                    placeholder="Contoh: 1.2.0"
+                  />
+                </div>
+                <div>
+                  <label class="mb-1 block text-sm font-medium text-slate-700"
+                    >Link Aplikasi</label
+                  >
+                  <InputText
+                    v-model="form.app_link"
+                    class="w-full"
+                    placeholder="https://play.google.com/..."
+                    type="url"
+                  />
+                  <p
+                    v-if="form.errors.app_link"
+                    class="mt-1 text-xs text-red-600"
+                  >
+                    {{ form.errors.app_link }}
+                  </p>
+                </div>
+              </div>
+            </AdminFormSection>
+          </TabPanel>
 
-          <!-- Keamanan -->
-          <SecurityClassificationForm
-            :model-value="form.security"
-            asset-type="mobile-application"
-            :asset-id="ma?.id ?? null"
-            :security-notes="mobileApplication?.security_notes ?? []"
-            @update:model-value="(v) => (form.security = v)"
-          />
+          <!-- Tab 1: Spesifikasi -->
+          <TabPanel value="1">
+            <TechStackSection
+              :model-value="form.tech_stacks"
+              :tech-stacks="techStacks"
+              :categories="techStackCategories"
+              @update:model-value="(v) => (form.tech_stacks = v)"
+              @techstack-saved="router.reload({ only: ['techStacks'] })"
+              @refresh="
+                router.reload({ only: ['techStacks', 'techStackCategories'] })
+              "
+            />
+          </TabPanel>
 
-          <!-- Panduan Referensi -->
-          <GuideReferenceSection
-            :guides="guides"
-            asset-type="mobile-application"
-            :asset-id="ma?.id ?? null"
-          />
-        </div>
-      </div>
+          <!-- Tab 2: Kepemilikan -->
+          <TabPanel value="2">
+            <OwnerContactSection
+              :organizations="organizations"
+              :locations="locations"
+              :employees="employees"
+              :vendors="vendors"
+              :model-value="ownerData"
+              :errors="form.errors"
+              @update:model-value="updateOwner"
+              @vendor-saved="router.reload({ only: ['vendors'] })"
+              @vendor-refresh="router.reload({ only: ['vendors'] })"
+            />
+          </TabPanel>
+
+          <!-- Tab 3: Referensi -->
+          <TabPanel value="3">
+            <GuideReferenceSection
+              :guides="guides"
+              asset-type="mobile-application"
+              :asset-id="ma?.id ?? null"
+            />
+          </TabPanel>
+
+          <!-- Tab 4: Keamanan -->
+          <TabPanel value="4" class="space-y-4">
+            <SecurityClassificationForm
+              :model-value="form.security"
+              asset-type="mobile-application"
+              :asset-id="ma?.id ?? null"
+              :security-notes="mobileApplication?.security_notes ?? []"
+              @update:model-value="(v) => (form.security = v)"
+            />
+            <AdminFormSection
+              v-if="ma?.id && mobileApplication?.incidents?.length"
+              title="Insiden Terkait"
+              description="Insiden keamanan yang berkaitan"
+              color="red"
+            >
+              <template #icon="{ iconClass }"
+                ><IconUrgent :class="iconClass"
+              /></template>
+              <div class="space-y-2">
+                <div
+                  v-for="inc in mobileApplication.incidents"
+                  :key="inc.id"
+                  class="flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3"
+                >
+                  <a
+                    :href="route('admin.incidents.show', inc.id)"
+                    class="font-mono text-sm font-medium text-blue-600 hover:underline"
+                    >{{ inc.case_id }}</a
+                  >
+                  <Tag
+                    :value="inc.status"
+                    severity="secondary"
+                    class="!text-xs"
+                  />
+                  <Tag :value="inc.priority" severity="warn" class="!text-xs" />
+                  <span
+                    v-if="inc.incident_type"
+                    class="text-xs text-slate-500"
+                    >{{ inc.incident_type.name }}</span
+                  >
+                </div>
+              </div>
+            </AdminFormSection>
+            <AdminFormSection
+              v-else-if="ma?.id"
+              title="Insiden Terkait"
+              description="Insiden keamanan yang berkaitan"
+              color="red"
+            >
+              <template #icon="{ iconClass }"
+                ><IconUrgent :class="iconClass"
+              /></template>
+              <p class="text-sm text-slate-400">Tidak ada insiden terkait.</p>
+            </AdminFormSection>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </form>
   </AdminLayout>
 </template>

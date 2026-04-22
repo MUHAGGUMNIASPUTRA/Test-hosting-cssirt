@@ -21,6 +21,7 @@ import {
   IconList,
   IconMailExclamation,
   IconMapPin,
+  IconNetwork,
   IconNews,
   IconPlus,
   IconServer,
@@ -158,6 +159,16 @@ const sidebarItems = [
             icon: IconBookDownload,
             route: 'admin.virtual-asset-guides.index',
           },
+          {
+            label: 'Daftar IP',
+            icon: IconNetwork,
+            route: 'admin.ip-addresses.index',
+          },
+          {
+            label: 'Daftar Subdomain',
+            icon: IconWorldWww,
+            route: 'admin.subdomains.index',
+          },
         ],
       },
     ],
@@ -186,8 +197,16 @@ const sidebarItems = [
       { label: 'Vendor', icon: IconTruck, route: 'admin.vendors.index' },
     ],
   },
-  { label: 'Aset Fisik', icon: IconServer },
-  { label: 'Aset Informasi', icon: IconDatabase },
+  {
+    label: 'Aset Fisik',
+    icon: IconServer,
+    route: 'admin.physical-assets.index',
+  },
+  {
+    label: 'Aset Informasi',
+    icon: IconDatabase,
+    route: 'admin.information-assets.index',
+  },
   { separator: true },
   {
     label: 'Insiden',

@@ -416,6 +416,78 @@ const actionMenuItems = computed(() => {
           </template>
         </Column>
 
+        <Column header="Aset Virtual" class="hidden xl:table-cell">
+          <template #body="{ data }">
+            <div class="flex flex-wrap items-center gap-1">
+              <template
+                v-if="
+                  !data.web_applications?.length &&
+                  !data.mobile_applications?.length
+                "
+              >
+                <span class="text-sm text-slate-400">—</span>
+              </template>
+              <template v-else>
+                <span class="flex flex-wrap gap-1">
+                  <Link
+                    v-if="
+                      (data.web_applications?.length ?? 0) +
+                        (data.mobile_applications?.length ?? 0) ===
+                      1
+                    "
+                    :href="
+                      data.web_applications?.length
+                        ? route(
+                            'admin.web-applications.show',
+                            data.web_applications[0].id,
+                          )
+                        : route(
+                            'admin.mobile-applications.show',
+                            data.mobile_applications[0].id,
+                          )
+                    "
+                    class="text-sm text-blue-600 hover:underline"
+                  >
+                    {{
+                      data.web_applications?.[0]?.name ??
+                      data.mobile_applications?.[0]?.name
+                    }}
+                  </Link>
+                  <template v-else>
+                    <Link
+                      v-if="data.web_applications?.length"
+                      :href="
+                        route(
+                          'admin.web-applications.show',
+                          data.web_applications[0].id,
+                        )
+                      "
+                      class="text-sm text-blue-600 hover:underline"
+                      >{{ data.web_applications[0].name }}</Link
+                    >
+                    <Link
+                      v-else-if="data.mobile_applications?.length"
+                      :href="
+                        route(
+                          'admin.mobile-applications.show',
+                          data.mobile_applications[0].id,
+                        )
+                      "
+                      class="text-sm text-blue-600 hover:underline"
+                      >{{ data.mobile_applications[0].name }}</Link
+                    >
+                    <Tag
+                      :value="`+${(data.web_applications?.length ?? 0) + (data.mobile_applications?.length ?? 0) - 1} lainnya`"
+                      severity="secondary"
+                      class="!text-xs"
+                    />
+                  </template>
+                </span>
+              </template>
+            </div>
+          </template>
+        </Column>
+
         <Column header="Ditugaskan ke" class="hidden xl:table-cell">
           <template #body="{ data }">
             <span
