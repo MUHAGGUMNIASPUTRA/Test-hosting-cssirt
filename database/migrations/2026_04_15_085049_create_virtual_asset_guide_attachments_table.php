@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('virtual_asset_guide_attachments', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignUuid('virtual_asset_guide_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('attachment_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('attachment_id')->constrained()->cascadeOnDelete();
             $table->unsignedInteger('sort_order')->default(0);
             $table->timestamps();
         });

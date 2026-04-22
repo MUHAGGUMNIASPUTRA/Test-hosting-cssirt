@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('attachments', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->enum('type', ['file', 'link']);
             // File-only fields
             $table->string('disk')->nullable();        // 'local' | 'public'

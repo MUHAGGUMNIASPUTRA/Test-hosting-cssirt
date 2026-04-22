@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->foreignUuid('category_id')->constrained('tech_stack_categories')->cascadeOnDelete();
-            $table->foreignId('logo_attachment_id')->nullable()->constrained('attachments')->nullOnDelete();
+            $table->foreignUuid('logo_attachment_id')->nullable()->constrained('attachments')->nullOnDelete();
             $table->timestamps();
         });
     }

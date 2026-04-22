@@ -5,6 +5,7 @@
 namespace App\Models;
 
 use App\Enums\DocumentStage;
+use App\Traits\HasUuidV6;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,12 +20,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property DocumentStage|null $stage
  * @property string|null $version
  * @property bool $is_public
- * @property int|null $document_area_id
+ * @property string|null $document_area_id
  * @property string|null $pub_status Virtual — set in service transform
  */
 class Document extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuidV6;
 
     protected $fillable = [
         'title',

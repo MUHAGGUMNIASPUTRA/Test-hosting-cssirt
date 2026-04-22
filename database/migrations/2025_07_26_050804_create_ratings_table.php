@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ratings', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('post_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->nullable()->cascadeOnDelete();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('post_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->nullable()->cascadeOnDelete();
             $table->ipAddress('ip_address')->nullable()->after('user_id');
             $table->tinyInteger('rating'); // Saving vote (1, 2, 3, 4, 5)
             $table->timestamps();

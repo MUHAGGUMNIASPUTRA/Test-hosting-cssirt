@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('asset_type');
             $table->uuid('asset_id');
             $table->foreignUuid('guide_id')->constrained('virtual_asset_guides')->cascadeOnDelete();
-            $table->foreignId('acknowledged_by')->constrained('users')->cascadeOnDelete();
+            $table->foreignUuid('acknowledged_by')->constrained('users')->cascadeOnDelete();
             $table->timestamp('acknowledged_at');
             $table->timestamps();
 

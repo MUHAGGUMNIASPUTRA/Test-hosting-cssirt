@@ -1,8 +1,5 @@
 <?php
 
-use App\Models\Category;
-use App\Models\Post;
-use App\Models\Tag;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('title');
             $table->string('slug')->unique();
             $table->string('image')->nullable();
@@ -30,33 +27,33 @@ return new class extends Migration
         });
 
         Schema::create('categories', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name')->unique();
             $table->string('slug')->unique();
             $table->timestamps();
         });
 
         Schema::create('category_post', function (Blueprint $table) {
-            $table->foreignIdFor(Post::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Category::class)->constrained()->cascadeOnDelete();
+            $table->foreignUuid('post_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('category_id')->constrained()->cascadeOnDelete();
             $table->primary(['post_id', 'category_id']);
         });
 
         Schema::create('tags', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name')->unique();
             $table->string('slug')->unique();
             $table->timestamps();
         });
 
         Schema::create('post_tag', function (Blueprint $table) {
-            $table->foreignIdFor(Post::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Tag::class)->constrained()->cascadeOnDelete();
+            $table->foreignUuid('post_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('tag_id')->constrained()->cascadeOnDelete();
             $table->primary(['post_id', 'tag_id']);
         });
 
         Schema::create('announcements', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('title');
             $table->text('content');
             $table->enum('level', ['info', 'warning', 'critical'])->default('info');
@@ -67,7 +64,7 @@ return new class extends Migration
         });
 
         Schema::create('incident_types', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name')->unique();
             $table->string('slug')->unique();
             $table->text('description')->nullable();
@@ -75,7 +72,7 @@ return new class extends Migration
         });
 
         Schema::create('incidents', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('case_id')->unique();
 
             // Reporter Information
@@ -84,7 +81,7 @@ return new class extends Migration
             $table->string('reporter_phone')->nullable();
 
             // Incident Details
-            $table->foreignId('incident_type_id')->constrained('incident_types');
+            $table->foreignUuid('incident_type_id')->constrained('incident_types');
             $table->longText('description');
             $table->string('attachment')->nullable();
             $table->timestamp('incident_at');
@@ -92,7 +89,7 @@ return new class extends Migration
             // Management Fields
             $table->enum('status', ['Baru', 'Diverifikasi', 'Dalam Penyelidikan', 'Selesai', 'Ditutup'])->default('Baru');
             $table->enum('priority', ['Rendah', 'Sedang', 'Tinggi', 'Kritis'])->default('Sedang');
-            $table->foreignId('assigned_to')->nullable()->constrained('users');
+            $table->foreignUuid('assigned_to')->nullable()->constrained('users');
 
             // Timestamps
             $table->timestamp('reported_at')->useCurrent();
@@ -101,15 +98,15 @@ return new class extends Migration
         });
 
         Schema::create('incident_logs', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('incident_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained('users');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('incident_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained('users');
             $table->text('log_message');
             $table->timestamps();
         });
 
         Schema::create('documents', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
@@ -120,7 +117,7 @@ return new class extends Migration
         });
 
         Schema::create('services', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('icon')->nullable();
@@ -131,7 +128,7 @@ return new class extends Migration
         });
 
         Schema::create('faqs', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->text('question');
             $table->longText('answer');
             $table->string('category')->nullable();

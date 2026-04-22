@@ -4,13 +4,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasUuidV6;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class Service extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuidV6;
 
     /**
      * The attributes that are mass assignable.

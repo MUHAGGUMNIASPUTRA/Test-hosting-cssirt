@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\AttachmentType;
+use App\Traits\HasUuidV6;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Storage;
  */
 class Attachment extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuidV6;
 
     protected $fillable = [
         'type',

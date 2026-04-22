@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasUuidV6;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class AssetSecurityClassification extends Model
 {
+    use HasUuidV6;
+
     protected $fillable = [
         'asset_type',
         'asset_id',

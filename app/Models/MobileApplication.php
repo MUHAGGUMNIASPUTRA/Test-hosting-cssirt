@@ -1,5 +1,9 @@
 <?php
 
+// Tujuan: Model aplikasi mobile beserta relasi aset dan insiden terdampak
+// Caller: MobileApplicationController, MobileApplicationService
+// Side Effects: none
+
 namespace App\Models;
 
 use App\Enums\AppStatus;
@@ -11,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class MobileApplication extends Model
 {
@@ -65,6 +70,11 @@ class MobileApplication extends Model
     public function techStacks(): HasMany
     {
         return $this->hasMany(MobileAppTechStack::class);
+    }
+
+    public function incidents(): MorphToMany
+    {
+        return $this->morphToMany(Incident::class, 'assetable', 'incident_virtual_assets', 'assetable_id', 'incident_id');
     }
 
     public function securityClassification(): MorphOne

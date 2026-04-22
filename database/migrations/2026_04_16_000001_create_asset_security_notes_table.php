@@ -12,9 +12,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('asset_type');
             $table->uuid('asset_id');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->text('message');
-            $table->foreignId('attachment_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignUuid('attachment_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
 
             $table->index(['asset_type', 'asset_id']);

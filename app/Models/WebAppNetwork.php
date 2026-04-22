@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasUuidV6;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class WebAppNetwork extends Model
 {
+    use HasUuidV6;
+
     protected $fillable = [
         'web_application_id',
         'environment',

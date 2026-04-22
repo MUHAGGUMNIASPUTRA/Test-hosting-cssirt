@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('incidents', function (Blueprint $table) {
             $table->boolean('is_read')->default(false);
-            $table->unsignedBigInteger('read_by')->nullable();
+            $table->uuid('read_by')->nullable();
             $table->timestamp('read_at')->nullable();
 
             $table->foreign('read_by')->references('id')->on('users')->onDelete('set null');

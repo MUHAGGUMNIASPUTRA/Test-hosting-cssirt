@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\Attachment;
+use App\Models\Category;
 use App\Models\Post;
+use App\Models\Tag;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -37,8 +39,8 @@ class PostSeeder extends Seeder
   <li><strong>Peningkatan Kesadaran:</strong> Memberikan edukasi dan pelatihan keamanan kepada karyawan.</li>
 </ul>
 <p>Dengan adanya CSIRT, sebuah organisasi memiliki kemampuan untuk merespons ancaman dengan lebih cepat, terstruktur, dan efektif, memastikan kelangsungan bisnis tetap terjaga di tengah lanskap digital yang penuh risiko.</p>',
-                'categories' => [4], // Panduan Teknis
-                'tags' => [4, 6], // Keamanan Jaringan, Pemerintahan
+                'categories' => ['panduan-teknis'],
+                'tags' => ['keamanan-jaringan', 'pemerintahan'],
             ],
             [
                 'title' => 'Siklus Hidup Penanganan Insiden oleh Tim CSIRT',
@@ -53,8 +55,8 @@ class PostSeeder extends Seeder
   <li><strong>Pemulihan (Recovery):</strong> Sistem yang terkena dampak dikembalikan ke operasi normal. Ini melibatkan pemulihan data dari cadangan (backup) dan pengujian menyeluruh untuk memastikan sistem aman dan berfungsi seperti semula.</li>
   <li><strong>Pelajaran yang Diambil (Lessons Learned):</strong> Setelah insiden selesai ditangani, tim melakukan evaluasi. Apa yang berjalan baik? Apa yang bisa ditingkatkan? Hasil analisis ini digunakan untuk memperkuat pertahanan dan menyempurnakan proses di fase persiapan.</li>
 </ol>',
-                'categories' => [4], // Panduan Teknis
-                'tags' => [1, 4], // Tips Keamanan, Keamanan Jaringan
+                'categories' => ['panduan-teknis'],
+                'tags' => ['phishing', 'keamanan-jaringan'],
             ],
             [
                 'title' => 'Membangun Tim CSIRT Internal: Apa Saja yang Dibutuhkan?',
@@ -75,8 +77,8 @@ class PostSeeder extends Seeder
 </ul>
 <h3>4. Pilih Teknologi dan Alat yang Tepat</h3>
 <p>Lengkapi tim dengan perangkat yang mereka butuhkan. Ini bisa berupa platform SIEM (<em>Security Information and Event Management</em>), alat forensik, platform SOAR (<em>Security Orchestration, Automation, and Response</em>), dan sistem tiket untuk melacak insiden.</p>',
-                'categories' => [4], // Panduan Teknis
-                'tags' => [6], // Pemerintahan
+                'categories' => ['panduan-teknis'],
+                'tags' => ['pemerintahan'],
             ],
             [
                 'title' => 'Tools Penting yang Digunakan oleh Tim CSIRT Modern',
@@ -91,8 +93,8 @@ class PostSeeder extends Seeder
 <p>Ketika insiden terjadi, alat forensik sangat penting untuk mengumpulkan dan menganalisis bukti digital. <em>Tools</em> seperti <strong>EnCase</strong>, <strong>FTK Imager</strong>, atau <em>open-source tool</em> <strong>Autopsy</strong> digunakan untuk membuat salinan bit-per-bit dari hard drive dan memeriksa artefak digital yang ditinggalkan oleh penyerang.</p>
 <h3>4. Platform Analisis Malware (Sandbox)</h3>
 <p>Untuk memahami file atau email yang mencurigakan, CSIRT menggunakan <em>sandbox</em>. Ini adalah lingkungan terisolasi di mana mereka dapat menjalankan file berbahaya dan mengamati perilakunya tanpa membahayakan jaringan utama. Contohnya adalah <strong>Cuckoo Sandbox</strong> atau layanan online seperti <strong>VirusTotal</strong>.</p>',
-                'categories' => [4], // Panduan Teknis
-                'tags' => [4], // Keamanan Jaringan
+                'categories' => ['panduan-teknis'],
+                'tags' => ['keamanan-jaringan'],
             ],
             [
                 'title' => 'Perbedaan CSIRT, SOC, dan CERT: Mana yang Tepat?',
@@ -106,8 +108,8 @@ class PostSeeder extends Seeder
 <h3>CERT (Computer Emergency Response Team)</h3>
 <p>Istilah CERT sebenarnya adalah merek dagang dari Carnegie Mellon University. Secara umum, CERT seringkali merujuk pada tim respons insiden tingkat nasional atau sektor tertentu (misalnya, CERT untuk sektor keuangan). Mereka berfungsi sebagai pusat koordinasi untuk berbagi informasi ancaman dan praktik terbaik di antara berbagai organisasi. Jadi, <em>CERT adalah jenis CSIRT</em>, tetapi biasanya dengan cakupan yang lebih luas (nasional atau sektoral).</p>
 <p>Secara sederhana: <strong>SOC</strong> memantau dan mendeteksi, <strong>CSIRT</strong> merespons dan memulihkan, sementara <strong>CERT</strong> seringkali merupakan CSIRT dengan skala koordinasi yang lebih besar.</p>',
-                'categories' => [1, 4], // Tips Keamanan, Panduan Teknis
-                'tags' => [4], // Keamanan Jaringan
+                'categories' => ['tips-keamanan', 'panduan-teknis'],
+                'tags' => ['keamanan-jaringan'],
             ],
             [
                 'title' => 'Keterampilan Kunci yang Harus Dimiliki Anggota Tim CSIRT',
@@ -129,8 +131,8 @@ class PostSeeder extends Seeder
   <li><strong>Ketenangan di Bawah Tekanan:</strong> Insiden siber bisa sangat menegangkan. Kemampuan untuk tetap tenang, fokus, dan membuat keputusan yang rasional sangatlah penting.</li>
   <li><strong>Kerja Tim:</strong> Penanganan insiden adalah upaya tim. Anggota harus bisa berkolaborasi secara efektif dengan rekan satu tim dan departemen lain.</li>
 </ul>',
-                'categories' => [1], // Tips Keamanan
-                'tags' => [1], // Tips Keamanan
+                'categories' => ['tips-keamanan'],
+                'tags' => ['phishing'],
             ],
             [
                 'title' => 'Peran Penting CSIRT dalam Arsitektur Zero Trust',
@@ -143,8 +145,8 @@ class PostSeeder extends Seeder
 <p>Prinsip "selalu verifikasi" berarti akan ada lebih banyak sinyal dan anomali yang perlu diinvestigasi. CSIRT adalah tim yang bertugas menyelidiki anomali ini. Ketika kebijakan Zero Trust memblokir akses yang tidak biasa, CSIRT akan menganalisis mengapa itu terjadi. Apakah itu upaya serangan yang sah atau hanya <em>false positive</em>? Kemampuan CSIRT untuk merespons dengan cepat memastikan bahwa keamanan tetap terjaga tanpa menghambat produktivitas secara tidak perlu.</p>
 <h3>Menyempurnakan Kebijakan Akses</h3>
 <p>Temuan dari investigasi insiden oleh CSIRT menjadi umpan balik yang sangat penting untuk menyempurnakan kebijakan akses dalam arsitektur Zero Trust. Jika CSIRT menemukan bahwa penyerang berhasil mengeksploitasi kebijakan yang terlalu longgar, mereka dapat merekomendasikan pengetatan aturan akses untuk mencegah serangan serupa di masa depan. Dengan demikian, CSIRT menciptakan siklus perbaikan berkelanjutan untuk postur keamanan Zero Trust.</p>',
-                'categories' => [4], // Panduan Teknis
-                'tags' => [4], // Keamanan Jaringan
+                'categories' => ['panduan-teknis'],
+                'tags' => ['keamanan-jaringan'],
             ],
             [
                 'title' => 'Tantangan Umum yang Dihadapi oleh Tim CSIRT Saat Ini',
@@ -161,8 +163,8 @@ class PostSeeder extends Seeder
 <p>Sifat pekerjaan yang reaktif dan bertekanan tinggi membuat anggota CSIRT rentan terhadap <em>burnout</em>. Mereka harus selalu siaga dan sering bekerja di luar jam kerja untuk menangani insiden kritis. Menjaga kesejahteraan mental tim adalah tantangan manajemen yang signifikan.</p>
 <h3>5. Visibilitas yang Terbatas</h3>
 <p>Dengan adopsi cloud, kerja jarak jauh, dan perangkat IoT, permukaan serangan (<em>attack surface</em>) menjadi sangat luas dan terfragmentasi. Tim CSIRT seringkali kesulitan mendapatkan visibilitas penuh atas seluruh aset digital organisasi, membuat deteksi dan respons menjadi lebih sulit.</p>',
-                'categories' => [2], // Berita Siber
-                'tags' => [1, 2], // Tips Keamanan, Ransomware
+                'categories' => ['berita-siber'],
+                'tags' => ['phishing', 'ransomware'],
             ],
             [
                 'title' => 'Mengukur Keberhasilan Tim CSIRT: Metrik dan KPI Penting',
@@ -178,8 +180,8 @@ class PostSeeder extends Seeder
 <h3>4. Dampak Bisnis dari Insiden</h3>
 <p>Meskipun lebih sulit diukur, metrik ini mencoba mengkuantifikasi kerugian akibat insiden, baik dalam bentuk finansial (misalnya, biaya pemulihan, denda) maupun non-finansial (misalnya, waktu henti layanan, kerusakan reputasi). Tujuan CSIRT adalah untuk meminimalkan dampak ini dari waktu ke waktu.</p>
 <p>Dengan melacak KPI ini secara konsisten, tim CSIRT tidak hanya dapat membuktikan nilai mereka, tetapi juga mengidentifikasi area mana dalam proses mereka yang memerlukan perbaikan.</p>',
-                'categories' => [4], // Panduan Teknis
-                'tags' => [1], // Tips Keamanan
+                'categories' => ['panduan-teknis'],
+                'tags' => ['phishing'],
             ],
             [
                 'title' => 'Masa Depan CSIRT: Integrasi AI dan Otomatisasi',
@@ -202,10 +204,13 @@ class PostSeeder extends Seeder
 </ul>
 <h3>Manusia Tetap di Pusat Kendali</h3>
 <p>Penting untuk diingat bahwa AI dan otomatisasi adalah alat untuk <strong>membantu</strong>, bukan menggantikan, analis manusia. Kreativitas, intuisi, dan kemampuan pemecahan masalah kompleks dari seorang analis tetap tidak tergantikan. Masa depan CSIRT adalah model hibrida, di mana mesin melakukan pekerjaan berat, membebaskan manusia untuk melakukan apa yang terbaik dari mereka: berpikir secara strategis dan mengalahkan musuh yang juga manusia.</p>',
-                'categories' => [2, 4], // Berita Siber, Panduan Teknis
-                'tags' => [4, 2], // Keamanan Jaringan, Ransomware
+                'categories' => ['berita-siber', 'panduan-teknis'],
+                'tags' => ['keamanan-jaringan', 'ransomware'],
             ],
         ];
+
+        $categoryMap = Category::all()->keyBy('slug');
+        $tagMap = Tag::all()->keyBy('slug');
 
         // Loop through the array and create posts
         foreach ($posts as $post) {
@@ -235,11 +240,13 @@ class PostSeeder extends Seeder
 
             // Attach the relationships
             if (! empty($post['categories'])) {
-                $newPost->categories()->attach($post['categories']);
+                $categoryIds = collect($post['categories'])->map(fn ($s) => $categoryMap[$s]->id)->all();
+                $newPost->categories()->attach($categoryIds);
             }
 
             if (! empty($post['tags'])) {
-                $newPost->tags()->attach($post['tags']);
+                $tagIds = collect($post['tags'])->map(fn ($s) => $tagMap[$s]->id)->all();
+                $newPost->tags()->attach($tagIds);
             }
         }
     }

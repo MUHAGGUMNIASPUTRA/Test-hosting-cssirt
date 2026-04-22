@@ -1,11 +1,11 @@
 <?php
 
 use App\Enums\AttachmentType;
-use App\Models\Attachment;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 /**
  * Migrates legacy inline attachment columns to the unified `attachments` table.
@@ -26,19 +26,19 @@ return new class extends Migration
         // ── 1. Add nullable FK columns ────────────────────────────────────────
 
         Schema::table('incidents', function (Blueprint $table) {
-            $table->foreignId('attachment_id')->nullable()->constrained('attachments')->nullOnDelete()->after('attachment');
+            $table->foreignUuid('attachment_id')->nullable()->constrained('attachments')->nullOnDelete()->after('attachment');
         });
 
         Schema::table('incident_logs', function (Blueprint $table) {
-            $table->foreignId('attachment_id')->nullable()->constrained('attachments')->nullOnDelete()->after('attachment_type');
+            $table->foreignUuid('attachment_id')->nullable()->constrained('attachments')->nullOnDelete()->after('attachment_type');
         });
 
         Schema::table('documents', function (Blueprint $table) {
-            $table->foreignId('official_attachment_id')->nullable()->constrained('attachments')->nullOnDelete()->after('official_file_path');
+            $table->foreignUuid('official_attachment_id')->nullable()->constrained('attachments')->nullOnDelete()->after('official_file_path');
         });
 
         Schema::table('posts', function (Blueprint $table) {
-            $table->foreignId('image_id')->nullable()->constrained('attachments')->nullOnDelete()->after('image');
+            $table->foreignUuid('image_id')->nullable()->constrained('attachments')->nullOnDelete()->after('image');
         });
 
         // ── 2. Migrate existing data ──────────────────────────────────────────
@@ -89,19 +89,23 @@ return new class extends Migration
 
         // Drop FK columns (data not restored)
         Schema::table('incidents', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('attachment_id');
+            $table->dropForeign(['attachment_id']);
+            $table->dropColumn('attachment_id');
         });
 
         Schema::table('incident_logs', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('attachment_id');
+            $table->dropForeign(['attachment_id']);
+            $table->dropColumn('attachment_id');
         });
 
         Schema::table('documents', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('official_attachment_id');
+            $table->dropForeign(['official_attachment_id']);
+            $table->dropColumn('official_attachment_id');
         });
 
         Schema::table('posts', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('image_id');
+            $table->dropForeign(['image_id']);
+            $table->dropColumn('image_id');
         });
     }
 
@@ -113,7 +117,7 @@ return new class extends Migration
             ->whereNotNull('attachment')
             ->orderBy('id')
             ->each(function (object $row) {
-                $attachmentId = $this->createFromString($row->attachment, 'local', 'incidents');
+                $attachmentId = $this->createFromString($row->attachment, 'local');
                 DB::table('incidents')->where('id', $row->id)->update(['attachment_id' => $attachmentId]);
             });
     }
@@ -125,7 +129,7 @@ return new class extends Migration
             ->orderBy('id')
             ->each(function (object $row) {
                 $type = $row->attachment_type ?? (str_starts_with($row->attachment, 'http') ? 'link' : 'file');
-                $attachmentId = $this->createFromString($row->attachment, 'public', 'incidents/logs', $type);
+                $attachmentId = $this->createFromString($row->attachment, 'public', $type);
                 DB::table('incident_logs')->where('id', $row->id)->update(['attachment_id' => $attachmentId]);
             });
     }
@@ -136,7 +140,7 @@ return new class extends Migration
             ->whereNotNull('official_file_path')
             ->orderBy('id')
             ->each(function (object $row) {
-                $attachmentId = $this->createFromString($row->official_file_path, 'public', 'documents/official');
+                $attachmentId = $this->createFromString($row->official_file_path, 'public');
                 DB::table('documents')->where('id', $row->id)->update(['official_attachment_id' => $attachmentId]);
             });
     }
@@ -147,36 +151,41 @@ return new class extends Migration
             ->whereNotNull('image')
             ->orderBy('id')
             ->each(function (object $row) {
-                $attachmentId = $this->createFromString($row->image, 'public', 'posts');
+                $attachmentId = $this->createFromString($row->image, 'public');
                 DB::table('posts')->where('id', $row->id)->update(['image_id' => $attachmentId]);
             });
     }
 
     /**
      * Create an Attachment record from a legacy string value.
-     * Returns the new attachment ID.
+     * Returns the new attachment UUID.
      */
-    private function createFromString(string $value, string $disk, string $directory, ?string $explicitType = null): int
+    private function createFromString(string $value, string $disk, ?string $explicitType = null): string
     {
+        $uuid = (string) Str::uuid();
         $isLink = $explicitType === 'link' || str_starts_with($value, 'http://') || str_starts_with($value, 'https://');
 
         if ($isLink) {
-            return DB::table('attachments')->insertGetId([
+            DB::table('attachments')->insert([
+                'id' => $uuid,
                 'type' => AttachmentType::Link->value,
                 'url' => $value,
                 'filename' => basename(parse_url($value, PHP_URL_PATH) ?: $value),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+        } else {
+            DB::table('attachments')->insert([
+                'id' => $uuid,
+                'type' => AttachmentType::File->value,
+                'disk' => $disk,
+                'path' => $value,
+                'filename' => basename($value),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
 
-        return DB::table('attachments')->insertGetId([
-            'type' => AttachmentType::File->value,
-            'disk' => $disk,
-            'path' => $value,
-            'filename' => basename($value),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        return $uuid;
     }
 };

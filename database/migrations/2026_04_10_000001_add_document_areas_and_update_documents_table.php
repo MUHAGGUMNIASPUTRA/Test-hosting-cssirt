@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('document_areas', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name')->unique();
             $table->string('slug')->unique();
             $table->text('description')->nullable();
@@ -17,7 +17,7 @@ return new class extends Migration
         });
 
         Schema::table('documents', function (Blueprint $table) {
-            $table->foreignId('document_area_id')
+            $table->foreignUuid('document_area_id')
                 ->nullable()
                 ->after('id')
                 ->constrained('document_areas')

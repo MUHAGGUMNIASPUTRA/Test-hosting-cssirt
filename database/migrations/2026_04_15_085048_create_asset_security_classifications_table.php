@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('asset_security_classifications', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('asset_type');
             $table->uuid('asset_id');
             $table->tinyInteger('confidentiality')->unsigned()->default(1);

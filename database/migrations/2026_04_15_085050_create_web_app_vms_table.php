@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('web_app_vms', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignUuid('web_application_id')->constrained()->cascadeOnDelete();
             $table->string('processor')->nullable();
             $table->string('ram')->nullable();

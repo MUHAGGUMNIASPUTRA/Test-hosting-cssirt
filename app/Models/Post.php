@@ -5,6 +5,7 @@
 namespace App\Models;
 
 use App\Enums\PostStatus;
+use App\Traits\HasUuidV6;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Post extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuidV6;
 
     protected $fillable = [
         'title',

@@ -1,15 +1,19 @@
 <?php
 
-// filepath: app/Models/Incident.php
+// Tujuan: Model insiden keamanan, termasuk relasi ke aset virtual terdampak
+// Caller: IncidentController, IncidentService
+// Side Effects: none
 
 namespace App\Models;
 
 use App\Enums\IncidentPriority;
 use App\Enums\IncidentStatus;
+use App\Traits\HasUuidV6;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -19,13 +23,8 @@ use Illuminate\Support\Facades\DB;
  */
 class Incident extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuidV6;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'case_id',
         'access_token',
@@ -46,11 +45,6 @@ class Incident extends Model
         'read_at',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
     protected $casts = [
         'incident_at' => 'datetime',
         'reported_at' => 'datetime',
@@ -61,54 +55,45 @@ class Incident extends Model
         'priority' => IncidentPriority::class,
     ];
 
-    /**
-     * Get the attachment for the incident.
-     */
     public function attachment(): BelongsTo
     {
         return $this->belongsTo(Attachment::class);
     }
 
-    /**
-     * Get the type of the incident.
-     */
     public function incidentType(): BelongsTo
     {
         return $this->belongsTo(IncidentType::class);
     }
 
-    /**
-     * Get the user assigned to the incident.
-     */
     public function assignedUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
-    /**
-     * Get the logs for the incident.
-     */
     public function incidentLogs(): HasMany
     {
-        // An incident has many logs. Order by oldest first for timeline.
         return $this->hasMany(IncidentLog::class)->orderBy('created_at', 'desc');
     }
 
-    /**
-     * Generate a unique case ID with pattern CSIRT-YYYY-MM-XXX (monthly reset).
-     * Uses incident_sequences(period) table to avoid race conditions.
-     */
+    public function webApplications(): MorphToMany
+    {
+        return $this->morphedByMany(WebApplication::class, 'assetable', 'incident_virtual_assets', 'incident_id', 'assetable_id');
+    }
+
+    public function mobileApplications(): MorphToMany
+    {
+        return $this->morphedByMany(MobileApplication::class, 'assetable', 'incident_virtual_assets', 'incident_id', 'assetable_id');
+    }
+
     public static function generateCaseId(): string
     {
         $period = now()->format('Y-m');
         $year = now()->format('Y');
         $month = now()->format('m');
 
-        // Retry a few times on serialization conflicts
         for ($attempt = 0; $attempt < 5; $attempt++) {
             try {
                 return DB::transaction(function () use ($period, $year, $month) {
-                    // Lock the row for this period
                     $row = DB::table('incident_sequences')->where('period', $period)->lockForUpdate()->first();
                     if (! $row) {
                         DB::table('incident_sequences')->insert([
@@ -130,40 +115,23 @@ class Incident extends Model
                     return "CSIRT-{$year}-{$month}-{$seq}";
                 }, 3);
             } catch (\Throwable $e) {
-                // backoff then retry
-                usleep(50000); // 50ms
+                usleep(50000);
             }
         }
 
-        // Fallback: include a random suffix to guarantee uniqueness
         return 'CSIRT-'.$year.'-'.$month.'-'.str_pad((string) random_int(1, 999), 3, '0', STR_PAD_LEFT);
     }
 
-    /**
-     * Get the user who read the incident.
-     */
-    public function readBy()
+    public function readBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'read_by');
     }
 
-    /**
-     * Scope a query to only include unread incidents.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     public function scopeUnread($query)
     {
         return $query->where('is_read', false);
     }
 
-    /**
-     * Scope a query to only include read incidents.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     public function scopeRead($query)
     {
         return $query->where('is_read', true);

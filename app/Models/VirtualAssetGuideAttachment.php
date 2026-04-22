@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasUuidV6;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VirtualAssetGuideAttachment extends Model
 {
+    use HasUuidV6;
+
     protected $fillable = [
         'virtual_asset_guide_id',
         'attachment_id',

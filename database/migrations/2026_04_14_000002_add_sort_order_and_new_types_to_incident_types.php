@@ -18,6 +18,7 @@ return new class extends Migration
 
         DB::table('incident_types')->insert([
             [
+                'id' => '33333333-0000-0000-0000-000000000001',
                 'name' => 'Belum Mengetahui',
                 'slug' => 'belum-mengetahui',
                 'sort_order' => 1,
@@ -42,6 +43,7 @@ return new class extends Migration
                 'updated_at' => now(),
             ],
             [
+                'id' => '33333333-0000-0000-0000-000000000002',
                 'name' => 'Bug Hunter',
                 'slug' => 'bug-hunter',
                 'sort_order' => 2,
@@ -68,6 +70,7 @@ return new class extends Migration
                 'updated_at' => now(),
             ],
             [
+                'id' => '33333333-0000-0000-0000-000000000003',
                 'name' => 'Phishing',
                 'slug' => 'phishing',
                 'sort_order' => 3,
@@ -92,6 +95,7 @@ return new class extends Migration
                 'updated_at' => now(),
             ],
             [
+                'id' => '33333333-0000-0000-0000-000000000004',
                 'name' => 'Malware',
                 'slug' => 'malware',
                 'sort_order' => 4,
@@ -117,6 +121,7 @@ return new class extends Migration
                 'updated_at' => now(),
             ],
             [
+                'id' => '33333333-0000-0000-0000-000000000005',
                 'name' => 'Defacement',
                 'slug' => 'defacement',
                 'sort_order' => 5,
@@ -142,6 +147,7 @@ return new class extends Migration
                 'updated_at' => now(),
             ],
             [
+                'id' => '33333333-0000-0000-0000-000000000006',
                 'name' => 'Serangan DDoS',
                 'slug' => 'serangan-ddos',
                 'sort_order' => 6,
@@ -168,6 +174,7 @@ return new class extends Migration
                 'updated_at' => now(),
             ],
             [
+                'id' => '33333333-0000-0000-0000-000000000007',
                 'name' => 'Kebocoran Data',
                 'slug' => 'kebocoran-data',
                 'sort_order' => 7,
