@@ -6,11 +6,15 @@ use App\Http\Controllers\Admin\Assets\AssetGuideAcknowledgementController;
 use App\Http\Controllers\Admin\Assets\AssetSecurityNoteController;
 use App\Http\Controllers\Admin\Assets\DepartmentController as AssetDepartmentController;
 use App\Http\Controllers\Admin\Assets\EmployeeController as AssetEmployeeController;
+use App\Http\Controllers\Admin\Assets\InformationAssetController as AssetInformationAssetController;
+use App\Http\Controllers\Admin\Assets\IpAddressController as AssetIpAddressController;
 use App\Http\Controllers\Admin\Assets\LicenseController as AssetLicenseController;
 use App\Http\Controllers\Admin\Assets\LocationController as AssetLocationController;
 use App\Http\Controllers\Admin\Assets\MobileApplicationController as AssetMobileAppController;
 use App\Http\Controllers\Admin\Assets\OrganizationController as AssetOrganizationController;
+use App\Http\Controllers\Admin\Assets\PhysicalAssetController as AssetPhysicalAssetController;
 use App\Http\Controllers\Admin\Assets\PositionController as AssetPositionController;
+use App\Http\Controllers\Admin\Assets\SubdomainController as AssetSubdomainController;
 use App\Http\Controllers\Admin\Assets\TechStackCategoryController as AssetTechStackCategoryController;
 use App\Http\Controllers\Admin\Assets\TechStackController as AssetTechStackController;
 use App\Http\Controllers\Admin\Assets\VendorController as AssetVendorController;
@@ -30,6 +34,7 @@ use App\Http\Controllers\Admin\TaxonomyController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\DocumentController as ApiDocumentController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\VirtualAssetController as ApiVirtualAssetController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
@@ -112,6 +117,12 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('web-applications', AssetWebAppController::class);
     Route::resource('mobile-applications', AssetMobileAppController::class);
     Route::resource('licenses', AssetLicenseController::class);
+    Route::resource('ip-addresses', AssetIpAddressController::class)->except(['show', 'create', 'edit']);
+    Route::resource('subdomains', AssetSubdomainController::class)->except(['show', 'create', 'edit']);
+
+    // Assets — Fisik & Informasi
+    Route::resource('physical-assets', AssetPhysicalAssetController::class);
+    Route::resource('information-assets', AssetInformationAssetController::class);
 
     // Assets — Audit Logs (embedded)
     Route::post('/assets/{assetType}/{assetId}/audit-logs', [AssetAuditLogController::class, 'store'])->name('assets.audit-logs.store');
@@ -130,6 +141,7 @@ Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(func
     Route::get('/notifications/incidents', [NotificationController::class, 'getIncidentNotifications'])->name('notifications.incidents');
     Route::post('/notifications/{incident}/mark-read', [NotificationController::class, 'markAsRead'])->name('incidents.mark-read');
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+    Route::get('/virtual-assets', [ApiVirtualAssetController::class, 'index'])->name('virtual-assets.index');
 });
 
 Route::middleware('auth')->group(function () {

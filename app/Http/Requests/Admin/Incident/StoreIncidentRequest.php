@@ -29,6 +29,9 @@ class StoreIncidentRequest extends FormRequest
             'attachment_type' => ['nullable', 'in:file,link'],
             'attachment' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf,zip,doc,docx', 'max:5120'],
             'attachment_links' => ['nullable', 'string', 'max:2000'],
+            'virtual_assets' => ['nullable', 'array'],
+            'virtual_assets.*.id' => ['required_with:virtual_assets', 'uuid'],
+            'virtual_assets.*.asset_type' => ['required_with:virtual_assets', 'in:web-application,mobile-application'],
         ];
     }
 }

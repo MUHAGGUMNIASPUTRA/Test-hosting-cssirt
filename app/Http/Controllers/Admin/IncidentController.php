@@ -1,5 +1,9 @@
 <?php
 
+// Tujuan: CRUD insiden admin beserta log, manajemen status, dan aset virtual terdampak
+// Caller: routes/web.php admin group
+// Side Effects: DB write, storage I/O (attachment)
+
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\IncidentStatus;
@@ -28,12 +32,9 @@ class IncidentController extends Controller
         private readonly AttachmentService $attachmentService,
     ) {}
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request): Response
     {
-        $query = Incident::with(['incidentType', 'assignedUser']);
+        $query = Incident::with(['incidentType', 'assignedUser', 'webApplications', 'mobileApplications']);
 
         if ($request->filled('search')) {
             $search = $request->get('search');
@@ -74,9 +75,6 @@ class IncidentController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(): Response
     {
         return Inertia::render('Admin/Incidents/Create', [
@@ -85,9 +83,6 @@ class IncidentController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreIncidentRequest $request): RedirectResponse
     {
         $this->incidentService->create(
@@ -100,9 +95,6 @@ class IncidentController extends Controller
             ->with('success', 'Laporan insiden berhasil dibuat.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Incident $incident): Response
     {
         if (! $incident->is_read) {
@@ -114,14 +106,15 @@ class IncidentController extends Controller
         }
 
         return Inertia::render('Admin/Incidents/Show', [
-            'incident' => $incident->load(['incidentType', 'assignedUser', 'incidentLogs.user', 'incidentLogs.attachment', 'attachment']),
+            'incident' => $incident->load([
+                'incidentType', 'assignedUser',
+                'incidentLogs.user', 'incidentLogs.attachment', 'attachment',
+                'webApplications', 'mobileApplications',
+            ]),
             'staffUsers' => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Incident $incident): RedirectResponse|Response
     {
         if ($incident->status === IncidentStatus::Ditutup) {
@@ -129,15 +122,12 @@ class IncidentController extends Controller
         }
 
         return Inertia::render('Admin/Incidents/Create', [
-            'incident' => $incident->load('attachment'),
+            'incident' => $incident->load(['attachment', 'webApplications', 'mobileApplications']),
             'incidentTypes' => IncidentType::orderBy('sort_order')->get(['id', 'name', 'description', 'guide']),
             'staffUsers' => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateIncidentRequest $request, Incident $incident): RedirectResponse
     {
         if ($incident->status === IncidentStatus::Ditutup) {
@@ -157,9 +147,6 @@ class IncidentController extends Controller
             ->with('success', 'Insiden berhasil diperbarui.');
     }
 
-    /**
-     * Update the management status of an incident.
-     */
     public function updateManagement(UpdateManagementRequest $request, Incident $incident): RedirectResponse
     {
         if ($incident->status === IncidentStatus::Ditutup) {
@@ -171,9 +158,6 @@ class IncidentController extends Controller
         return back()->with('success', 'Status insiden berhasil diperbarui.');
     }
 
-    /**
-     * Store a new log for the specified incident.
-     */
     public function addLog(AddLogRequest $request, Incident $incident): RedirectResponse
     {
         if ($incident->status === IncidentStatus::Ditutup) {
@@ -201,9 +185,6 @@ class IncidentController extends Controller
         return back()->with('success', 'Catatan berhasil ditambahkan.');
     }
 
-    /**
-     * Update an existing log entry.
-     */
     public function updateLog(UpdateLogRequest $request, Incident $incident, IncidentLog $log): RedirectResponse
     {
         abort_if($log->incident_id !== $incident->id, 404);
@@ -236,9 +217,6 @@ class IncidentController extends Controller
         return back()->with('success', 'Catatan berhasil diperbarui.');
     }
 
-    /**
-     * Delete a log entry.
-     */
     public function destroyLog(Incident $incident, IncidentLog $log): RedirectResponse
     {
         abort_if($log->incident_id !== $incident->id, 404);
@@ -250,9 +228,6 @@ class IncidentController extends Controller
         return back()->with('success', 'Catatan berhasil dihapus.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Incident $incident): RedirectResponse
     {
         try {

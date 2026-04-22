@@ -1,11 +1,17 @@
 <?php
 
+// Tujuan: Service CRUD insiden, termasuk log perubahan dan sinkronisasi aset virtual terdampak
+// Caller: IncidentController (admin), PublicIncidentController (publik)
+// Side Effects: DB write, storage I/O (attachment)
+
 namespace App\Services;
 
 use App\Models\Attachment;
 use App\Models\Incident;
 use App\Models\IncidentType;
+use App\Models\MobileApplication;
 use App\Models\User;
+use App\Models\WebApplication;
 use Carbon\Carbon;
 use Fruitcake\LaravelDebugbar\Facades\Debugbar;
 use Illuminate\Http\UploadedFile;
@@ -16,8 +22,6 @@ class IncidentService
     public function __construct(private readonly AttachmentService $attachmentService) {}
 
     /**
-     * Get global statistics for all incidents.
-     *
      * @return array{total: int, in_progress: int, critical: int, completed: int}
      */
     public function getGlobalStats(): array
@@ -39,10 +43,7 @@ class IncidentService
         ];
     }
 
-    /**
-     * Create a new incident and log the creation.
-     */
-    public function create(array $validated, ?UploadedFile $file, int $actorId, string $disk = 'public', string $directory = 'attachments'): Incident
+    public function create(array $validated, ?UploadedFile $file, string $actorId, string $disk = 'public', string $directory = 'attachments'): Incident
     {
         $attachment = $this->attachmentService->resolve(
             $file,
@@ -69,6 +70,8 @@ class IncidentService
             'reported_at' => now(),
         ]);
 
+        $this->syncVirtualAssets($incident, $validated['virtual_assets'] ?? []);
+
         $incident->incidentLogs()->create([
             'log_message' => 'Tiket insiden dibuat',
             'user_id' => $actorId,
@@ -77,14 +80,11 @@ class IncidentService
         return $incident;
     }
 
-    /**
-     * Update an existing incident and log all changes.
-     */
     public function update(
         Incident $incident,
         array $validated,
         ?UploadedFile $file,
-        int $actorId,
+        string $actorId,
         string $disk = 'public',
         string $directory = 'attachments',
     ): void {
@@ -112,28 +112,23 @@ class IncidentService
 
         $this->logChanges($incident, $coreData, $actorId, $attachment);
         $incident->update($coreData);
+
+        $this->syncVirtualAssets($incident, $validated['virtual_assets'] ?? []);
     }
 
-    /**
-     * Update management fields only (status, priority, assigned_to) and log changes.
-     */
-    public function updateManagement(Incident $incident, array $validated, int $actorId): void
+    public function updateManagement(Incident $incident, array $validated, string $actorId): void
     {
         $this->logChanges($incident, $validated, $actorId);
         $incident->update($validated);
     }
 
-    /**
-     * Log changes to an incident compared to its current state.
-     */
-    public function logChanges(Incident $incident, array $newData, int $actorId, ?Attachment $newAttachment = null): void
+    public function logChanges(Incident $incident, array $newData, string $actorId, ?Attachment $newAttachment = null): void
     {
         $changes = [];
         $isPublic = false;
         $originalData = $incident->getOriginal();
         $normalized = $this->normalizeDataForComparison($originalData, $newData);
 
-        // Prefetch reference names to avoid N+1
         $typeIds = collect([$originalData['incident_type_id'] ?? null, $newData['incident_type_id'] ?? null])->filter()->unique()->values();
         $typesById = $typeIds->isEmpty() ? collect() : IncidentType::whereIn('id', $typeIds)->get(['id', 'name'])->keyBy('id');
 
@@ -200,8 +195,41 @@ class IncidentService
     }
 
     /**
-     * Normalize field values for accurate comparison between original and new data.
+     * Sync virtual assets (web/mobile applications) linked to this incident.
      *
+     * @param  array<array{id: string, asset_type: string}>  $virtualAssets
+     */
+    public function syncVirtualAssets(Incident $incident, array $virtualAssets): void
+    {
+        DB::table('incident_virtual_assets')->where('incident_id', $incident->id)->delete();
+
+        $typeMap = [
+            'web-application' => WebApplication::class,
+            'mobile-application' => MobileApplication::class,
+        ];
+
+        $rows = [];
+        $now = now();
+        foreach ($virtualAssets as $asset) {
+            $type = $typeMap[$asset['asset_type'] ?? ''] ?? null;
+            if (! $type || empty($asset['id'])) {
+                continue;
+            }
+            $rows[] = [
+                'incident_id' => $incident->id,
+                'assetable_type' => $type,
+                'assetable_id' => $asset['id'],
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+
+        if (! empty($rows)) {
+            DB::table('incident_virtual_assets')->insert($rows);
+        }
+    }
+
+    /**
      * @return array{original: array<string, mixed>, new: array<string, mixed>}
      */
     private function normalizeDataForComparison(array $originalData, array $newData): array

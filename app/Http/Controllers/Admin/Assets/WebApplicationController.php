@@ -89,6 +89,7 @@ class WebApplicationController extends Controller
             'securityClassification',
             'securityNotes.user', 'securityNotes.attachment',
             'auditLogs.user', 'auditLogs.attachment',
+            'incidents.incidentType',
         ]);
 
         return Inertia::render('Admin/Assets/WebApplications/Show', [
