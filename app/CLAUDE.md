@@ -218,21 +218,21 @@ Jalankan manual jika perlu:
 
 ### Controllers Asset (`Admin/Assets/`)
 
-| Controller                    | Route prefix                              | Catatan                                                      |
-| ----------------------------- | ----------------------------------------- | ------------------------------------------------------------ |
-| `OrganizationController`      | `admin/organizations`                     | CRUD organisasi; inline dialog (no create/edit page)         |
-| `DepartmentController`        | `admin/departments`                       | CRUD departemen; inline dialog                               |
-| `PositionController`          | `admin/positions`                         | CRUD jabatan; inline dialog                                  |
-| `LocationController`          | `admin/locations`                         | CRUD lokasi; inline dialog                                   |
-| `EmployeeController`          | `admin/employees`                         | Full CRUD pegawai (ada create/edit page, no show)            |
-| `VendorController`            | `admin/vendors`                           | Full CRUD vendor (ada create/edit page, no show)             |
-| `TechStackCategoryController` | `admin/tech-stack-categories`             | CRUD kategori tech stack; inline dialog                      |
-| `TechStackController`         | `admin/tech-stacks`                       | Full CRUD tech stack (ada create/edit page, no show)         |
-| `VirtualAssetGuideController` | `admin/virtual-asset-guides`              | Full CRUD panduan aset virtual (ada create/edit page)        |
-| `WebApplicationController`    | `admin/web-applications`                  | Full CRUD aplikasi web (ada create/edit page, no show)       |
-| `MobileApplicationController` | `admin/mobile-applications`               | Full CRUD aplikasi mobile (ada create/edit page, no show)    |
-| `LicenseController`           | `admin/licenses`                          | Full CRUD lisensi (ada create/edit/show page)                |
-| `AssetAuditLogController`     | `admin/assets/{type}/{id}/audit-logs`     | Tambah/edit/hapus audit log; embedded di halaman detail aset |
+| Controller                    | Route prefix                              | Catatan                                                                |
+| ----------------------------- | ----------------------------------------- | ---------------------------------------------------------------------- |
+| `OrganizationController`      | `admin/organizations`                     | CRUD organisasi; inline dialog (no create/edit page)                   |
+| `DepartmentController`        | `admin/departments`                       | CRUD departemen; inline dialog                                         |
+| `PositionController`          | `admin/positions`                         | CRUD jabatan; inline dialog                                            |
+| `LocationController`          | `admin/locations`                         | CRUD lokasi; inline dialog                                             |
+| `EmployeeController`          | `admin/employees`                         | Full CRUD pegawai (ada create/edit page, no show)                      |
+| `VendorController`            | `admin/vendors`                           | Full CRUD vendor (ada create/edit page, no show)                       |
+| `TechStackCategoryController` | `admin/tech-stack-categories`             | CRUD kategori tech stack; inline dialog                                |
+| `TechStackController`         | `admin/tech-stacks`                       | Full CRUD tech stack (ada create/edit page, no show)                   |
+| `VirtualAssetGuideController` | `admin/virtual-asset-guides`              | Full CRUD panduan aset virtual (ada create/edit page)                  |
+| `WebApplicationController`    | `admin/web-applications`                  | Full CRUD aplikasi web (ada create/edit page, no show)                 |
+| `MobileApplicationController` | `admin/mobile-applications`               | Full CRUD aplikasi mobile (ada create/edit page, no show)              |
+| `LicenseController`           | `admin/licenses`                          | Full CRUD lisensi (ada create/edit/show page)                          |
+| `AssetAuditLogController`     | `admin/assets/{type}/{id}/audit-logs`     | Tambah/edit/hapus audit log; embedded di halaman detail aset           |
 | `AssetSecurityNoteController` | `admin/assets/{type}/{id}/security-notes` | Store/update/destroy catatan keamanan; embedded di halaman detail aset |
 
 ---
