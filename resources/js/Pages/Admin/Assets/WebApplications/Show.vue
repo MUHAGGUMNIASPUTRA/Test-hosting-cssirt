@@ -11,9 +11,11 @@ const props = defineProps({
 const wa = props.webApplication
 
 const securityData = computed(() => ({
-  confidentiality: wa?.security_classification?.confidentiality ?? null,
-  integrity: wa?.security_classification?.integrity ?? null,
-  availability: wa?.security_classification?.availability ?? null,
+  confidentiality:
+    props.webApplication?.security_classification?.confidentiality ?? null,
+  integrity: props.webApplication?.security_classification?.integrity ?? null,
+  availability:
+    props.webApplication?.security_classification?.availability ?? null,
 }))
 
 const stageSeverity = (val) =>
@@ -307,7 +309,7 @@ const handleDelete = () => {
             :readonly-scores="true"
             asset-type="web-application"
             :asset-id="wa.id"
-            :security-notes="wa.security_notes ?? []"
+            :security-notes="webApplication.security_notes ?? []"
           />
 
           <!-- Panduan Referensi -->

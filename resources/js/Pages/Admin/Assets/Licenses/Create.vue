@@ -201,6 +201,9 @@ const submit = () => {
 
           <SecurityClassificationForm
             :model-value="form.security"
+            asset-type="license"
+            :asset-id="lic?.id ?? null"
+            :security-notes="license?.security_notes ?? []"
             @update:model-value="(v) => (form.security = v)"
           />
         </div>

@@ -9,11 +9,14 @@ const props = defineProps({
 })
 
 const ma = props.mobileApplication
-console.log('Mobile Application Data:', ma)
+
 const securityData = computed(() => ({
-  confidentiality: ma?.security_classification?.confidentiality ?? null,
-  integrity: ma?.security_classification?.integrity ?? null,
-  availability: ma?.security_classification?.availability ?? null,
+  confidentiality:
+    props.mobileApplication?.security_classification?.confidentiality ?? null,
+  integrity:
+    props.mobileApplication?.security_classification?.integrity ?? null,
+  availability:
+    props.mobileApplication?.security_classification?.availability ?? null,
 }))
 
 const stageSeverity = (val) =>
@@ -264,7 +267,7 @@ const handleDelete = () => {
             :readonly-scores="true"
             asset-type="mobile-application"
             :asset-id="ma.id"
-            :security-notes="ma.security_notes ?? []"
+            :security-notes="mobileApplication.security_notes ?? []"
           />
 
           <!-- Panduan Referensi -->

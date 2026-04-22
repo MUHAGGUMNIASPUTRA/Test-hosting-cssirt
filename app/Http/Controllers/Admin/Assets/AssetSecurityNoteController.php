@@ -45,14 +45,19 @@ class AssetSecurityNoteController extends Controller
     {
         $this->authorize('update', $securityNote);
 
-        $attachment = $this->attachmentService->resolve(
-            file: $request->file('attachment_file'),
-            type: $request->input('attachment_type'),
-            linkValue: $request->input('attachment_link'),
-            existing: $securityNote->attachment,
-            disk: 'public',
-            directory: 'assets/security-notes',
-        );
+        if ($request->boolean('remove_attachment')) {
+            $this->attachmentService->delete($securityNote->attachment);
+            $attachment = null;
+        } else {
+            $attachment = $this->attachmentService->resolve(
+                file: $request->file('attachment_file'),
+                type: $request->input('attachment_type'),
+                linkValue: $request->input('attachment_link'),
+                existing: $securityNote->attachment,
+                disk: 'public',
+                directory: 'assets/security-notes',
+            );
+        }
 
         $securityNote->update([
             'message' => $request->input('message'),

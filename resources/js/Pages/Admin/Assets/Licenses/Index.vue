@@ -190,6 +190,11 @@ const handleDelete = () => {
         <Column header="Aksi" :pt="{ columnHeaderContent: 'justify-end' }">
           <template #body="{ data }">
             <div class="flex justify-end gap-1">
+              <Link :href="route('admin.licenses.show', data.id)">
+                <Button size="small" severity="info" variant="outlined"
+                  ><IconEye size="15"
+                /></Button>
+              </Link>
               <Link :href="route('admin.licenses.edit', data.id)">
                 <Button size="small" severity="secondary" variant="outlined"
                   ><IconEdit size="15"
