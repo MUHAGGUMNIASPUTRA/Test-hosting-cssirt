@@ -155,6 +155,7 @@ Category      belongsToMany Post
 Tag           belongsToMany Post
 Incident      belongsTo IncidentType | belongsTo User (assigned_to) | hasMany IncidentLog
               | belongsTo Attachment (attachment_id)
+              | morphToMany WebApplication, MobileApplication (via incident_virtual_assets)
 IncidentType  hasMany Incident
 IncidentLog   belongsTo Incident, User | belongsTo Attachment (attachment_id)
 Attachment    type: file|link — dipakai oleh Incident, IncidentLog, Document (official), Post (image)
@@ -165,6 +166,9 @@ Rating        belongsTo Post, User
 Document      belongsTo DocumentArea | belongsTo Attachment (official_attachment_id)
               | draft_file_path: string URL plain (Word doc, admin-only)
 DocumentArea  hasMany Document
+WebAppNetwork belongsTo WebApplication | belongsTo IpAddress (nullable FK) | belongsTo Subdomain (nullable FK)
+IpAddress     master data IP (private_ip wajib, public_ip opsional)
+Subdomain     master data subdomain/domain
 ```
 
 ---
@@ -264,3 +268,8 @@ Format Vue/JS ada di [`resources/js/CLAUDE.md`](resources/js/CLAUDE.md).
 - **`case_id`** insiden digenerate otomatis (format: `INC-YYYYMMDD-XXXX`).
 - **Pagination** di halaman admin selalu server-side via `useAdminTable` composable.
 - **Priority enum** di DB adalah `Kritis` (bukan `Kritikal`) di migration awal, tapi migration `2025_07_29` mengubahnya — pastikan konsisten dengan nilai terbaru `Kritikal`.
+- **UUID** dipakai di semua ID model asset (WebApplication, MobileApplication, PhysicalAsset, InformationAsset, Employee, Vendor, dll.) via trait `HasUuidV6`.
+- **Jaringan WebApplication** disimpan di `web_app_networks` dengan FK `ip_address_id` → `ip_addresses` dan `subdomain_id` → `subdomains`. Form picker-only (tanpa input manual). Field legacy `local_ip`/`public_ip`/`dns` masih ada di kolom DB untuk data lama.
+- **Virtual assets insiden** dikirim sebagai `virtual_assets: [{id, asset_type}]` (bukan `virtual_asset_ids`). `asset_type` harus `'web-application'` atau `'mobile-application'`.
+- **Tab navigation**: WebApplications, InformationAssets, PhysicalAssets, dan Incidents Create/Show semua menggunakan `<Tabs>` PrimeVue. Error otomatis memindahkan ke tab yang relevan via `watch(form.errors, ...)` + `tabFieldMap`.
+- **NetworkSpecSection** menggunakan `NetworkIpPickerDialog` dan `NetworkSubdomainPickerDialog` — picker dari master data, tanpa input manual. Emit `refresh` dengan key `'ipAddresses'` atau `'subdomains'` untuk trigger `router.reload`.
