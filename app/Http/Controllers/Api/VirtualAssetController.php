@@ -20,13 +20,19 @@ class VirtualAssetController extends Controller
         $limit = 20;
 
         $webApps = WebApplication::select(['id', 'name', 'app_status'])
-            ->when($search, fn ($q) => $q->where('name', 'ilike', "%{$search}%"))
+            ->with('primaryNetwork.subdomain')
+            ->when($search, fn ($q) => $q->where(function ($subQ) use ($search) {
+                $subQ->whereHas('primaryNetwork.subdomain', fn ($sq) => $sq->where('subdomain', 'ilike', "%{$search}%"))
+                    ->orWhere('name', 'ilike', "%{$search}%");
+            }))
             ->orderBy('name')
             ->limit($limit)
             ->get()
             ->map(fn ($item) => [
                 'id' => $item->id,
-                'name' => $item->name,
+                'name' => $item->primaryNetwork?->subdomain?->subdomain
+                    ? "{$item->name} ({$item->primaryNetwork->subdomain->subdomain})"
+                    : $item->name,
                 'asset_type' => 'web-application',
                 'asset_type_label' => 'Aplikasi Web',
                 'status' => $item->app_status?->value,

@@ -174,16 +174,17 @@ const { isDesktop } = useResponsive()
       </div>
 
       <!-- Aset Virtual Terdampak -->
-      <div
-        v-if="
-          incident.web_applications?.length ||
-          incident.mobile_applications?.length
-        "
-      >
+      <div>
         <label class="mb-2 block font-medium text-slate-700"
           >Aset Virtual Terdampak</label
         >
-        <div class="flex flex-wrap gap-2">
+        <div
+          v-if="
+            incident.web_applications?.length ||
+            incident.mobile_applications?.length
+          "
+          class="flex flex-wrap gap-2"
+        >
           <a
             v-for="app in incident.web_applications"
             :key="app.id"
@@ -202,6 +203,9 @@ const { isDesktop } = useResponsive()
             <span class="text-xs font-semibold text-violet-400">Mobile</span>
             <span class="text-slate-700">{{ app.name }}</span>
           </a>
+        </div>
+        <div v-else class="rounded-lg border border-slate-200 bg-slate-50 p-2">
+          <p class="text-slate-500">Belum ada aset</p>
         </div>
       </div>
     </div>

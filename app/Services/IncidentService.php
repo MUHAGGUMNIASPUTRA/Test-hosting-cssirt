@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Fruitcake\LaravelDebugbar\Facades\Debugbar;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class IncidentService
 {
@@ -218,6 +219,7 @@ class IncidentService
                 continue;
             }
             $rows[] = [
+                'id' => Str::uuid()->toString(),
                 'incident_id' => $incident->id,
                 'assetable_type' => $type,
                 'assetable_id' => $asset['id'],
