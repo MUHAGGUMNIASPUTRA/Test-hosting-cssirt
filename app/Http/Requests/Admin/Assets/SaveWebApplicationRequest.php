@@ -39,12 +39,11 @@ class SaveWebApplicationRequest extends FormRequest
             'vms.*.hdd' => ['nullable', 'string', 'max:100'],
 
             'networks' => [$isDiterima ? 'required' : 'nullable', 'array'],
-            'networks.0.local_ip' => [$isDiterima ? 'required' : 'nullable', 'string', 'max:100'],
+            'networks.0.ip_address_id' => [$isDiterima ? 'required' : 'nullable', 'uuid', 'exists:ip_addresses,id'],
             'networks.0.environment' => [$isDiterima ? 'required' : 'nullable', 'string', 'max:100'],
             'networks.*.environment' => ['nullable', 'string', 'max:100'],
-            'networks.*.dns' => ['nullable', 'string', 'max:255'],
-            'networks.*.local_ip' => ['nullable', 'string', 'max:100'],
-            'networks.*.public_ip' => ['nullable', 'string', 'max:100'],
+            'networks.*.ip_address_id' => ['nullable', 'uuid', 'exists:ip_addresses,id'],
+            'networks.*.subdomain_id' => ['nullable', 'uuid', 'exists:subdomains,id'],
 
             'tech_stacks' => ['nullable', 'array'],
             'tech_stacks.*.tech_stack_id' => ['required', 'uuid', 'exists:tech_stacks,id'],
@@ -66,7 +65,7 @@ class SaveWebApplicationRequest extends FormRequest
             'owner_org_id.required' => 'Pemilik aset wajib dipilih.',
             'owner_employee_id.required_if' => 'Pegawai penanggung jawab wajib dipilih jika kontak diatur manual.',
             'networks.required' => 'Jaringan wajib diisi untuk aplikasi yang sudah diterima.',
-            'networks.0.local_ip.required' => 'IP Lokal production wajib diisi untuk aplikasi yang sudah diterima.',
+            'networks.0.ip_address_id.required' => 'IP Address production wajib dipilih untuk aplikasi yang sudah diterima.',
             'networks.0.environment.required' => 'Environment production wajib diisi untuk aplikasi yang sudah diterima.',
         ];
     }

@@ -1,5 +1,9 @@
 <?php
 
+// Tujuan: CRUD aplikasi web beserta sinkronisasi jaringan, tech stack, VM, dan keamanan
+// Caller: routes/web.php admin group
+// Side Effects: DB write
+
 namespace App\Http\Controllers\Admin\Assets;
 
 use App\Enums\AppStatus;
@@ -8,8 +12,10 @@ use App\Enums\HttpsStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Assets\SaveWebApplicationRequest;
 use App\Models\Employee;
+use App\Models\IpAddress;
 use App\Models\Location;
 use App\Models\Organization;
+use App\Models\Subdomain;
 use App\Models\TechStack;
 use App\Models\TechStackCategory;
 use App\Models\Vendor;
@@ -27,12 +33,16 @@ class WebApplicationController extends Controller
 
     public function index(Request $request): Response
     {
-        $query = WebApplication::with(['location', 'ownerOrg', 'networks' => fn ($q) => $q->where('is_primary', true)])->latest();
+        $query = WebApplication::with([
+            'location',
+            'ownerOrg',
+            'networks' => fn ($q) => $q->where('is_primary', true)->with(['ipAddress', 'subdomain']),
+        ])->latest();
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'ilike', '%'.$request->search.'%')
-                    ->orWhereHas('networks', fn ($nq) => $nq->where('dns', 'ilike', '%'.$request->search.'%'));
+                    ->orWhereHas('networks', fn ($nq) => $nq->where('is_primary', true));
             });
         }
 
@@ -85,7 +95,8 @@ class WebApplicationController extends Controller
     {
         $webApplication->load([
             'location', 'providerOrg', 'ownerOrg', 'ownerEmployee',
-            'vendor', 'vms', 'networks', 'techStacks.techStack.category',
+            'vendor', 'vms', 'networks.ipAddress', 'networks.subdomain',
+            'techStacks.techStack.category',
             'securityClassification',
             'securityNotes.user', 'securityNotes.attachment',
             'auditLogs.user', 'auditLogs.attachment',
@@ -102,10 +113,12 @@ class WebApplicationController extends Controller
     {
         $webApplication->load([
             'location', 'providerOrg', 'ownerOrg', 'ownerEmployee',
-            'vendor', 'vms', 'networks', 'techStacks.techStack',
+            'vendor', 'vms', 'networks.ipAddress', 'networks.subdomain',
+            'techStacks.techStack',
             'securityClassification',
             'securityNotes.user', 'securityNotes.attachment',
             'auditLogs.user', 'auditLogs.attachment',
+            'incidents.incidentType',
         ]);
 
         return Inertia::render('Admin/Assets/WebApplications/Create', [
@@ -157,6 +170,8 @@ class WebApplicationController extends Controller
             'employees' => Employee::where('is_active', true)->orderBy('name')->get(['id', 'name']),
             'techStacks' => TechStack::with('category')->orderBy('name')->get(['id', 'name', 'category_id']),
             'techStackCategories' => TechStackCategory::orderBy('name')->get(['id', 'name']),
+            'ipAddresses' => IpAddress::orderBy('private_ip')->get(['id', 'private_ip', 'public_ip', 'description']),
+            'subdomains' => Subdomain::orderBy('subdomain')->get(['id', 'subdomain', 'description']),
             'stageOptions' => collect(AssetStage::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
             'appStatusOptions' => collect(AppStatus::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),
             'httpsStatusOptions' => collect(HttpsStatus::cases())->map(fn ($e) => ['name' => $e->label(), 'value' => $e->value])->values()->all(),

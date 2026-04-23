@@ -200,12 +200,34 @@ const sidebarItems = [
   {
     label: 'Aset Fisik',
     icon: IconServer,
-    route: 'admin.physical-assets.index',
+    items: [
+      {
+        label: 'Daftar Aset Fisik',
+        icon: IconFileDescription,
+        route: 'admin.physical-assets.index',
+      },
+      {
+        label: 'Tambah Aset Fisik',
+        icon: IconFilePlus,
+        route: 'admin.physical-assets.create',
+      },
+    ],
   },
   {
     label: 'Aset Informasi',
     icon: IconDatabase,
-    route: 'admin.information-assets.index',
+    items: [
+      {
+        label: 'Daftar Aset Informasi',
+        icon: IconFileDescription,
+        route: 'admin.information-assets.index',
+      },
+      {
+        label: 'Tambah Aset Informasi',
+        icon: IconFilePlus,
+        route: 'admin.information-assets.create',
+      },
+    ],
   },
   { separator: true },
   {

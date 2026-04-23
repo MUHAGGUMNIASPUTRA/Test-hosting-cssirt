@@ -1,3 +1,6 @@
+<!-- Tujuan: Daftar aplikasi web admin dengan filter, pagination, dan quick-add IP/Subdomain -->
+<!-- Caller: WebApplicationController@index -->
+<!-- Side Effects: none -->
 <script setup>
 import { useAdminTable } from '@/Composables/useAdminTable'
 import { Link, router } from '@inertiajs/vue3'
@@ -57,6 +60,7 @@ const httpsSeverity = (val) =>
   ({ aktif: 'success', expired: 'danger', nonaktif: 'secondary' })[val] ??
   'secondary'
 
+// Delete
 const showDeleteDialog = ref(false)
 const toDelete = ref(null)
 
@@ -73,6 +77,20 @@ const handleDelete = () => {
     },
   })
 }
+
+// Quick-add IP Address for a row
+const showIpDialog = ref(false)
+const showSubdomainDialog = ref(false)
+
+const onIpSaved = () => {
+  showIpDialog.value = false
+  router.reload({ only: ['webApplications'] })
+}
+
+const onSubdomainSaved = () => {
+  showSubdomainDialog.value = false
+  router.reload({ only: ['webApplications'] })
+}
 </script>
 
 <template>
@@ -84,6 +102,18 @@ const handleDelete = () => {
     >
       <template #item-info>{{ toDelete?.name }}</template>
     </DeleteConfirmDialog>
+
+    <IpAddressFormDialog
+      :visible="showIpDialog"
+      @update:visible="showIpDialog = $event"
+      @saved="onIpSaved"
+    />
+
+    <SubdomainFormDialog
+      :visible="showSubdomainDialog"
+      @update:visible="showSubdomainDialog = $event"
+      @saved="onSubdomainSaved"
+    />
 
     <div class="space-y-4">
       <AdminPageHeader
@@ -106,7 +136,7 @@ const handleDelete = () => {
             <InputIcon><i class="pi pi-search" /></InputIcon>
             <InputText
               v-model="searchQuery"
-              placeholder="Cari nama atau domain..."
+              placeholder="Cari nama aplikasi..."
               class="w-full"
               @keyup.enter="applyFilters"
             />
@@ -203,12 +233,42 @@ const handleDelete = () => {
         <Column header="Jaringan Utama" class="hidden lg:table-cell">
           <template #body="{ data }">
             <div v-if="data.networks?.length" class="text-sm">
-              <p class="font-medium text-slate-700">
-                {{ data.networks[0].environment }}
+              <!-- Domain / Subdomain -->
+              <p
+                v-if="data.networks[0].subdomain"
+                class="font-medium text-slate-700"
+              >
+                {{ data.networks[0].subdomain.subdomain }}
               </p>
-              <p class="text-slate-500">
-                {{ data.networks[0].dns ?? data.networks[0].local_ip }}
+              <button
+                v-else
+                type="button"
+                class="text-xs text-blue-500 hover:underline"
+                @click="showSubdomainDialog = true"
+              >
+                Belum ada domain? Tambah →
+              </button>
+              <!-- IP Address -->
+              <p
+                v-if="data.networks[0].ip_address"
+                class="font-mono text-xs text-slate-500"
+              >
+                {{ data.networks[0].ip_address.private_ip }}
+                <span
+                  v-if="data.networks[0].ip_address.public_ip"
+                  class="text-slate-400"
+                >
+                  / {{ data.networks[0].ip_address.public_ip }}
+                </span>
               </p>
+              <button
+                v-else
+                type="button"
+                class="text-xs text-blue-500 hover:underline"
+                @click="showIpDialog = true"
+              >
+                Belum ada IP? Tambah →
+              </button>
             </div>
             <span v-else class="text-slate-400">—</span>
           </template>

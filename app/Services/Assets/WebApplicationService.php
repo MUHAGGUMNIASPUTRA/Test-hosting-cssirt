@@ -66,9 +66,8 @@ class WebApplicationService
             WebAppNetwork::create([
                 'web_application_id' => $app->id,
                 'environment' => $network['environment'] ?? null,
-                'dns' => $network['dns'] ?? null,
-                'local_ip' => $network['local_ip'] ?? null,
-                'public_ip' => $network['public_ip'] ?? null,
+                'ip_address_id' => $network['ip_address_id'] ?? null,
+                'subdomain_id' => $network['subdomain_id'] ?? null,
                 'is_primary' => $index === 0,
                 'sort_order' => $index,
             ]);

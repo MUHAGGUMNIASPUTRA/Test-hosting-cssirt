@@ -16,6 +16,8 @@ class WebAppNetwork extends Model
         'dns',
         'local_ip',
         'public_ip',
+        'ip_address_id',
+        'subdomain_id',
         'is_primary',
         'sort_order',
     ];
@@ -27,5 +29,15 @@ class WebAppNetwork extends Model
     public function webApplication(): BelongsTo
     {
         return $this->belongsTo(WebApplication::class);
+    }
+
+    public function ipAddress(): BelongsTo
+    {
+        return $this->belongsTo(IpAddress::class);
+    }
+
+    public function subdomain(): BelongsTo
+    {
+        return $this->belongsTo(Subdomain::class);
     }
 }

@@ -179,21 +179,36 @@ const handleDelete = () => {
                   :key="i"
                   class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm"
                 >
-                  <p class="mb-1 font-medium text-slate-700">
-                    {{ net.environment || `Jaringan ${i + 1}` }}
-                  </p>
-                  <div class="grid grid-cols-3 gap-2 text-xs">
+                  <div class="mb-2 flex items-center gap-2">
+                    <p class="font-medium text-slate-700">
+                      {{ net.environment || `Jaringan ${i + 1}` }}
+                    </p>
+                    <Tag
+                      v-if="net.is_primary"
+                      value="Utama"
+                      severity="info"
+                      class="!text-xs"
+                    />
+                  </div>
+                  <div class="grid grid-cols-1 gap-2 text-xs sm:grid-cols-2">
                     <div>
-                      <p class="text-slate-400">DNS</p>
-                      <p class="text-slate-600">{{ net.dns || '—' }}</p>
+                      <p class="text-slate-400">IP Address</p>
+                      <p v-if="net.ip_address" class="font-mono text-slate-600">
+                        {{ net.ip_address.private_ip }}
+                        <span
+                          v-if="net.ip_address.public_ip"
+                          class="text-slate-400"
+                          >({{ net.ip_address.public_ip }})</span
+                        >
+                      </p>
+                      <p v-else class="text-slate-400">—</p>
                     </div>
                     <div>
-                      <p class="text-slate-400">IP Lokal</p>
-                      <p class="text-slate-600">{{ net.local_ip || '—' }}</p>
-                    </div>
-                    <div>
-                      <p class="text-slate-400">IP Publik</p>
-                      <p class="text-slate-600">{{ net.public_ip || '—' }}</p>
+                      <p class="text-slate-400">Domain / Subdomain</p>
+                      <p v-if="net.subdomain" class="text-slate-600">
+                        {{ net.subdomain.subdomain }}
+                      </p>
+                      <p v-else class="text-slate-400">—</p>
                     </div>
                   </div>
                 </div>

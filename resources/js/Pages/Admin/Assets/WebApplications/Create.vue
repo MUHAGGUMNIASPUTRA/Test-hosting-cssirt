@@ -17,6 +17,8 @@ const props = defineProps({
   appStatusOptions: Array,
   httpsStatusOptions: Array,
   employees: { type: Array, default: () => [] },
+  ipAddresses: { type: Array, default: () => [] },
+  subdomains: { type: Array, default: () => [] },
 })
 
 const isEdit = computed(() => !!props.webApplication)
@@ -57,10 +59,19 @@ const form = useForm({
     })) ?? [],
   networks: wa?.networks?.map((n) => ({
     environment: n.environment ?? '',
-    dns: n.dns ?? '',
-    local_ip: n.local_ip ?? '',
-    public_ip: n.public_ip ?? '',
-  })) ?? [{ environment: '', dns: '', local_ip: '', public_ip: '' }],
+    ip_address_id: n.ip_address_id ?? null,
+    subdomain_id: n.subdomain_id ?? null,
+    _ip: n.ip_address ?? null,
+    _subdomain: n.subdomain ?? null,
+  })) ?? [
+    {
+      environment: '',
+      ip_address_id: null,
+      subdomain_id: null,
+      _ip: null,
+      _subdomain: null,
+    },
+  ],
   tech_stacks:
     wa?.tech_stacks?.map((t) => ({
       tech_stack_id: t.tech_stack_id,
@@ -110,8 +121,15 @@ const updateOwner = (val) =>
   Object.entries(val).forEach(([k, v]) => (form[k] = v))
 
 const submit = () => {
-  if (isEdit.value) form.put(route('admin.web-applications.update', wa.id))
-  else form.post(route('admin.web-applications.store'))
+  const cleanNetworks = (data) => ({
+    ...data,
+    networks: data.networks.map(({ _ip, _subdomain, ...net }) => net),
+  })
+  if (isEdit.value)
+    form
+      .transform(cleanNetworks)
+      .put(route('admin.web-applications.update', wa.id))
+  else form.transform(cleanNetworks).post(route('admin.web-applications.store'))
 }
 </script>
 
@@ -214,7 +232,16 @@ const submit = () => {
             <NetworkSpecSection
               :model-value="form.networks"
               :errors="form.errors"
+              :ip-addresses="ipAddresses"
+              :subdomains="subdomains"
               @update:model-value="(v) => (form.networks = v)"
+              @refresh="
+                (key) =>
+                  router.reload({
+                    only:
+                      key === 'ipAddresses' ? ['ipAddresses'] : ['subdomains'],
+                  })
+              "
             />
             <TechStackSection
               :model-value="form.tech_stacks"

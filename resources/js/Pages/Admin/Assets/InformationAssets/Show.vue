@@ -1,4 +1,4 @@
-<!-- Tujuan: Halaman detail Aset Informasi (readonly) -->
+<!-- Tujuan: Halaman detail Aset Informasi dengan navigasi tab -->
 <!-- Caller: InformationAssetController@show -->
 <!-- Side Effects: none -->
 <script setup>
@@ -77,124 +77,132 @@ const handleDelete = () => {
         </template>
       </AdminFormHeader>
 
-      <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <div class="space-y-4 xl:col-span-2">
-          <!-- Informasi Aset -->
-          <AdminFormSection
-            title="Informasi Aset"
-            description="Dokumen dan format penyimpanan"
-            color="purple"
-          >
-            <template #icon="{ iconClass }">
-              <IconDatabase :class="iconClass" />
-            </template>
-            <dl class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <div class="sm:col-span-2">
-                <dt
-                  class="text-xs font-medium uppercase tracking-wider text-slate-400"
-                >
-                  Dokumen Referensi
-                </dt>
-                <dd class="mt-1 text-sm text-slate-700">
-                  {{ asset.document?.title ?? '(Tanpa Dokumen)' }}
-                </dd>
-              </div>
-              <div>
-                <dt
-                  class="text-xs font-medium uppercase tracking-wider text-slate-400"
-                >
-                  Format Penyimpanan
-                </dt>
-                <dd class="mt-1">
-                  <Tag
-                    :value="storageFormatLabel(asset.storage_format)"
-                    :severity="storageFormatSeverity(asset.storage_format)"
-                  />
-                </dd>
-              </div>
-            </dl>
-          </AdminFormSection>
-
-          <!-- Penempatan & Kepemilikan -->
-          <AdminFormSection
-            title="Penempatan & Kepemilikan"
-            description="Lokasi dan pemilik aset"
-            color="green"
-          >
-            <template #icon="{ iconClass }">
-              <IconBuilding :class="iconClass" />
-            </template>
-            <dl class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <div>
-                <dt
-                  class="text-xs font-medium uppercase tracking-wider text-slate-400"
-                >
-                  Lokasi
-                </dt>
-                <dd class="mt-1 text-sm text-slate-700">
-                  {{ asset.location?.name ?? '—' }}
-                </dd>
-              </div>
-              <div>
-                <dt
-                  class="text-xs font-medium uppercase tracking-wider text-slate-400"
-                >
-                  Pemilik Aset
-                </dt>
-                <dd class="mt-1 text-sm text-slate-700">
-                  {{ asset.owner_org?.name ?? '—' }}
-                </dd>
-              </div>
-            </dl>
-          </AdminFormSection>
-
-          <!-- Audit Log -->
-          <AdminFormSection
-            v-if="asset.audit_logs?.length"
-            title="Audit Log"
-            description="Riwayat perubahan aset"
-            color="slate"
-          >
-            <template #icon="{ iconClass }">
-              <IconClipboardList :class="iconClass" />
-            </template>
-            <div class="space-y-2">
-              <div
-                v-for="log in asset.audit_logs"
-                :key="log.id"
-                class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm"
-              >
-                <div class="mb-1 flex items-center justify-between">
-                  <span class="font-medium text-slate-700">{{
-                    log.user?.name ?? '—'
-                  }}</span>
-                  <Tag
-                    v-if="log.danger_level"
-                    :value="log.danger_level"
-                    :severity="dangerLevelSeverity(log.danger_level)"
-                    class="!text-xs capitalize"
-                  />
+      <Tabs value="0">
+        <TabList>
+          <Tab value="0">Utama</Tab>
+          <Tab value="1">Kepemilikan</Tab>
+          <Tab value="2">Keamanan</Tab>
+        </TabList>
+        <TabPanels>
+          <!-- Tab 0: Utama -->
+          <TabPanel value="0" class="space-y-4">
+            <AdminFormSection
+              title="Informasi Aset"
+              description="Dokumen dan format penyimpanan"
+              color="purple"
+            >
+              <template #icon="{ iconClass }">
+                <IconDatabase :class="iconClass" />
+              </template>
+              <dl class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div class="sm:col-span-2">
+                  <dt
+                    class="text-xs font-medium uppercase tracking-wider text-slate-400"
+                  >
+                    Dokumen Referensi
+                  </dt>
+                  <dd class="mt-1 text-sm text-slate-700">
+                    {{ asset.document?.title ?? '(Tanpa Dokumen)' }}
+                  </dd>
                 </div>
-                <p class="text-slate-600">{{ log.message }}</p>
-                <p class="mt-1 text-xs text-slate-400">
-                  {{ formatDatetime(log.created_at) }}
-                </p>
-              </div>
-            </div>
-          </AdminFormSection>
-        </div>
+                <div>
+                  <dt
+                    class="text-xs font-medium uppercase tracking-wider text-slate-400"
+                  >
+                    Format Penyimpanan
+                  </dt>
+                  <dd class="mt-1">
+                    <Tag
+                      :value="storageFormatLabel(asset.storage_format)"
+                      :severity="storageFormatSeverity(asset.storage_format)"
+                    />
+                  </dd>
+                </div>
+              </dl>
+            </AdminFormSection>
+          </TabPanel>
 
-        <div class="flex flex-col gap-4">
-          <!-- Klasifikasi Keamanan + Notes -->
-          <SecurityClassificationForm
-            :model-value="securityData"
-            :readonly-scores="true"
-            asset-type="information-asset"
-            :asset-id="asset.id"
-            :security-notes="informationAsset.security_notes ?? []"
-          />
-        </div>
-      </div>
+          <!-- Tab 1: Kepemilikan -->
+          <TabPanel value="1" class="space-y-4">
+            <AdminFormSection
+              title="Penempatan & Kepemilikan"
+              description="Lokasi dan pemilik aset"
+              color="green"
+            >
+              <template #icon="{ iconClass }">
+                <IconBuilding :class="iconClass" />
+              </template>
+              <dl class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div>
+                  <dt
+                    class="text-xs font-medium uppercase tracking-wider text-slate-400"
+                  >
+                    Lokasi
+                  </dt>
+                  <dd class="mt-1 text-sm text-slate-700">
+                    {{ asset.location?.name ?? '—' }}
+                  </dd>
+                </div>
+                <div>
+                  <dt
+                    class="text-xs font-medium uppercase tracking-wider text-slate-400"
+                  >
+                    Pemilik Aset
+                  </dt>
+                  <dd class="mt-1 text-sm text-slate-700">
+                    {{ asset.owner_org?.name ?? '—' }}
+                  </dd>
+                </div>
+              </dl>
+            </AdminFormSection>
+          </TabPanel>
+
+          <!-- Tab 2: Keamanan -->
+          <TabPanel value="2" class="space-y-4">
+            <SecurityClassificationForm
+              :model-value="securityData"
+              :readonly-scores="true"
+              asset-type="information-asset"
+              :asset-id="asset.id"
+              :security-notes="informationAsset.security_notes ?? []"
+            />
+
+            <AdminFormSection
+              v-if="asset.audit_logs?.length"
+              title="Audit Log"
+              description="Riwayat perubahan aset"
+              color="slate"
+            >
+              <template #icon="{ iconClass }">
+                <IconClipboardList :class="iconClass" />
+              </template>
+              <div class="space-y-2">
+                <div
+                  v-for="log in asset.audit_logs"
+                  :key="log.id"
+                  class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm"
+                >
+                  <div class="mb-1 flex items-center justify-between">
+                    <span class="font-medium text-slate-700">{{
+                      log.user?.name ?? '—'
+                    }}</span>
+                    <Tag
+                      v-if="log.danger_level"
+                      :value="log.danger_level"
+                      :severity="dangerLevelSeverity(log.danger_level)"
+                      class="!text-xs capitalize"
+                    />
+                  </div>
+                  <p class="text-slate-600">{{ log.message }}</p>
+                  <p class="mt-1 text-xs text-slate-400">
+                    {{ formatDatetime(log.created_at) }}
+                  </p>
+                </div>
+              </div>
+            </AdminFormSection>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </div>
   </AdminLayout>
 </template>
