@@ -172,6 +172,38 @@ const { isDesktop } = useResponsive()
           </a>
         </div>
       </div>
+
+      <!-- Aset Virtual Terdampak -->
+      <div
+        v-if="
+          incident.web_applications?.length ||
+          incident.mobile_applications?.length
+        "
+      >
+        <label class="mb-2 block font-medium text-slate-700"
+          >Aset Virtual Terdampak</label
+        >
+        <div class="flex flex-wrap gap-2">
+          <a
+            v-for="app in incident.web_applications"
+            :key="app.id"
+            :href="route('admin.web-applications.show', app.id)"
+            class="flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-sm transition hover:border-indigo-400"
+          >
+            <span class="text-xs font-semibold text-indigo-400">Web</span>
+            <span class="text-slate-700">{{ app.name }}</span>
+          </a>
+          <a
+            v-for="app in incident.mobile_applications"
+            :key="app.id"
+            :href="route('admin.mobile-applications.show', app.id)"
+            class="flex items-center gap-1.5 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-sm transition hover:border-violet-400"
+          >
+            <span class="text-xs font-semibold text-violet-400">Mobile</span>
+            <span class="text-slate-700">{{ app.name }}</span>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </template>

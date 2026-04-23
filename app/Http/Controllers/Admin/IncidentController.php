@@ -122,7 +122,10 @@ class IncidentController extends Controller
         }
 
         return Inertia::render('Admin/Incidents/Create', [
-            'incident' => $incident->load(['attachment', 'webApplications', 'mobileApplications']),
+            'incident' => $incident->load([
+                'attachment', 'webApplications', 'mobileApplications',
+                'incidentLogs.user',
+            ]),
             'incidentTypes' => IncidentType::orderBy('sort_order')->get(['id', 'name', 'description', 'guide']),
             'staffUsers' => User::whereIn('role', ['admin', 'staff'])->get(['id', 'name']),
         ]);

@@ -1,3 +1,6 @@
+<!-- Tujuan: Halaman detail insiden dengan navigasi tab (Utama dan Riwayat) -->
+<!-- Caller: IncidentController@show -->
+<!-- Side Effects: none -->
 <script setup>
 import { router } from '@inertiajs/vue3'
 import { ref } from 'vue'
@@ -7,28 +10,21 @@ const props = defineProps({
   staffUsers: Array,
 })
 
-const getStatusSeverity = (status) => {
-  const map = {
+const getStatusSeverity = (status) =>
+  ({
     Baru: 'info',
     Diverifikasi: 'primary',
     'Dalam Penyelidikan': 'warn',
     Selesai: 'success',
     Ditutup: 'secondary',
-  }
-  return map[status] || 'info'
-}
+  })[status] || 'info'
 
-const getPrioritySeverity = (priority) => {
-  const map = {
-    Rendah: 'success',
-    Sedang: 'info',
-    Tinggi: 'warn',
-    Kritikal: 'danger',
-  }
-  return map[priority] || 'info'
-}
+const getPrioritySeverity = (priority) =>
+  ({ Rendah: 'success', Sedang: 'info', Tinggi: 'warn', Kritikal: 'danger' })[
+    priority
+  ] || 'info'
 
-// --- Delete log ---
+// Delete log
 const deleteLogId = ref(null)
 
 const handleDeleteLog = () => {
@@ -50,7 +46,7 @@ const handleDeleteLog = () => {
 <template>
   <AdminLayout :title="`Detail Insiden: ${incident.case_id}`">
     <div class="space-y-4 lg:space-y-6">
-      <!-- Header Section -->
+      <!-- Header -->
       <div
         class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
       >
@@ -104,67 +100,71 @@ const handleDeleteLog = () => {
         </div>
       </div>
 
-      <!-- Body: 3+2 grid on large screens -->
-      <div class="grid grid-cols-1 gap-4 lg:grid-cols-5 lg:gap-6">
-        <!-- Main Content (3 cols) -->
-        <div class="space-y-4 lg:col-span-3 lg:space-y-6">
-          <IncidentInfoCard :incident="incident" />
-        </div>
+      <!-- Tabs -->
+      <Tabs value="0">
+        <TabList>
+          <Tab value="0">Utama</Tab>
+          <Tab value="1">
+            Riwayat
+            <span
+              v-if="incident.incident_logs?.length"
+              class="ml-1.5 rounded-full bg-slate-200 px-1.5 py-0.5 text-xs text-slate-600"
+            >
+              {{ incident.incident_logs.length }}
+            </span>
+          </Tab>
+        </TabList>
+        <TabPanels>
+          <!-- Tab 0: Utama -->
+          <TabPanel value="0">
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-5 lg:gap-6">
+              <!-- Main Content (3 cols) -->
+              <div class="space-y-4 lg:col-span-3 lg:space-y-6">
+                <IncidentInfoCard :incident="incident" />
+              </div>
 
-        <!-- Sidebar (2 cols) -->
-        <div class="space-y-4 lg:col-span-2 lg:space-y-6">
-          <IncidentManagementPanel
-            v-if="incident.status !== 'Ditutup'"
-            :incident="incident"
-            :staff-users="staffUsers"
-          />
-          <div
-            class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
-          >
-            <div class="mb-4 flex items-center">
-              <div
-                class="flex h-10 w-10 items-center justify-center rounded-lg border border-purple-200 bg-purple-50"
-              >
-                <IconTimeline
-                  class="text-purple-600"
-                  :size="!isDesktop ? 18 : undefined"
+              <!-- Sidebar (2 cols) -->
+              <div class="space-y-4 lg:col-span-2 lg:space-y-6">
+                <IncidentManagementPanel
+                  v-if="incident.status !== 'Ditutup'"
+                  :incident="incident"
+                  :staff-users="staffUsers"
                 />
               </div>
-              <div class="ml-3">
-                <h3 class="text-xl/6 font-semibold text-slate-900">
-                  Riwayat Penanganan
-                </h3>
-                <p class="text-xs text-slate-600 lg:text-sm">
-                  {{ incident.incident_logs.length }} catatan
+            </div>
+          </TabPanel>
+
+          <!-- Tab 1: Riwayat -->
+          <TabPanel value="1">
+            <div class="max-w-2xl space-y-4">
+              <IncidentAddLogForm
+                :incident-id="incident.id"
+                :is-closed="incident.status === 'Ditutup'"
+              />
+
+              <div v-if="incident.incident_logs?.length" class="space-y-3">
+                <IncidentLogEntry
+                  v-for="log in incident.incident_logs"
+                  :key="log.id"
+                  :log="log"
+                  :incident-id="incident.id"
+                  @request-delete="deleteLogId = $event"
+                />
+              </div>
+
+              <div v-else class="py-12 text-center">
+                <IconHistory class="mx-auto mb-2 text-slate-300" size="36" />
+                <p class="text-sm text-slate-500">
+                  Belum ada riwayat penanganan
                 </p>
               </div>
             </div>
-
-            <IncidentAddLogForm
-              :incident-id="incident.id"
-              :is-closed="incident.status === 'Ditutup'"
-            />
-
-            <div v-if="incident.incident_logs.length > 0" class="space-y-3">
-              <IncidentLogEntry
-                v-for="log in incident.incident_logs"
-                :key="log.id"
-                :log="log"
-                :incident-id="incident.id"
-                @request-delete="deleteLogId = $event"
-              />
-            </div>
-
-            <div v-else class="mb-5 py-6 text-center">
-              <IconHistory class="mx-auto mb-2 text-slate-300" size="32" />
-              <p class="text-sm text-slate-500">Belum ada riwayat penanganan</p>
-            </div>
-          </div>
-        </div>
-      </div>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </div>
 
-    <!-- Delete Log Confirmation Dialog -->
+    <!-- Delete Log Dialog -->
     <Dialog
       v-model:visible="deleteLogId"
       modal

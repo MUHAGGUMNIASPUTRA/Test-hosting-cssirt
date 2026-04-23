@@ -113,7 +113,9 @@ class IncidentService
         $this->logChanges($incident, $coreData, $actorId, $attachment);
         $incident->update($coreData);
 
-        $this->syncVirtualAssets($incident, $validated['virtual_assets'] ?? []);
+        $incomingAssets = $validated['virtual_assets'] ?? [];
+        $this->logVirtualAssetChanges($incident, $incomingAssets, $actorId);
+        $this->syncVirtualAssets($incident, $incomingAssets);
     }
 
     public function updateManagement(Incident $incident, array $validated, string $actorId): void
@@ -227,6 +229,62 @@ class IncidentService
         if (! empty($rows)) {
             DB::table('incident_virtual_assets')->insert($rows);
         }
+    }
+
+    /**
+     * Log perubahan daftar aset virtual terdampak.
+     *
+     * @param  array<array{id: string, asset_type: string}>  $incomingAssets
+     */
+    private function logVirtualAssetChanges(Incident $incident, array $incomingAssets, string $actorId): void
+    {
+        $typeMap = [
+            'web-application' => WebApplication::class,
+            'mobile-application' => MobileApplication::class,
+        ];
+
+        $existingIds = DB::table('incident_virtual_assets')
+            ->where('incident_id', $incident->id)
+            ->pluck('assetable_id')
+            ->map(fn ($id) => (string) $id)
+            ->all();
+
+        $incomingIds = array_map(fn ($a) => (string) ($a['id'] ?? ''), $incomingAssets);
+
+        $addedIds = array_diff($incomingIds, $existingIds);
+        $removedIds = array_diff($existingIds, $incomingIds);
+
+        if (empty($addedIds) && empty($removedIds)) {
+            return;
+        }
+
+        $allIds = array_unique(array_merge($addedIds, $removedIds));
+        $incomingMap = collect($incomingAssets)->keyBy(fn ($a) => (string) $a['id']);
+
+        $webNames = WebApplication::whereIn('id', $allIds)->pluck('name', 'id');
+        $mobileNames = MobileApplication::whereIn('id', $allIds)->pluck('name', 'id');
+
+        $resolve = function (string $id) use ($incomingMap, $webNames, $mobileNames): string {
+            $assetType = $incomingMap->get($id)['asset_type'] ?? null;
+            $label = $assetType === 'web-application' ? 'Web' : 'Mobile';
+            $name = $webNames->get($id) ?? $mobileNames->get($id) ?? $id;
+
+            return "{$name} ({$label})";
+        };
+
+        $changes = [];
+        foreach ($addedIds as $id) {
+            $changes[] = '+ '.$resolve($id);
+        }
+        foreach ($removedIds as $id) {
+            $changes[] = '- '.$resolve($id);
+        }
+
+        $incident->incidentLogs()->create([
+            'log_message' => 'Aset virtual terdampak diperbarui:'."\n".implode("\n", $changes),
+            'user_id' => $actorId,
+            'is_public' => false,
+        ]);
     }
 
     /**
