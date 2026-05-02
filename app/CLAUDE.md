@@ -57,6 +57,7 @@ Lokasi: `app/Enums/`. Semua adalah backed string enum.
 | `PostStatus`        | Form Requests, PostService                         |
 | `AnnouncementLevel` | Form Requests, AnnouncementController              |
 | `AttachmentType`    | AttachmentService, Attachment model                |
+| `DocumentStage`     | Form Requests, DocumentController (create/edit)    |
 
 **Validasi dengan Enum:**
 
@@ -212,7 +213,7 @@ Jalankan manual jika perlu:
 | `AnnouncementController`     | `admin/announcements`    | CRUD via dialog inline                                                     |
 | `UserController`             | `admin/users`            | CRUD, hanya bisa diakses role `admin`                                      |
 | `DocumentAreaController`     | `admin/document-areas`   | Full CRUD area/kategori dokumen                                            |
-| `DocumentController` (Admin) | `admin/documents`        | Full CRUD + toggle-visibility; official attachment via `AttachmentService` |
+| `DocumentController` (Admin) | `admin/documents`        | Full CRUD + show + toggle-visibility; stage tracking + official attachment |
 | `ImageUploadController`      | `admin/images/upload`    | Upload gambar untuk Tiptap editor                                          |
 | `ExcerptController`          | `admin/generate-excerpt` | Generate excerpt artikel via AI                                            |
 
@@ -228,7 +229,7 @@ Jalankan manual jika perlu:
 | `VendorController`            | `admin/vendors`                           | Full CRUD vendor (ada create/edit page, no show)                       |
 | `TechStackCategoryController` | `admin/tech-stack-categories`             | CRUD kategori tech stack; inline dialog                                |
 | `TechStackController`         | `admin/tech-stacks`                       | Full CRUD tech stack (ada create/edit page, no show)                   |
-| `VirtualAssetGuideController` | `admin/virtual-asset-guides`              | Full CRUD panduan aset virtual (ada create/edit page)                  |
+| `VirtualAssetGuideController` | `admin/virtual-asset-guides`              | Full CRUD panduan aset virtual; link ke Documents via pivot table      |
 | `WebApplicationController`    | `admin/web-applications`                  | Full CRUD aplikasi web (ada create/edit page, no show)                 |
 | `MobileApplicationController` | `admin/mobile-applications`               | Full CRUD aplikasi mobile (ada create/edit page, no show)              |
 | `LicenseController`           | `admin/licenses`                          | Full CRUD lisensi (ada create/edit/show page)                          |

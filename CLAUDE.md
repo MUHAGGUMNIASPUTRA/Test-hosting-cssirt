@@ -113,7 +113,7 @@ resource faqs               admin.faqs.*        (kecuali show, create, edit)
 resource announcements      admin.announcements.* (kecuali show, create, edit)
 resource users              admin.users.*       (kecuali show, create, edit) [middleware: admin]
 resource document-areas     admin.document-areas.*
-resource documents          admin.documents.*   (+toggle-visibility)
+resource documents          admin.documents.*   (+toggle-visibility, +show)
 POST   /admin/images/upload admin.images.upload
 POST   /admin/generate-excerpt admin.generate-excerpt
 
@@ -165,7 +165,10 @@ Faq           (standalone)
 Rating        belongsTo Post, User
 Document      belongsTo DocumentArea | belongsTo Attachment (official_attachment_id)
               | draft_file_path: string URL plain (Word doc, admin-only)
+              | hasMany VirtualAssetGuideAttachment (as linked guide documents)
 DocumentArea  hasMany Document
+VirtualAssetGuide          hasMany VirtualAssetGuideAttachment | hasMany Document (through attachments)
+VirtualAssetGuideAttachment belongsTo VirtualAssetGuide | belongsTo Document | pivot with sort_order
 WebAppNetwork belongsTo WebApplication | belongsTo IpAddress (nullable FK) | belongsTo Subdomain (nullable FK)
 IpAddress     master data IP (private_ip wajib, public_ip opsional)
 Subdomain     master data subdomain/domain
@@ -202,8 +205,11 @@ faqs            id, question, answer, category, is_published
 document_areas  id, name, slug, description
 documents       id, title, slug, description,
                 draft_file_path (URL string — link Word doc, hanya admin),
-                official_attachment_id(FK attachments),
+                official_attachment_id(FK attachments), reference_number,
+                stage (enum: Perlu Dibuat|Telah Dibuat|Perlu Review|Telah Direview|Perlu TTD|Final),
                 version, published_at, is_public, document_area_id(FK document_areas)
+virtual_asset_guide_attachments
+                id, virtual_asset_guide_id(FK), document_id(FK documents), sort_order
 ```
 
 > **Sistem Attachment Terpadu**: Semua attachment (file upload maupun link eksternal) disimpan di tabel `attachments`. Parent table cukup menyimpan `attachment_id` nullable. Tidak ada lagi pendeteksian tipe dari prefix `http` pada string. Satu-satunya pengecualian adalah `documents.draft_file_path` yang tetap berupa URL string biasa karena selalu link dan tidak perlu join.
@@ -273,3 +279,5 @@ Format Vue/JS ada di [`resources/js/CLAUDE.md`](resources/js/CLAUDE.md).
 - **Virtual assets insiden** dikirim sebagai `virtual_assets: [{id, asset_type}]` (bukan `virtual_asset_ids`). `asset_type` harus `'web-application'` atau `'mobile-application'`.
 - **Tab navigation**: WebApplications, InformationAssets, PhysicalAssets, dan Incidents Create/Show semua menggunakan `<Tabs>` PrimeVue. Error otomatis memindahkan ke tab yang relevan via `watch(form.errors, ...)` + `tabFieldMap`.
 - **NetworkSpecSection** menggunakan `NetworkIpPickerDialog` dan `NetworkSubdomainPickerDialog` — picker dari master data, tanpa input manual. Emit `refresh` dengan key `'ipAddresses'` atau `'subdomains'` untuk trigger `router.reload`.
+- **Documents** kini punya `stage` (DocumentStage enum), `reference_number`, dan halaman `Show` untuk viewing detail dokumen.
+- **VirtualAssetGuides** kini link ke Documents (bukan Attachments langsung) via `VirtualAssetGuideAttachment` pivot table dengan `sort_order`. API endpoint `/api/admin/virtual-asset-guides` tersedia untuk document picker.

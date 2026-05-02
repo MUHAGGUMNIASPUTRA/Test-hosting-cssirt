@@ -200,6 +200,10 @@ const form = useForm({
 | `DeleteConfirmDialog` | `v-model:visible`, `entityLabel`, `deleteLabel` | `#item-info`, `@confirm`               |
 | `RichTextEditor`      | `v-model`                                       | —                                      |
 | `PostImage`           | `src`, `alt`                                    | —                                      |
+| `DocumentPickerSection` | `v-model`, `label` (opt)                       | —                                      |
+| `DocumentMainFormSection` | `form`                                        | —                                      |
+| `DocumentFilesFormSection` | `form`                                        | —                                      |
+| `DocumentClassificationFormSection` | `form`                                        | —                                      |
 
 ---
 
@@ -290,3 +294,5 @@ Setiap file Vue/JS yang dibuat atau diubah logic utamanya wajib punya header sin
 - Fungsi non-reaktif, pure → `utils/`
 - Test utils: `npm run test:js` (Vitest)
 - Build check: `npm run build`
+- **Documents Show page**: gunakan `Pages/Admin/Documents/Show.vue` untuk detail dokumen dengan nested relasi `officialAttachment` dan `documentArea`
+- **VirtualAssetGuides document picker**: gunakan `DocumentPickerSection` component untuk select multiple documents dengan drag-reorder. Endpoint API: `/api/admin/documents` dan `/api/admin/virtual-asset-guides`
