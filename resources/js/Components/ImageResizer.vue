@@ -39,17 +39,17 @@ const handleMousedown = (e) => {
 </script>
 
 <template>
-  <NodeViewWrapper as="div" class="relative inline-block group !w-auto">
+  <NodeViewWrapper as="div" class="group relative inline-block !w-auto">
     <img
       ref="image"
       :src="props.node.attrs.src"
       :alt="props.node.attrs.alt"
       :style="{ width: props.node.attrs.width }"
-      class="resize max-w-full h-auto !my-0"
+      class="!my-0 h-auto max-w-full resize"
     />
     <!-- This is the custom resize handle -->
     <div
-      class="absolute bottom-0 right-0 w-3 h-3 bg-blue-500 border-2 border-white rounded-full cursor-nwse-resize opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-1/2 translate-y-1/2"
+      class="absolute bottom-0 right-0 h-3 w-3 translate-x-1/2 translate-y-1/2 transform cursor-nwse-resize rounded-full border-2 border-white bg-blue-500 opacity-0 transition-opacity group-hover:opacity-100"
       @mousedown.prevent="handleMousedown"
     ></div>
   </NodeViewWrapper>

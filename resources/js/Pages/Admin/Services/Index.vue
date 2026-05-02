@@ -3,7 +3,7 @@
 
 import { ref, computed } from 'vue'
 import { router } from '@inertiajs/vue3'
-import { useConfirm } from "primevue/useconfirm"
+import { useConfirm } from 'primevue/useconfirm'
 import { useResponsive } from '@/Composables/useResponsive'
 
 const props = defineProps({
@@ -24,7 +24,7 @@ const serviceToDelete = ref(null)
 const lazyParams = ref({
   first: 0,
   rows: props.services.per_page || 10,
-  page: props.services.current_page || 1
+  page: props.services.current_page || 1,
 })
 
 const applyFilters = () => {
@@ -37,13 +37,18 @@ const applyFilters = () => {
   if (lazyParams.value.page > 1) params.set('page', lazyParams.value.page)
 
   const queryString = params.toString()
-  const url = route('admin.services.index') + (queryString ? '?' + queryString : '')
+  const url =
+    route('admin.services.index') + (queryString ? '?' + queryString : '')
 
-  router.get(url, {}, {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true
-  })
+  router.get(
+    url,
+    {},
+    {
+      preserveState: true,
+      preserveScroll: true,
+      replace: true,
+    },
+  )
 }
 
 // Handle pagination change
@@ -60,13 +65,18 @@ const onPage = (event) => {
   params.set('page', lazyParams.value.page)
 
   const queryString = params.toString()
-  const url = route('admin.services.index') + (queryString ? '?' + queryString : '')
+  const url =
+    route('admin.services.index') + (queryString ? '?' + queryString : '')
 
-  router.get(url, {}, {
-    preserveState: true,
-    preserveScroll: true,
-    replace: true
-  })
+  router.get(
+    url,
+    {},
+    {
+      preserveState: true,
+      preserveScroll: true,
+      replace: true,
+    },
+  )
 }
 
 const statusOptions = [
@@ -95,7 +105,7 @@ const deleteService = () => {
       showDeleteDialog.value = false
       serviceToDelete.value = null
     },
-    onError: () => {}
+    onError: () => {},
   })
 }
 
@@ -110,7 +120,7 @@ const formatDate = (dateString) => {
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   })
 }
 
@@ -122,8 +132,8 @@ const truncateText = (text, length = 80) => {
 // Stats computed
 const stats = computed(() => {
   const allData = props.services.data || []
-  const active = allData.filter(service => service.is_active).length
-  const inactive = allData.filter(service => !service.is_active).length
+  const active = allData.filter((service) => service.is_active).length
+  const inactive = allData.filter((service) => !service.is_active).length
 
   return { active, inactive }
 })
@@ -141,34 +151,40 @@ const serverSideConfig = computed(() => {
 })
 
 // Action menu handling
-const actionMenu = ref();
-const selectedMenu = ref(null);
+const actionMenu = ref()
+const selectedMenu = ref(null)
 const toggleActionMenu = (event, item) => {
-  selectedMenu.value = item;
-  actionMenu.value.toggle(event);
-};
+  selectedMenu.value = item
+  actionMenu.value.toggle(event)
+}
 
 const actionMenuItems = computed(() => {
-  if (!selectedMenu.value) return [];
-  const item = selectedMenu.value;
+  if (!selectedMenu.value) return []
+  const item = selectedMenu.value
   return [
     {
       label: 'Detail',
       icon: 'pi pi-eye',
-      command: () => { router.get(route('admin.services.show', item.id)); },
+      command: () => {
+        router.get(route('admin.services.show', item.id))
+      },
     },
     {
       label: 'Edit',
       icon: 'pi pi-pen-to-square',
-      command: () => { router.get(route('admin.services.edit', item.id)); },
+      command: () => {
+        router.get(route('admin.services.edit', item.id))
+      },
     },
     {
       label: 'Hapus',
       icon: 'pi pi-trash',
-      command: () => { confirmDeleteService(item); },
-    }
-  ];
-});
+      command: () => {
+        confirmDeleteService(item)
+      },
+    },
+  ]
+})
 </script>
 
 <template>
@@ -184,44 +200,61 @@ const actionMenuItems = computed(() => {
       :style="{ width: isMobile ? '95vw' : undefined }"
     >
       <template #container="{ closeCallback }">
-        <div class="bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
+        <div
+          class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl"
+        >
           <!-- Header -->
           <div class="bg-gradient-to-r from-red-500 to-red-600 p-4 sm:p-6">
             <div class="flex items-center">
-              <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-lg bg-white/20"
+              >
                 <IconAlertTriangle class="text-white" />
               </div>
               <div class="ml-3">
-                <h3 class="text-lg/6 font-semibold text-white">Konfirmasi Penghapusan</h3>
-                <p class="text-red-100 text-sm">Tindakan ini tidak dapat dibatalkan</p>
+                <h3 class="text-lg/6 font-semibold text-white">
+                  Konfirmasi Penghapusan
+                </h3>
+                <p class="text-sm text-red-100">
+                  Tindakan ini tidak dapat dibatalkan
+                </p>
               </div>
             </div>
           </div>
 
           <!-- Content -->
           <div class="p-4 sm:p-6">
-            <div class="text-center mb-4 sm:mb-6">
-              <p class="text-slate-700 mb-4 sm:mb-6">Apakah Anda yakin ingin menghapus layanan berikut?</p>
-              <div class="bg-slate-50 border border-slate-100 rounded-lg p-3 text-left">
+            <div class="mb-4 text-center sm:mb-6">
+              <p class="mb-4 text-slate-700 sm:mb-6">
+                Apakah Anda yakin ingin menghapus layanan berikut?
+              </p>
+              <div
+                class="rounded-lg border border-slate-100 bg-slate-50 p-3 text-left"
+              >
                 <div class="">
-                  <div class="flex justify-between items-center mb-1">
+                  <div class="mb-1 flex items-center justify-between">
                     <span class="font-medium text-slate-600">Nama:</span>
-                    <span class="text-slate-900 text-right max-w-48 truncate">
+                    <span class="max-w-48 truncate text-right text-slate-900">
                       {{ serviceToDelete?.name }}
                     </span>
                   </div>
-                  <div class="flex justify-between items-center">
+                  <div class="flex items-center justify-between">
                     <span class="font-medium text-slate-600">Status:</span>
                     <Tag
-                      :value="serviceToDelete?.is_active ? 'Aktif' : 'Tidak Aktif'"
+                      :value="
+                        serviceToDelete?.is_active ? 'Aktif' : 'Tidak Aktif'
+                      "
                       :severity="getStatusSeverity(serviceToDelete?.is_active)"
                       size="small"
                     />
                   </div>
                 </div>
               </div>
-              <p class="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg py-4 mt-3">
-                <strong>Peringatan:</strong> Data yang dihapus tidak dapat dikembalikan
+              <p
+                class="mt-3 rounded-lg border border-red-200 bg-red-50 py-4 text-sm text-red-600"
+              >
+                <strong>Peringatan:</strong> Data yang dihapus tidak dapat
+                dikembalikan
               </p>
             </div>
 
@@ -248,11 +281,19 @@ const actionMenuItems = computed(() => {
 
     <div class="space-y-4 lg:space-y-6">
       <!-- Header Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-4">
+      <div
+        class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
+      >
+        <div
+          class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div>
-            <h2 class="text-xl lg:text-2xl font-bold text-slate-900">Kelola Layanan</h2>
-            <p class="text-slate-600">Kelola layanan yang disediakan organisasi</p>
+            <h2 class="text-xl font-bold text-slate-900 lg:text-2xl">
+              Kelola Layanan
+            </h2>
+            <p class="text-slate-600">
+              Kelola layanan yang disediakan organisasi
+            </p>
           </div>
           <Button
             severity="primary"
@@ -260,66 +301,107 @@ const actionMenuItems = computed(() => {
             class="w-full sm:w-auto"
           >
             <IconHeartPlus size="16" />
-              Tambah Layanan
+            Tambah Layanan
           </Button>
         </div>
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
-        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
+      <div
+        class="grid grid-cols-2 gap-4 lg:grid-cols-2 lg:gap-6 xl:grid-cols-3"
+      >
+        <div
+          class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
+        >
           <div class="flex items-center">
-            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-center">
-              <IconHeartHandshake class="text-blue-600" :size="!isDesktop ? 18 : undefined"/>
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 lg:h-12 lg:w-12"
+            >
+              <IconHeartHandshake
+                class="text-blue-600"
+                :size="!isDesktop ? 18 : undefined"
+              />
             </div>
             <div class="ml-3">
-              <p class="text-sm lg:text-base font-medium text-slate-600">Total Layanan</p>
-              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ services.total || 0 }}</p>
+              <p class="text-sm font-medium text-slate-600 lg:text-base">
+                Total Layanan
+              </p>
+              <p class="text-lg/5 font-bold text-slate-900 lg:text-xl">
+                {{ services.total || 0 }}
+              </p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
+        <div
+          class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
+        >
           <div class="flex items-center">
-            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center">
-              <IconHeartCheck class="text-green-600" :size="!isDesktop ? 18 : undefined"/>
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-lg border border-green-200 bg-green-50 lg:h-12 lg:w-12"
+            >
+              <IconHeartCheck
+                class="text-green-600"
+                :size="!isDesktop ? 18 : undefined"
+              />
             </div>
             <div class="ml-3">
-              <p class="text-sm lg:text-base font-medium text-slate-600">Layanan Aktif</p>
-              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats.active }}</p>
+              <p class="text-sm font-medium text-slate-600 lg:text-base">
+                Layanan Aktif
+              </p>
+              <p class="text-lg/5 font-bold text-slate-900 lg:text-xl">
+                {{ stats.active }}
+              </p>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-slate-200">
+        <div
+          class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
+        >
           <div class="flex items-center">
-            <div class="w-10 h-10 lg:w-12 lg:h-12 bg-orange-50 border border-orange-200 rounded-lg flex items-center justify-center">
-              <IconHeartX class="text-orange-600" :size="!isDesktop ? 18 : undefined"/>
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-lg border border-orange-200 bg-orange-50 lg:h-12 lg:w-12"
+            >
+              <IconHeartX
+                class="text-orange-600"
+                :size="!isDesktop ? 18 : undefined"
+              />
             </div>
             <div class="ml-3">
-              <p class="text-sm lg:text-base font-medium text-slate-600">Tidak Aktif</p>
-              <p class="text-lg/5 lg:text-xl font-bold text-slate-900">{{ stats.inactive }}</p>
+              <p class="text-sm font-medium text-slate-600 lg:text-base">
+                Tidak Aktif
+              </p>
+              <p class="text-lg/5 font-bold text-slate-900 lg:text-xl">
+                {{ stats.inactive }}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Filters Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 lg:p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xl font-semibold text-slate-900">Filter & Pencarian</h3>
+      <div
+        class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm lg:p-6"
+      >
+        <div class="mb-4 flex items-center justify-between">
+          <h3 class="text-xl font-semibold text-slate-900">
+            Filter & Pencarian
+          </h3>
           <button
             v-if="searchQuery || selectedStatus"
             @click="clearFilters"
-            class="text-blue-600 hover:text-blue-800 font-medium"
+            class="font-medium text-blue-600 hover:text-blue-800"
           >
             Reset Filter
           </button>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block font-medium text-slate-700 mb-2">Cari Layanan</label>
+            <label class="mb-2 block font-medium text-slate-700"
+              >Cari Layanan</label
+            >
             <div class="relative">
               <IconField class="w-full">
                 <InputIcon>
@@ -336,7 +418,9 @@ const actionMenuItems = computed(() => {
           </div>
 
           <div>
-            <label class="block font-medium text-slate-700 mb-2">Filter Status</label>
+            <label class="mb-2 block font-medium text-slate-700"
+              >Filter Status</label
+            >
             <Select
               v-model="selectedStatus"
               :options="statusOptions"
@@ -352,42 +436,74 @@ const actionMenuItems = computed(() => {
       </div>
 
       <!-- DataTable -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div
+        class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+      >
         <DataTable
           v-bind="serverSideConfig"
           :value="services.data"
           @page="onPage"
         >
           <template #empty>
-            <div class="text-center py-12">
-              <IconHeartHandshake size="30" class="text-slate-300 mx-auto mb-4" />
-              <p class="text-slate-500 text-lg font-medium">
-                {{ searchQuery || selectedStatus ? 'Tidak ada layanan ditemukan' : 'Belum ada layanan yang dibuat' }}
+            <div class="py-12 text-center">
+              <IconHeartHandshake
+                size="30"
+                class="mx-auto mb-4 text-slate-300"
+              />
+              <p class="text-lg font-medium text-slate-500">
+                {{
+                  searchQuery || selectedStatus
+                    ? 'Tidak ada layanan ditemukan'
+                    : 'Belum ada layanan yang dibuat'
+                }}
               </p>
-              <p class="text-slate-400 mt-1 text-sm">
-                {{ searchQuery || selectedStatus ? 'Coba ubah kriteria pencarian' : 'Layanan yang dibuat akan muncul di sini' }}
+              <p class="mt-1 text-sm text-slate-400">
+                {{
+                  searchQuery || selectedStatus
+                    ? 'Coba ubah kriteria pencarian'
+                    : 'Layanan yang dibuat akan muncul di sini'
+                }}
               </p>
             </div>
           </template>
 
-          <Column field="icon" header="Ikon" :style="{ width: '60px' }" class="hidden lg:table-cell">
+          <Column
+            field="icon"
+            header="Ikon"
+            :style="{ width: '60px' }"
+            class="hidden lg:table-cell"
+          >
             <template #body="{ data }">
-              <span v-if="data.icon" class="material-symbols-outlined text-slate-500">{{ data.icon }}</span>
-              <span v-else class="material-symbols-outlined text-slate-500">volunteer_activism</span>
+              <span
+                v-if="data.icon"
+                class="material-symbols-outlined text-slate-500"
+                >{{ data.icon }}</span
+              >
+              <span v-else class="material-symbols-outlined text-slate-500"
+                >volunteer_activism</span
+              >
             </template>
           </Column>
 
           <Column field="name" header="Layanan">
             <template #body="{ data }">
               <div>
-                <h3 class="font-medium text-slate-700 line-clamp-2">{{ data.name }}</h3>
+                <h3 class="line-clamp-2 font-medium text-slate-700">
+                  {{ data.name }}
+                </h3>
               </div>
             </template>
           </Column>
 
-          <Column field="short_description" header="Deskripsi Singkat" class="hidden lg:table-cell">
+          <Column
+            field="short_description"
+            header="Deskripsi Singkat"
+            class="hidden lg:table-cell"
+          >
             <template #body="{ data }">
-              <span class="text-sm text-slate-500 line-clamp-2">{{ truncateText(data.short_description, 80) }}</span>
+              <span class="line-clamp-2 text-sm text-slate-500">{{
+                truncateText(data.short_description, 80)
+              }}</span>
             </template>
           </Column>
 
@@ -401,13 +517,19 @@ const actionMenuItems = computed(() => {
             </template>
           </Column>
 
-          <Column field="updated_at" header="Diperbarui" class="hidden lg:table-cell">
+          <Column
+            field="updated_at"
+            header="Diperbarui"
+            class="hidden lg:table-cell"
+          >
             <template #body="{ data }">
-              <span class="text-sm text-slate-500">{{ formatDate(data.updated_at) }}</span>
+              <span class="text-sm text-slate-500">{{
+                formatDate(data.updated_at)
+              }}</span>
             </template>
           </Column>
 
-          <Column header="Aksi" :pt="{columnHeaderContent: 'justify-end' }">
+          <Column header="Aksi" :pt="{ columnHeaderContent: 'justify-end' }">
             <template #body="{ data }">
               <div class="flex items-center justify-end">
                 <Button
@@ -416,7 +538,9 @@ const actionMenuItems = computed(() => {
                   @click="toggleActionMenu($event, data)"
                 >
                   <template #default>
-                    <div class="flex items-center text-slate-400 hover:text-blue-600">
+                    <div
+                      class="flex items-center text-slate-400 hover:text-blue-600"
+                    >
                       <IconChevronDown size="22" stroke-width="1.5" />
                     </div>
                   </template>
@@ -429,7 +553,7 @@ const actionMenuItems = computed(() => {
                   class="!min-w-28"
                   :pt="{
                     itemIcon: { class: '!text-sm mr-1' },
-                    itemLabel: { class: 'text-sm' }
+                    itemLabel: { class: 'text-sm' },
                   }"
                 />
               </div>

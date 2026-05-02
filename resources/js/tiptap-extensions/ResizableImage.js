@@ -9,7 +9,7 @@ export default Image.extend({
       ...this.parent?.(),
       width: {
         default: '100%',
-        renderHTML: attributes => {
+        renderHTML: (attributes) => {
           return {
             width: attributes.width,
           }

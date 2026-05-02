@@ -1,4 +1,5 @@
 <?php
+
 // filepath: app/Mail/IncidentConfirmationMail.php
 
 namespace App\Mail;
@@ -10,21 +11,21 @@ use Illuminate\Queue\SerializesModels;
 
 class IncidentConfirmationMail extends Mailable
 {
-  use Queueable, SerializesModels;
+    use Queueable, SerializesModels;
 
-  public $incident;
+    public $incident;
 
-  public function __construct(Incident $incident)
-  {
-    $this->incident = $incident;
-  }
+    public function __construct(Incident $incident)
+    {
+        $this->incident = $incident;
+    }
 
-  public function build()
-  {
-    return $this->subject("Konfirmasi Tiket - {$this->incident->case_id}")
-                ->view('emails.incident-confirmation')
-                ->with([
-                  'incident' => $this->incident,
-                ]);
-  }
+    public function build()
+    {
+        return $this->subject("Konfirmasi Tiket - {$this->incident->case_id}")
+            ->view('emails.incident-confirmation')
+            ->with([
+                'incident' => $this->incident,
+            ]);
+    }
 }

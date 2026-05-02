@@ -1,4 +1,5 @@
 <?php
+
 // filepath: app/Http/Resources/FullIncidentResource.php
 
 namespace App\Http\Resources;
@@ -8,43 +9,55 @@ use Illuminate\Support\Facades\URL;
 
 class FullIncidentResource extends JsonResource
 {
-  /**
-   * Transform the resource into an array.
-   *
-   * @return array
-   */
-  public function toArray($request)
-  {
-    return [
-      'case_id' => $this->case_id,
-      'status' => $this->status,
-      'priority' => $this->priority,
-      'reported_at' => $this->reported_at,
-      'incident_at' => $this->incident_at,
-      'incident_type' => $this->whenLoaded('incidentType', function () {
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array
+     */
+    public function toArray($request)
+    {
+        $attachmentData = null;
+        if ($this->attachment) {
+            $attachmentData = (new AttachmentResource($this->attachment))->toArray($request);
+
+            if ($this->attachment->isFile() && $this->attachment->disk === 'local') {
+                $attachmentData['url'] = URL::signedRoute('incident.attachment.download', [
+                    'caseId' => $this->case_id,
+                ], now()->addMinutes(15));
+            }
+        }
+
         return [
-          'name' => optional($this->incidentType)->name,
+            'case_id' => $this->case_id,
+            'status' => $this->status,
+            'priority' => $this->priority,
+            'reported_at' => $this->reported_at,
+            'incident_at' => $this->incident_at,
+            'incident_type' => $this->whenLoaded('incidentType', function () {
+                return [
+                    'name' => optional($this->incidentType)->name,
+                ];
+            }),
+            'description' => $this->description,
+            'attachment' => $attachmentData,
+            'logs' => $this->whenLoaded('incidentLogs', function () use ($request) {
+                return $this->incidentLogs
+                    ->filter(fn ($log) => $log->is_public)
+                    ->values()
+                    ->map(function ($log) use ($request) {
+                        $isEdited = $log->updated_at->gt($log->created_at);
+
+                        return [
+                            'message' => $log->log_message,
+                            'created_at' => $log->created_at,
+                            'is_edited' => $isEdited,
+                            'edited_at' => $isEdited ? $log->updated_at : null,
+                            'attachment' => $log->attachment
+                                ? (new AttachmentResource($log->attachment))->toArray($request)
+                                : null,
+                        ];
+                    });
+            }),
         ];
-      }),
-      'description' => $this->description,
-      'attachment' => $this->when($this->attachment, function () {
-        return [
-          'filename' => basename($this->attachment),
-          'extension' => strtoupper(pathinfo($this->attachment, PATHINFO_EXTENSION)),
-          'file_size' => method_exists($this->resource, 'fileSize') ? $this->resource->fileSize() : null,
-          'download_url' => URL::signedRoute('incident.attachment.download', [
-            'caseId' => $this->case_id,
-          ], now()->addMinutes(15)),
-        ];
-      }),
-      'logs' => $this->whenLoaded('incidentLogs', function () {
-        return $this->incidentLogs->map(function ($log) {
-          return [
-            'message' => $log->log_message,
-            'created_at' => $log->created_at,
-          ];
-        });
-      }),
-    ];
-  }
+    }
 }

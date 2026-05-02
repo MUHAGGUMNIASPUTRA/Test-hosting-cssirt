@@ -4,16 +4,16 @@ import { createSSRApp, h, ref, computed, reactive } from 'vue'
 // Mock Ziggy route function for SSR
 const route = (name, params = {}) => {
   const routes = {
-    'home': '/',
+    home: '/',
     'services.index': '/services',
     'posts.index': '/posts',
     'contact.index': '/contact',
     'faq.index': '/faq',
     'profile.index': '/profile',
     'incidents.create': '/incidents/create',
-  };
-  return routes[name] || '#';
-};
+  }
+  return routes[name] || '#'
+}
 import { renderToString } from '@vue/server-renderer'
 import { createServer } from 'http'
 
@@ -53,10 +53,13 @@ if (typeof global !== 'undefined' && typeof window === 'undefined') {
     nodeName: tagName.toUpperCase(),
 
     // Style and classes
-    style: new Proxy({}, {
-      get: () => '',
-      set: () => true,
-    }),
+    style: new Proxy(
+      {},
+      {
+        get: () => '',
+        set: () => true,
+      },
+    ),
     classList: {
       add: () => {},
       remove: () => {},
@@ -69,57 +72,62 @@ if (typeof global !== 'undefined' && typeof window === 'undefined') {
 
     // Attributes and dataset
     attributes: {},
-    dataset: new Proxy({}, {
-      get: () => '',
-      set: () => true,
-    }),
+    dataset: new Proxy(
+      {},
+      {
+        get: () => '',
+        set: () => true,
+      },
+    ),
 
-    setAttribute: function(name, value) {
-      this.attributes[name] = value;
+    setAttribute: function (name, value) {
+      this.attributes[name] = value
       if (name.startsWith('data-')) {
-        const key = name.slice(5).replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
-        this.dataset[key] = value;
+        const key = name
+          .slice(5)
+          .replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())
+        this.dataset[key] = value
       }
     },
-    getAttribute: function(name) {
-      return this.attributes[name] || null;
+    getAttribute: function (name) {
+      return this.attributes[name] || null
     },
-    hasAttribute: function(name) {
-      return name in this.attributes;
+    hasAttribute: function (name) {
+      return name in this.attributes
     },
-    removeAttribute: function(name) {
-      delete this.attributes[name];
+    removeAttribute: function (name) {
+      delete this.attributes[name]
     },
 
     // DOM manipulation
-    appendChild: function(child) {
+    appendChild: function (child) {
       if (child && typeof child === 'object') {
-        this.children.push(child);
-        this.childNodes.push(child);
-        child.parentNode = this;
-        if (!this.firstChild) this.firstChild = child;
-        this.lastChild = child;
+        this.children.push(child)
+        this.childNodes.push(child)
+        child.parentNode = this
+        if (!this.firstChild) this.firstChild = child
+        this.lastChild = child
       }
-      return child;
+      return child
     },
-    removeChild: function(child) {
-      const index = this.children.indexOf(child);
+    removeChild: function (child) {
+      const index = this.children.indexOf(child)
       if (index > -1) {
-        this.children.splice(index, 1);
-        this.childNodes.splice(index, 1);
-        child.parentNode = null;
+        this.children.splice(index, 1)
+        this.childNodes.splice(index, 1)
+        child.parentNode = null
       }
-      return child;
+      return child
     },
-    insertBefore: function(newChild, referenceChild) {
-      const index = this.children.indexOf(referenceChild);
+    insertBefore: function (newChild, referenceChild) {
+      const index = this.children.indexOf(referenceChild)
       if (index > -1) {
-        this.children.splice(index, 0, newChild);
-        this.childNodes.splice(index, 0, newChild);
+        this.children.splice(index, 0, newChild)
+        this.childNodes.splice(index, 0, newChild)
       } else {
-        this.appendChild(newChild);
+        this.appendChild(newChild)
       }
-      return newChild;
+      return newChild
     },
 
     // Event handling
@@ -152,8 +160,15 @@ if (typeof global !== 'undefined' && typeof window === 'undefined') {
     scrollLeft: 0,
 
     getBoundingClientRect: () => ({
-      top: 0, left: 0, bottom: 0, right: 0, width: 0, height: 0,
-      x: 0, y: 0, toJSON: () => ({})
+      top: 0,
+      left: 0,
+      bottom: 0,
+      right: 0,
+      width: 0,
+      height: 0,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
     }),
 
     // Form elements
@@ -167,10 +182,10 @@ if (typeof global !== 'undefined' && typeof window === 'undefined') {
     blur: () => {},
 
     // Clone
-    cloneNode: function(deep = false) {
-      return createElementMock(this.tagName);
+    cloneNode: function (deep = false) {
+      return createElementMock(this.tagName)
     },
-  });
+  })
 
   // Create comprehensive document mock
   const documentMock = {
@@ -207,11 +222,11 @@ if (typeof global !== 'undefined' && typeof window === 'undefined') {
 
     // For compatibility
     defaultView: null,
-  };
+  }
 
   // Set activeElement
-  documentMock.activeElement = documentMock.body;
-  documentMock.defaultView = null;
+  documentMock.activeElement = documentMock.body
+  documentMock.defaultView = null
 
   // Create window mock
   global.window = {
@@ -259,10 +274,14 @@ if (typeof global !== 'undefined' && typeof window === 'undefined') {
     },
 
     // Styles and layout
-    getComputedStyle: () => new Proxy({}, {
-      get: () => '',
-      set: () => true,
-    }),
+    getComputedStyle: () =>
+      new Proxy(
+        {},
+        {
+          get: () => '',
+          set: () => true,
+        },
+      ),
 
     // Media queries
     matchMedia: () => ({
@@ -329,22 +348,26 @@ if (typeof global !== 'undefined' && typeof window === 'undefined') {
     performance: {
       now: () => Date.now(),
     },
-  };
+  }
 
   // Set global references
-  global.document = global.window.document;
-  global.navigator = global.window.navigator;
-  global.location = global.window.location;
-  global.history = global.window.history;
-  global.localStorage = global.window.localStorage;
-  global.sessionStorage = global.window.sessionStorage;
+  global.document = global.window.document
+  global.navigator = global.window.navigator
+  global.location = global.window.location
+  global.history = global.window.history
+  global.localStorage = global.window.localStorage
+  global.sessionStorage = global.window.sessionStorage
 
   // Additional globals that might be accessed
-  global.HTMLElement = function() {};
-  global.Element = function() {};
-  global.Node = function() {};
-  global.NodeList = function() { return []; };
-  global.HTMLCollection = function() { return []; };
+  global.HTMLElement = function () {}
+  global.Element = function () {}
+  global.Node = function () {}
+  global.NodeList = function () {
+    return []
+  }
+  global.HTMLCollection = function () {
+    return []
+  }
 }
 
 const appName = process.env.VITE_APP_NAME || 'CSIRT Bojonegoro'
@@ -356,7 +379,7 @@ const server = createServer(async (request, response) => {
     if (url.pathname === '/render') {
       let body = ''
 
-      request.on('data', chunk => {
+      request.on('data', (chunk) => {
         body += chunk.toString()
       })
 
@@ -372,17 +395,19 @@ const server = createServer(async (request, response) => {
             const routeHelper = (name, params = {}) => {
               // Define route mappings for SSR
               const routes = {
-                'landing': '/',
+                landing: '/',
                 'profile.show': '/profile',
                 'services.index': '/services',
                 'posts.index': '/posts',
                 'faq.index': '/faq',
                 'contact.index': '/contact',
                 'incident.create': '/incident',
-                'login': '/login',
+                login: '/login',
                 'admin.dashboard': '/admin',
-                'posts.show': (params) => `/posts/${params.post || params.slug || ''}`,
-                'categories.show': (params) => `/posts/categories/${params.category || params.slug || ''}`,
+                'posts.show': (params) =>
+                  `/posts/${params.post || params.slug || ''}`,
+                'categories.show': (params) =>
+                  `/posts/categories/${params.category || params.slug || ''}`,
               }
 
               const route = routes[name]
@@ -398,22 +423,22 @@ const server = createServer(async (request, response) => {
                 component: pageData.component, // Keep original component name for props context
                 props: {
                   auth: {
-                    user: null // For public pages, user is null
+                    user: null, // For public pages, user is null
                   },
                   flash: {
                     success: null,
                     error: null,
                     info: null,
-                    warning: null
+                    warning: null,
                   },
                   errors: {},
-                  ...pageData.props
+                  ...pageData.props,
                 },
                 url: pageData.url,
                 version: pageData.version || '1',
                 scrollRegions: [],
                 rememberedState: {},
-                resolvedErrors: {}
+                resolvedErrors: {},
               }
 
               // Add reactive wrapper for the page
@@ -425,7 +450,7 @@ const server = createServer(async (request, response) => {
 
             // Map regular components to their SEO versions
             const seoComponentMapping = {
-              'Landing': 'SEOLanding',
+              Landing: 'SEOLanding',
               'Services/Index': 'SEOServices',
               'Posts/Index': 'SEOPosts',
               'Posts/Show': 'SEOPostShow',
@@ -438,7 +463,8 @@ const server = createServer(async (request, response) => {
             }
 
             // Use SEO component if available, otherwise fallback to original
-            const actualComponent = seoComponentMapping[page.component] || page.component
+            const actualComponent =
+              seoComponentMapping[page.component] || page.component
             console.log(`Mapping ${page.component} → ${actualComponent}`)
 
             // Resolve the component with the mapped name
@@ -452,9 +478,10 @@ const server = createServer(async (request, response) => {
 
             // Create Vue app with proper Inertia context
             const app = createSSRApp({
-              render: () => h(resolvedComponent.default, {
-                ...page.props
-              })
+              render: () =>
+                h(resolvedComponent.default, {
+                  ...page.props,
+                }),
             })
 
             // Mock Inertia's usePage composable properly
@@ -462,7 +489,7 @@ const server = createServer(async (request, response) => {
 
             // Provide the page for Inertia
             app.provide('inertia', {
-              page: pageRef
+              page: pageRef,
             })
 
             // Create a proper usePage function that components can import
@@ -502,8 +529,8 @@ const server = createServer(async (request, response) => {
               },
               ripple: false, // Disable ripple for SSR
               csp: {
-                nonce: undefined // No nonce needed for SSR
-              }
+                nonce: undefined, // No nonce needed for SSR
+              },
             })
 
             // Add PrimeVue services - these need to be added before other providers
@@ -514,9 +541,9 @@ const server = createServer(async (request, response) => {
             app.provide('primevue', {
               config: {
                 theme: {
-                  preset: Noir
-                }
-              }
+                  preset: Noir,
+                },
+              },
             })
 
             // Register global components that might be used
@@ -525,17 +552,26 @@ const server = createServer(async (request, response) => {
             // Register Inertia components for SSR
             app.component('Head', {
               props: ['title'],
-              template: '<template></template>' // No-op for SSR
+              template: '<template></template>', // No-op for SSR
             })
 
             app.component('Link', {
-              props: ['href', 'method', 'data', 'headers', 'preserveState', 'preserveScroll', 'only', 'except'],
-              template: '<a :href="href"><slot /></a>' // Simple anchor for SSR
+              props: [
+                'href',
+                'method',
+                'data',
+                'headers',
+                'preserveState',
+                'preserveScroll',
+                'only',
+                'except',
+              ],
+              template: '<a :href="href"><slot /></a>', // Simple anchor for SSR
             })
 
             // Register loading-page component (used in AppLayout)
             app.component('loading-page', {
-              template: '<template></template>' // No-op for SSR
+              template: '<template></template>', // No-op for SSR
             })
 
             // Mock useToast composable for SSR - make it globally available
@@ -572,18 +608,22 @@ const server = createServer(async (request, response) => {
             console.log('About to render with renderToString...')
             const html = await renderToString(app)
 
-            console.log('SSR HTML result:', html ? html.length : 0, 'characters')
+            console.log(
+              'SSR HTML result:',
+              html ? html.length : 0,
+              'characters',
+            )
 
             // For SEO, we want to wrap in basic HTML structure if it's just content
             const finalHtml = html.startsWith('<') ? html : `<div>${html}</div>`
 
             console.log('Final HTML length:', finalHtml.length)
 
-          response.writeHead(200, {
-            'Content-Type': 'application/json',
-          })
+            response.writeHead(200, {
+              'Content-Type': 'application/json',
+            })
 
-          response.end(JSON.stringify({ html: finalHtml }))
+            response.end(JSON.stringify({ html: finalHtml }))
           } catch (renderError) {
             console.error('CreateInertiaApp Error:', renderError)
             console.error('Render Error Stack:', renderError.stack)
@@ -592,10 +632,12 @@ const server = createServer(async (request, response) => {
               'Content-Type': 'application/json',
             })
 
-            response.end(JSON.stringify({
-              error: `Render Error: ${renderError.message}`,
-              stack: renderError.stack,
-            }))
+            response.end(
+              JSON.stringify({
+                error: `Render Error: ${renderError.message}`,
+                stack: renderError.stack,
+              }),
+            )
           }
         } catch (error) {
           console.error('SSR Render Error:', error)
@@ -603,10 +645,12 @@ const server = createServer(async (request, response) => {
             'Content-Type': 'application/json',
           })
 
-          response.end(JSON.stringify({
-            error: error.message,
-            stack: error.stack,
-          }))
+          response.end(
+            JSON.stringify({
+              error: error.message,
+              stack: error.stack,
+            }),
+          )
         }
       })
     } else {
@@ -619,10 +663,12 @@ const server = createServer(async (request, response) => {
       'Content-Type': 'application/json',
     })
 
-    response.end(JSON.stringify({
-      error: error.message,
-      stack: error.stack,
-    }))
+    response.end(
+      JSON.stringify({
+        error: error.message,
+        stack: error.stack,
+      }),
+    )
   }
 })
 

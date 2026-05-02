@@ -1,5 +1,7 @@
 <?php
+
 // filepath: app/Http/Controllers/DocumentController.php
+
 namespace App\Http\Controllers;
 
 use App\Http\Traits\HandlesSeoRequests;
@@ -9,70 +11,87 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
-  use HandlesSeoRequests;
+    use HandlesSeoRequests;
 
-  /**
-   * Display a listing of published documents
-   */
-  public function index(Request $request)
-  {
-    $query = Document::published()
-      ->where(function($q) {
-        $q->where('version', '!=', 'RFC2350')
-          ->orWhereNull('version');
-      })
-      ->orderBy('title');
+    /**
+     * Display a listing of published documents
+     */
+    public function index(Request $request)
+    {
+        $query = Document::with(['documentArea:id,name', 'officialAttachment'])
+            ->published()
+            ->where(function ($q) {
+                $q->where('version', '!=', 'RFC2350');
+            })
+            ->orderBy('title');
 
-    // Apply search filter
-    if ($request->filled('search')) {
-      $query->where(function($q) use ($request) {
-          $q->where('title', 'ilike', '%' . $request->search . '%')
-            ->orWhere('description', 'ilike', '%' . $request->search . '%')
-            ->orWhere('version', 'ilike', '%' . $request->search . '%');
-      });
+        // Apply search filter
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('title', 'ilike', '%'.$request->search.'%')
+                    ->orWhere('description', 'ilike', '%'.$request->search.'%')
+                    ->orWhere('version', 'ilike', '%'.$request->search.'%');
+            });
+        }
+
+        $documents = $query->paginate(10)->withQueryString();
+
+        return $this->handleSeoRequest('Documents/Index', [
+            'documents' => $documents,
+            'filters' => $request->only(['search']),
+        ]);
     }
 
-    $documents = $query->paginate(10)->withQueryString();
+    /**
+     * Download a document (hanya berlaku untuk file, bukan link)
+     */
+    public function download(Request $request, Document $document)
+    {
+        $document->loadMissing('officialAttachment');
+        $attachment = $document->officialAttachment;
 
-    // Add file size to each document
-    $documents->getCollection()->transform(function ($document) {
-      $document->file_size = $document->fileSize();
-      $document->file_exists = $document->fileExists();
-      return $document;
-    });
+        if (! $attachment) {
+            abort(404, 'File tidak ditemukan');
+        }
 
-    return $this->handleSeoRequest('Documents/Index', [
-      'documents' => $documents,
-      'filters' => $request->only(['search']),
-    ]);
-  }
+        if ($attachment->isLink()) {
+            abort(400, 'Dokumen ini berupa tautan eksternal dan tidak dapat diunduh');
+        }
 
-  /**
-   * Download a document
-   */
-  public function download(Request $request, Document $document)
-  {
-    if (!$document->fileExists()) {
-      abort(404, 'File tidak ditemukan');
+        if (! Storage::disk($attachment->disk)->exists($attachment->path)) {
+            abort(404, 'File tidak ditemukan');
+        }
+
+        return response()->download(
+            Storage::disk($attachment->disk)->path($attachment->path),
+            $document->title.'.pdf',
+            ['Content-Type' => 'application/pdf'],
+        );
     }
 
-    return response()->download($document->downloadUrl(), $document->title . '.pdf', [
-      'Content-Type' => 'application/pdf',
-    ]);
-  }
+    /**
+     * View a document in browser — redirect jika berupa link, tampilkan file jika berupa PDF
+     */
+    public function view(Request $request, Document $document)
+    {
+        $document->loadMissing('officialAttachment');
+        $attachment = $document->officialAttachment;
 
-  /**
-   * View a document in browser
-   */
-  public function view(Request $request, Document $document)
-  {
-    if (!$document->fileExists()) {
-      abort(404, 'File tidak ditemukan');
+        if (! $attachment) {
+            abort(404, 'File tidak ditemukan');
+        }
+
+        if ($attachment->isLink()) {
+            return redirect($attachment->url);
+        }
+
+        if (! Storage::disk($attachment->disk)->exists($attachment->path)) {
+            abort(404, 'File tidak ditemukan');
+        }
+
+        return response()->file(Storage::disk($attachment->disk)->path($attachment->path), [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.$document->title.'.pdf"',
+        ]);
     }
-
-    return response()->file($document->downloadUrl(), [
-      'Content-Type' => 'application/pdf',
-      'Content-Disposition' => 'inline; filename="' . $document->title . '.pdf"'
-    ]);
-  }
 }

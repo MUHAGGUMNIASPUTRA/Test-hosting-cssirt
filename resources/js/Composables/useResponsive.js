@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, ref, computed } from "vue";
+import { onMounted, onUnmounted, ref, computed } from 'vue'
 
 export function useResponsive() {
   const breakpoint = ref({
@@ -8,10 +8,10 @@ export function useResponsive() {
     isMobile: false,
     isTablet: false,
     isDesktop: false,
-  });
+  })
 
   const updateBreakpoints = () => {
-    const width = window.innerWidth;
+    const width = window.innerWidth
     breakpoint.value = {
       mobile: width < 768,
       tablet: width >= 768 && width <= 1024,
@@ -19,41 +19,41 @@ export function useResponsive() {
       isMobile: width < 768,
       isTablet: width >= 768 && width <= 1024,
       isDesktop: width > 1024,
-    };
-  };
+    }
+  }
 
   onMounted(() => {
-    updateBreakpoints();
-    window.addEventListener("resize", updateBreakpoints);
-  });
+    updateBreakpoints()
+    window.addEventListener('resize', updateBreakpoints)
+  })
 
   onUnmounted(() => {
-    window.removeEventListener("resize", updateBreakpoints);
-  });
+    window.removeEventListener('resize', updateBreakpoints)
+  })
 
   // Helper functions for responsive configurations
   const dtConfig = () => ({
-    size: "small",
+    size: 'small',
     stripedRows: true,
     removableSort: true,
-    sortMode: "multiple",
+    sortMode: 'multiple',
     paginator: true,
     rows: 10,
     rowsPerPageOptions: [5, 10, 20, 50],
     pageLinkSize: breakpoint.value.isMobile ? 1 : 5,
     paginatorTemplate: breakpoint.value.isMobile
-      ? "PrevPageLink PageLinks NextPageLink CurrentPageReport"
-      : "FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport",
+      ? 'PrevPageLink PageLinks NextPageLink CurrentPageReport'
+      : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport',
     currentPageReportTemplate: breakpoint.value.isMobile
-      ? "{first}-{last} dari {totalRecords}"
-      : "Data ke {first} - {last} dari total {totalRecords}",
-    responsiveLayout: "scroll",
-  });
+      ? '{first}-{last} dari {totalRecords}'
+      : 'Data ke {first} - {last} dari total {totalRecords}',
+    responsiveLayout: 'scroll',
+  })
 
   // Create computed reactive references for convenience
-  const isMobile = computed(() => breakpoint.value.isMobile);
-  const isTablet = computed(() => breakpoint.value.isTablet);
-  const isDesktop = computed(() => breakpoint.value.isDesktop);
+  const isMobile = computed(() => breakpoint.value.isMobile)
+  const isTablet = computed(() => breakpoint.value.isTablet)
+  const isDesktop = computed(() => breakpoint.value.isDesktop)
 
   return {
     breakpoint,
@@ -61,5 +61,5 @@ export function useResponsive() {
     isTablet,
     isDesktop,
     dtConfig,
-  };
+  }
 }

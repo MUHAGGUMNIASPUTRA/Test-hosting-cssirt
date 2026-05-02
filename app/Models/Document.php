@@ -1,84 +1,67 @@
 <?php
+
 // File: app/Models/Document.php
 
 namespace App\Models;
 
+use App\Enums\DocumentStage;
+use App\Traits\HasUuidV6;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property string $title
+ * @property string $slug
+ * @property string|null $description
+ * @property string|null $draft_file_path URL-only link to Word draft (admin-only)
+ * @property \App\Models\Attachment|null $officialAttachment
+ * @property string|null $reference_number
+ * @property DocumentStage|null $stage
+ * @property string|null $version
+ * @property bool $is_public
+ * @property string|null $document_area_id
+ * @property string|null $pub_status Virtual — set in service transform
+ */
 class Document extends Model
 {
-  use HasFactory;
+    use HasFactory, HasUuidV6;
 
-  /**
-   * The attributes that are mass assignable.
-   *
-   * @var array
-   */
-  protected $fillable = [
-    'title',
-    'slug',
-    'description',
-    'file_path',
-    'version',
-    'published_at',
-  ];
+    protected $fillable = [
+        'title',
+        'slug',
+        'description',
+        'draft_file_path',
+        'official_attachment_id',
+        'reference_number',
+        'stage',
+        'version',
+        'published_at',
+        'is_public',
+        'document_area_id',
+    ];
 
-  /**
-   * The attributes that should be cast.
-   *
-   * @var array
-   */
-  protected $casts = [
-    'published_at' => 'datetime',
-  ];
+    protected $casts = [
+        'published_at' => 'datetime',
+        'is_public' => 'boolean',
+        'stage' => DocumentStage::class,
+    ];
 
-  /**
-   * Get only published documents
-   */
-  public function scopePublished($query)
-  {
-    return $query->whereNotNull('published_at');
-  }
-
-  /**
-   * Get the file size in human readable format
-   */
-  public function fileSize()
-  {
-    if ($this->file_path && Storage::disk('public')->exists($this->file_path)) {
-      $bytes = Storage::disk('public')->size($this->file_path);
-      return $this->formatBytes($bytes);
+    public function documentArea(): BelongsTo
+    {
+        return $this->belongsTo(DocumentArea::class);
     }
-    return 'N/A';
-  }
 
-  /**
-   * Get the download URL
-   */
-  public function downloadUrl()
-  {
-    return Storage::disk('public')->path($this->file_path);
-  }
-
-  /**
-   * Check if file exists
-   */
-  public function fileExists()
-  {
-    return Storage::disk('public')->exists($this->file_path);
-  }
-
-  /**
-   * Format bytes to human readable format
-   */
-  private function formatBytes($bytes, $precision = 2)
-  {
-    $units = array('B', 'KB', 'MB', 'GB', 'TB');
-    for ($i = 0; $bytes > 1024; $i++) {
-      $bytes /= 1024;
+    /**
+     * Get the official attachment (PDF upload or external link).
+     */
+    public function officialAttachment(): BelongsTo
+    {
+        return $this->belongsTo(Attachment::class, 'official_attachment_id');
     }
-    return round($bytes, $precision) . ' ' . $units[$i];
-  }
+
+    public function scopePublished($query)
+    {
+        return $query->whereNotNull('published_at');
+    }
 }
