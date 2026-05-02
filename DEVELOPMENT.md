@@ -98,7 +98,10 @@ npm run dev
 ### Build Production
 
 ```bash
+npm install
 npm run build
+npm prune --omit=dev
+
 php artisan optimize
 ```
 
