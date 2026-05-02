@@ -12,7 +12,7 @@ class VirtualAssetGuideAttachment extends Model
 
     protected $fillable = [
         'virtual_asset_guide_id',
-        'attachment_id',
+        'document_id',
         'sort_order',
     ];
 
@@ -21,8 +21,8 @@ class VirtualAssetGuideAttachment extends Model
         return $this->belongsTo(VirtualAssetGuide::class, 'virtual_asset_guide_id');
     }
 
-    public function attachment(): BelongsTo
+    public function document(): BelongsTo
     {
-        return $this->belongsTo(Attachment::class);
+        return $this->belongsTo(Document::class);
     }
 }

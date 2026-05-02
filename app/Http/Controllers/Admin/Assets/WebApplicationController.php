@@ -145,7 +145,7 @@ class WebApplicationController extends Controller
 
     private function guidesData(?WebApplication $asset): array
     {
-        $guides = VirtualAssetGuide::with(['guideAttachments.attachment'])
+        $guides = VirtualAssetGuide::with(['guideAttachments.document.officialAttachment'])
             ->where('type', 'web')
             ->orderBy('name')
             ->get(['id', 'name', 'description']);

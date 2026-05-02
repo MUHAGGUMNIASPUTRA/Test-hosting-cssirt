@@ -313,7 +313,7 @@ const stageSeverity = (stage) => getSeverity('document-stage', stage)
           </template>
         </Column>
 
-        <Column header="Aksi" style="width: 120px">
+        <Column header="Aksi" style="width: 140px">
           <template #body="{ data }">
             <div class="flex items-center gap-1">
               <!-- Toggle Visibility -->
@@ -328,6 +328,18 @@ const stageSeverity = (stage) => getSeverity('document-stage', stage)
                 "
                 @click="toggleVisibility(data)"
               />
+
+              <!-- View Detail -->
+              <Link :href="route('admin.documents.show', data.id)">
+                <Button
+                  icon="pi pi-eye"
+                  size="small"
+                  severity="info"
+                  text
+                  rounded
+                  v-tooltip="'Detail'"
+                />
+              </Link>
 
               <Link :href="route('admin.documents.edit', data.id)">
                 <Button

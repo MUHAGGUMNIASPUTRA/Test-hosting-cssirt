@@ -123,26 +123,48 @@ const toggleAck = async (guide) => {
               <p
                 class="text-xs font-semibold uppercase tracking-wider text-slate-400"
               >
-                Lampiran
+                Dokumen Referensi
               </p>
-              <a
+              <div
                 v-for="ga in activeGuide.guide_attachments"
                 :key="ga.id"
-                :href="ga.attachment?.url"
-                target="_blank"
-                rel="noopener"
-                class="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-blue-600 hover:bg-slate-100 hover:text-blue-800"
+                class="rounded-lg border border-slate-200 bg-slate-50 p-3"
               >
-                <IconExternalLink
-                  v-if="ga.attachment?.type === 'link'"
-                  size="14"
-                  class="flex-shrink-0"
-                />
-                <IconPaperclip v-else size="14" class="flex-shrink-0" />
-                <span class="truncate">{{
-                  ga.attachment?.filename || ga.attachment?.url || 'Lampiran'
-                }}</span>
-              </a>
+                <div class="mb-2 flex items-center gap-2">
+                  <IconFile size="14" class="flex-shrink-0 text-slate-400" />
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-medium text-slate-900">
+                      {{ ga.document?.title }}
+                    </p>
+                    <p
+                      v-if="ga.document?.reference_number"
+                      class="text-xs text-slate-500"
+                    >
+                      {{ ga.document.reference_number }}
+                    </p>
+                  </div>
+                </div>
+                <div class="flex gap-1.5">
+                  <!-- Tombol Lihat (selalu tampil jika ada official_attachment) -->
+                  <a
+                    v-if="ga.document?.official_attachment"
+                    :href="route('documents.view', ga.document.slug)"
+                    target="_blank"
+                    rel="noopener"
+                    class="inline-flex items-center gap-1 rounded border border-blue-200 px-2 py-1 text-xs text-blue-600 hover:bg-blue-50"
+                  >
+                    <IconEye size="12" /> Lihat
+                  </a>
+                  <!-- Tombol Unduh (hanya untuk file, bukan link) -->
+                  <a
+                    v-if="ga.document?.official_attachment?.type === 'file'"
+                    :href="route('documents.download', ga.document.slug)"
+                    class="inline-flex items-center gap-1 rounded border border-green-200 px-2 py-1 text-xs text-green-600 hover:bg-green-50"
+                  >
+                    <IconDownload size="12" /> Unduh
+                  </a>
+                </div>
+              </div>
             </div>
 
             <p

@@ -47,6 +47,13 @@ class DocumentController extends Controller
             ->with('success', 'Dokumen berhasil ditambahkan.');
     }
 
+    public function show(Document $document): Response
+    {
+        return Inertia::render('Admin/Documents/Show', [
+            'document' => $document->load(['officialAttachment', 'documentArea']),
+        ]);
+    }
+
     public function edit(Document $document): Response
     {
         return Inertia::render('Admin/Documents/Create', [

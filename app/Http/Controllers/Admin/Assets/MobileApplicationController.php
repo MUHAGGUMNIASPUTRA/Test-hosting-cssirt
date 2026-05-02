@@ -123,7 +123,7 @@ class MobileApplicationController extends Controller
 
     private function guidesData(?MobileApplication $asset): array
     {
-        $guides = VirtualAssetGuide::with(['guideAttachments.attachment'])
+        $guides = VirtualAssetGuide::with(['guideAttachments.document.officialAttachment'])
             ->where('type', 'mobile')
             ->orderBy('name')
             ->get(['id', 'name', 'description']);

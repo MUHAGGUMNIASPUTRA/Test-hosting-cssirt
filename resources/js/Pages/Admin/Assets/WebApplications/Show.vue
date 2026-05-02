@@ -129,7 +129,6 @@ const handleDelete = () => {
           <!-- Tab 1: Spesifikasi -->
           <TabPanel value="1" class="space-y-4">
             <AdminFormSection
-              v-if="wa.vms?.length"
               title="Spesifikasi VM"
               description="Detail virtual machine"
               color="slate"
@@ -137,7 +136,10 @@ const handleDelete = () => {
               <template #icon="{ iconClass }"
                 ><IconServer :class="iconClass"
               /></template>
-              <div class="space-y-2">
+              <p v-if="!wa.vms?.length" class="py-2 text-sm text-slate-400">
+                Belum ada VM terdaftar.
+              </p>
+              <div v-else class="space-y-2">
                 <div
                   v-for="(vm, i) in wa.vms"
                   :key="i"
@@ -165,7 +167,6 @@ const handleDelete = () => {
               </div>
             </AdminFormSection>
             <AdminFormSection
-              v-if="wa.networks?.length"
               title="Spesifikasi Jaringan"
               description="Konfigurasi jaringan"
               color="cyan"
@@ -173,7 +174,13 @@ const handleDelete = () => {
               <template #icon="{ iconClass }"
                 ><IconNetwork :class="iconClass"
               /></template>
-              <div class="space-y-2">
+              <p
+                v-if="!wa.networks?.length"
+                class="py-2 text-sm text-slate-400"
+              >
+                Belum ada jaringan yang diisi.
+              </p>
+              <div v-else class="space-y-2">
                 <div
                   v-for="(net, i) in wa.networks"
                   :key="i"

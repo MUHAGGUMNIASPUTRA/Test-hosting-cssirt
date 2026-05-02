@@ -1,3 +1,7 @@
+<!-- Tujuan: Section spesifikasi VM dengan input CPU, RAM, storage -->
+<!-- Caller: WebApplications/Create.vue -->
+<!-- Side Effects: emit update:modelValue -->
+
 <script setup>
 const props = defineProps({
   modelValue: { type: Array, default: () => [] },
@@ -26,9 +30,15 @@ const updateVm = (index, key, val) => {
 </script>
 
 <template>
-  <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-    <div class="mb-4 flex items-center justify-between">
-      <h3 class="font-semibold text-slate-800">Spesifikasi VM</h3>
+  <AdminFormSection
+    title="Spesifikasi VM"
+    description="Konfigurasi CPU, RAM, dan storage"
+    color="slate"
+  >
+    <template #icon="{ iconClass }">
+      <IconServer :class="iconClass" />
+    </template>
+    <template #extra>
       <Button
         type="button"
         size="small"
@@ -38,16 +48,15 @@ const updateVm = (index, key, val) => {
       >
         <IconPlus size="14" class="mr-1" />Tambah VM
       </Button>
-    </div>
-
-    <div
-      v-if="modelValue.length === 0"
-      class="py-4 text-center text-sm text-slate-400"
-    >
-      Belum ada VM. Klik "Tambah VM" untuk menambahkan.
-    </div>
+    </template>
 
     <div class="space-y-3">
+      <div
+        v-if="modelValue.length === 0"
+        class="py-4 text-center text-sm text-slate-400"
+      >
+        Belum ada VM. Klik "Tambah VM" untuk menambahkan.
+      </div>
       <div
         v-for="(vm, index) in modelValue"
         :key="index"
@@ -106,5 +115,5 @@ const updateVm = (index, key, val) => {
         </div>
       </div>
     </div>
-  </div>
+  </AdminFormSection>
 </template>

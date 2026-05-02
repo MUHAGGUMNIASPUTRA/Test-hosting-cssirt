@@ -35,6 +35,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\DocumentController as ApiDocumentController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\VirtualAssetController as ApiVirtualAssetController;
+use App\Http\Controllers\Api\VirtualAssetGuideController as ApiVirtualAssetGuideController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
@@ -138,6 +139,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
 Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(function () {
     Route::get('/admin/documents', [ApiDocumentController::class, 'index'])->name('admin.documents.index');
+    Route::get('/admin/virtual-asset-guides', [ApiVirtualAssetGuideController::class, 'index'])->name('admin.virtual-asset-guides.index');
     Route::get('/notifications/incidents', [NotificationController::class, 'getIncidentNotifications'])->name('notifications.incidents');
     Route::post('/notifications/{incident}/mark-read', [NotificationController::class, 'markAsRead'])->name('incidents.mark-read');
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');

@@ -67,16 +67,16 @@ const sidebarItems = [
   { label: 'Dashboard', icon: IconLayoutBoard, route: 'admin.dashboard' },
   { separator: true },
   {
-    label: 'Panduan',
+    label: 'Dokumen',
     icon: IconFileDescription,
     items: [
       {
-        label: 'Daftar Panduan',
+        label: 'Daftar Dokumen',
         icon: IconFileDescription,
         route: 'admin.documents.index',
       },
       {
-        label: 'Tambah Panduan',
+        label: 'Tambah Dokumen',
         icon: IconFilePlus,
         route: 'admin.documents.create',
       },
