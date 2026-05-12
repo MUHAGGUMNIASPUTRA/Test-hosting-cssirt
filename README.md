@@ -24,6 +24,24 @@ Website resmi **Computer Security Incident Response Team (CSIRT) Kabupaten Bojon
 | Auth             | Laravel Breeze + Sanctum                                              |
 | Routing (JS)     | [Ziggy](https://github.com/tightenco/ziggy)                           |
 
+## Dokumentasi
+
+Panduan lengkap tersedia di folder [`docs/`](docs/):
+
+| Topik | File | Deskripsi |
+|-------|------|-----------|
+| **Setup & Instalasi** | [docs/SETUP.md](docs/SETUP.md) | Prerequisites, instalasi awal, VS Code setup |
+| **Pengembangan Lokal** | [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) | Dev commands, code styling, kontribusi |
+| **Production & Deployment** | [docs/PRODUCTION.md](docs/PRODUCTION.md) | Build production, SSR, migration cases |
+| **Testing** | [docs/TESTING.md](docs/TESTING.md) | PHP dan JavaScript test commands |
+| **Kriptografi & Keamanan Data** | [docs/CRYPTOGRAPHY.md](docs/CRYPTOGRAPHY.md) | Enkripsi pegawai, masking, reveal mechanism |
+
+### ⚠️ PERINGATAN KRITIS
+
+**Jangan pernah menjalankan `php artisan key:generate` di production yang sudah memiliki data.** APP_KEY adalah satu-satunya kunci untuk mendekripsi data sensitif pegawai (NIP, NIK, telepon, email). Mengganti key akan membuat semua data terenkripsi tidak bisa dibaca. Lihat [docs/CRYPTOGRAPHY.md](docs/CRYPTOGRAPHY.md) untuk detail.
+
+---
+
 ## Lisensi
 
 Proyek ini dikembangkan untuk keperluan internal Pemerintah Kabupaten Bojonegoro.
@@ -34,5 +52,3 @@ Untuk pertanyaan teknis atau laporan insiden, hubungi tim CSIRT Kabupaten Bojone
 
 - Website: [csirt.bojonegorokab.go.id](https://csirt.bojonegorokab.go.id)
 - Email: csirt@bojonegorokab.go.id
-
-Panduan instalasi dan pengembangan tersedia di [DEVELOPMENT.md](DEVELOPMENT.md).
