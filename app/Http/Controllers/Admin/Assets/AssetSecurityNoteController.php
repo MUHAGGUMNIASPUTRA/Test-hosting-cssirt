@@ -83,6 +83,7 @@ class AssetSecurityNoteController extends Controller
             'web-application' => WebApplication::class,
             'mobile-application' => MobileApplication::class,
             'license' => License::class,
+            'physical-asset' => PhysicalAsset::class,
             default => abort(404),
         };
     }

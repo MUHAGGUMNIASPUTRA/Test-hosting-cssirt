@@ -10,6 +10,8 @@ use App\Enums\OwnerContactType;
 use App\Traits\HasUuidV6;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class PhysicalAsset extends Model
 {
@@ -51,5 +53,15 @@ class PhysicalAsset extends Model
     public function ownerEmployee(): BelongsTo
     {
         return $this->belongsTo(Employee::class, 'owner_employee_id');
+    }
+
+    public function securityClassification(): MorphOne
+    {
+        return $this->morphOne(AssetSecurityClassification::class, 'asset');
+    }
+
+    public function securityNotes(): MorphMany
+    {
+        return $this->morphMany(AssetSecurityNote::class, 'asset');
     }
 }

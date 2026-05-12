@@ -1,8 +1,8 @@
-<!-- Tujuan: Form tambah/edit Aset Fisik dengan navigasi tab -->
+<!-- Tujuan: Form tambah/edit Aset Fisik dengan navigasi tab dan klasifikasi keamanan -->
 <!-- Caller: PhysicalAssetController@create / edit -->
 <!-- Side Effects: Inertia POST/PUT ke admin.physical-assets.store/update -->
 <script setup>
-import { router, useForm } from '@inertiajs/vue3'
+import { useForm } from '@inertiajs/vue3'
 import { computed, ref, watch } from 'vue'
 
 const props = defineProps({
@@ -26,6 +26,7 @@ const tabFieldMap = {
     'attachment',
   ],
   1: ['location_id', 'owner_org_id', 'owner_employee_id'],
+  2: ['security'],
 }
 
 const attachmentMode = ref(asset?.attachment?.type ?? 'file')
@@ -44,6 +45,11 @@ const form = useForm({
   owner_org_id: asset?.owner_org_id ?? '',
   owner_contact_type: asset?.owner_contact_type ?? 'auto',
   owner_employee_id: asset?.owner_employee_id ?? null,
+  security: {
+    confidentiality: asset?.security_classification?.confidentiality ?? null,
+    integrity: asset?.security_classification?.integrity ?? null,
+    availability: asset?.security_classification?.availability ?? null,
+  },
 })
 
 watch(
@@ -92,14 +98,16 @@ const handleFileChange = (e) => {
 }
 
 const submit = () => {
-  const opts = { forceFormData: true }
   if (isEdit.value) {
-    form.post(route('admin.physical-assets.update', asset.id), {
-      ...opts,
-      _method: 'PUT',
-    })
+    form
+      .transform((data) => ({ ...data, _method: 'PUT' }))
+      .post(route('admin.physical-assets.update', asset.id), {
+        forceFormData: true,
+      })
   } else {
-    form.post(route('admin.physical-assets.store'), opts)
+    form.post(route('admin.physical-assets.store'), {
+      forceFormData: true,
+    })
   }
 }
 </script>
@@ -140,6 +148,7 @@ const submit = () => {
         <TabList>
           <Tab value="0">Utama</Tab>
           <Tab value="1">Kepemilikan</Tab>
+          <Tab value="2">Keamanan</Tab>
         </TabList>
         <TabPanels>
           <!-- Tab 0: Utama -->
@@ -451,6 +460,17 @@ const submit = () => {
                 </div>
               </div>
             </AdminFormSection>
+          </TabPanel>
+
+          <!-- Tab 2: Keamanan -->
+          <TabPanel value="2" class="space-y-4">
+            <SecurityClassificationForm
+              :model-value="form.security"
+              asset-type="physical-asset"
+              :asset-id="asset?.id ?? null"
+              :security-notes="physicalAsset?.security_notes ?? []"
+              @update:model-value="(v) => (form.security = v)"
+            />
           </TabPanel>
         </TabPanels>
       </Tabs>

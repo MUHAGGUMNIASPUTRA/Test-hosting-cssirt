@@ -108,7 +108,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('departments', AssetDepartmentController::class)->except(['show', 'create', 'edit']);
     Route::resource('positions', AssetPositionController::class)->except(['show', 'create', 'edit']);
     Route::resource('locations', AssetLocationController::class)->except(['show', 'create', 'edit']);
-    Route::resource('employees', AssetEmployeeController::class)->except(['show']);
+    Route::resource('employees', AssetEmployeeController::class)->except(['show', 'create']);
+    Route::post('employees/{employee}/reveal', [AssetEmployeeController::class, 'reveal'])->name('employees.reveal');
     Route::resource('vendors', AssetVendorController::class)->except(['show']);
 
     // Assets — Virtual

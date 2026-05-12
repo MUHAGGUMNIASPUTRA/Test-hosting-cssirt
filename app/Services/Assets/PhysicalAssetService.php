@@ -25,10 +25,14 @@ class PhysicalAssetService
             'physical-assets',
         );
 
-        return PhysicalAsset::create([
+        $asset = PhysicalAsset::create([
             ...$this->mainFields($data),
             'attachment_id' => $attachment?->id,
         ]);
+
+        $this->syncSecurity($asset, $data['security'] ?? []);
+
+        return $asset;
     }
 
     public function update(PhysicalAsset $asset, array $data, ?UploadedFile $file): void
@@ -46,6 +50,8 @@ class PhysicalAssetService
             ...$this->mainFields($data),
             'attachment_id' => $attachment?->id,
         ]);
+
+        $this->syncSecurity($asset, $data['security'] ?? []);
     }
 
     public function delete(PhysicalAsset $asset): void
@@ -55,6 +61,22 @@ class PhysicalAssetService
         }
 
         $asset->delete();
+    }
+
+    private function syncSecurity(PhysicalAsset $asset, array $security): void
+    {
+        if (empty($security)) {
+            return;
+        }
+
+        $asset->securityClassification()->updateOrCreate(
+            ['asset_type' => PhysicalAsset::class, 'asset_id' => $asset->id],
+            [
+                'confidentiality' => $security['confidentiality'] ?? 1,
+                'integrity' => $security['integrity'] ?? 1,
+                'availability' => $security['availability'] ?? 1,
+            ]
+        );
     }
 
     private function mainFields(array $data): array

@@ -1,4 +1,4 @@
-<!-- Tujuan: Halaman detail Aset Fisik dengan navigasi tab -->
+<!-- Tujuan: Halaman detail Aset Fisik dengan navigasi tab termasuk klasifikasi keamanan -->
 <!-- Caller: PhysicalAssetController@show -->
 <!-- Side Effects: none -->
 <script setup>
@@ -58,6 +58,7 @@ const handleDelete = () => {
         <TabList>
           <Tab value="0">Utama</Tab>
           <Tab value="1">Kepemilikan</Tab>
+          <Tab value="2">Keamanan</Tab>
         </TabList>
         <TabPanels>
           <!-- Tab 0: Utama -->
@@ -222,6 +223,17 @@ const handleDelete = () => {
                 </div>
               </dl>
             </AdminFormSection>
+          </TabPanel>
+
+          <!-- Tab 2: Keamanan -->
+          <TabPanel value="2" class="space-y-4">
+            <SecurityClassificationForm
+              :model-value="asset.security_classification ?? {}"
+              asset-type="physical-asset"
+              :asset-id="asset.id"
+              :security-notes="asset.security_notes ?? []"
+              :readonly-scores="true"
+            />
           </TabPanel>
         </TabPanels>
       </Tabs>

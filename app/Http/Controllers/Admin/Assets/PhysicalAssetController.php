@@ -54,7 +54,10 @@ class PhysicalAssetController extends Controller
 
     public function show(PhysicalAsset $physicalAsset): Response
     {
-        $physicalAsset->load(['location', 'ownerOrg', 'ownerEmployee', 'attachment']);
+        $physicalAsset->load([
+            'location', 'ownerOrg', 'ownerEmployee', 'attachment',
+            'securityClassification', 'securityNotes.user', 'securityNotes.attachment',
+        ]);
 
         return Inertia::render('Admin/Assets/PhysicalAssets/Show', [
             'physicalAsset' => $physicalAsset,
@@ -63,10 +66,13 @@ class PhysicalAssetController extends Controller
 
     public function edit(PhysicalAsset $physicalAsset): Response
     {
-        $physicalAsset->load(['location', 'ownerOrg', 'ownerEmployee', 'attachment']);
+        $physicalAsset->load([
+            'location', 'ownerOrg', 'ownerEmployee', 'attachment',
+            'securityClassification', 'securityNotes.user', 'securityNotes.attachment',
+        ]);
 
         return Inertia::render('Admin/Assets/PhysicalAssets/Create', [
-            'asset' => $physicalAsset,
+            'physicalAsset' => $physicalAsset,
             ...$this->formData(),
         ]);
     }

@@ -32,6 +32,10 @@ class SavePhysicalAssetRequest extends FormRequest
             'owner_org_id' => ['nullable', 'uuid', 'exists:organizations,id'],
             'owner_contact_type' => ['required', Rule::enum(OwnerContactType::class)],
             'owner_employee_id' => ['nullable', 'uuid', 'exists:employees,id', 'required_if:owner_contact_type,manual'],
+            'security' => ['nullable', 'array'],
+            'security.confidentiality' => ['nullable', 'integer', 'min:1', 'max:5'],
+            'security.integrity' => ['nullable', 'integer', 'min:1', 'max:5'],
+            'security.availability' => ['nullable', 'integer', 'min:1', 'max:5'],
         ];
     }
 
