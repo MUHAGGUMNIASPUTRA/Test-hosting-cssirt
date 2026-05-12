@@ -5,18 +5,25 @@ Panduan build production, deployment, dan migration cases.
 ## Build Production
 
 ```bash
-npm install
+npm ci
 npm run build
-npm prune --omit=dev
-
 php artisan optimize
 ```
 
+> Install dev dependencies hanya saat setup awal. Saat build production, gunakan `npm ci --omit=dev` untuk skip dev dependencies:
+>
+> ```bash
+> npm ci --omit=dev
+> npm run build
+> php artisan optimize
+> ```
+
 Langkah-langkah:
-1. **`npm install`** — Ensure dependensi npm up-to-date
+1. **`npm ci` atau `npm ci --omit=dev`** — Install dependencies exact dari `package-lock.json` (dengan atau tanpa dev deps)
 2. **`npm run build`** — Build client assets + SSR bundle
-3. **`npm prune --omit=dev`** — Hapus dev dependencies untuk mengurangi ukuran
-4. **`php artisan optimize`** — Cache routes, config, dan views untuk performa optimal
+3. **`php artisan optimize`** — Cache routes, config, dan views untuk performa optimal
+
+> **Note:** Gunakan `npm ci` (Clean Install) di production, bukan `npm install`. `npm ci` menggunakan `package-lock.json` yang fixed dan tidak menimbulkan konflik dependency.
 
 ---
 
