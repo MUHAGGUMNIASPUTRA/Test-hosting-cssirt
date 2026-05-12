@@ -124,10 +124,10 @@ class EmployeeSeeder extends Seeder
 
         foreach ($employees as $data) {
             $position = $getPosition($data['position']);
+            // Gunakan name sebagai key karena email disimpan terenkripsi (tidak bisa di-query langsung)
             Employee::firstOrCreate(
-                ['email' => $data['email']],
+                ['name' => $data['name']],
                 [
-                    'name' => $data['name'],
                     'nip' => $data['nip'],
                     'nik' => $data['nik'],
                     'phone' => $data['phone'],

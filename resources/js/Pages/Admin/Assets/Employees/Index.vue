@@ -1,6 +1,6 @@
 <script setup>
 import { useAdminTable } from '@/Composables/useAdminTable'
-import { router } from '@inertiajs/vue3'
+import { router, usePage } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 
 const props = defineProps({
@@ -26,6 +26,9 @@ const {
   organization_id: selectedOrg,
   status: selectedStatus,
 })
+
+const page = usePage()
+const isAdmin = computed(() => page.props.auth?.user?.role === 'admin')
 
 const orgOptions = computed(() =>
   props.organizations.map((o) => ({ label: o.name, value: o.id })),
@@ -83,6 +86,7 @@ const handleDelete = () => {
       :employee="selectedEmployee"
       :organizations="organizations"
       :positions="positions"
+      :is-admin="isAdmin"
     />
 
     <div class="space-y-4">
@@ -106,7 +110,7 @@ const handleDelete = () => {
             <InputIcon><i class="pi pi-search" /></InputIcon>
             <InputText
               v-model="searchQuery"
-              placeholder="Cari nama atau email..."
+              placeholder="Cari nama..."
               class="w-full"
               @keyup.enter="applyFilters"
             />
@@ -146,16 +150,20 @@ const handleDelete = () => {
           <template #body="{ data }">
             <div>
               <p class="font-medium text-slate-800">{{ data.name }}</p>
-              <p class="text-sm text-slate-500">{{ data.email ?? '—' }}</p>
+              <p class="font-mono text-sm text-slate-500">
+                {{ data.email_masked ?? '—' }}
+              </p>
             </div>
           </template>
         </Column>
         <Column header="NIP / NIK" class="hidden lg:table-cell">
           <template #body="{ data }">
             <div class="space-y-0.5 font-mono text-sm text-slate-600">
-              <div v-if="data.nip">NIP: {{ data.nip }}</div>
-              <div v-if="data.nik">NIK: {{ data.nik }}</div>
-              <span v-if="!data.nip && !data.nik" class="text-slate-400"
+              <div v-if="data.nip_masked">NIP: {{ data.nip_masked }}</div>
+              <div v-if="data.nik_masked">NIK: {{ data.nik_masked }}</div>
+              <span
+                v-if="!data.nip_masked && !data.nik_masked"
+                class="text-slate-400"
                 >—</span
               >
             </div>
@@ -172,7 +180,11 @@ const handleDelete = () => {
           </template>
         </Column>
         <Column header="Telepon" class="hidden xl:table-cell">
-          <template #body="{ data }">{{ data.phone ?? '—' }}</template>
+          <template #body="{ data }">
+            <span class="font-mono text-sm">{{
+              data.phone_masked ?? '—'
+            }}</span>
+          </template>
         </Column>
         <Column header="Status" class="hidden sm:table-cell">
           <template #body="{ data }">
