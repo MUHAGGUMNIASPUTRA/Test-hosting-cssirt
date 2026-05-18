@@ -26,9 +26,4 @@ class Organization extends Model
     {
         return $this->hasMany(Location::class);
     }
-
-    public function employees(): HasMany
-    {
-        return $this->hasMany(Employee::class);
-    }
 }

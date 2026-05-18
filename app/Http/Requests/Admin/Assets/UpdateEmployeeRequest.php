@@ -21,7 +21,6 @@ class UpdateEmployeeRequest extends FormRequest
             'phone' => ['nullable', 'string', 'max:50'],
             'email' => ['nullable', 'email', 'max:255'],
             'position_id' => ['required', 'uuid', 'exists:positions,id'],
-            'organization_id' => ['required', 'uuid', 'exists:organizations,id'],
             'year_joined' => ['nullable', 'integer', 'min:1900', 'max:2100'],
             'is_active' => ['boolean'],
         ];
@@ -31,7 +30,6 @@ class UpdateEmployeeRequest extends FormRequest
     {
         return [
             'position_id.required' => 'Jabatan wajib dipilih.',
-            'organization_id.required' => 'Organisasi wajib dipilih.',
         ];
     }
 }

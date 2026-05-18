@@ -23,7 +23,7 @@ class EmployeeService
     {
         $updateData = array_filter(
             array_intersect_key($data, array_flip([
-                'name', 'position_id', 'organization_id', 'year_joined', 'is_active',
+                'name', 'position_id', 'year_joined', 'is_active',
             ])),
             fn ($v) => $v !== null
         );

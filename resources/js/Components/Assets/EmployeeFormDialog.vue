@@ -8,7 +8,6 @@ import { computed, ref, watch } from 'vue'
 const props = defineProps({
   visible: { type: Boolean, required: true },
   employee: { type: Object, default: null },
-  organizations: { type: Array, default: () => [] },
   positions: { type: Array, default: () => [] },
   isAdmin: { type: Boolean, default: false },
 })
@@ -36,7 +35,6 @@ const form = useForm({
   phone: '',
   email: '',
   position_id: '',
-  organization_id: '',
   year_joined: '',
   is_active: true,
 })
@@ -52,7 +50,6 @@ watch(
       form.phone = ''
       form.email = ''
       form.position_id = e?.position_id ?? ''
-      form.organization_id = e?.organization_id ?? ''
       form.year_joined = e?.year_joined ?? ''
       form.is_active = e?.is_active ?? true
       form.clearErrors()
@@ -67,11 +64,18 @@ watch(
   },
 )
 
-const orgOptions = computed(() =>
-  props.organizations.map((o) => ({ label: o.name, value: o.id })),
-)
 const posOptions = computed(() =>
-  props.positions.map((p) => ({ label: p.name, value: p.id })),
+  props.positions.map((p) => ({
+    label: `${p.name} - ${p.department?.name ?? ''} - ${p.department?.organization?.name ?? ''}`,
+    value: p.id,
+    name: p.name,
+    departmentName: p.department?.name ?? '',
+    organizationName: p.department?.organization?.name ?? '',
+  })),
+)
+
+const selectedPosition = computed(() =>
+  props.positions.find((p) => p.id === form.position_id),
 )
 
 const close = () => {
@@ -439,7 +443,7 @@ const submit = () => {
             </div>
 
             <!-- Jabatan -->
-            <div>
+            <div class="sm:col-span-2">
               <label class="mb-1 block text-sm font-medium text-slate-700">
                 Jabatan <span class="text-red-500">*</span>
               </label>
@@ -453,7 +457,34 @@ const submit = () => {
                 show-clear
                 filter
                 required
-              />
+              >
+                <template #option="slotProps">
+                  <div class="space-y-0.5 py-1">
+                    <div class="text-sm font-semibold text-slate-900">
+                      {{ slotProps.option.name }}
+                    </div>
+                    <div class="text-xs text-slate-600">
+                      {{ slotProps.option.departmentName }}
+                    </div>
+                    <div class="text-xs text-slate-500">
+                      {{ slotProps.option.organizationName }}
+                    </div>
+                  </div>
+                </template>
+                <template #value="slotProps">
+                  <div v-if="slotProps.value" class="space-y-0.5">
+                    <div class="text-sm font-semibold text-slate-900">
+                      {{ selectedPosition?.name }}
+                    </div>
+                    <div class="text-xs text-slate-600">
+                      {{ selectedPosition?.department?.name }}
+                    </div>
+                    <div class="text-xs text-slate-500">
+                      {{ selectedPosition?.department?.organization?.name }}
+                    </div>
+                  </div>
+                </template>
+              </Select>
               <p
                 v-if="form.errors.position_id"
                 class="mt-1 text-xs text-red-600"
@@ -462,31 +493,8 @@ const submit = () => {
               </p>
             </div>
 
-            <!-- Organisasi -->
-            <div>
-              <label class="mb-1 block text-sm font-medium text-slate-700">
-                Organisasi <span class="text-red-500">*</span>
-              </label>
-              <Select
-                v-model="form.organization_id"
-                :options="orgOptions"
-                option-label="label"
-                option-value="value"
-                placeholder="Pilih organisasi"
-                class="w-full"
-                show-clear
-                required
-              />
-              <p
-                v-if="form.errors.organization_id"
-                class="mt-1 text-xs text-red-600"
-              >
-                {{ form.errors.organization_id }}
-              </p>
-            </div>
-
             <!-- Tahun Bergabung -->
-            <div>
+            <div class="sm:col-span-2">
               <label class="mb-1 block text-sm font-medium text-slate-700">
                 Tahun Bergabung
               </label>
@@ -499,7 +507,7 @@ const submit = () => {
             </div>
 
             <!-- Status -->
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between sm:col-span-2">
               <label class="text-sm font-medium text-slate-700">
                 Pegawai Aktif
               </label>

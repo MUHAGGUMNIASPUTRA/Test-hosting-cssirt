@@ -84,7 +84,6 @@ const handleDelete = () => {
     <EmployeeFormDialog
       v-model:visible="dialogVisible"
       :employee="selectedEmployee"
-      :organizations="organizations"
       :positions="positions"
       :is-admin="isAdmin"
     />

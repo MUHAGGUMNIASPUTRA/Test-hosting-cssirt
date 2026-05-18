@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Employee;
-use App\Models\Organization;
 use App\Models\Position;
 use Illuminate\Database\Seeder;
 
@@ -11,12 +10,6 @@ class EmployeeSeeder extends Seeder
 {
     public function run(): void
     {
-        $diskominfo = Organization::where('name', 'like', '%Komunikasi dan Informatika%')->first();
-
-        if (! $diskominfo) {
-            return;
-        }
-
         $getPosition = fn (string $name) => Position::where('name', $name)->first();
 
         $employees = [
@@ -133,7 +126,6 @@ class EmployeeSeeder extends Seeder
                     'phone' => $data['phone'],
                     'email' => $data['email'],
                     'position_id' => $position?->id,
-                    'organization_id' => $diskominfo->id,
                     'year_joined' => $data['year_joined'],
                     'is_active' => $data['is_active'],
                 ]

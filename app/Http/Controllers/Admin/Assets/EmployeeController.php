@@ -26,7 +26,7 @@ class EmployeeController extends Controller
 
     public function index(Request $request): Response
     {
-        $query = Employee::with(['position.department.organization', 'organization'])->latest();
+        $query = Employee::with(['position.department.organization'])->latest();
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
@@ -35,7 +35,7 @@ class EmployeeController extends Controller
         }
 
         if ($request->filled('organization_id')) {
-            $query->where('organization_id', $request->organization_id);
+            $query->whereHas('position.department.organization', fn ($q) => $q->where('id', $request->organization_id));
         }
 
         if ($request->filled('status')) {
@@ -44,7 +44,7 @@ class EmployeeController extends Controller
 
         $employees = $query->paginate(15)->withQueryString();
         $organizations = Organization::orderBy('name')->get(['id', 'name']);
-        $positions = Position::orderBy('name')->get(['id', 'name']);
+        $positions = Position::with('department.organization')->orderBy('name')->get();
 
         return Inertia::render('Admin/Assets/Employees/Index', [
             'employees' => $employees,
@@ -65,9 +65,8 @@ class EmployeeController extends Controller
     public function edit(Employee $employee): Response
     {
         return Inertia::render('Admin/Assets/Employees/Index', [
-            'employee' => $employee->load(['position.department', 'organization']),
-            'organizations' => Organization::orderBy('name')->get(['id', 'name']),
-            'positions' => Position::orderBy('name')->get(['id', 'name']),
+            'employee' => $employee->load(['position.department.organization']),
+            'positions' => Position::with('department.organization')->orderBy('name')->get(),
         ]);
     }
 
