@@ -26,25 +26,8 @@ class MobileApplicationController extends Controller
 
     public function index(Request $request): Response
     {
-        $query = MobileApplication::with('ownerOrg')->latest();
-
-        if ($request->filled('search')) {
-            $query->where('name', 'ilike', '%'.$request->search.'%');
-        }
-
-        if ($request->filled('stage')) {
-            $query->where('stage', $request->stage);
-        }
-
-        if ($request->filled('app_status')) {
-            $query->where('app_status', $request->app_status);
-        }
-
-        if ($request->filled('owner_org_id')) {
-            $query->where('owner_org_id', $request->owner_org_id);
-        }
-
-        $mobileApplications = $query->paginate(15)->withQueryString();
+        $filters = $request->only(['search', 'stage', 'app_status', 'owner_org_id']);
+        $mobileApplications = $this->service->indexQuery($filters)->paginate(15)->withQueryString();
         $organizations = Organization::orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('Admin/Assets/MobileApplications/Index', [

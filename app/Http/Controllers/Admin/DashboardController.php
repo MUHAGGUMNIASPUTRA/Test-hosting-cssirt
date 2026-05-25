@@ -32,11 +32,6 @@ class DashboardController extends Controller
                     ->whereIn('status', ['Baru', 'Diverifikasi', 'Dalam Penyelidikan'])
                     ->count(),
             ],
-            'posts' => [
-                'total' => DB::table('posts')->count(),
-                'published' => DB::table('posts')->where('status', 'Published')->count(),
-                'draft' => DB::table('posts')->where('status', 'Draft')->count(),
-            ],
             'services' => [
                 'total' => DB::table('services')->count(),
                 'active' => DB::table('services')->where('is_active', true)->count(),
@@ -44,13 +39,32 @@ class DashboardController extends Controller
             'documents' => [
                 'total' => DB::table('documents')->count(),
             ],
-            'users' => [
-                'total' => DB::table('users')->count(),
-                'active' => DB::table('users')->whereNotNull('created_at')->count(),
-            ],
             'faqs' => [
                 'total' => DB::table('faqs')->count(),
                 'published' => DB::table('faqs')->where('is_published', true)->count(),
+            ],
+            'webApplications' => [
+                'total' => DB::table('web_applications')->count(),
+                'active' => DB::table('web_applications')->where('app_status', 'aktif')->count(),
+            ],
+            'mobileApplications' => [
+                'total' => DB::table('mobile_applications')->count(),
+                'active' => DB::table('mobile_applications')->where('app_status', 'aktif')->count(),
+            ],
+            'licenses' => [
+                'total' => DB::table('licenses')->count(),
+                'active' => DB::table('licenses')->where('is_active', true)->count(),
+                'expiringSoon' => DB::table('licenses')
+                    ->where('is_active', true)
+                    ->whereNotNull('expired_at')
+                    ->whereBetween('expired_at', [now(), now()->addDays(30)])
+                    ->count(),
+            ],
+            'physicalAssets' => [
+                'total' => DB::table('physical_assets')->count(),
+            ],
+            'informationAssets' => [
+                'total' => DB::table('information_assets')->count(),
             ],
         ];
 
@@ -62,20 +76,6 @@ class DashboardController extends Controller
                 'incident_types.name as type_name'
             )
             ->orderBy('incidents.reported_at', 'desc')
-            ->limit(5)
-            ->get();
-
-        // Get recent posts
-        $recentPosts = DB::table('posts')
-            ->select('id', 'title', 'status', 'views_count', 'created_at', 'published_at')
-            ->orderBy('created_at', 'desc')
-            ->limit(3)
-            ->get();
-
-        // Get recent users
-        $recentUsers = DB::table('users')
-            ->select('id', 'name', 'email', 'role', 'created_at')
-            ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
 
@@ -91,8 +91,6 @@ class DashboardController extends Controller
         return Inertia::render('Admin/Dashboard', [
             'stats' => $stats,
             'recentIncidents' => $recentIncidents,
-            'recentPosts' => $recentPosts,
-            'recentUsers' => $recentUsers,
             'systemAlerts' => $systemAlerts,
         ]);
     }

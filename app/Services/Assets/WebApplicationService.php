@@ -6,9 +6,50 @@ use App\Models\WebApplication;
 use App\Models\WebAppNetwork;
 use App\Models\WebAppTechStack;
 use App\Models\WebAppVm;
+use Illuminate\Database\Eloquent\Builder;
 
 class WebApplicationService
 {
+    public function indexQuery(array $filters): Builder
+    {
+        $query = WebApplication::with([
+            'location',
+            'ownerOrg',
+            'networks' => fn ($q) => $q->where('is_primary', true)->with(['ipAddress', 'subdomain']),
+        ])->latest();
+
+        if (! empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'ilike', "%{$search}%")
+                    ->orWhereHas('networks', fn ($nq) => $nq
+                        ->whereHas('ipAddress', fn ($iq) => $iq
+                            ->where('private_ip', 'ilike', "%{$search}%")
+                            ->orWhere('public_ip', 'ilike', "%{$search}%")
+                        )
+                        ->orWhereHas('subdomain', fn ($sq) => $sq
+                            ->where('subdomain', 'ilike', "%{$search}%")
+                        )
+                    );
+            });
+        }
+
+        if (! empty($filters['stage'])) {
+            $query->where('stage', $filters['stage']);
+        }
+        if (! empty($filters['app_status'])) {
+            $query->where('app_status', $filters['app_status']);
+        }
+        if (! empty($filters['https_status'])) {
+            $query->where('https_status', $filters['https_status']);
+        }
+        if (! empty($filters['owner_org_id'])) {
+            $query->where('owner_org_id', $filters['owner_org_id']);
+        }
+
+        return $query;
+    }
+
     public function create(array $data): WebApplication
     {
         $app = WebApplication::create($this->mainFields($data));

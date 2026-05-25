@@ -14,30 +14,39 @@ const props = defineProps({
         resolved: 0,
         critical: 0,
       },
-      posts: {
-        total: 0,
-        published: 0,
-        draft: 0,
-      },
-      users: {
+      services: {
         total: 0,
         active: 0,
+      },
+      documents: {
+        total: 0,
       },
       faqs: {
         total: 0,
         published: 0,
       },
+      webApplications: {
+        total: 0,
+        active: 0,
+      },
+      mobileApplications: {
+        total: 0,
+        active: 0,
+      },
+      licenses: {
+        total: 0,
+        active: 0,
+        expiringSoon: 0,
+      },
+      physicalAssets: {
+        total: 0,
+      },
+      informationAssets: {
+        total: 0,
+      },
     }),
   },
   recentIncidents: {
-    type: Array,
-    default: () => [],
-  },
-  recentPosts: {
-    type: Array,
-    default: () => [],
-  },
-  recentUsers: {
     type: Array,
     default: () => [],
   },
@@ -115,9 +124,7 @@ const truncateText = (text, length = 50) => {
       </div>
 
       <!-- Stats Cards -->
-      <div
-        class="grid grid-cols-2 gap-4 lg:grid-cols-2 lg:gap-6 xl:grid-cols-5"
-      >
+      <div class="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
         <StatCard
           layout="vertical"
           color="red"
@@ -153,14 +160,76 @@ const truncateText = (text, length = 50) => {
         <StatCard
           layout="vertical"
           color="blue"
-          label="Artikel Diterbitkan"
-          :value="stats.posts.published"
+          label="Aplikasi Web"
+          :value="stats.webApplications.total"
         >
           <template #default="{ iconClass, iconSize }">
-            <IconNews :class="iconClass" :size="iconSize" />
+            <IconDeviceDesktop :class="iconClass" :size="iconSize" />
           </template>
           <template #subtext>
-            <span class="font-medium">{{ stats.posts.draft }}</span> draft
+            <span class="font-medium">{{ stats.webApplications.active }}</span>
+            aktif
+          </template>
+        </StatCard>
+
+        <StatCard
+          layout="vertical"
+          color="cyan"
+          label="Aplikasi Mobile"
+          :value="stats.mobileApplications.total"
+        >
+          <template #default="{ iconClass, iconSize }">
+            <IconDeviceMobile :class="iconClass" :size="iconSize" />
+          </template>
+          <template #subtext>
+            <span class="font-medium">{{
+              stats.mobileApplications.active
+            }}</span>
+            aktif
+          </template>
+        </StatCard>
+
+        <StatCard
+          layout="vertical"
+          :color="stats.licenses.expiringSoon > 0 ? 'red' : 'orange'"
+          label="Lisensi"
+          :value="stats.licenses.total"
+        >
+          <template #default="{ iconClass, iconSize }">
+            <IconKey :class="iconClass" :size="iconSize" />
+          </template>
+          <template #subtext>
+            <span
+              :class="
+                stats.licenses.expiringSoon > 0
+                  ? 'font-medium text-red-600'
+                  : 'font-medium text-orange-600'
+              "
+              >{{ stats.licenses.expiringSoon }}</span
+            >
+            mau kadaluarsa
+          </template>
+        </StatCard>
+
+        <StatCard
+          layout="vertical"
+          color="slate"
+          label="Aset Fisik"
+          :value="stats.physicalAssets.total"
+        >
+          <template #default="{ iconClass, iconSize }">
+            <IconServer :class="iconClass" :size="iconSize" />
+          </template>
+        </StatCard>
+
+        <StatCard
+          layout="vertical"
+          color="purple"
+          label="Aset Informasi"
+          :value="stats.informationAssets.total"
+        >
+          <template #default="{ iconClass, iconSize }">
+            <IconDatabase :class="iconClass" :size="iconSize" />
           </template>
         </StatCard>
 
@@ -176,21 +245,6 @@ const truncateText = (text, length = 50) => {
           <template #subtext>
             <span class="font-medium">{{ stats.services?.total || 0 }}</span>
             layanan aktif
-          </template>
-        </StatCard>
-
-        <StatCard
-          layout="vertical"
-          color="green"
-          label="Total Pengguna"
-          :value="stats.users.total"
-        >
-          <template #default="{ iconClass, iconSize }">
-            <IconUsers :class="iconClass" :size="iconSize" />
-          </template>
-          <template #subtext>
-            <span class="font-medium">{{ stats.faqs.published }}</span> FAQ
-            aktif
           </template>
         </StatCard>
       </div>
@@ -319,57 +373,6 @@ const truncateText = (text, length = 50) => {
                   <p class="mt-1 text-sm opacity-75">
                     {{ formatDate(alert.created_at) }}
                   </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Recent Posts -->
-          <div class="rounded-xl border border-slate-200 bg-white shadow-sm">
-            <div class="border-b border-slate-200 p-4 lg:p-6">
-              <div class="flex items-center justify-between">
-                <h3 class="text-xl font-semibold text-slate-900">
-                  Artikel Terbaru
-                </h3>
-                <Link
-                  :href="route('admin.posts.index')"
-                  class="text-sm font-medium text-blue-500 hover:text-blue-700 lg:text-base"
-                  >Lihat Semua →</Link
-                >
-              </div>
-            </div>
-            <div class="divide-y divide-slate-100">
-              <div
-                v-if="recentPosts.length === 0"
-                class="py-8 text-center lg:py-12"
-              >
-                <IconArticle class="mx-auto mb-2 text-slate-300" size="30" />
-                <p class="text-slate-400">Belum ada artikel</p>
-              </div>
-              <div
-                v-for="post in recentPosts"
-                :key="post.id"
-                class="p-4 transition-colors hover:bg-slate-50 lg:p-6 lg:py-4"
-              >
-                <div class="flex items-start justify-between gap-3">
-                  <div class="min-w-0 flex-1">
-                    <h4
-                      class="mb-2 line-clamp-2 text-sm font-medium text-slate-700"
-                    >
-                      {{ post.title }}
-                    </h4>
-                    <div class="flex items-center gap-2 text-sm text-slate-500">
-                      <StatusBadge type="post-status" :value="post.status" />
-                      <span>•</span>
-                      <span class="text-sm"
-                        >{{ post.views_count || 0 }} views</span
-                      >
-                      <span>•</span>
-                      <span class="text-sm text-slate-400">{{
-                        formatDate(post.created_at)
-                      }}</span>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>

@@ -4,9 +4,35 @@ namespace App\Services\Assets;
 
 use App\Models\MobileApplication;
 use App\Models\MobileAppTechStack;
+use Illuminate\Database\Eloquent\Builder;
 
 class MobileApplicationService
 {
+    public function indexQuery(array $filters): Builder
+    {
+        $query = MobileApplication::with('ownerOrg')->latest();
+
+        if (! empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'ilike', "%{$search}%")
+                    ->orWhere('app_link', 'ilike', "%{$search}%");
+            });
+        }
+
+        if (! empty($filters['stage'])) {
+            $query->where('stage', $filters['stage']);
+        }
+        if (! empty($filters['app_status'])) {
+            $query->where('app_status', $filters['app_status']);
+        }
+        if (! empty($filters['owner_org_id'])) {
+            $query->where('owner_org_id', $filters['owner_org_id']);
+        }
+
+        return $query;
+    }
+
     public function create(array $data): MobileApplication
     {
         $app = MobileApplication::create($this->mainFields($data));

@@ -33,36 +33,8 @@ class WebApplicationController extends Controller
 
     public function index(Request $request): Response
     {
-        $query = WebApplication::with([
-            'location',
-            'ownerOrg',
-            'networks' => fn ($q) => $q->where('is_primary', true)->with(['ipAddress', 'subdomain']),
-        ])->latest();
-
-        if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'ilike', '%'.$request->search.'%')
-                    ->orWhereHas('networks', fn ($nq) => $nq->where('is_primary', true));
-            });
-        }
-
-        if ($request->filled('stage')) {
-            $query->where('stage', $request->stage);
-        }
-
-        if ($request->filled('app_status')) {
-            $query->where('app_status', $request->app_status);
-        }
-
-        if ($request->filled('https_status')) {
-            $query->where('https_status', $request->https_status);
-        }
-
-        if ($request->filled('owner_org_id')) {
-            $query->where('owner_org_id', $request->owner_org_id);
-        }
-
-        $webApplications = $query->paginate(15)->withQueryString();
+        $filters = $request->only(['search', 'stage', 'app_status', 'https_status', 'owner_org_id']);
+        $webApplications = $this->service->indexQuery($filters)->paginate(15)->withQueryString();
         $organizations = Organization::orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('Admin/Assets/WebApplications/Index', [
