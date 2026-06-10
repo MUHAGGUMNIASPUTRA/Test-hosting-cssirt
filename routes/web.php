@@ -116,6 +116,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::resource('tech-stack-categories', AssetTechStackCategoryController::class)->except(['show', 'create', 'edit']);
     Route::resource('tech-stacks', AssetTechStackController::class)->except(['show']);
     Route::resource('virtual-asset-guides', AssetGuideController::class)->except(['show']);
+    Route::get('web-applications/export', [AssetWebAppController::class, 'export'])->name('web-applications.export');
     Route::resource('web-applications', AssetWebAppController::class);
     Route::resource('mobile-applications', AssetMobileAppController::class);
     Route::resource('licenses', AssetLicenseController::class);

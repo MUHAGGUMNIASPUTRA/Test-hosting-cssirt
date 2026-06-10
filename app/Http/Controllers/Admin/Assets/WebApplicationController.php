@@ -115,6 +115,46 @@ class WebApplicationController extends Controller
         return redirect()->back()->with('success', 'Aplikasi web berhasil dihapus.');
     }
 
+    public function export()
+    {
+        $data = $this->service->indexQuery([])->with([
+            'ownerOrg',
+            'networks' => fn ($q) => $q->where('is_primary', true)->with(['ipAddress', 'subdomain']),
+        ])->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="aplikasi-web_'.now()->format('Y-m-d').'.csv"',
+        ];
+
+        return response()->stream(function () use ($data) {
+            $out = fopen('php://output', 'w');
+            fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM UTF-8
+
+            fputcsv($out, [
+                'Nama Aplikasi', 'Pemilik', 'Tahap',
+                'Status Aplikasi', 'Status HTTPS',
+                'Domain / Subdomain', 'IP Private', 'IP Public',
+            ]);
+
+            foreach ($data as $item) {
+                $net = $item->networks->first();
+                fputcsv($out, [
+                    $item->name,
+                    $item->ownerOrg?->name,
+                    $item->stage instanceof \BackedEnum ? $item->stage->value : $item->stage,           // fix
+                    $item->app_status instanceof \BackedEnum ? $item->app_status->value : $item->app_status, // fix
+                    $item->https_status instanceof \BackedEnum ? $item->https_status->value : $item->https_status, // fix
+                    $net?->subdomain?->subdomain,
+                    $net?->ipAddress?->private_ip,
+                    $net?->ipAddress?->public_ip,
+                ]);
+            }
+
+            fclose($out);
+        }, 200, $headers);
+    }
+
     private function guidesData(?WebApplication $asset): array
     {
         $guides = VirtualAssetGuide::with(['guideAttachments.document.officialAttachment'])
