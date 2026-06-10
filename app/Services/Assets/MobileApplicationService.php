@@ -4,13 +4,15 @@ namespace App\Services\Assets;
 
 use App\Models\MobileApplication;
 use App\Models\MobileAppTechStack;
+use App\Models\Organization;
 use Illuminate\Database\Eloquent\Builder;
 
 class MobileApplicationService
 {
     public function indexQuery(array $filters): Builder
     {
-        $query = MobileApplication::with('ownerOrg')->latest();
+        $query = MobileApplication::with('ownerOrg');
+        // Catatan: .latest() dihapus karena digantikan oleh ordering di bawah
 
         if (! empty($filters['search'])) {
             $search = $filters['search'];
@@ -29,6 +31,23 @@ class MobileApplicationService
         if (! empty($filters['owner_org_id'])) {
             $query->where('owner_org_id', $filters['owner_org_id']);
         }
+
+        // Urut: status aplikasi (aktif → idle → nonaktif) → nama pemilik → nama aplikasi
+        $query
+            ->orderByRaw("
+            CASE app_status
+                WHEN 'aktif'    THEN 1
+                WHEN 'idle'     THEN 2
+                WHEN 'nonaktif' THEN 3
+                ELSE 4
+            END
+        ")
+            ->orderBy(
+                Organization::select('name')
+                    ->whereColumn('organizations.id', 'mobile_applications.owner_org_id')
+                    ->limit(1)
+            )
+            ->orderBy('mobile_applications.name');
 
         return $query;
     }

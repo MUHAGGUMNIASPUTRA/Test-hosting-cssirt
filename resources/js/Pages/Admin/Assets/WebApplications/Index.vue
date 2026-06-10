@@ -91,6 +91,63 @@ const onSubdomainSaved = () => {
   showSubdomainDialog.value = false
   router.reload({ only: ['webApplications'] })
 }
+
+// ─── Export CSV / Excel ───────────────────────────────────────────────────────
+
+/**
+ * Ubah data webApplications halaman aktif menjadi array of objects
+ * yang siap di-export.
+ */
+const buildExportRows = () =>
+  (props.webApplications?.data ?? []).map((item) => {
+    const net = item.networks?.[0]
+    return {
+      'Nama Aplikasi': item.name ?? '',
+      'Pemilik': item.owner_org?.name ?? '',
+      'Tahap': item.stage ?? '',
+      'Status Aplikasi': item.app_status ?? '',
+      'Status HTTPS': item.https_status ?? '',
+      'Domain / Subdomain': net?.subdomain?.subdomain ?? '',
+      'IP Private': net?.ip_address?.private_ip ?? '',
+      'IP Public': net?.ip_address?.public_ip ?? '',
+    }
+  })
+
+/** Export sebagai Excel (.xlsx) menggunakan SheetJS */
+const isExportingXlsx = ref(false)
+
+const exportXlsx = async () => {
+  isExportingXlsx.value = true
+  try {
+    const XLSX = await import('xlsx')
+    const rows = buildExportRows()
+
+    const ws = XLSX.utils.json_to_sheet(rows)
+
+    // Lebar kolom otomatis berdasarkan isi terbesar per kolom
+    const colWidths = Object.keys(rows[0] ?? {}).map((key) => ({
+      wch: Math.max(
+        key.length,
+        ...rows.map((r) => String(r[key] ?? '').length),
+      ) + 2,
+    }))
+    ws['!cols'] = colWidths
+
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Aplikasi Web')
+
+    XLSX.writeFile(
+      wb,
+      `aplikasi-web_${new Date().toISOString().slice(0, 10)}.xlsx`,
+    )
+  } catch (err) {
+    console.error('Export Excel gagal:', err)
+  } finally {
+    isExportingXlsx.value = false
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 </script>
 
 <template>
@@ -121,6 +178,18 @@ const onSubdomainSaved = () => {
         description="Kelola inventaris aplikasi web yang dimiliki organisasi."
       >
         <template #action>
+          <!-- ── Tombol Export (baru) ── -->
+          <Button
+            severity="secondary"
+            variant="outlined"
+            :loading="isExportingXlsx"
+            :disabled="isExportingXlsx"
+            @click="exportXlsx"
+          >
+            <IconFileTypeXls size="16" class="mr-1" />
+            Export Excel
+          </Button>
+          <!-- ─────────────────────── -->
           <Link :href="route('admin.web-applications.create')">
             <Button><IconPlus size="16" class="mr-1" />Tambah Aplikasi</Button>
           </Link>
