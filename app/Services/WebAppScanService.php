@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\WebApplication;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -26,8 +28,11 @@ class WebAppScanService
         503 => 'nonaktif', 504 => 'nonaktif',
     ];
 
-    public function run(): array
+    public function run(Command $command): void
     {
+        $command->info('Web App Scan dimulai: ' . now()->format('Y-m-d H:i:s'));
+        Log::info('[web-app:scan] Scan dimulai.');
+
         $counts = ['updated' => 0, 'skipped' => 0, 'error' => 0];
 
         $apps = WebApplication::with([
@@ -35,9 +40,14 @@ class WebAppScanService
         ])->get();
 
         if ($apps->isEmpty()) {
+            $command->warn('Tidak ada aplikasi web di database.');
             Log::warning('[web-app:scan] Tidak ada aplikasi web di database.');
-            return $counts;
+            return;
         }
+
+        $command->info("Ditemukan {$apps->count()} aplikasi.");
+        $bar = $command->getOutput()->createProgressBar($apps->count());
+        $bar->start();
 
         foreach ($apps as $app) {
             try {
@@ -46,6 +56,7 @@ class WebAppScanService
                 if (! $url) {
                     Log::warning("[web-app:scan] SKIP — {$app->name}: tidak ada URL/domain/IP.");
                     $counts['skipped']++;
+                    $bar->advance();
                     continue;
                 }
 
@@ -73,9 +84,21 @@ class WebAppScanService
                 Log::error("[web-app:scan] ERROR — {$app->name}: {$e->getMessage()}");
                 $counts['error']++;
             }
+
+            $bar->advance();
         }
 
-        return $counts;
+        $bar->finish();
+        $command->newLine(2);
+
+        $command->table(['Keterangan', 'Jumlah'], [
+            ['✅ Berhasil diupdate', $counts['updated']],
+            ['⚠️  Dilewati (no URL)', $counts['skipped']],
+            ['❌ Error',              $counts['error']],
+        ]);
+
+        Log::info('[web-app:scan] Scan selesai.', $counts);
+        $command->info('Scan selesai: ' . now()->format('Y-m-d H:i:s'));
     }
 
     private function resolveUrl(WebApplication $app): ?string
