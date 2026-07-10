@@ -1,5 +1,7 @@
 <?php
 
+// Lokasi: app/Services/WebAppScanService.php
+
 namespace App\Services;
 
 use App\Models\WebApplication;
@@ -10,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 class WebAppScanService
 {
     private const TIMEOUT = 10;
+    private const LOG     = 'schedule';
 
     private const IDLE_INDICATORS = [
         'welcome to nginx', 'apache2 ubuntu default page',
@@ -28,10 +31,15 @@ class WebAppScanService
         503 => 'nonaktif', 504 => 'nonaktif',
     ];
 
+    private function log(): \Illuminate\Log\LogManager|\Psr\Log\LoggerInterface
+    {
+        return Log::channel(self::LOG);
+    }
+
     public function run(Command $command): void
     {
         $command->info('Web App Scan dimulai: ' . now()->format('Y-m-d H:i:s'));
-        Log::info('[web-app:scan] Scan dimulai.');
+        $this->log()->info('[web-app:scan] Scan dimulai.');
 
         $counts = ['updated' => 0, 'skipped' => 0, 'error' => 0];
 
@@ -41,7 +49,7 @@ class WebAppScanService
 
         if ($apps->isEmpty()) {
             $command->warn('Tidak ada aplikasi web di database.');
-            Log::warning('[web-app:scan] Tidak ada aplikasi web di database.');
+            $this->log()->warning('[web-app:scan] Tidak ada aplikasi web di database.');
             return;
         }
 
@@ -54,7 +62,7 @@ class WebAppScanService
                 $url = $this->resolveUrl($app);
 
                 if (! $url) {
-                    Log::warning("[web-app:scan] SKIP — {$app->name}: tidak ada URL/domain/IP.");
+                    $this->log()->warning("[web-app:scan] SKIP — {$app->name}: tidak ada URL/domain/IP.");
                     $counts['skipped']++;
                     $bar->advance();
                     continue;
@@ -71,7 +79,7 @@ class WebAppScanService
                 ]);
 
                 if ($oldAppStatus !== $newAppStatus || $oldHttpsStatus !== $newHttpsStatus) {
-                    Log::info("[web-app:scan] CHANGED — {$app->name}", [
+                    $this->log()->info("[web-app:scan] CHANGED — {$app->name}", [
                         'url'          => $url,
                         'app_status'   => "{$oldAppStatus} → {$newAppStatus}",
                         'https_status' => "{$oldHttpsStatus} → {$newHttpsStatus}",
@@ -81,7 +89,7 @@ class WebAppScanService
                 $counts['updated']++;
 
             } catch (\Throwable $e) {
-                Log::error("[web-app:scan] ERROR — {$app->name}: {$e->getMessage()}");
+                $this->log()->error("[web-app:scan] ERROR — {$app->name}: {$e->getMessage()}");
                 $counts['error']++;
             }
 
@@ -97,7 +105,7 @@ class WebAppScanService
             ['❌ Error',              $counts['error']],
         ]);
 
-        Log::info('[web-app:scan] Scan selesai.', $counts);
+        $this->log()->info('[web-app:scan] Scan selesai.', $counts);
         $command->info('Scan selesai: ' . now()->format('Y-m-d H:i:s'));
     }
 
