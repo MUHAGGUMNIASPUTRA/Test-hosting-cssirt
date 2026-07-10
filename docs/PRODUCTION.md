@@ -42,6 +42,21 @@ pm2 logs
 
 ---
 
+## Task Scheduler (Cron)
+
+Beberapa command dijadwalkan lewat Laravel Scheduler (lihat `routes/console.php`,
+mis. `web-app:scan` tiap `dailyAt('00:00')`). Agar berjalan di production,
+daftarkan satu baris cron yang memanggil `schedule:run` tiap menit:
+
+```bash
+* * * * * cd /var/www/html/csirt && php artisan schedule:run >> /dev/null 2>&1
+```
+
+Tambahkan lewat `sudo crontab -u www-data -e` (sesuaikan user web server).
+Verifikasi terdaftar dengan `sudo crontab -u www-data -l`.
+
+---
+
 ## Troubleshooting
 
 ### Halaman blank setelah build
