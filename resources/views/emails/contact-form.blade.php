@@ -1,4 +1,3 @@
-{{-- filepath: /Users/alrezza/Documents/Work/Kominfo/Projects/csirt/resources/views/emails/contact-form.blade.php --}}
 <!DOCTYPE html>
 <html lang="id">
 <head>

@@ -113,5 +113,5 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
-    'csirt_email' => env('CSIRT_EMAIL', 'alrezzap@gmail.com'),
+    'csirt_email' => env('CSIRT_EMAIL', 'hello@example.com'),
 ];
