@@ -20,6 +20,7 @@
   "require-dev": {
     "barryvdh/laravel-debugbar": "^4.2",
     "fakerphp/faker": "^1.23",
+    "larastan/larastan": "^3.10",
     "laravel/breeze": "^2.3",
     "laravel/pail": "^1.1",
     "laravel/pint": "^1.13",
@@ -69,7 +70,9 @@
       "npm run test:js"
     ],
     "pint": "./vendor/bin/pint",
-    "pint:test": "./vendor/bin/pint --test"
+    "pint:test": "./vendor/bin/pint --test",
+    "stan": "./vendor/bin/phpstan analyse",
+    "stan:baseline": "./vendor/bin/phpstan analyse --generate-baseline"
   },
   "extra": {
     "laravel": {

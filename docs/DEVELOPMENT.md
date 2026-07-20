@@ -60,6 +60,29 @@ npm run format
 
 ---
 
+## Analisis Statis (Larastan)
+
+Proyek menggunakan **Larastan** (PHPStan + aturan Laravel) untuk mendeteksi bug dan type error di kode PHP. Berbeda dengan Pint yang hanya memformat, Larastan melakukan analisis statis untuk keamanan dan kualitas kode.
+
+### Cara Menjalankan
+
+```bash
+# Analisis seluruh app/
+composer stan
+
+# Analisis file tertentu
+./vendor/bin/phpstan analyse app/Http/Controllers/SomeController.php
+
+# Generate baseline (untuk menyimpan error existing, agar hanya error baru yang ditolak)
+composer stan:baseline
+```
+
+### Tingkat Analisis
+
+Proyek diatur di level 5 (moderat) di [`phpstan.neon`](../phpstan.neon). Level dapat dinaikkan bertahap ke 6–9 seiring peningkatan type coverage.
+
+---
+
 ## Kontribusi
 
 ### Git Workflow
@@ -79,7 +102,15 @@ npm run format
    npm run format
    ```
 
-4. Buat pull request ke branch `main` dengan deskripsi yang jelas.
+4. Jalankan analisis statis:
+
+   ```bash
+   composer stan
+   ```
+
+   Perbaiki warning atau error yang muncul.
+
+5. Buat pull request ke branch `main` dengan deskripsi yang jelas.
 
 ### Konvensi Commit
 
