@@ -47,10 +47,8 @@ class IncidentController extends Controller
             'attachment_type' => 'nullable|in:file,link',
             'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf,zip,doc,docx|max:5120',
             'attachment_links' => 'nullable|string|max:2000',
-            'captcha_answer' => 'required',
-            'captcha_expected' => 'required|string',
+            'cf-turnstile-response' => ['required', new Turnstile],
         ], [
-            'captcha_answer.required' => 'Jawaban captcha wajib diisi.',
             'priority.required' => 'Prioritas tiket wajib dipilih.',
             'incident_type_id.required' => 'Kategori insiden wajib dipilih.',
             'incident_type_id.exists' => 'Kategori insiden tidak valid.',
@@ -60,11 +58,6 @@ class IncidentController extends Controller
             'reporter_email.required' => 'Email pelapor wajib diisi.',
             'reporter_email.email' => 'Format email tidak valid.',
         ]);
-
-        // Verify captcha
-        if (strtolower(trim($validated['captcha_answer'])) !== strtolower(trim($validated['captcha_expected']))) {
-            return back()->withErrors(['captcha_answer' => 'Jawaban captcha tidak sesuai.'])->withInput();
-        }
 
         // Public submissions store files privately on 'local' disk so they are
         // not directly web-accessible. Downloads are served via signed route.
@@ -129,44 +122,15 @@ class IncidentController extends Controller
      */
     public function search(Request $request)
     {
-        $failCount = $request->session()->get('search_fail_count', 0);
-        $captchaRequired = $failCount >= 3;
-
-        $rules = [
+        $validated = $request->validate([
             'case_id' => 'required|string',
             'email' => 'required|email',
-        ];
-        $messages = [
+            'cf-turnstile-response' => ['required', new Turnstile],
+        ], [
             'case_id.required' => 'ID Tiket wajib diisi.',
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
-        ];
-
-        if ($captchaRequired) {
-            $rules['captcha_answer'] = 'required';
-            $rules['captcha_expected'] = 'required|string';
-            $messages['captcha_answer.required'] = 'Jawaban captcha wajib diisi.';
-        }
-
-        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), $rules, $messages);
-        if ($validator->fails()) {
-            if ($captchaRequired) {
-                return back()->withErrors($validator)->with('captcha_required', true)->withInput();
-            }
-
-            return back()->withErrors($validator)->withInput();
-        }
-        $validated = $validator->validated();
-
-        if ($captchaRequired) {
-            if (strtolower(trim($validated['captcha_answer'] ?? '')) !== strtolower(trim($validated['captcha_expected'] ?? ''))) {
-                $request->session()->put('search_fail_count', $failCount + 1);
-
-                return back()->withErrors([
-                    'captcha' => 'Jawaban captcha tidak sesuai.',
-                ])->with('captcha_required', true)->withInput();
-            }
-        }
+        ]);
 
         $incident = Incident::with(['incidentType', 'incidentLogs', 'incidentLogs.attachment', 'attachment'])
             ->where('case_id', $validated['case_id'])
@@ -174,15 +138,11 @@ class IncidentController extends Controller
             ->first();
 
         if (! $incident) {
-            $newCount = $failCount + 1;
-            $request->session()->put('search_fail_count', $newCount);
-
             return back()->withErrors([
                 'search' => 'Data tiket tidak ditemukan atau kombinasi tidak valid.',
-            ])->with('captcha_required', $newCount >= 3)->withInput();
+            ])->withInput();
         }
 
-        $request->session()->put('search_fail_count', 0);
         $resource = new PublicIncidentResource($incident->load('incidentType'));
 
         return back()->with('incident_found', $resource->toArray($request));

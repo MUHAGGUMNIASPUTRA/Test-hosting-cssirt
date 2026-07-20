@@ -1,13 +1,25 @@
 <script setup>
+import { watch, ref } from 'vue'
 import { formatDatetime } from '@/utils/date'
 
 const props = defineProps({
   form: Object,
   incidentTypes: Array,
-  captcha: Object,
+  turnstileSiteKey: String,
 })
 
 defineEmits(['submit', 'back'])
+
+const turnstileWidgetRef = ref(null)
+
+watch(
+  () => props.form?.errors['cf-turnstile-response'],
+  () => {
+    if (turnstileWidgetRef.value) {
+      turnstileWidgetRef.value.reset()
+    }
+  },
+)
 
 const getPrioritySeverity = (priority) =>
   ({ Rendah: 'success', Sedang: 'info', Tinggi: 'warn', Kritikal: 'danger' })[
@@ -83,7 +95,7 @@ const selectedTypeName = () =>
 
       <hr class="my-6 sm:hidden" />
 
-      <!-- Captcha -->
+      <!-- Turnstile Security Verification -->
       <div
         class="mb-6 rounded-xl border-yellow-200 sm:border sm:bg-yellow-50 sm:p-6"
       >
@@ -91,25 +103,16 @@ const selectedTypeName = () =>
           <IconShieldHalfFilled size="18" class="mr-2 text-yellow-600" />
           Verifikasi Keamanan
         </h3>
-        <div class="flex items-center space-x-4">
-          <div
-            class="rounded-lg border border-slate-300 bg-white px-4 py-2 font-mono"
-          >
-            {{ captcha.question }}
-          </div>
-          <InputNumber
-            v-model="captcha.userAnswer"
-            placeholder="Jawaban"
-            class="w-auto"
-            :inputClass="{ 'p-invalid': form.errors.captcha_answer }"
-            required
-          />
-        </div>
+        <TurnstileWidget
+          ref="turnstileWidgetRef"
+          :site-key="turnstileSiteKey"
+          v-model="form['cf-turnstile-response']"
+        />
         <small
-          v-if="form.errors.captcha_answer"
+          v-if="form.errors['cf-turnstile-response']"
           class="p-error mt-2 block text-red-600"
         >
-          {{ form.errors.captcha_answer }}
+          {{ form.errors['cf-turnstile-response'] }}
         </small>
       </div>
 

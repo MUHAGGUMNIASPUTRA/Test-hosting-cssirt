@@ -1,6 +1,10 @@
 <script setup>
 import { useForm, usePage } from '@inertiajs/vue3'
-import { computed, onMounted, ref, watch } from 'vue'
+import { ref } from 'vue'
+
+defineProps({
+  turnstileSiteKey: String,
+})
 
 defineEmits(['back'])
 
@@ -9,97 +13,24 @@ const page = usePage()
 const searchForm = useForm({
   case_id: '',
   email: '',
-  captcha_answer: '',
-  captcha_expected: '',
+  'cf-turnstile-response': '',
 })
 
-const searchCaptcha = ref({ question: '', answer: '', userAnswer: '' })
-
-const searchCaptchaRequired = computed(() => {
-  const f = page.props.flash || {}
-  if (f.incident_found) return false
-  const e = searchForm.errors || {}
-  return Boolean(
-    f.captcha_required || e.captcha || e.captcha_answer || e.captcha_expected,
-  )
-})
-
-const generateCaptcha = () => {
-  const operations = [
-    { type: 'add', symbol: '+' },
-    { type: 'subtract', symbol: '-' },
-    { type: 'multiply', symbol: '×' },
-  ]
-  const operation = operations[Math.floor(Math.random() * operations.length)]
-  let num1, num2, answer
-
-  switch (operation.type) {
-    case 'add':
-      num1 = Math.floor(Math.random() * 20) + 1
-      num2 = Math.floor(Math.random() * 20) + 1
-      answer = num1 + num2
-      break
-    case 'subtract':
-      num1 = Math.floor(Math.random() * 20) + 10
-      num2 = Math.floor(Math.random() * 10) + 1
-      answer = num1 - num2
-      break
-    case 'multiply':
-      num1 = Math.floor(Math.random() * 10) + 1
-      num2 = Math.floor(Math.random() * 10) + 1
-      answer = num1 * num2
-      break
-  }
-
-  searchCaptcha.value = {
-    question: `${num1} ${operation.symbol} ${num2} = ?`,
-    answer: answer.toString(),
-    userAnswer: '',
-  }
-  searchForm.captcha_expected = answer.toString()
-}
-
-watch(
-  () => searchCaptcha.value.userAnswer,
-  (newValue) => {
-    searchForm.captcha_answer = newValue
-  },
-)
-
-watch(searchCaptchaRequired, (required) => {
-  if (required && !searchCaptcha.value.question) generateCaptcha()
-})
+const turnstileWidgetRef = ref(null)
 
 const submit = () => {
-  if (searchCaptchaRequired.value) {
-    searchForm.captcha_answer = (
-      searchCaptcha.value.userAnswer ?? ''
-    ).toString()
-    if (searchCaptcha.value.answer) {
-      searchForm.captcha_expected = searchCaptcha.value.answer.toString()
-    }
-  }
   searchForm.post(route('incident.search'), {
     onSuccess: () => {
-      searchCaptcha.value = { question: '', answer: '', userAnswer: '' }
-      searchForm.captcha_answer = ''
-      searchForm.captcha_expected = ''
       searchForm.clearErrors()
-      if (page.props.flash && 'captcha_required' in page.props.flash) {
-        delete page.props.flash.captcha_required
-      }
     },
     onError: () => {
-      if (searchCaptchaRequired.value && !searchCaptcha.value.question)
-        generateCaptcha()
+      if (turnstileWidgetRef.value) {
+        turnstileWidgetRef.value.reset()
+      }
+      searchForm['cf-turnstile-response'] = ''
     },
   })
 }
-
-onMounted(() => {
-  if (searchCaptchaRequired.value && !searchCaptcha.value.question)
-    generateCaptcha()
-})
 </script>
 
 <template>
@@ -157,38 +88,21 @@ onMounted(() => {
               </small>
             </div>
 
-            <!-- Conditional Captcha -->
-            <div v-if="searchCaptchaRequired" class="pt-2">
+            <!-- Turnstile Security Verification -->
+            <div class="pt-4">
               <label class="mb-2 block font-medium text-slate-700">
                 Verifikasi Keamanan
               </label>
-              <div class="flex items-center space-x-4">
-                <div
-                  class="rounded-lg border border-slate-300 bg-white px-4 py-2 font-mono"
-                >
-                  {{ searchCaptcha.question }}
-                </div>
-                <InputNumber
-                  v-model="searchCaptcha.userAnswer"
-                  placeholder="Jawaban"
-                  class="w-auto"
-                  :inputClass="{
-                    'p-invalid':
-                      searchForm.errors.captcha ||
-                      searchForm.errors.captcha_answer,
-                  }"
-                  required
-                />
-              </div>
+              <TurnstileWidget
+                ref="turnstileWidgetRef"
+                :site-key="turnstileSiteKey"
+                v-model="searchForm['cf-turnstile-response']"
+              />
               <small
-                v-if="
-                  searchForm.errors.captcha || searchForm.errors.captcha_answer
-                "
+                v-if="searchForm.errors['cf-turnstile-response']"
                 class="p-error mt-2 block text-red-600"
               >
-                {{
-                  searchForm.errors.captcha || searchForm.errors.captcha_answer
-                }}
+                {{ searchForm.errors['cf-turnstile-response'] }}
               </small>
             </div>
           </div>

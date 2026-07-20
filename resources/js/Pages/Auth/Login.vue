@@ -5,18 +5,32 @@ import { Head, useForm } from '@inertiajs/vue3'
 import { ref } from 'vue'
 import { useParticles } from '@/Composables/useParticles'
 
+defineProps({
+  canResetPassword: Boolean,
+  status: String,
+  turnstileSiteKey: String,
+})
+
 const form = useForm({
   email: '',
   password: '',
   remember: false,
+  'cf-turnstile-response': '',
 })
 
 const { loginParticlesOptions } = useParticles()
 const showPassword = ref(false)
+const turnstileRef = ref(null)
 
 const submit = () => {
   form.post(route('login'), {
     onFinish: () => form.reset('password'),
+    onError: () => {
+      if (turnstileRef.value) {
+        turnstileRef.value.reset()
+      }
+      form['cf-turnstile-response'] = ''
+    },
   })
 }
 
@@ -241,6 +255,21 @@ const togglePassword = () => {
                 Lupa password?
               </a>
             </div>
+          </div>
+
+          <!-- Turnstile Widget -->
+          <div class="py-2">
+            <TurnstileWidget
+              ref="turnstileRef"
+              :site-key="turnstileSiteKey"
+              v-model="form['cf-turnstile-response']"
+            />
+            <small
+              v-if="form.errors['cf-turnstile-response']"
+              class="mt-2 block text-red-600"
+            >
+              {{ form.errors['cf-turnstile-response'] }}
+            </small>
           </div>
 
           <!-- Login Button -->

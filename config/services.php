@@ -38,4 +38,9 @@ return [
     'google_ai' => [
         'api_key' => env('GOOGLE_AI_API_KEY'),
     ],
+
+    'turnstile' => [
+        'site_key' => env('TURNSTILE_SITE_KEY'),
+        'secret_key' => env('TURNSTILE_SECRET_KEY'),
+    ],
 ];

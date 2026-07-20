@@ -1,11 +1,12 @@
 <script setup>
 import { useForm, usePage } from '@inertiajs/vue3'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const page = usePage()
 
 const props = defineProps({
   incidentTypes: Array,
+  turnstileSiteKey: String,
 })
 
 // --- Step management ---
@@ -44,54 +45,8 @@ const form = useForm({
   attachment_type: 'file',
   attachment: null,
   attachment_links: '',
-  captcha_answer: '',
-  captcha_expected: '',
+  'cf-turnstile-response': '',
 })
-
-// --- Captcha (for create step) ---
-const captcha = ref({ question: '', answer: '', userAnswer: '' })
-
-const generateCaptcha = () => {
-  const operations = [
-    { type: 'add', symbol: '+' },
-    { type: 'subtract', symbol: '-' },
-    { type: 'multiply', symbol: '×' },
-  ]
-  const operation = operations[Math.floor(Math.random() * operations.length)]
-  let num1, num2, answer
-
-  switch (operation.type) {
-    case 'add':
-      num1 = Math.floor(Math.random() * 20) + 1
-      num2 = Math.floor(Math.random() * 20) + 1
-      answer = num1 + num2
-      break
-    case 'subtract':
-      num1 = Math.floor(Math.random() * 20) + 10
-      num2 = Math.floor(Math.random() * 10) + 1
-      answer = num1 - num2
-      break
-    case 'multiply':
-      num1 = Math.floor(Math.random() * 10) + 1
-      num2 = Math.floor(Math.random() * 10) + 1
-      answer = num1 * num2
-      break
-  }
-
-  captcha.value = {
-    question: `${num1} ${operation.symbol} ${num2} = ?`,
-    answer: answer.toString(),
-    userAnswer: '',
-  }
-  form.captcha_expected = answer.toString()
-}
-
-watch(
-  () => captcha.value.userAnswer,
-  (newValue) => {
-    form.captcha_answer = newValue
-  },
-)
 
 // --- Navigation ---
 const selectService = (service) => {
@@ -102,7 +57,6 @@ const selectService = (service) => {
 const nextStep = () => {
   if (activeStep.value < steps.length - 1) {
     activeStep.value++
-    if (activeStep.value === 2) generateCaptcha()
   }
 }
 
@@ -114,7 +68,6 @@ const goToChoice = () => {
   activeStep.value = 0
   selectedService.value = null
   form.reset()
-  captcha.value = { question: '', answer: '', userAnswer: '' }
   if (page.props.flash?.success) delete page.props.flash.success
   if (page.props.flash?.incident_found) delete page.props.flash.incident_found
 }
@@ -126,10 +79,6 @@ const submitForm = () => {
       form.reset()
       activeStep.value = 0
       selectedService.value = null
-      captcha.value = { question: '', answer: '', userAnswer: '' }
-    },
-    onError: () => {
-      if (activeStep.value === 2) generateCaptcha()
     },
   })
 }
@@ -237,6 +186,7 @@ onMounted(() => {
               <!-- Step 1: Search Form -->
               <IncidentSearchForm
                 v-else-if="activeStep === 1 && selectedService === 'search'"
+                :turnstile-site-key="turnstileSiteKey"
                 @back="goToChoice"
               />
 
@@ -245,7 +195,7 @@ onMounted(() => {
                 v-else-if="activeStep === 2 && selectedService === 'create'"
                 :form="form"
                 :incident-types="incidentTypes"
-                :captcha="captcha"
+                :turnstile-site-key="turnstileSiteKey"
                 @submit="submitForm"
                 @back="prevStep"
               />

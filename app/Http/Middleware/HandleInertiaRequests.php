@@ -40,6 +40,7 @@ class HandleInertiaRequests extends Middleware
                 'phone' => config('app.phone'),
                 'email' => config('app.email'),
             ],
+            'turnstileSiteKey' => config('services.turnstile.site_key'),
             // Expose all session keys (excluding reserved) under `flash`
             'flash' => collect($request->session()->all())
                 ->except(['_token', '_previous', '_flash', 'errors', '_old_input'])

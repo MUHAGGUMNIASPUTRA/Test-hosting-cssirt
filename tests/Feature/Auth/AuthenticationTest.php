@@ -19,11 +19,18 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_authenticate_using_the_login_screen(): void
     {
+        Http::fake([
+            'https://challenges.cloudflare.com/turnstile/v0/siteverify' => Http::response([
+                'success' => true,
+            ]),
+        ]);
+
         $user = User::factory()->create();
 
         $response = $this->post('/login', [
             'email' => $user->email,
             'password' => 'password',
+            'cf-turnstile-response' => 'test-token',
         ]);
 
         $this->assertAuthenticated();
@@ -32,11 +39,18 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_not_authenticate_with_invalid_password(): void
     {
+        Http::fake([
+            'https://challenges.cloudflare.com/turnstile/v0/siteverify' => Http::response([
+                'success' => true,
+            ]),
+        ]);
+
         $user = User::factory()->create();
 
         $this->post('/login', [
             'email' => $user->email,
             'password' => 'wrong-password',
+            'cf-turnstile-response' => 'test-token',
         ]);
 
         $this->assertGuest();
