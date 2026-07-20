@@ -251,7 +251,7 @@ class IncidentService
             ->map(fn ($id) => (string) $id)
             ->all();
 
-        $incomingIds = array_map(fn ($a) => (string) ($a['id'] ?? ''), $incomingAssets);
+        $incomingIds = array_map(fn ($a) => (string) $a['id'], $incomingAssets);
 
         $addedIds = array_diff($incomingIds, $existingIds);
         $removedIds = array_diff($existingIds, $incomingIds);

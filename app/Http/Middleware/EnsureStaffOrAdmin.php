@@ -17,7 +17,7 @@ class EnsureStaffOrAdmin
     {
         $role = auth()->user()?->role;
 
-        if (! auth()->check() || ! in_array($role, [UserRole::Admin->value, UserRole::Staff->value], true)) {
+        if (! auth()->check() || ! in_array($role, [UserRole::Admin, UserRole::Staff], true)) {
             abort(403, 'AKSES DITOLAK. HANYA UNTUK STAFF/ADMIN.');
         }
 

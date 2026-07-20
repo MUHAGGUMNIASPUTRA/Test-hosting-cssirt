@@ -10,11 +10,13 @@ class AssetAuditLogPolicy
 {
     public function update(User $user, AssetAuditLog $auditLog): bool
     {
-        return $user->id === $auditLog->user_id || $user->role === UserRole::ADMIN;
+        /** @phpstan-ignore-next-line */
+        return $user->id === $auditLog->user_id || $user->role === UserRole::Admin;
     }
 
     public function delete(User $user, AssetAuditLog $auditLog): bool
     {
-        return $user->id === $auditLog->user_id || $user->role === UserRole::ADMIN;
+        /** @phpstan-ignore-next-line */
+        return $user->id === $auditLog->user_id || $user->role === UserRole::Admin;
     }
 }

@@ -10,11 +10,17 @@ class AssetSecurityNotePolicy
 {
     public function update(User $user, AssetSecurityNote $securityNote): bool
     {
-        return $user->id === $securityNote->user_id || $user->role === UserRole::Admin;
+        /** @var UserRole $userRole */
+        $userRole = $user->role;
+
+        return $user->id === $securityNote->user_id || $userRole === UserRole::Admin;
     }
 
     public function delete(User $user, AssetSecurityNote $securityNote): bool
     {
-        return $user->id === $securityNote->user_id || $user->role === UserRole::Admin;
+        /** @var UserRole $userRole */
+        $userRole = $user->role;
+
+        return $user->id === $securityNote->user_id || $userRole === UserRole::Admin;
     }
 }

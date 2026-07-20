@@ -141,12 +141,16 @@ class WebApplicationController extends Controller
 
             foreach ($data as $item) {
                 $net = $item->networks->first();
+                $stageValue = $item->stage instanceof \BackedEnum ? $item->stage->value : $item->stage;
+                $appStatusValue = $item->app_status instanceof \BackedEnum ? $item->app_status->value : $item->app_status;
+                $httpsStatusValue = $item->https_status instanceof \BackedEnum ? $item->https_status->value : $item->https_status;
+
                 fputcsv($out, [
                     $item->name,
                     $item->ownerOrg?->name,
-                    $item->stage instanceof \BackedEnum ? $item->stage->value : $item->stage,
-                    $item->app_status instanceof \BackedEnum ? $item->app_status->value : $item->app_status,
-                    $item->https_status instanceof \BackedEnum ? $item->https_status->value : $item->https_status,
+                    $stageValue,
+                    $appStatusValue,
+                    $httpsStatusValue,
                     $net?->subdomain?->subdomain,
                     $net?->ipAddress?->private_ip,
                     $net?->ipAddress?->public_ip,

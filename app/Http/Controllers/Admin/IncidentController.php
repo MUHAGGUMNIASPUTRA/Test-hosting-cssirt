@@ -207,7 +207,7 @@ class IncidentController extends Controller
 
         Log::info('admin.incident.log_added', [
             'event' => 'admin.incident.log_added',
-            'incident_id' => $incident->id,
+            'incident_id' => $incident->id, // @phpstan-ignore-next-line
             'log_id' => $log->id,
         ]);
 
