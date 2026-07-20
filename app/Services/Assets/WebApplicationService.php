@@ -12,46 +12,46 @@ use Illuminate\Database\Eloquent\Builder;
 class WebApplicationService
 {
     public function indexQuery(array $filters): Builder
-{
-    $query = WebApplication::with([
-        'location',
-        'ownerOrg',
-        'networks' => fn ($q) => $q->where('is_primary', true)->with(['ipAddress', 'subdomain']),
-    ]);
-    // Catatan: .latest() dihapus karena digantikan oleh ordering di bawah
+    {
+        $query = WebApplication::with([
+            'location',
+            'ownerOrg',
+            'networks' => fn ($q) => $q->where('is_primary', true)->with(['ipAddress', 'subdomain']),
+        ]);
+        // Catatan: .latest() dihapus karena digantikan oleh ordering di bawah
 
-    if (! empty($filters['search'])) {
-        $search = $filters['search'];
-        $query->where(function ($q) use ($search) {
-            $q->where('name', 'ilike', "%{$search}%")
-                ->orWhereHas('networks', fn ($nq) => $nq
-                    ->whereHas('ipAddress', fn ($iq) => $iq
-                        ->where('private_ip', 'ilike', "%{$search}%")
-                        ->orWhere('public_ip', 'ilike', "%{$search}%")
-                    )
-                    ->orWhereHas('subdomain', fn ($sq) => $sq
-                        ->where('subdomain', 'ilike', "%{$search}%")
-                    )
-                );
-        });
-    }
+        if (! empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'ilike', "%{$search}%")
+                    ->orWhereHas('networks', fn ($nq) => $nq
+                        ->whereHas('ipAddress', fn ($iq) => $iq
+                            ->where('private_ip', 'ilike', "%{$search}%")
+                            ->orWhere('public_ip', 'ilike', "%{$search}%")
+                        )
+                        ->orWhereHas('subdomain', fn ($sq) => $sq
+                            ->where('subdomain', 'ilike', "%{$search}%")
+                        )
+                    );
+            });
+        }
 
-    if (! empty($filters['stage'])) {
-        $query->where('stage', $filters['stage']);
-    }
-    if (! empty($filters['app_status'])) {
-        $query->where('app_status', $filters['app_status']);
-    }
-    if (! empty($filters['https_status'])) {
-        $query->where('https_status', $filters['https_status']);
-    }
-    if (! empty($filters['owner_org_id'])) {
-        $query->where('owner_org_id', $filters['owner_org_id']);
-    }
+        if (! empty($filters['stage'])) {
+            $query->where('stage', $filters['stage']);
+        }
+        if (! empty($filters['app_status'])) {
+            $query->where('app_status', $filters['app_status']);
+        }
+        if (! empty($filters['https_status'])) {
+            $query->where('https_status', $filters['https_status']);
+        }
+        if (! empty($filters['owner_org_id'])) {
+            $query->where('owner_org_id', $filters['owner_org_id']);
+        }
 
-    // Urut: status aplikasi (aktif → idle → nonaktif) → nama pemilik → nama aplikasi
-    $query
-        ->orderByRaw("
+        // Urut: status aplikasi (aktif → idle → nonaktif) → nama pemilik → nama aplikasi
+        $query
+            ->orderByRaw("
             CASE app_status
                 WHEN 'aktif'    THEN 1
                 WHEN 'idle'     THEN 2
@@ -59,15 +59,15 @@ class WebApplicationService
                 ELSE 4
             END
         ")
-        ->orderBy(
-            Organization::select('name')
-                ->whereColumn('organizations.id', 'web_applications.owner_org_id')
-                ->limit(1)
-        )
-        ->orderBy('web_applications.name');
+            ->orderBy(
+                Organization::select('name')
+                    ->whereColumn('organizations.id', 'web_applications.owner_org_id')
+                    ->limit(1)
+            )
+            ->orderBy('web_applications.name');
 
-    return $query;
-}
+        return $query;
+    }
 
     public function create(array $data): WebApplication
     {

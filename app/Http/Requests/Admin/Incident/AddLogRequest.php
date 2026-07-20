@@ -17,7 +17,7 @@ class AddLogRequest extends FormRequest
             'log_message' => ['required', 'string'],
             'is_public' => ['nullable', 'boolean'],
             'attachment_type' => ['nullable', 'string', 'in:file,link'],
-            'attachment' => ['nullable', 'file', 'max:5120'],
+            'attachment' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf,zip,doc,docx', 'max:5120'],
             'attachment_link' => ['nullable', 'string', 'url', 'max:2000'],
         ];
     }

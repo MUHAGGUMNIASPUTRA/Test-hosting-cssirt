@@ -1,5 +1,9 @@
 <?php
 
+// Tujuan: Handle form incident publik (anonim) — create, search, download attachment via token.
+// Caller: routes/web.php (/incident, /incidents/search, /incidents/{caseId}, public endpoints).
+// Side Effects: DB create incident + incident_logs (user_id null untuk pelapor anonim), send email (mungkin gagal), file attach ke storage/local.
+
 namespace App\Http\Controllers;
 
 use App\Http\Resources\FullIncidentResource;
@@ -101,8 +105,17 @@ class IncidentController extends Controller
             Mail::to($validated['reporter_email'])
                 ->send(new IncidentConfirmationMail($incident));
         } catch (\Exception $e) {
-            Log::error('Incident email sending failed: '.$e->getMessage());
+            Log::error('Incident email sending failed', [
+                'event' => 'incident.email.failed',
+                'case_id' => $incident->case_id,
+                'error' => $e->getMessage(),
+            ]);
         }
+
+        Log::info('incident.public.created', [
+            'event' => 'incident.public.created',
+            'case_id' => $incident->case_id,
+        ]);
 
         return back()->with('success', [
             'title' => 'Tiket Berhasil Dibuat!',

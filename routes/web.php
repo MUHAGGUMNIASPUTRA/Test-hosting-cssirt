@@ -73,14 +73,16 @@ Route::post('/incidents/search', [IncidentController::class, 'search'])->middlew
 Route::get('/incidents/{caseId}/attachment', [IncidentController::class, 'downloadAttachment'])->middleware(['signed', 'throttle:incident-download'])->name('incident.attachment.download');
 Route::get('/incidents/{caseId}', [IncidentController::class, 'showWithToken'])->middleware('throttle:incident-search')->name('incident.show');
 
-Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified', 'staff'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::resource('incidents', AdminIncidentController::class);
-    Route::put('/incidents/{incident}/management', [AdminIncidentController::class, 'updateManagement'])->name('incidents.management.update');
-    Route::post('/incidents/{incident}/logs', [AdminIncidentController::class, 'addLog'])->name('incidents.logs.store');
-    Route::put('/incidents/{incident}/logs/{log}', [AdminIncidentController::class, 'updateLog'])->name('incidents.logs.update');
-    Route::delete('/incidents/{incident}/logs/{log}', [AdminIncidentController::class, 'destroyLog'])->name('incidents.logs.destroy');
+    Route::middleware('throttle:admin-incident-mutation')->group(function () {
+        Route::resource('incidents', AdminIncidentController::class);
+        Route::put('/incidents/{incident}/management', [AdminIncidentController::class, 'updateManagement'])->name('incidents.management.update');
+        Route::post('/incidents/{incident}/logs', [AdminIncidentController::class, 'addLog'])->name('incidents.logs.store');
+        Route::put('/incidents/{incident}/logs/{log}', [AdminIncidentController::class, 'updateLog'])->name('incidents.logs.update');
+        Route::delete('/incidents/{incident}/logs/{log}', [AdminIncidentController::class, 'destroyLog'])->name('incidents.logs.destroy');
+    });
     Route::resource('incident-types', IncidentTypeController::class);
 
     Route::resource('posts', AdminPostController::class)->except(['show']);

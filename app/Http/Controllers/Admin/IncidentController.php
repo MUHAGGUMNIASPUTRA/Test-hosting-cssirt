@@ -85,11 +85,17 @@ class IncidentController extends Controller
 
     public function store(StoreIncidentRequest $request): RedirectResponse
     {
-        $this->incidentService->create(
+        $incident = $this->incidentService->create(
             $request->validated(),
             $request->file('attachment'),
             Auth::id(),
         );
+
+        Log::info('admin.incident.created', [
+            'event' => 'admin.incident.created',
+            'incident_id' => $incident->id,
+            'case_id' => $incident->case_id,
+        ]);
 
         return redirect()->route('admin.incidents.index')
             ->with('success', 'Laporan insiden berhasil dibuat.');
@@ -146,6 +152,11 @@ class IncidentController extends Controller
             Auth::id(),
         );
 
+        Log::info('admin.incident.updated', [
+            'event' => 'admin.incident.updated',
+            'incident_id' => $incident->id,
+        ]);
+
         return redirect()->route('admin.incidents.show', $incident)
             ->with('success', 'Insiden berhasil diperbarui.');
     }
@@ -156,7 +167,15 @@ class IncidentController extends Controller
             return back()->with('error', 'Insiden sudah ditutup dan tidak dapat diubah.');
         }
 
-        $this->incidentService->updateManagement($incident, $request->validated(), Auth::id());
+        $validated = $request->validated();
+        $this->incidentService->updateManagement($incident, $validated, Auth::id());
+
+        Log::info('admin.incident.management_updated', [
+            'event' => 'admin.incident.management_updated',
+            'incident_id' => $incident->id,
+            'status' => $validated['status'] ?? null,
+            'assigned_to' => $validated['assigned_to'] ?? null,
+        ]);
 
         return back()->with('success', 'Status insiden berhasil diperbarui.');
     }
@@ -178,11 +197,17 @@ class IncidentController extends Controller
             'incidents/logs',
         );
 
-        $incident->incidentLogs()->create([
+        $log = $incident->incidentLogs()->create([
             'log_message' => $validated['log_message'],
             'user_id' => Auth::id(),
             'is_public' => (bool) ($validated['is_public'] ?? false),
             'attachment_id' => $attachment?->id,
+        ]);
+
+        Log::info('admin.incident.log_added', [
+            'event' => 'admin.incident.log_added',
+            'incident_id' => $incident->id,
+            'log_id' => $log->id,
         ]);
 
         return back()->with('success', 'Catatan berhasil ditambahkan.');
@@ -217,6 +242,12 @@ class IncidentController extends Controller
             'attachment_id' => $newAttachment?->id,
         ]);
 
+        Log::info('admin.incident.log_updated', [
+            'event' => 'admin.incident.log_updated',
+            'incident_id' => $incident->id,
+            'log_id' => $log->id,
+        ]);
+
         return back()->with('success', 'Catatan berhasil diperbarui.');
     }
 
@@ -228,15 +259,30 @@ class IncidentController extends Controller
         $this->attachmentService->delete($log->attachment);
         $log->delete();
 
+        Log::warning('admin.incident.log_deleted', [
+            'event' => 'admin.incident.log_deleted',
+            'incident_id' => $incident->id,
+            'log_id' => $log->id,
+        ]);
+
         return back()->with('success', 'Catatan berhasil dihapus.');
     }
 
     public function destroy(Incident $incident): RedirectResponse
     {
         try {
+            $caseId = $incident->case_id;
+            $incidentId = $incident->id;
+
             $incident->loadMissing('attachment');
             $this->attachmentService->delete($incident->attachment);
             $incident->delete();
+
+            Log::warning('admin.incident.deleted', [
+                'event' => 'admin.incident.deleted',
+                'incident_id' => $incidentId,
+                'case_id' => $caseId,
+            ]);
 
             return back()->with('success', [
                 'title' => 'Berhasil',

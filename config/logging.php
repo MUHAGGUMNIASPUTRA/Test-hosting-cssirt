@@ -129,8 +129,8 @@ return [
 
         'schedule' => [
             'driver' => 'single',
-            'path'   => storage_path('logs/schedule.log'),
-            'level'  => 'debug',
+            'path' => storage_path('logs/schedule.log'),
+            'level' => 'debug',
         ],
 
     ],

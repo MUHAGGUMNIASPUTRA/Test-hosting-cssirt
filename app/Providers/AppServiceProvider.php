@@ -65,5 +65,23 @@ class AppServiceProvider extends ServiceProvider
                 Limit::perHour(300)->by($key),
             ];
         });
+
+        RateLimiter::for('login', function (Request $request) {
+            return [
+                Limit::perMinute(20)->by($request->ip()),
+                Limit::perHour(100)->by($request->ip()),
+            ];
+        });
+
+        RateLimiter::for('register', function (Request $request) {
+            return [
+                Limit::perMinute(3)->by($request->ip()),
+                Limit::perDay(10)->by($request->ip()),
+            ];
+        });
+
+        RateLimiter::for('admin-incident-mutation', function (Request $request) {
+            return Limit::perMinute(30)->by(optional($request->user())->id ?: $request->ip());
+        });
     }
 }
