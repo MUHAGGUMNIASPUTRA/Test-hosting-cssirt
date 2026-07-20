@@ -17,8 +17,9 @@ class FaqCacheService
 
     /**
      * Get cached FAQ data
+     *
+     * @return \Illuminate\Support\Collection<string, \Illuminate\Database\Eloquent\Collection<int, Faq>>
      */
-    /** @return \Illuminate\Support\Collection<string, \Illuminate\Support\Collection> */
     public static function getFaqs(): \Illuminate\Support\Collection
     {
         return Cache::remember(self::FAQ_CACHE_KEY, self::CACHE_DURATION, function () {

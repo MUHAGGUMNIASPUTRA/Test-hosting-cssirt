@@ -4,9 +4,25 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Attachment;
+use App\Models\Incident;
+use App\Models\IncidentType;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\URL;
 
+/**
+ * @property Incident $resource
+ * @property Attachment|null $attachment
+ * @property string $case_id
+ * @property string $status
+ * @property string $priority
+ * @property string $reported_at
+ * @property string $incident_at
+ * @property IncidentType $incidentType
+ * @property string $description
+ * @property Collection $incidentLogs
+ */
 class FullIncidentResource extends JsonResource
 {
     /**
@@ -40,7 +56,7 @@ class FullIncidentResource extends JsonResource
             }),
             'description' => $this->description,
             'attachment' => $attachmentData,
-            'logs' => $this->whenLoaded('incidentLogs', function () use ($request) {
+            'logs' => $this->whenLoaded('incidentLogs', /** @phpstan-ignore-next-line */ function () use ($request) {
                 return $this->incidentLogs
                     ->filter(fn ($log) => $log->is_public)
                     ->values()

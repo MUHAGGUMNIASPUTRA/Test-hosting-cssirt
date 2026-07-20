@@ -7,10 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+/**
+ * @property Attachment|null $attachment
+ */
 class AssetSecurityNote extends Model
 {
     use HasUuidV6;
 
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'asset_type',
         'asset_id',

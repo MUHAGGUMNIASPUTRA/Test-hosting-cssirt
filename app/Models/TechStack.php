@@ -6,10 +6,17 @@ use App\Traits\HasUuidV6;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property TechStackCategory|null $category
+ * @property Attachment|null $logoAttachment
+ */
 class TechStack extends Model
 {
     use HasUuidV6;
 
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'name',
         'description',

@@ -6,10 +6,17 @@ use App\Traits\HasUuidV6;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property Subdomain|null $subdomain
+ * @property IpAddress|null $ipAddress
+ */
 class WebAppNetwork extends Model
 {
     use HasUuidV6;
 
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'web_application_id',
         'environment',
@@ -22,6 +29,9 @@ class WebAppNetwork extends Model
         'sort_order',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     protected $casts = [
         'is_primary' => 'boolean',
     ];

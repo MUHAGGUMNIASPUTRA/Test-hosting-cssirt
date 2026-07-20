@@ -15,7 +15,7 @@ class Faq extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var list<string>
      */
     protected $fillable = [
         'question',
@@ -27,7 +27,7 @@ class Faq extends Model
     /**
      * The attributes that should be cast.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'is_published' => 'boolean',

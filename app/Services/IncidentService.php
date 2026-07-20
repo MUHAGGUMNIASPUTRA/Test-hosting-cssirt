@@ -214,8 +214,8 @@ class IncidentService
         $rows = [];
         $now = now();
         foreach ($virtualAssets as $asset) {
-            $type = $typeMap[$asset['asset_type'] ?? ''] ?? null;
-            if (! $type || empty($asset['id'])) {
+            $type = $typeMap[$asset['asset_type']] ?? null;
+            if (! $type || ! $asset['id']) {
                 continue;
             }
             $rows[] = [

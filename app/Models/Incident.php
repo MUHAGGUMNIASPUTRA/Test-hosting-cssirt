@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\DB;
 
 /**
+ * @property string $id
  * @property IncidentStatus $status
  * @property IncidentPriority $priority
  * @property \App\Models\Attachment|null $attachment
@@ -25,6 +26,9 @@ class Incident extends Model
 {
     use HasFactory, HasUuidV6;
 
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'case_id',
         'access_token',
@@ -45,6 +49,9 @@ class Incident extends Model
         'read_at',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     protected $casts = [
         'incident_at' => 'datetime',
         'reported_at' => 'datetime',

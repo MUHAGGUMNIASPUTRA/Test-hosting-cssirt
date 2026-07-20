@@ -19,6 +19,7 @@ class VirtualAssetController extends Controller
         $search = $request->get('search', '');
         $limit = 20;
 
+        /** @var \Illuminate\Support\Collection<int, array{id: mixed, name: mixed, asset_type: string, asset_type_label: string, status: mixed}> $webApps */
         $webApps = WebApplication::select(['id', 'name', 'app_status'])
             ->with('primaryNetwork.subdomain')
             ->when($search, fn ($q) => $q->where(function ($subQ) use ($search) {
@@ -35,9 +36,10 @@ class VirtualAssetController extends Controller
                     : $item->name,
                 'asset_type' => 'web-application',
                 'asset_type_label' => 'Aplikasi Web',
-                'status' => $item->app_status?->value,
+                'status' => $item->app_status->value,
             ]);
 
+        /** @var \Illuminate\Support\Collection<int, array{id: mixed, name: mixed, asset_type: string, asset_type_label: string, status: mixed}> $mobileApps */
         $mobileApps = MobileApplication::select(['id', 'name', 'app_status'])
             ->when($search, fn ($q) => $q->where('name', 'ilike', "%{$search}%"))
             ->orderBy('name')
@@ -48,7 +50,7 @@ class VirtualAssetController extends Controller
                 'name' => $item->name,
                 'asset_type' => 'mobile-application',
                 'asset_type_label' => 'Aplikasi Mobile',
-                'status' => $item->app_status?->value,
+                'status' => $item->app_status->value,
             ]);
 
         return response()->json($webApps->merge($mobileApps)->values());

@@ -11,6 +11,7 @@ use App\Enums\AssetStage;
 use App\Enums\HttpsStatus;
 use App\Enums\OwnerContactType;
 use App\Traits\HasUuidV6;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,10 +20,22 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
+/**
+ * @property string $name
+ * @property AssetStage $stage
+ * @property AppStatus $app_status
+ * @property HttpsStatus $https_status
+ * @property Organization|null $ownerOrg
+ * @property Collection<int, WebAppNetwork> $networks
+ * @property WebAppNetwork|null $primaryNetwork
+ */
 class WebApplication extends Model
 {
     use HasUuidV6;
 
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'name',
         'description',
@@ -37,6 +50,9 @@ class WebApplication extends Model
         'vendor_id',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     protected $casts = [
         'stage' => AssetStage::class,
         'app_status' => AppStatus::class,

@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property Attachment|null $attachment
+ */
 class IncidentLog extends Model
 {
     use HasFactory, HasUuidV6;
@@ -16,7 +19,7 @@ class IncidentLog extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var list<string>
      */
     protected $fillable = [
         'incident_id',

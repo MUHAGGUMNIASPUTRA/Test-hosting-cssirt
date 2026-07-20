@@ -8,10 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+/**
+ * @property Attachment|null $attachment
+ */
 class AssetAuditLog extends Model
 {
     use HasUuidV6;
 
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'asset_type',
         'asset_id',
@@ -21,6 +27,9 @@ class AssetAuditLog extends Model
         'attachment_id',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     protected $casts = [
         'danger_level' => AuditDangerLevel::class,
     ];

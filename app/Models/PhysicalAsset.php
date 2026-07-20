@@ -13,10 +13,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
+/**
+ * @property Attachment|null $attachment
+ */
 class PhysicalAsset extends Model
 {
     use HasUuidV6;
 
+    /**
+     * @var list<string>
+     */
     protected $fillable = [
         'asset_code',
         'name',
@@ -30,6 +36,9 @@ class PhysicalAsset extends Model
         'owner_employee_id',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     protected $casts = [
         'year' => 'integer',
         'owner_contact_type' => OwnerContactType::class,

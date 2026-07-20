@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Assets\SaveSecurityNoteRequest;
 use App\Models\AssetSecurityNote;
 use App\Models\License;
 use App\Models\MobileApplication;
+use App\Models\PhysicalAsset;
 use App\Models\WebApplication;
 use App\Services\AttachmentService;
 use Illuminate\Http\JsonResponse;

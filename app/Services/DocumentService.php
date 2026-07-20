@@ -30,7 +30,7 @@ class DocumentService
     /**
      * Return a paginated, filtered, transformed collection of documents.
      *
-     * @param  array{search?: string, areas?: array}  $filters
+     * @param  array{search?: string, areas?: array, stage?: string, is_public?: string|bool, per_page?: int, page?: int}  $filters
      */
     public function list(array $filters = []): LengthAwarePaginator
     {

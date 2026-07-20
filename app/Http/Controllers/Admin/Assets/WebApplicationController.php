@@ -24,6 +24,7 @@ use App\Models\WebApplication;
 use App\Services\Assets\WebApplicationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -117,6 +118,7 @@ class WebApplicationController extends Controller
 
     public function export()
     {
+        /** @var Collection<int, WebApplication> $data */
         $data = $this->service->indexQuery([])->with([
             'ownerOrg',
             'networks' => fn ($q) => $q->where('is_primary', true)->with(['ipAddress', 'subdomain']),
@@ -142,9 +144,9 @@ class WebApplicationController extends Controller
                 fputcsv($out, [
                     $item->name,
                     $item->ownerOrg?->name,
-                    $item->stage instanceof \BackedEnum ? $item->stage->value : $item->stage,           // fix
-                    $item->app_status instanceof \BackedEnum ? $item->app_status->value : $item->app_status, // fix
-                    $item->https_status instanceof \BackedEnum ? $item->https_status->value : $item->https_status, // fix
+                    $item->stage instanceof \BackedEnum ? $item->stage->value : $item->stage,
+                    $item->app_status instanceof \BackedEnum ? $item->app_status->value : $item->app_status,
+                    $item->https_status instanceof \BackedEnum ? $item->https_status->value : $item->https_status,
                     $net?->subdomain?->subdomain,
                     $net?->ipAddress?->private_ip,
                     $net?->ipAddress?->public_ip,

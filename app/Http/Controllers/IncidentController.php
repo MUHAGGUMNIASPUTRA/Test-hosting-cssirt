@@ -13,6 +13,7 @@ use App\Mail\IncidentConfirmationMail;
 use App\Mail\IncidentReportMail;
 use App\Models\Incident;
 use App\Models\IncidentType;
+use App\Rules\Turnstile;
 use App\Services\AttachmentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
