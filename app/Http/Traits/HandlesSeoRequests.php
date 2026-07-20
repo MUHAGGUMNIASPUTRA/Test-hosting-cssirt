@@ -19,17 +19,21 @@ trait HandlesSeoRequests
 
         // Check if this is a crawler request or force_seo parameter
         if ($seoService->isSearchEngineCrawler($request) || $request->has('force_seo')) {
-            // Try to render SEO version
-            $seoHtml = $seoService->renderSeoVersion($component, $props);
+            // Don't cache pages with CSRF-protected forms (they contain tokens tied to sessions)
+            $noCacheForms = ['Incidents/Create'];
+            if (! in_array($component, $noCacheForms)) {
+                // Try to render SEO version
+                $seoHtml = $seoService->renderSeoVersion($component, $props);
 
-            if ($seoHtml) {
-                return response($seoHtml)
-                    ->header('Content-Type', 'text/html; charset=utf-8')
-                    ->header('X-Robots-Tag', 'index, follow')
-                    ->header('Cache-Control', 'public, max-age=3600');
+                if ($seoHtml) {
+                    return response($seoHtml)
+                        ->header('Content-Type', 'text/html; charset=utf-8')
+                        ->header('X-Robots-Tag', 'index, follow')
+                        ->header('Cache-Control', 'public, max-age=3600');
+                }
             }
 
-            // Fallback to regular response if SEO fails
+            // Fallback to regular response if SEO fails or component shouldn't be cached
         }
 
         // Return regular Inertia response

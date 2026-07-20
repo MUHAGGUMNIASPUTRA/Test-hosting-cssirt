@@ -35,28 +35,25 @@ class SeoService
     {
         $userAgent = $request->header('User-Agent', '');
 
-        // Common search engine bot patterns
+        // Strict bot detection: only well-known crawler patterns with word boundaries
         $botPatterns = [
-            'googlebot',
-            'bingbot',
-            'slurp',
-            'duckduckbot',
-            'baiduspider',
-            'yandexbot',
-            'facebookexternalhit',
-            'twitterbot',
-            'linkedinbot',
-            'whatsapp',
-            'telegrambot',
-            'crawl',
-            'spider',
-            'bot',
-            'meta',
-            'fetch',
+            '/googlebot\//i',
+            '/bingbot\//i',
+            '/slurp/i',
+            '/duckduckbot\//i',
+            '/baiduspider\//i',
+            '/yandexbot\//i',
+            '/facebookexternalhit\//i',
+            '/twitterbot\//i',
+            '/linkedinbot\//i',
+            '/whatsapp/i',
+            '/telegrambot/i',
+            '/applebot\//i',
+            '/msnbot\//i',
         ];
 
         foreach ($botPatterns as $pattern) {
-            if (stripos($userAgent, $pattern) !== false) {
+            if (preg_match($pattern, $userAgent)) {
                 return true;
             }
         }

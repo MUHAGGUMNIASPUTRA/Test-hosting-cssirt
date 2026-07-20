@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Admin CSIRT',
             'email' => 'admin@csirt.bojonegorokab.go.id',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('4dminCSIRT^^^^'),
             'role' => 'admin',
         ]);
 
@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Staf CSIRT',
             'email' => 'staff@csirt.bojonegorokab.go.id',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('4dminCSIRT^^^^'),
             'role' => 'staff',
         ]);
     }
