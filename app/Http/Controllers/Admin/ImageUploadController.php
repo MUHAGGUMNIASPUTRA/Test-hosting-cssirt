@@ -1,33 +1,23 @@
 <?php
 
-// File: app/Http/Controllers/Admin/ImageUploadController.php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\StoreEditorImageRequest;
+use App\Services\AttachmentService;
 use Illuminate\Support\Facades\Storage;
 
 class ImageUploadController extends Controller
 {
-    /**
-     * Store an image uploaded from the Tiptap editor.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function store(Request $request)
+    public function __construct(private readonly AttachmentService $attachmentService) {}
+
+    // Tujuan: Simpan gambar editor Tiptap dengan normalisasi
+    // Caller: Tiptap editor (frontend)
+    // Side Effects: File storage I/O (write to disk/public/posts-editor)
+    public function store(StoreEditorImageRequest $request)
     {
-        $request->validate([
-            'image' => 'required|image|mimes:jpg,jpeg,png,webp,gif|max:2048', // Max 2MB
-        ]);
+        $path = $this->attachmentService->storeNormalized($request->file('image'), 'public', 'posts-editor');
 
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('posts-editor', 'public');
-
-            // Return the public URL of the uploaded image
-            return response()->json(['url' => Storage::url($path)]);
-        }
-
-        return response()->json(['error' => 'Gagal mengunggah gambar.'], 422);
+        return response()->json(['url' => Storage::url($path)]);
     }
 }

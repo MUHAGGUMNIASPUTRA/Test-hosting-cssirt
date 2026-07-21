@@ -27,7 +27,7 @@ class StoreIncidentRequest extends FormRequest
             'priority' => ['required', Rule::enum(IncidentPriority::class)],
             'assigned_to' => ['nullable', 'exists:users,id'],
             'attachment_type' => ['nullable', 'in:file,link'],
-            'attachment' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf,zip,doc,docx', 'max:5120'],
+            'attachment' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf,zip,doc,docx', 'max:5120', 'required_if:attachment_type,file'],
             'attachment_links' => ['nullable', 'string', 'max:2000'],
             'virtual_assets' => ['nullable', 'array'],
             'virtual_assets.*.id' => ['required_with:virtual_assets', 'uuid'],

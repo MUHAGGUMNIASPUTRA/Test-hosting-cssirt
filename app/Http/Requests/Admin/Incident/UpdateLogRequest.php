@@ -17,8 +17,18 @@ class UpdateLogRequest extends FormRequest
             'log_message' => ['required', 'string'],
             'is_public' => ['nullable', 'boolean'],
             'attachment_type' => ['nullable', 'string', 'in:file,link,none'],
-            'attachment' => ['nullable', 'file', 'max:5120'],
+            'attachment' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf,zip,doc,docx', 'max:5120', 'required_if:attachment_type,file'],
             'attachment_link' => ['nullable', 'string', 'url', 'max:2000'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'attachment.required_if' => 'File wajib dipilih jika tipe lampiran adalah File.',
+            'attachment.file' => 'Lampiran harus berupa file yang valid.',
+            'attachment.mimes' => 'Format file lampiran hanya JPG, PNG, PDF, ZIP, DOC, atau DOCX.',
+            'attachment.max' => 'Ukuran file maksimal 5 MB.',
         ];
     }
 }

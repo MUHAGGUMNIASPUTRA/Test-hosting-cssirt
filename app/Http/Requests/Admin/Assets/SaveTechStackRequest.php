@@ -17,15 +17,20 @@ class SaveTechStackRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'category_id' => ['required', 'uuid', 'exists:tech_stack_categories,id'],
-            'logo' => ['nullable', 'image', 'max:2048'],
+            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
         ];
     }
 
     public function messages(): array
     {
         return [
+            'name.required' => 'Nama tech stack wajib diisi.',
+            'name.max' => 'Nama tech stack maksimal 255 karakter.',
             'category_id.required' => 'Kategori wajib dipilih.',
             'category_id.exists' => 'Kategori tidak ditemukan.',
+            'logo.image' => 'File harus berupa gambar yang valid.',
+            'logo.mimes' => 'Format logo hanya JPG, PNG, atau WebP.',
+            'logo.max' => 'Ukuran logo maksimal 2 MB.',
         ];
     }
 }

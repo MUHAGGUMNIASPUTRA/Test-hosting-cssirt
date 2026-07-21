@@ -26,7 +26,7 @@ class SavePhysicalAssetRequest extends FormRequest
             'specifications' => ['nullable', 'string'],
             'year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
             'attachment_type' => ['nullable', 'in:file,link'],
-            'attachment' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf,zip,doc,docx', 'max:5120'],
+            'attachment' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf,zip,doc,docx', 'max:5120', 'required_if:attachment_type,file'],
             'attachment_link' => ['nullable', 'url', 'max:2000'],
             'location_id' => ['nullable', 'uuid', 'exists:locations,id'],
             'owner_org_id' => ['nullable', 'uuid', 'exists:organizations,id'],
@@ -44,6 +44,13 @@ class SavePhysicalAssetRequest extends FormRequest
         return [
             'asset_code.required' => 'Kode aset wajib diisi.',
             'name.required' => 'Nama aset wajib diisi.',
+            'attachment_type.in' => 'Tipe lampiran hanya File atau Link.',
+            'attachment.required_if' => 'File wajib dipilih jika tipe lampiran adalah File.',
+            'attachment.file' => 'Lampiran harus berupa file yang valid.',
+            'attachment.mimes' => 'Format file lampiran hanya JPG, PNG, PDF, ZIP, DOC, atau DOCX.',
+            'attachment.max' => 'Ukuran file maksimal 5 MB.',
+            'attachment_link.url' => 'Format URL tidak valid. Pastikan URL diawali dengan http:// atau https://.',
+            'attachment_link.max' => 'URL terlalu panjang (maks. 2000 karakter).',
             'owner_employee_id.required_if' => 'Pegawai PJ wajib dipilih saat kontak manual.',
         ];
     }
