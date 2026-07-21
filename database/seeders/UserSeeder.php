@@ -15,6 +15,7 @@ class UserSeeder extends Seeder
             'name' => 'Admin CSIRT',
             'email' => 'admin@csirt.bojonegorokab.go.id',
             'password' => Hash::make('password'),
+            'email_verified_at' => now(),
             'role' => 'admin',
         ]);
 
@@ -23,6 +24,7 @@ class UserSeeder extends Seeder
             'name' => 'Staf CSIRT',
             'email' => 'staff@csirt.bojonegorokab.go.id',
             'password' => Hash::make('password'),
+            'email_verified_at' => now(),
             'role' => 'staff',
         ]);
     }
