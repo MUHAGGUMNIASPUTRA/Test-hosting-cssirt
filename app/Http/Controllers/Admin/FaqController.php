@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Faq\SaveFaqRequest;
 use App\Models\Faq;
+use App\Services\FaqCacheService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -64,6 +65,7 @@ class FaqController extends Controller
     public function store(SaveFaqRequest $request): RedirectResponse
     {
         Faq::create($request->validated());
+        FaqCacheService::clearAll();
 
         return redirect()->back()->with('success', 'FAQ berhasil ditambahkan.');
     }
@@ -74,6 +76,7 @@ class FaqController extends Controller
     public function update(SaveFaqRequest $request, Faq $faq): RedirectResponse
     {
         $faq->update($request->validated());
+        FaqCacheService::clearAll();
 
         return redirect()->back()->with('success', 'FAQ berhasil diperbarui.');
     }
@@ -84,6 +87,7 @@ class FaqController extends Controller
     public function destroy(Faq $faq): RedirectResponse
     {
         $faq->delete();
+        FaqCacheService::clearAll();
 
         return redirect()->back()->with('success', 'FAQ berhasil dihapus.');
     }

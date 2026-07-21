@@ -39,10 +39,10 @@ class FaqCacheService
     {
         return Cache::remember(self::FAQ_CATEGORIES_CACHE_KEY, self::CACHE_DURATION, function () {
             return Faq::published()
-                ->select('category', 'id')
-                ->distinct()
-                ->orderBy('id')
+                ->orderBy('created_at')
                 ->pluck('category')
+                ->unique()
+                ->values()
                 ->toArray();
         });
     }

@@ -3,6 +3,17 @@ import { useParticles } from '@/Composables/useParticles'
 import { router } from '@inertiajs/vue3'
 
 const { heroParticlesOptions } = useParticles()
+
+const scrollToAbout = () => {
+  const aboutSection = document.querySelector('#tentang')
+  if (aboutSection) {
+    const offsetTop = aboutSection.getBoundingClientRect().top + window.scrollY
+    window.scrollTo({
+      top: offsetTop - 80,
+      behavior: 'smooth',
+    })
+  }
+}
 </script>
 
 <template>
@@ -71,7 +82,8 @@ const { heroParticlesOptions } = useParticles()
 
     <!-- Scroll Indicator -->
     <div
-      class="absolute bottom-8 left-1/2 -translate-x-1/2 transform animate-bounce"
+      class="absolute bottom-8 left-1/2 -translate-x-1/2 transform animate-bounce cursor-pointer transition-opacity hover:opacity-70"
+      @click="scrollToAbout"
     >
       <svg
         class="h-6 w-6 text-white/60"

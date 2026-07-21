@@ -1,6 +1,7 @@
 <template>
   <section
     id="tentang"
+    ref="aboutRef"
     class="translate-y-10 bg-white py-8 opacity-0 sm:py-16 lg:py-20"
   >
     <div class="container">
@@ -86,9 +87,26 @@
 </template>
 
 <script setup>
+import { onMounted, ref } from 'vue'
+
+const aboutRef = ref(null)
+
 const missionPoints = [
   'Respons cepat terhadap insiden keamanan siber',
   'Koordinasi keamanan lintas instansi pemerintahan',
   'Edukasi dan peningkatan kesadaran keamanan siber',
 ]
+
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting)
+          entry.target.classList.add('animate-fade-in-up')
+      })
+    },
+    { threshold: 0.1, rootMargin: '0px 0px -50px 0px' },
+  )
+  if (aboutRef.value) observer.observe(aboutRef.value)
+})
 </script>
