@@ -6,6 +6,7 @@ use App\Enums\DocumentStage;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Document\StoreDocumentRequest;
 use App\Http\Requests\Admin\Document\UpdateDocumentRequest;
+use App\Http\Resources\AttachmentResource;
 use App\Models\Document;
 use App\Models\DocumentArea;
 use App\Services\AttachmentService;
@@ -49,15 +50,25 @@ class DocumentController extends Controller
 
     public function show(Document $document): Response
     {
-        return Inertia::render('Admin/Documents/Show', [
-            'document' => $document->load(['officialAttachment', 'documentArea']),
-        ]);
+        $document->load(['officialAttachment', 'documentArea']);
+        $data = $document->toArray();
+        $data['official_attachment'] = $document->officialAttachment
+            ? (new AttachmentResource($document->officialAttachment))->toArray(request())
+            : null;
+
+        return Inertia::render('Admin/Documents/Show', ['document' => $data]);
     }
 
     public function edit(Document $document): Response
     {
+        $document->load('officialAttachment');
+        $data = $document->toArray();
+        $data['official_attachment'] = $document->officialAttachment
+            ? (new AttachmentResource($document->officialAttachment))->toArray(request())
+            : null;
+
         return Inertia::render('Admin/Documents/Create', [
-            'document' => $document->load('officialAttachment'),
+            'document' => $data,
             'documentAreas' => DocumentArea::orderBy('name')->get(['id', 'name']),
             'stageOptions' => DocumentStage::values(),
         ]);

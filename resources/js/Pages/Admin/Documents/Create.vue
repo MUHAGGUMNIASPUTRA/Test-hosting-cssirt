@@ -35,11 +35,11 @@ const form = useForm({
   is_public: props.document?.is_public ?? false,
   document_area_id: props.document?.document_area_id ?? null,
   doc_file_link: props.document?.draft_file_path || '',
-  official_file_type: props.document?.officialAttachment?.type ?? 'file',
+  official_file_type: props.document?.official_attachment?.type ?? 'file',
   official_file: null,
   official_file_link:
-    (props.document?.officialAttachment?.type === 'link'
-      ? props.document?.officialAttachment?.url
+    (props.document?.official_attachment?.type === 'link'
+      ? props.document?.official_attachment?.url
       : '') || '',
   reference_number: props.document?.reference_number || '',
   stage: props.document?.stage || null,
@@ -181,7 +181,7 @@ watch(
             <DocumentFilesFormSection
               :model-value="filesData"
               :is-edit-mode="isEditMode"
-              :existing-official-attachment="document?.officialAttachment"
+              :existing-official-attachment="document?.official_attachment"
               :is-stage-final="isStageFinal"
               :errors="form.errors"
               @update:model-value="updateFiles"

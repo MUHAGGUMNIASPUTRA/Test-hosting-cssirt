@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AttachmentResource;
 use App\Services\DocumentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,9 +25,18 @@ class DocumentController extends Controller
 
         $paginator = $this->documentService->list($filters);
 
+        // Transform collection to array and replace official_attachment with resource version
+        $data = $paginator->toArray();
+        foreach ($data['data'] as $index => &$item) {
+            $document = $paginator->getCollection()[$index];
+            if ($document && $document->officialAttachment) {
+                $item['official_attachment'] = (new AttachmentResource($document->officialAttachment))->toArray($request);
+            }
+        }
+
         return response()->json([
             'status' => 'success',
-            'data' => $paginator,
+            'data' => $data,
         ]);
     }
 }

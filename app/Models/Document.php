@@ -88,6 +88,14 @@ class Document extends Model
 
     public function downloadUrl(): ?string
     {
-        return $this->officialAttachment?->url;
+        if (! $this->officialAttachment) {
+            return null;
+        }
+
+        if ($this->officialAttachment->isLink()) {
+            return $this->officialAttachment->url;
+        }
+
+        return Storage::disk($this->officialAttachment->disk)->path($this->officialAttachment->path);
     }
 }
