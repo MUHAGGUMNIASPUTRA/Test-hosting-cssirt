@@ -122,7 +122,7 @@ const contentClasses = computed(() => {
       ? 'lg:col-span-8'
       : 'lg:col-span-12'
 
-  return `${baseClasses} ${layoutClasses} opacity-0 translate-y-10`
+  return `${baseClasses} ${layoutClasses}`
 })
 </script>
 
@@ -302,7 +302,7 @@ const contentClasses = computed(() => {
       <div class="container">
         <div class="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-12 lg:gap-12">
           <!-- Article Content -->
-          <article ref="contentRef" :class="contentClasses">
+          <article ref="contentRef" :class="contentClasses" class="opacity-0 translate-y-10">
             <!-- Featured Image -->
             <div v-if="post.image" class="relative mb-8 lg:mb-12">
               <div

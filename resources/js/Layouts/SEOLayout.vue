@@ -254,6 +254,8 @@
           </div>
         </div>
       </footer>
+      <!-- AI Knowledge Assistant — Floating Widget -->
+      <AIAssistantWidget />
     </div>
   </div>
 </template>
@@ -265,6 +267,7 @@ defineProps({
 
 // Mock Head component for SSR compatibility
 import { defineComponent } from 'vue'
+import AIAssistantWidget from '@/Components/AIAssistant/AIAssistantWidget.vue'
 
 const Head = defineComponent({
   props: ['title'],

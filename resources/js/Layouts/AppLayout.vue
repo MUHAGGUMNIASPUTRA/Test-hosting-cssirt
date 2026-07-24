@@ -4,6 +4,7 @@ import { useResponsive } from '@/Composables/useResponsive'
 import { Head, Link, usePage } from '@inertiajs/vue3'
 import { useToast } from 'primevue/usetoast'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import AIAssistantWidget from '@/Components/AIAssistant/AIAssistantWidget.vue'
 
 // The 'title' prop will be passed from individual pages
 defineProps({
@@ -674,6 +675,8 @@ watch(
           </div>
         </div>
       </footer>
+      <!-- AI Knowledge Assistant — Floating Widget -->
+      <AIAssistantWidget />
     </div>
   </div>
 </template>

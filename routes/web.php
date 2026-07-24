@@ -32,6 +32,8 @@ use App\Http\Controllers\Admin\PostController as AdminPostController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\TaxonomyController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\AIAdminAssistantController;
+use App\Http\Controllers\Api\AIAssistantController;
 use App\Http\Controllers\Api\DocumentController as ApiDocumentController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\VirtualAssetController as ApiVirtualAssetController;
@@ -72,6 +74,12 @@ Route::post('/incident', [IncidentController::class, 'store'])->middleware('thro
 Route::post('/incidents/search', [IncidentController::class, 'search'])->middleware('throttle:incident-search')->name('incident.search');
 Route::get('/incidents/{caseId}/attachment', [IncidentController::class, 'downloadAttachment'])->middleware(['signed', 'throttle:incident-download'])->name('incident.attachment.download');
 Route::get('/incidents/{caseId}', [IncidentController::class, 'showWithToken'])->middleware('throttle:incident-search')->name('incident.show');
+
+
+// AI Knowledge Assistant — Public endpoint (no auth required)
+Route::post('/api/ai-assistant', [AIAssistantController::class, 'ask'])
+    ->middleware('throttle:30,1')
+    ->name('api.ai-assistant');
 
 Route::middleware(['auth', 'verified', 'staff'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -142,6 +150,11 @@ Route::middleware(['auth', 'verified', 'staff'])->prefix('admin')->name('admin.'
 });
 
 Route::middleware(['auth', 'verified'])->prefix('api')->name('api.')->group(function () {
+    // AI Admin Assistant — endpoint khusus administrator (auth required)
+    Route::post('/admin/ai-assistant', [AIAdminAssistantController::class, 'ask'])
+        ->middleware('staff')
+        ->name('admin.ai-assistant');
+
     Route::get('/admin/documents', [ApiDocumentController::class, 'index'])->name('admin.documents.index');
     Route::get('/admin/virtual-asset-guides', [ApiVirtualAssetGuideController::class, 'index'])->name('admin.virtual-asset-guides.index');
     Route::get('/notifications/incidents', [NotificationController::class, 'getIncidentNotifications'])->name('notifications.incidents');

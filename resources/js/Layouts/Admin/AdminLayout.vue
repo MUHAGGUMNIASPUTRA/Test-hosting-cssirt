@@ -2,6 +2,7 @@
 // filepath: resources/js/Layouts/Admin/AdminLayout.vue
 
 import NotificationPanel from '@/Components/NotificationPanel.vue'
+import AIAdminAssistant from '@/Components/AIAdminAssistant/AIAdminAssistant.vue'
 import { useResponsive } from '@/Composables/useResponsive'
 import { Head, router, usePage } from '@inertiajs/vue3'
 import {
@@ -307,6 +308,9 @@ watch(
         >. All rights reserved.
       </p>
     </div>
+
+    <!-- AI Admin Assistant Floating Button -->
+    <AIAdminAssistant />
 
     <Toast position="top-right" class="z-[9999]" />
   </div>

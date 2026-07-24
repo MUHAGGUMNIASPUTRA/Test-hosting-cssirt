@@ -333,7 +333,10 @@ onMounted(() => {
 
                 <!-- Excerpt -->
                 <p class="mb-6 line-clamp-3 text-slate-600 sm:text-lg">
-                  {{ generateExcerpt(posts.data[0]) }}
+                  {{
+                    posts.data[0].excerpt ||
+                    posts.data[0].body?.replace(/<[^>]*>/g, '').substring(0, 150) + '...'
+                  }}
                 </p>
 
                 <!-- Meta Info -->
